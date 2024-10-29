@@ -21,6 +21,9 @@
       <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
       <Extensions>ts</Extensions>
     </Filter>
+    <Filter Include="Source Files\Enums">
+      <UniqueIdentifier>{d6be322b-c044-430b-9068-0855f07e64f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Eter.qrc">
@@ -46,16 +49,34 @@
     <ClCompile Include="MinionCard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ExplosionCard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MageCard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CardType.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="MinionCard.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionCard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MageCard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CardType.h">
+      <Filter>Source Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="ReturnOrRemoveType.h">
+      <Filter>Source Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="MageType.h">
+      <Filter>Source Files\Enums</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

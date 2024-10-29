@@ -1,6 +1,8 @@
 #pragma once
 #include "Card.h"
 #include <string>
+#include <cstdint>
+#include <string_view>
 
 class MinionCard : public Card
 {
@@ -10,7 +12,7 @@ private:
 	bool m_isEterCard;
 	bool m_isIllusionCard;
 public:
-
+	MinionCard(uint16_t value, std::string_view color);
 	//getters
 	uint16_t GetValue() const;
 	std::string GetColor() const;

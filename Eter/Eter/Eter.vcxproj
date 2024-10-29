@@ -97,7 +97,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ExplosionCard.cpp" />
     <ClCompile Include="MinionCard.cpp" />
+    <ClCompile Include="MageCard.cpp" />
     <QtRcc Include="Eter.qrc" />
     <QtUic Include="Eter.ui" />
     <QtMoc Include="Eter.h" />
@@ -108,7 +110,11 @@
   <ItemGroup>
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardType.h" />
+    <ClInclude Include="ExplosionCard.h" />
     <ClInclude Include="MinionCard.h" />
+    <ClInclude Include="MageCard.h" />
+    <ClInclude Include="MageType.h" />
+    <ClInclude Include="ReturnOrRemoveType.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

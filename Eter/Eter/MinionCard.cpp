@@ -1,5 +1,13 @@
 #include "MinionCard.h"
 
+MinionCard::MinionCard(uint16_t value, std::string_view color) : Card {CardType::MinionCard}
+{
+    m_value = value;
+    m_color = color;
+    m_isEterCard = false;
+    m_isIllusionCard = false;
+}
+
 uint16_t MinionCard::GetValue() const
 {
     return m_value;

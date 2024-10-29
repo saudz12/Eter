@@ -6,8 +6,8 @@ class Card
 protected:
 	CardType m_cardType;
 public:
-	virtual CardType GetCardType() const;
-	virtual void SetCardType(CardType type);
 	Card(const CardType type);
+	virtual CardType GetCardType() const=0;
+	virtual void SetCardType(CardType type)=0;
 };
 
