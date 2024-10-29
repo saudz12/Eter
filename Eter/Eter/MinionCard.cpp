@@ -1,9 +1,9 @@
 #include "MinionCard.h"
 
-MinionCard::MinionCard(uint16_t value, std::string_view color) : Card {CardType::MinionCard}
+MinionCard::MinionCard(uint16_t value, std::string_view cardColor) : Card {CardType::MinionCard}
 {
     m_value = value;
-    m_color = color;
+    m_cardColor = cardColor;
     m_isEterCard = false;
     m_isIllusionCard = false;
 }
@@ -13,9 +13,9 @@ uint16_t MinionCard::GetValue() const
     return m_value;
 }
 
-std::string MinionCard::GetColor() const
+std::string MinionCard::GetCardColor() const
 {
-    return m_color;
+    return m_cardColor;
 }
 
 bool MinionCard::GetIsEterCard() const
@@ -38,9 +38,9 @@ void MinionCard::SetValue(uint16_t value)
     m_value = value;
 }
 
-void MinionCard::SetColor(std::string color)
+void MinionCard::SetColor(std::string cardColor)
 {
-    m_color = color;
+    m_cardColor = cardColor;
 }
 
 void MinionCard::SetIsEterCard(bool isEterCard)

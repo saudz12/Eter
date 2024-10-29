@@ -8,14 +8,14 @@ class MinionCard : public Card
 {
 private:
 	uint16_t m_value;
-	std::string m_color;
+	std::string m_cardColor;
 	bool m_isEterCard;
 	bool m_isIllusionCard;
 public:
-	MinionCard(uint16_t value, std::string_view color);
+	MinionCard(uint16_t value, std::string_view cardColor);
 	//getters
 	uint16_t GetValue() const;
-	std::string GetColor() const;
+	std::string GetCardColor() const;
 	bool GetIsEterCard() const;
 	bool GetIsIllusionCard() const;
 	CardType GetCardType() const override;
