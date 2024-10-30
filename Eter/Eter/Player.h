@@ -1,27 +1,28 @@
 #pragma once
 #include "MinionCard.h"
-//#include "ExplosionCard.h"
-//#include "MageCard.h"
-//#include "ElementalCard.h"
 
-#include <map>
+#include <unordered_map>
 
 class Player
 {
 private:
-	bool m_playerColor;
-	bool m_usedIllusion;
-	//bool m_usedPower;
-	//bool m_usedMage;
+	std::string m_playerColor;
+	bool m_illusionUsage; //true if illusion has been used, false otherwise
 	int m_handSize;
-	std::map<MinionCard, int> m_handCards;
-	//ElementalCard m_elementalCard;
-	//MageCard m_mageCard;
+	std::unordered_map<MinionCard, int> m_handCards;
 public:
+	Player(std::string_view playerColor);
+
 	//getters
-	bool GetPlayerColor() const;
+	std::string GetPlayerColor() const;
 	bool GetUsedIllusion() const;
 	bool GetHandSize() const;
-	std::map<MinionCard, int> GetHandCards() const;
+	std::unordered_map<MinionCard, int> GetHandCards() const;
+
+	//setters
+	void SetPlayerColor(std::string_view playerColor);
+	void SetIllusionUsage(bool illusionUsage);
+	void SetHandSize(int handSize);
+	void SetHandCards(std::unordered_map<MinionCard, int> handCards);
 };
 

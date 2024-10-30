@@ -13,6 +13,7 @@ private:
 	bool m_isIllusionCard;
 public:
 	MinionCard(uint16_t value, std::string_view cardColor);
+
 	//getters
 	uint16_t GetValue() const;
 	std::string GetCardColor() const;
