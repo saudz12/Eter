@@ -102,6 +102,7 @@
     <ClCompile Include="HoleCard.cpp" />
     <ClCompile Include="MinionCard.cpp" />
     <ClCompile Include="MageCard.cpp" />
+    <ClCompile Include="Player.cpp" />
     <QtRcc Include="Eter.qrc" />
     <QtUic Include="Eter.ui" />
     <QtMoc Include="Eter.h" />
@@ -118,6 +119,7 @@
     <ClInclude Include="MinionCard.h" />
     <ClInclude Include="MageCard.h" />
     <ClInclude Include="MageType.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="ReturnOrRemoveType.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
