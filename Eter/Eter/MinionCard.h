@@ -13,6 +13,7 @@ private:
 	bool m_isIllusionCard;
 public:
 	MinionCard(uint16_t value, std::string_view color);
+
 	//getters
 	uint16_t GetValue() const;
 	std::string GetColor() const;
@@ -26,6 +27,5 @@ public:
 	void SetIsEterCard(bool isEterCard);
 	void SetIsIllusionCard(bool isIllusionCard);
 	void SetCardType(CardType type) override;
-	
 };
 
