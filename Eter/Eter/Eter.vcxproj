@@ -97,7 +97,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ElementalCard.cpp" />
     <ClCompile Include="ExplosionCard.cpp" />
+    <ClCompile Include="HoleCard.cpp" />
     <ClCompile Include="MinionCard.cpp" />
     <ClCompile Include="MageCard.cpp" />
     <QtRcc Include="Eter.qrc" />
@@ -110,7 +112,9 @@
   <ItemGroup>
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardType.h" />
+    <ClInclude Include="ElementalCard.h" />
     <ClInclude Include="ExplosionCard.h" />
+    <ClInclude Include="HoleCard.h" />
     <ClInclude Include="MinionCard.h" />
     <ClInclude Include="MageCard.h" />
     <ClInclude Include="MageType.h" />

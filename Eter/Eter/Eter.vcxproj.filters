@@ -55,6 +55,12 @@
     <ClCompile Include="MageCard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HoleCard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ElementalCard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card.h">
@@ -77,6 +83,12 @@
     </ClInclude>
     <ClInclude Include="MageType.h">
       <Filter>Source Files\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="HoleCard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ElementalCard.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
