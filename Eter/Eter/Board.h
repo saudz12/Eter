@@ -19,9 +19,9 @@ public:
 	Board() = default;
 
 	int getPos(int, int);
-	void setPos(int, int, int);
-	void removePos(int, int, int);
-	char entityWon(int, int, char);
+	int setPos(int, int, int);
+	int removePos(int, int, int);
+	char entityWon(int, int);
 
 	uint8_t getRowCount();
 	uint8_t getColCount();
