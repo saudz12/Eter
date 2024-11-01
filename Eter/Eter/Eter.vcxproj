@@ -97,6 +97,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Board.cpp" />
     <ClCompile Include="ElementalCard.cpp" />
     <ClCompile Include="ExplosionCard.cpp" />
     <ClCompile Include="HoleCard.cpp" />
@@ -111,6 +112,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Board.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardType.h" />
     <ClInclude Include="ElementalCard.h" />
