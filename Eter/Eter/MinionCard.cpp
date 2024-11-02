@@ -8,6 +8,19 @@ MinionCard::MinionCard(uint16_t value, std::string_view color) : Card {CardType:
     m_isIllusionCard = false;
 }
 
+bool MinionCard::operator==(const MinionCard& card) const
+{
+    if (m_value != card.GetValue())
+        return false;
+    if (m_color != card.GetColor())
+        return false;
+    if (m_isEterCard != card.GetIsEterCard())
+        return false;
+    if (m_isIllusionCard != card.GetIsIllusionCard())
+        return false;
+    return true;
+}
+
 uint16_t MinionCard::GetValue() const
 {
     return m_value;
@@ -56,4 +69,10 @@ void MinionCard::SetIsIllusionCard(bool isIllusionCard)
 void MinionCard::SetCardType(CardType type)
 {
     m_cardType = type;
+}
+
+std::ostream& operator<<(std::ostream& os, const MinionCard& card)
+{
+    os << card.GetValue() << " " << card.GetColor();
+    return os;
 }
