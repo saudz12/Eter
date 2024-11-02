@@ -1,5 +1,13 @@
 #include "Board.h"
 
+Board::Board()
+{
+	m_board.push_back(line());
+	m_board[0].push_back(cardStack());
+	m_line_cnt = 0;
+	m_max_size = 3;
+}
+
 int Board::getCardOnPos(int x, int y) {
 	if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
 		return -1;
@@ -88,6 +96,18 @@ uint8_t Board::getColCount()
 uint8_t Board::getMaxSize()
 {
 	return this->m_max_size;
+}
+
+void Board::printBoard()
+{
+	std::cout << "R\\B ";
+	for (int i = 0; i < getColCount(); i++)
+		std::cout << m_colChecker[i].first << "|" << m_colChecker[i].first << " ";
+	for (int i = 0; i < getRowCount(); i++) {
+		std::cout << "\n" << m_rowChecker[i].first << " " << m_rowChecker[i].second << " ";
+		for (int j = 0; j < getColCount(); i++)
+			std::cout << m_board[i][j].back() << "-" << m_board[i][j].back() << " ";
+	}
 }
 
 int Board::XBoundTest(int x)//0 inside, -1 left margin, 1 right margin, 2 outside
