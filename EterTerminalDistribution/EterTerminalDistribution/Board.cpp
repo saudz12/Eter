@@ -1,33 +1,72 @@
 #include "Board.h"
 
 
-Board::Board()
+Board::Board() 
+	: m_line_cnt{0}, m_max_size{3}, m_firstDiag{0, 0}, m_seconDiag{0, 0}, m_board(resizeableMatrix()), m_rowChecker(lineChecker()), m_colChecker(lineChecker())
 {
 	m_board.push_back(line());
 	m_board[0].push_back(cardStack());
-	m_line_cnt = 0;
-	m_max_size = 3;
 	m_rowChecker.emplace_back(0, 0);
 	m_colChecker.emplace_back(0, 0);
 }
 
 void Board::increaseOnColor(uint16_t x, uint16_t y, char col)
 {
-	if (col == 'R')
-	{
+	if (m_board[x][y].empty()) {
+		if (col == 'R') {
+			m_rowChecker[x].first++;
+			m_colChecker[y].first++;
+			if (x == y) {
+				m_firstDiag.first++;
+			}
+			if (x + y == m_max_size) {
+				m_seconDiag.first++;
+			}
+		}
+		else {
+			m_rowChecker[x].second++;
+			m_colChecker[y].second++;
+			if (x == y) {
+				m_firstDiag.second++;
+			}
+			if (x + y == m_max_size) {
+				m_seconDiag.second++;
+			}
+		}
+
+		return;
+	}
+	if (col == 'R' && m_board[x][y].back().GetColor() == 'B') {
 		m_rowChecker[x].first++;
 		m_colChecker[y].first++;
+		m_rowChecker[x].second--;
+		m_colChecker[y].second--;
+		if (x == y) {
+			m_firstDiag.first++;
+		}
+		if (x + y == m_max_size) {
+			m_seconDiag.first++;
+		}
+
 	}
-	else
-	{
+	if (m_board[x][y].back().GetColor() == 'R') {
+		m_rowChecker[x].first--;
+		m_colChecker[y].first--;
 		m_rowChecker[x].second++;
 		m_colChecker[y].second++;
+		if (x == y) {
+			m_firstDiag.second++;
+		}
+		if (x + y == m_max_size) {
+			m_seconDiag.second++;
+		}
 	}
+	return;
 }
 
 MinionCard Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
 	if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
-		return MinionCard{-1,'\0'};
+		return MinionCard{0,'\0'};
 	return m_board[x][y].back();
 }
 
@@ -42,9 +81,6 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) { //1 if not
 		if (posPlaceTest(x, y, { val,col })) {
 			if (getColCount() == 1 && getRowCount() == 1 && m_board[x][y].empty())
 				increaseOnColor(x, y, col);
-			//if(m_board[x][y].back().col != val.col)
-			//if(col == 'R')... scade pt rosu, creste pt albastru
-			//else vice versa <--- de implementat odata cu schimbarea tipului lui val din int in minion card!!!
 			m_board[x][y].push_back({ val,col });
 			return 0;
 		}
@@ -66,6 +102,24 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) { //1 if not
 		if (boundCondX == BOTTOM_BOUND && boundCondY == RIGHT_BOUND) {
 			addLineOnBottom();
 			addLineToRight();
+			m_board[x][y].push_back({ val,col });
+			increaseOnColor(x, y, col);
+
+			return 0;
+		}
+		if (boundCondX == TOP_BOUND && boundCondY == RIGHT_BOUND) {
+			x = 0;
+			addLineOnTop();
+			addLineToRight();
+			m_board[x][y].push_back({ val,col });
+			increaseOnColor(x, y, col);
+
+			return 0;
+		}
+		if (boundCondX == BOTTOM_BOUND && boundCondY == LEFT_BOUND) {
+			y = 0;
+			addLineOnBottom();
+			addLineToLeft();
 			m_board[x][y].push_back({ val,col });
 			increaseOnColor(x, y, col);
 
@@ -147,13 +201,14 @@ void Board::printBoard()
 	std::cout << "R\\B ";
 	for (int i = 0; i < getColCount(); i++)
 		std::cout << int(m_colChecker[i].first) << "|" << m_colChecker[i].second << " ";
+
 	for (int i = 0; i < getRowCount(); i++) {
 		std::cout << "\n" << m_rowChecker[i].first << "|" << m_rowChecker[i].second << " ";
 		for (int j = 0; j < getColCount(); j++)
 			if (!m_board[i][j].empty())
-				std::cout << " " << m_board[i][j].back() << "  ";
+				std::cout << m_board[i][j].back() << " ";
 			else
-				std::cout << " -- ";
+				std::cout << "--- ";
 	}
 }
 
@@ -179,7 +234,7 @@ int16_t Board::YBoundTest(int16_t y)//0 inside, -1 top margin, 1 buttom margin, 
 	return OUTSIDE_BOUND;
 }
 
-bool Board::posPlaceTest(int16_t x, int16_t y, MinionCard val)
+bool Board::posPlaceTest(int16_t x, int16_t y, MinionCard val) //x si y unde punem si MinionCard.m_value
 {
 	if (m_board[x][y].empty())
 		return true;

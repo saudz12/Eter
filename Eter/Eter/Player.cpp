@@ -2,6 +2,11 @@
 
 Player::Player(std::string_view playerColor) : m_playerColor{ playerColor }, m_illusionUsage{ false } {}
 
+Player::Player()
+	: m_playerColor{ 'R' }, m_illusionUsage{ false }
+{
+}
+
 std::string Player::GetPlayerColor() const
 {
 	return m_playerColor;

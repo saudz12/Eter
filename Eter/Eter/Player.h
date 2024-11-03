@@ -9,12 +9,12 @@ class Player
 {
 private:
 	std::string m_playerColor;
-	bool m_illusionUsage; //true if illusion has been used, false otherwise
 	std::unordered_map<MinionCard, uint16_t> m_handCards;
+	bool m_illusionUsage; //true if illusion has been used, false otherwise
 public:
 	//constructor
 	Player(std::string_view playerColor);
-	
+	Player();
 	//getters
 	std::string GetPlayerColor() const;
 	bool GetUsedIllusion() const;

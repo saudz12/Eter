@@ -60,8 +60,21 @@ bool MinionCard::operator>(const MinionCard& card)
     return (m_value>card.m_value)?true : false;
 }
 
+bool MinionCard::operator==(const MinionCard& card) const
+{
+    if (m_value != card.GetValue())
+        return false;
+    if (m_color != card.GetColor())
+        return false;
+    if (m_isEterCard != card.GetIsEterCard())
+        return false;
+    if (m_isIllusionCard != card.GetIsIllusionCard())
+        return false;
+    return true;
+}
+
 std::ostream& operator<<(std::ostream& out, const MinionCard& card)
 {
-    out << card.m_value << ":" <<card.m_color<<" ";
+    out << card.m_value << ":" <<card.m_color;
     return out;
 }
