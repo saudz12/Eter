@@ -54,3 +54,14 @@ void MinionCard::SetCardType(CardType type)
 {
     m_cardType = type;
 }
+
+bool MinionCard::operator>(const MinionCard& card)
+{
+    return (m_value>card.m_value)?true : false;
+}
+
+std::ostream& operator<<(std::ostream& out, const MinionCard& card)
+{
+    out << card.m_value << ":" <<card.m_color<<" ";
+    return out;
+}

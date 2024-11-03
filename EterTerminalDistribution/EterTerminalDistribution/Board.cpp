@@ -25,9 +25,9 @@ void Board::increaseOnColor(uint16_t x, uint16_t y, char col)
 	}
 }
 
-int16_t Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
+MinionCard Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
 	if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
-		return -1;
+		return MinionCard{-1,'\0'};
 	return m_board[x][y].back();
 }
 
@@ -37,15 +37,15 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) { //1 if not
 
 	if (boundCondX == OUTSIDE_BOUND || boundCondY == OUTSIDE_BOUND)
 		return -1;
-	
+
 	if (boundCondX == INSIDE_BOUND && boundCondY == INSIDE_BOUND) {
-		if (posPlaceTest(x, y, val)) {
+		if (posPlaceTest(x, y, { val,col })) {
 			if (getColCount() == 1 && getRowCount() == 1 && m_board[x][y].empty())
 				increaseOnColor(x, y, col);
 			//if(m_board[x][y].back().col != val.col)
 			//if(col == 'R')... scade pt rosu, creste pt albastru
 			//else vice versa <--- de implementat odata cu schimbarea tipului lui val din int in minion card!!!
-			m_board[x][y].push_back(val);
+			m_board[x][y].push_back({ val,col });
 			return 0;
 		}
 		else
@@ -58,7 +58,7 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) { //1 if not
 			y = 0;
 			addLineOnTop();
 			addLineToLeft();
-			m_board[x][y].push_back(val);
+			m_board[x][y].push_back({ val,col });
 			increaseOnColor(x, y, col);
 
 			return 0;
@@ -66,7 +66,7 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) { //1 if not
 		if (boundCondX == BOTTOM_BOUND && boundCondY == RIGHT_BOUND) {
 			addLineOnBottom();
 			addLineToRight();
-			m_board[x][y].push_back(val);
+			m_board[x][y].push_back({ val,col });
 			increaseOnColor(x, y, col);
 
 			return 0;
@@ -86,7 +86,7 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) { //1 if not
 		if (boundCondX == BOTTOM_BOUND) {
 			addLineOnBottom();
 			increaseOnColor(x, y, col);
-		}	
+		}
 
 		if (boundCondY == RIGHT_BOUND) {
 			addLineToRight();
@@ -95,7 +95,7 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) { //1 if not
 
 	}
 
-	m_board[x][y].push_back(val);
+	m_board[x][y].push_back({ val, col });
 	return 0;
 }
 
@@ -179,7 +179,7 @@ int16_t Board::YBoundTest(int16_t y)//0 inside, -1 top margin, 1 buttom margin, 
 	return OUTSIDE_BOUND;
 }
 
-bool Board::posPlaceTest(int16_t x, int16_t y, uint16_t val)
+bool Board::posPlaceTest(int16_t x, int16_t y, MinionCard val)
 {
 	if (m_board[x][y].empty())
 		return true;

@@ -9,10 +9,9 @@
 
 #include <deque>
 #include <cstdint>
-#include <iostream>
 #include "MinionCard.h"
 
-using cardStack = std::deque<uint16_t>;
+using cardStack = std::deque<MinionCard>; //minioncard here
 using line = std::deque<cardStack>;
 using resizeableMatrix = std::deque<line>;
 using lineChecker = std::deque<std::pair<uint16_t, uint16_t>>; //<R/B>
@@ -29,7 +28,7 @@ private:
 	void increaseOnColor(uint16_t, uint16_t, char);
 	int16_t XBoundTest(int16_t);
 	int16_t YBoundTest(int16_t);
-	bool posPlaceTest(int16_t, int16_t, uint16_t);
+	bool posPlaceTest(int16_t, int16_t, MinionCard);
 
 	void addLineToLeft();
 	void addLineToRight();
@@ -41,7 +40,7 @@ public:
 	Board();
 	~Board() = default;
 	
-	int16_t getCardOnPos(int16_t, int16_t);
+	MinionCard getCardOnPos(int16_t, int16_t);
 	int16_t setPos(int16_t, int16_t, uint16_t, char);
 	int16_t removePos(int16_t, int16_t, uint16_t);
 	char entityWon(int16_t, int16_t, char);

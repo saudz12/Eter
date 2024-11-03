@@ -1,6 +1,7 @@
 #pragma once
 #include "CardType.h"
-
+#include<iostream>
+#include <string_view>
 class Card
 {
 protected:

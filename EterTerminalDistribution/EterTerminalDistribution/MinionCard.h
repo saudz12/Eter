@@ -2,6 +2,7 @@
 #include "Card.h"
 #include <string>
 #include <cstdint>
+#include <iostream>
 #include <string_view>
 
 class MinionCard : public Card
@@ -27,5 +28,9 @@ public:
 	void SetIsEterCard(bool isEterCard);
 	void SetIsIllusionCard(bool isIllusionCard);
 	void SetCardType(CardType type) override;
+
+	//overload functions
+	friend std::ostream& operator<<(std::ostream &out,const MinionCard &card);
+	bool operator>(const MinionCard& card);
 };
 
