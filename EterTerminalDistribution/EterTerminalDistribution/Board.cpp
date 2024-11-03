@@ -25,13 +25,13 @@ void Board::increaseOnColor(uint16_t x, uint16_t y, char col)
 	}
 }
 
-uint16_t Board::getCardOnPos(uint16_t x, uint16_t y) {//-1 esec
+int16_t Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
 	if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
 		return -1;
 	return m_board[x][y].back();
 }
 
-uint16_t Board::setPos(uint16_t x, uint16_t y, uint16_t val, char col) { //1 if not succesfull/invalid, 0 if ok
+int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) { //1 if not succesfull/invalid, 0 if ok
 	const int boundCondX = XBoundTest(x);
 	const int boundCondY = YBoundTest(y);
 
@@ -53,33 +53,43 @@ uint16_t Board::setPos(uint16_t x, uint16_t y, uint16_t val, char col) { //1 if 
 	}
 
 	if (boundCondX != INSIDE_BOUND || boundCondY != INSIDE_BOUND) {
+		if (boundCondX == TOP_BOUND && boundCondY == LEFT_BOUND) {
+			x = 0;
+			y = 0;
+			addLineOnTop();
+			addLineToLeft();
+			m_board[x][y].push_back(val);
+			increaseOnColor(x, y, col);
+
+			return 0;
+		}
+		if (boundCondX == BOTTOM_BOUND && boundCondY == RIGHT_BOUND) {
+			addLineOnBottom();
+			addLineToRight();
+			m_board[x][y].push_back(val);
+			increaseOnColor(x, y, col);
+
+			return 0;
+		}
 		if (boundCondX == TOP_BOUND) {
 			x = 0;
-			m_board.push_front(line(getColCount()));
-			m_rowChecker.emplace_front(0, 0);
+			addLineOnTop();
 			increaseOnColor(x, y, col);
 		}
 
 		if (boundCondY == LEFT_BOUND) {
 			y = 0;
-			for (int i = 0; i < getRowCount(); i++) {
-				m_board[i].push_front(cardStack());
-			}
-			m_colChecker.emplace_front(0, 0);
+			addLineToLeft();
 			increaseOnColor(x, y, col);
 		}
 
 		if (boundCondX == BOTTOM_BOUND) {
-			m_board.push_back(line(getColCount()));	
-			m_rowChecker.emplace_front(0, 0);
+			addLineOnBottom();
 			increaseOnColor(x, y, col);
 		}	
 
 		if (boundCondY == RIGHT_BOUND) {
-			for (int i = 0; i < getRowCount(); i++) {
-				m_board[i].push_back(cardStack());
-			}
-			m_colChecker.emplace_front(0, 0);
+			addLineToRight();
 			increaseOnColor(x, y, col);
 		}
 
@@ -89,7 +99,7 @@ uint16_t Board::setPos(uint16_t x, uint16_t y, uint16_t val, char col) { //1 if 
 	return 0;
 }
 
-uint16_t Board::removePos(uint16_t x, uint16_t y, uint16_t pos) { //1 esec, 0 succes
+int16_t Board::removePos(int16_t x, int16_t y, uint16_t pos) { //1 esec, 0 succes
 	if (XBoundTest(x) != INSIDE_BOUND || YBoundTest(y) != INSIDE_BOUND)
 		return 1;
 	if (pos == 0)
@@ -102,7 +112,7 @@ uint16_t Board::removePos(uint16_t x, uint16_t y, uint16_t pos) { //1 esec, 0 su
 	return 0;
 }
 
-char Board::entityWon(uint16_t x, uint16_t y, char col) //0 inseamna ca momentan e egal
+char Board::entityWon(int16_t x, int16_t y, char col) //0 inseamna ca momentan e egal
 {
 	if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
 		return 0;
@@ -147,7 +157,7 @@ void Board::printBoard()
 	}
 }
 
-uint16_t Board::XBoundTest(uint16_t x)//0 inside, -1 left margin, 1 right margin, 2 outside
+int16_t Board::XBoundTest(int16_t x)//0 inside, -1 left margin, 1 right margin, 2 outside
 {
 	if (x >= 0 && x < getRowCount()) return INSIDE_BOUND;
 
@@ -158,7 +168,7 @@ uint16_t Board::XBoundTest(uint16_t x)//0 inside, -1 left margin, 1 right margin
 	return OUTSIDE_BOUND;
 }
 
-uint16_t Board::YBoundTest(uint16_t y)//0 inside, -1 top margin, 1 buttom margin, 2 outside
+int16_t Board::YBoundTest(int16_t y)//0 inside, -1 top margin, 1 buttom margin, 2 outside
 {
 	if (y >= 0 && y < getColCount()) return INSIDE_BOUND;
 
@@ -169,11 +179,39 @@ uint16_t Board::YBoundTest(uint16_t y)//0 inside, -1 top margin, 1 buttom margin
 	return OUTSIDE_BOUND;
 }
 
-bool Board::posPlaceTest(uint16_t x, uint16_t y, uint16_t val)
+bool Board::posPlaceTest(int16_t x, int16_t y, uint16_t val)
 {
 	if (m_board[x][y].empty())
 		return true;
 	if (val > *m_board[x][y].rbegin())
 		return true;
 	return false;
+}
+
+void Board::addLineToLeft()
+{
+	for (int i = 0; i < getRowCount(); i++) {
+		m_board[i].push_front(cardStack());
+	}
+	m_colChecker.emplace_front(0, 0);
+}
+
+void Board::addLineToRight()
+{
+	for (int i = 0; i < getRowCount(); i++) {
+		m_board[i].push_back(cardStack());
+	}
+	m_colChecker.emplace_back(0, 0);
+}
+
+void Board::addLineOnTop()
+{
+	m_board.push_front(line(getColCount()));
+	m_rowChecker.emplace_front(0, 0);
+}
+
+void Board::addLineOnBottom()
+{
+	m_board.push_back(line(getColCount()));
+	m_rowChecker.emplace_back(0, 0);
 }

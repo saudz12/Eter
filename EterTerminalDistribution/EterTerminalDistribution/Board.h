@@ -27,19 +27,24 @@ private:
 	uint16_t m_line_cnt; //for explosions, keep check either here or in game
 
 	void increaseOnColor(uint16_t, uint16_t, char);
-	uint16_t XBoundTest(uint16_t);
-	uint16_t YBoundTest(uint16_t);
-	bool posPlaceTest(uint16_t, uint16_t, uint16_t);
+	int16_t XBoundTest(int16_t);
+	int16_t YBoundTest(int16_t);
+	bool posPlaceTest(int16_t, int16_t, uint16_t);
+
+	void addLineToLeft();
+	void addLineToRight();
+	void addLineOnTop();
+	void addLineOnBottom();
 
 public:
 
 	Board();
 	~Board() = default;
 	
-	uint16_t getCardOnPos(uint16_t, uint16_t);
-	uint16_t setPos(uint16_t, uint16_t, uint16_t, char);
-	uint16_t removePos(uint16_t, uint16_t, uint16_t);
-	char entityWon(uint16_t, uint16_t, char);
+	int16_t getCardOnPos(int16_t, int16_t);
+	int16_t setPos(int16_t, int16_t, uint16_t, char);
+	int16_t removePos(int16_t, int16_t, uint16_t);
+	char entityWon(int16_t, int16_t, char);
 
 	uint16_t getRowCount();
 	uint16_t getColCount();
