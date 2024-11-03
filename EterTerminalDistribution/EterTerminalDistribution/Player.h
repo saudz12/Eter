@@ -14,8 +14,7 @@ private:
 public:
 	//constructor
 	Player(std::string_view playerColor);
-	Player();
-
+	
 	//getters
 	std::string GetPlayerColor() const;
 	bool GetUsedIllusion() const;
