@@ -2,10 +2,8 @@
 
 Player::Player(std::string_view playerColor) : m_playerColor{ playerColor }, m_illusionUsage{ false } {}
 Player::Player()
+	: m_playerColor{ 'R' }, m_illusionUsage{ false }
 {
-	m_playerColor = "R";
-	m_illusionUsage = false;
-	m_handCards = { 0,0 };
 }
 std::string Player::GetPlayerColor() const
 {
@@ -22,7 +20,7 @@ const std::unordered_map<int, uint16_t>& Player::GetHandCards() const
 	return m_handCards;
 }
 
-void Player::SetPlayerColor(std::string_view playerColor)
+void Player::SetPlayerColor(char playerColor)
 {
 	m_playerColor = playerColor;
 }

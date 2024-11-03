@@ -21,7 +21,7 @@ public:
 	const std::unordered_map<int, uint16_t>& GetHandCards() const;
 
 	//setters
-	void SetPlayerColor(std::string_view playerColor);
+	void SetPlayerColor(char playerColor);
 	void SetIllusionUsage(bool illusionUsage);
 	void SetHandCards(const std::unordered_map<int, uint16_t>& handCards);
 };

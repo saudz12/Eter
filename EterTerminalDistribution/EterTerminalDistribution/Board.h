@@ -10,39 +10,40 @@
 #include <deque>
 #include <cstdint>
 #include <iostream>
+#include "MinionCard.h"
 
-using cardStack = std::deque<int>;
+using cardStack = std::deque<uint16_t>;
 using line = std::deque<cardStack>;
 using resizeableMatrix = std::deque<line>;
-using lineChecker = std::deque<std::pair<int, int>>; //<R/B>
+using lineChecker = std::deque<std::pair<uint16_t, uint16_t>>; //<R/B>
 
 class Board
 {
 private:
 	resizeableMatrix m_board;
-	uint8_t m_max_size; //in privinta folosirii uint8_t mutam totul mai incolo 
+	uint16_t m_max_size; //in privinta folosirii uint8_t mutam totul mai incolo 
 	lineChecker m_rowChecker;
 	lineChecker m_colChecker;
-	uint8_t m_line_cnt; //for explosions, keep check either here or in game
+	uint16_t m_line_cnt; //for explosions, keep check either here or in game
 
-	void increaseOnColor(int, int, char);
-	int XBoundTest(int);
-	int YBoundTest(int);
-	bool posPlaceTest(int, int, int);
+	void increaseOnColor(uint16_t, uint16_t, char);
+	uint16_t XBoundTest(uint16_t);
+	uint16_t YBoundTest(uint16_t);
+	bool posPlaceTest(uint16_t, uint16_t, uint16_t);
 
 public:
 
 	Board();
 	~Board() = default;
 	
-	int getCardOnPos(int, int);
-	int setPos(int, int, int, char);
-	int removePos(int, int, int);
-	char entityWon(int, int, char);
+	uint16_t getCardOnPos(uint16_t, uint16_t);
+	uint16_t setPos(uint16_t, uint16_t, uint16_t, char);
+	uint16_t removePos(uint16_t, uint16_t, uint16_t);
+	char entityWon(uint16_t, uint16_t, char);
 
-	uint8_t getRowCount();
-	uint8_t getColCount();
-	uint8_t getMaxSize();
+	uint16_t getRowCount();
+	uint16_t getColCount();
+	uint16_t getMaxSize();
 
 	void printBoard();
 };

@@ -1,6 +1,17 @@
 #include "Board.h"
 
-void Board::increaseOnColor(int x, int y, char col)
+
+Board::Board()
+{
+	m_board.push_back(line());
+	m_board[0].push_back(cardStack());
+	m_line_cnt = 0;
+	m_max_size = 3;
+	m_rowChecker.emplace_back(0, 0);
+	m_colChecker.emplace_back(0, 0);
+}
+
+void Board::increaseOnColor(uint16_t x, uint16_t y, char col)
 {
 	if (col == 'R')
 	{
@@ -14,25 +25,13 @@ void Board::increaseOnColor(int x, int y, char col)
 	}
 }
 
-//REWRITE EVERYTHING DECIDE ON WHAT IS X AND Y
-
-Board::Board()
-{
-	m_board.push_back(line());
-	m_board[0].push_back(cardStack());
-	m_line_cnt = 0;
-	m_max_size = 3;
-	m_rowChecker.emplace_back(0, 0);
-	m_colChecker.emplace_back(0, 0);
-}
-
-int Board::getCardOnPos(int x, int y) {//-1 esec
+uint16_t Board::getCardOnPos(uint16_t x, uint16_t y) {//-1 esec
 	if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
 		return -1;
 	return m_board[x][y].back();
 }
 
-int Board::setPos(int x, int y, int val, char col) { //1 if not succesfull/invalid, 0 if ok
+uint16_t Board::setPos(uint16_t x, uint16_t y, uint16_t val, char col) { //1 if not succesfull/invalid, 0 if ok
 	const int boundCondX = XBoundTest(x);
 	const int boundCondY = YBoundTest(y);
 
@@ -90,7 +89,7 @@ int Board::setPos(int x, int y, int val, char col) { //1 if not succesfull/inval
 	return 0;
 }
 
-int Board::removePos(int x, int y, int pos) { //1 esec, 0 succes
+uint16_t Board::removePos(uint16_t x, uint16_t y, uint16_t pos) { //1 esec, 0 succes
 	if (XBoundTest(x) != INSIDE_BOUND || YBoundTest(y) != INSIDE_BOUND)
 		return 1;
 	if (pos == 0)
@@ -103,7 +102,7 @@ int Board::removePos(int x, int y, int pos) { //1 esec, 0 succes
 	return 0;
 }
 
-char Board::entityWon(int x, int y, char col) //0 inseamna ca momentan e egal
+char Board::entityWon(uint16_t x, uint16_t y, char col) //0 inseamna ca momentan e egal
 {
 	if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
 		return 0;
@@ -118,17 +117,17 @@ char Board::entityWon(int x, int y, char col) //0 inseamna ca momentan e egal
 	return 0;
 }
 
-uint8_t Board::getRowCount()
+uint16_t Board::getRowCount()
 {
-	return uint8_t(m_rowChecker.size());
+	return uint16_t(m_rowChecker.size());
 }
 
-uint8_t Board::getColCount()
+uint16_t Board::getColCount()
 {
-	return uint8_t(m_colChecker.size());
+	return uint16_t(m_colChecker.size());
 }
 
-uint8_t Board::getMaxSize()
+uint16_t Board::getMaxSize()
 {
 	return this->m_max_size;
 }
@@ -137,7 +136,7 @@ void Board::printBoard()
 {
 	std::cout << "R\\B ";
 	for (int i = 0; i < getColCount(); i++)
-		std::cout << m_colChecker[i].first << "|" << m_colChecker[i].second << " ";
+		std::cout << int(m_colChecker[i].first) << "|" << m_colChecker[i].second << " ";
 	for (int i = 0; i < getRowCount(); i++) {
 		std::cout << "\n" << m_rowChecker[i].first << "|" << m_rowChecker[i].second << " ";
 		for (int j = 0; j < getColCount(); j++)
@@ -148,7 +147,7 @@ void Board::printBoard()
 	}
 }
 
-int Board::XBoundTest(int x)//0 inside, -1 left margin, 1 right margin, 2 outside
+uint16_t Board::XBoundTest(uint16_t x)//0 inside, -1 left margin, 1 right margin, 2 outside
 {
 	if (x >= 0 && x < getRowCount()) return INSIDE_BOUND;
 
@@ -159,7 +158,7 @@ int Board::XBoundTest(int x)//0 inside, -1 left margin, 1 right margin, 2 outsid
 	return OUTSIDE_BOUND;
 }
 
-int Board::YBoundTest(int y)//0 inside, -1 top margin, 1 buttom margin, 2 outside
+uint16_t Board::YBoundTest(uint16_t y)//0 inside, -1 top margin, 1 buttom margin, 2 outside
 {
 	if (y >= 0 && y < getColCount()) return INSIDE_BOUND;
 
@@ -170,7 +169,7 @@ int Board::YBoundTest(int y)//0 inside, -1 top margin, 1 buttom margin, 2 outsid
 	return OUTSIDE_BOUND;
 }
 
-bool Board::posPlaceTest(int x, int y, int val)
+bool Board::posPlaceTest(uint16_t x, uint16_t y, uint16_t val)
 {
 	if (m_board[x][y].empty())
 		return true;
