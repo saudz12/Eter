@@ -26,13 +26,15 @@ private:
 	lineChecker m_colChecker;
 	score m_firstDiag;
 	score m_seconDiag;
+	bool reached_max_size();
 
 	uint16_t m_line_cnt; //for explosions, keep check either here or in game
 
-	void increaseOnColor(uint16_t, uint16_t, char);
+	void increaseOnColorSides(uint16_t, uint16_t, char);
+	void increaseOnColorDiagonal(uint16_t, uint16_t, char);
 	int16_t XBoundTest(int16_t);
 	int16_t YBoundTest(int16_t);
-	bool posPlaceTest(int16_t, int16_t, MinionCard);
+	bool posPlaceTest(int16_t, int16_t, uint16_t);
 
 	void addLineToLeft();
 	void addLineToRight();

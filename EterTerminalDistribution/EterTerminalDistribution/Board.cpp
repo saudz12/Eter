@@ -10,50 +10,71 @@ Board::Board()
 	m_colChecker.emplace_back(0, 0);
 }
 
-void Board::increaseOnColor(uint16_t x, uint16_t y, char col)
+bool Board::reached_max_size()
 {
-	if (m_board[x][y].empty()) {
-		if (col == 'R') {
-			m_rowChecker[x].first++;
-			m_colChecker[y].first++;
-			if (x == y) {
-				m_firstDiag.first++;
-			}
-			if (x + y == m_max_size) {
-				m_seconDiag.first++;
-			}
-		}
-		else {
-			m_rowChecker[x].second++;
-			m_colChecker[y].second++;
-			if (x == y) {
-				m_firstDiag.second++;
-			}
-			if (x + y == m_max_size) {
-				m_seconDiag.second++;
-			}
-		}
+	return getColCount() == m_max_size && getRowCount() == m_max_size;
+}
 
-		return;
-	}
-	if (col == 'R' && m_board[x][y].back().GetColor() == 'B') {
+void Board::increaseOnColorSides(uint16_t x, uint16_t y, char col)
+{
+	if (col == 'R') {
+		if (!m_board[x][y].empty())
+			if (m_board[x][y].back().GetColor() == 'B') {
+				m_rowChecker[x].second--;
+				m_colChecker[y].second--;
+			}
+			else
+				return;
 		m_rowChecker[x].first++;
 		m_colChecker[y].first++;
-		m_rowChecker[x].second--;
-		m_colChecker[y].second--;
+	}
+	else {
+		if (!m_board[x][y].empty())
+			if (m_board[x][y].back().GetColor() == 'R') {
+				m_rowChecker[x].first--;
+				m_colChecker[y].first--;
+			}
+			else
+				return;
+		m_rowChecker[x].second++;
+		m_colChecker[y].second++;
+	}
+}
+
+void Board::increaseOnColorDiagonal(uint16_t x, uint16_t y, char col)
+{
+	if (col == 'R') {
+		if (!m_board[x][y].empty())
+			if (m_board[x][y].back().GetColor() == 'B') {
+				if (x == y) {
+					m_firstDiag.second--;
+				}
+				if (x + y == m_max_size) {
+					m_seconDiag.second--;
+				}
+			}
+			else
+				return;
 		if (x == y) {
 			m_firstDiag.first++;
 		}
 		if (x + y == m_max_size) {
 			m_seconDiag.first++;
 		}
-
 	}
-	if (m_board[x][y].back().GetColor() == 'R') {
-		m_rowChecker[x].first--;
-		m_colChecker[y].first--;
-		m_rowChecker[x].second++;
-		m_colChecker[y].second++;
+	else {
+		if (!m_board.empty()) {
+			if (m_board[x][y].back().GetColor() == 'B') {
+				if (x == y) {
+					m_firstDiag.first--;
+				}
+				if (x + y == m_max_size) {
+					m_seconDiag.first--;
+				}
+			}
+			else
+				return;
+		}
 		if (x == y) {
 			m_firstDiag.second++;
 		}
@@ -61,7 +82,6 @@ void Board::increaseOnColor(uint16_t x, uint16_t y, char col)
 			m_seconDiag.second++;
 		}
 	}
-	return;
 }
 
 MinionCard Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
@@ -78,9 +98,8 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) { //1 if not
 		return -1;
 
 	if (boundCondX == INSIDE_BOUND && boundCondY == INSIDE_BOUND) {
-		if (posPlaceTest(x, y, { val,col })) {
-			if (getColCount() == 1 && getRowCount() == 1 && m_board[x][y].empty())
-				increaseOnColor(x, y, col);
+		if (posPlaceTest(x, y, val)) {
+			increaseOnColorSides(x, y, col);
 			m_board[x][y].push_back({ val,col });
 			return 0;
 		}
@@ -94,16 +113,16 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) { //1 if not
 			y = 0;
 			addLineOnTop();
 			addLineToLeft();
+			increaseOnColorSides(x, y, col);
 			m_board[x][y].push_back({ val,col });
-			increaseOnColor(x, y, col);
 
 			return 0;
 		}
 		if (boundCondX == BOTTOM_BOUND && boundCondY == RIGHT_BOUND) {
 			addLineOnBottom();
 			addLineToRight();
+			increaseOnColorSides(x, y, col);
 			m_board[x][y].push_back({ val,col });
-			increaseOnColor(x, y, col);
 
 			return 0;
 		}
@@ -111,8 +130,8 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) { //1 if not
 			x = 0;
 			addLineOnTop();
 			addLineToRight();
+			increaseOnColorSides(x, y, col);
 			m_board[x][y].push_back({ val,col });
-			increaseOnColor(x, y, col);
 
 			return 0;
 		}
@@ -120,33 +139,41 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) { //1 if not
 			y = 0;
 			addLineOnBottom();
 			addLineToLeft();
+			increaseOnColorSides(x, y, col);
 			m_board[x][y].push_back({ val,col });
-			increaseOnColor(x, y, col);
 
 			return 0;
 		}
 		if (boundCondX == TOP_BOUND) {
 			x = 0;
 			addLineOnTop();
-			increaseOnColor(x, y, col);
+			increaseOnColorSides(x, y, col);
 		}
 
 		if (boundCondY == LEFT_BOUND) {
 			y = 0;
 			addLineToLeft();
-			increaseOnColor(x, y, col);
+			increaseOnColorSides(x, y, col);
 		}
 
 		if (boundCondX == BOTTOM_BOUND) {
 			addLineOnBottom();
-			increaseOnColor(x, y, col);
+			increaseOnColorSides(x, y, col);
 		}
 
 		if (boundCondY == RIGHT_BOUND) {
 			addLineToRight();
-			increaseOnColor(x, y, col);
+			increaseOnColorSides(x, y, col);
 		}
+	}
 
+	if (reached_max_size() && x == y && x + y == m_max_size - 1)
+		increaseOnColorDiagonal(x, y, col);
+	else {
+		m_firstDiag.first = 0;
+		m_firstDiag.second = 0;
+		m_seconDiag.first = 0;
+		m_seconDiag.second = 0;
 	}
 
 	m_board[x][y].push_back({ val, col });
@@ -234,11 +261,11 @@ int16_t Board::YBoundTest(int16_t y)//0 inside, -1 top margin, 1 buttom margin, 
 	return OUTSIDE_BOUND;
 }
 
-bool Board::posPlaceTest(int16_t x, int16_t y, MinionCard val) //x si y unde punem si MinionCard.m_value
+bool Board::posPlaceTest(int16_t x, int16_t y, uint16_t val) //x si y unde punem si MinionCard.m_value
 {
 	if (m_board[x][y].empty())
 		return true;
-	if (val > *m_board[x][y].rbegin())
+	if (val > m_board[x][y].back().GetValue())
 		return true;
 	return false;
 }
