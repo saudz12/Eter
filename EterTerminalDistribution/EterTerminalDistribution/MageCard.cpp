@@ -21,6 +21,32 @@ bool MageCard::GetIsActiveFace() const
 	return m_isActiveFace;
 }
 
+void MageCard::SetActionCard(ActionCard card, uint16_t whichCard)
+{
+	switch (whichCard)
+	{
+		case 1:
+			m_mageType = { ActionCard::FireMage1,ActionCard::FireMage2 };
+			break;
+		case 2:
+			m_mageType = { ActionCard::EarthMage1,ActionCard::EarthMage2 };
+			break;
+		case 3:
+			m_mageType = { ActionCard::AirMage1,ActionCard::AirMage2 };
+			break;
+		case 4: 
+			m_mageType= { ActionCard::WaterMage1,ActionCard::WaterMage2 };
+			break;
+		default:
+			break;
+	}
+}
+
+void MageCard::SetActionCard(ActionCard actionCard1, ActionCard actionCard2)
+{
+	m_mageType = {actionCard1,actionCard2};
+}
+
 void MageCard::SetCardType(CardType type)
 {
 	m_cardType = type;
