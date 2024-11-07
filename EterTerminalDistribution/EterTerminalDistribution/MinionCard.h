@@ -1,9 +1,5 @@
 #pragma once
 #include "Card.h"
-#include <string>
-#include <cstdint>
-#include <iostream>
-#include <string_view>
 
 class MinionCard : public Card
 {
@@ -43,11 +39,13 @@ namespace std
 	{
 		size_t operator()(const MinionCard& card) const
 		{
-			size_t h1 = std::hash<uint16_t>()(card.GetValue());
+			/*size_t h1 = std::hash<uint16_t>()(card.GetValue());
 			size_t h2 = std::hash<char>()(card.GetColor());
 			size_t h3 = std::hash<bool>()(card.GetIsEterCard());
 
-			return h1 ^ (h2 < 1) ^ (h3 < 2);
+			return h1 ^ (h2 < 1) ^ (h3 < 2);*/
+
+			return std::hash<uint16_t>()(card.GetValue());
 		}
 	};
 }

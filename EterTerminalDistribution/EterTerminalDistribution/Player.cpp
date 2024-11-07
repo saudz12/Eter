@@ -1,18 +1,9 @@
 #include "Player.h"
 
-Player::Player(char playerColor) 
+Player::Player(char playerColor = 'R')
 	: m_playerColor{ playerColor }, m_illusionUsage{ false } 
 {
-}
-
-Player::Player()
-	: m_playerColor{ 'R' }, m_illusionUsage{ false }
-{
-}
-
-Player::~Player()
-{
-	m_lastMinionCardPlayed = nullptr;
+	generateTrainingModeHand();
 }
 
 char Player::GetPlayerColor() const
@@ -25,14 +16,9 @@ bool Player::GetUsedIllusion() const
 	return m_illusionUsage;
 }
 
-const std::unordered_map<MinionCard, uint16_t>& Player::GetHandCards() const
+const hand& Player::GetHandCards() const
 {
 	return m_handCards;
-}
-
-MinionCard* Player::GetLastMinionCardPlayed() const
-{
-	return m_lastMinionCardPlayed;
 }
 
 void Player::SetPlayerColor(char playerColor)
@@ -45,14 +31,25 @@ void Player::SetIllusionUsage(bool illusionUsage)
 	m_illusionUsage = illusionUsage;
 }
 
-void Player::SetHandCards(const std::unordered_map<MinionCard, uint16_t>& handCards)
+void Player::SetHandCards(const hand& handCards)
 {
 	m_handCards = handCards;
 }
 
-void Player::SetLastMinionCardPlayed(MinionCard* cardPlayed)
+//1 if unsucessfull, 0 updates was completed
+int Player::UpdateCard(int value, int cnt)
 {
-	m_lastMinionCardPlayed = cardPlayed;
+	//bounds
+	if (value < 1 && value > 4 || cnt != 1 && cnt != -1)
+		return 1;
+	//change if found
+	MinionCard toUpdate(value, m_playerColor);
+	if (m_handCards.find(toUpdate) == m_handCards.end())
+		return 1;
+	m_handCards[toUpdate] += cnt;
+	if (m_handCards[toUpdate] == 0)
+		m_handCards.erase(toUpdate);
+	return 0;
 }
 
 void Player::generateTrainingModeHand()
@@ -63,12 +60,22 @@ void Player::generateTrainingModeHand()
 	MinionCard combatCard3(3, m_playerColor);
 	MinionCard combatCard4(4, m_playerColor);
 
-	//add the minions card in hand with their respective amount
-	m_handCards[combatCard1] = 2; //2 of the combatCard1
-	m_handCards[combatCard2] = 2;
-	m_handCards[combatCard3] = 2;
-	m_handCards[combatCard4] = 1;
+	m_handCards.emplace(combatCard1, 2);
+	m_handCards.emplace(combatCard2, 2);
+	m_handCards.emplace(combatCard3, 2);
+	m_handCards.emplace(combatCard4, 1);
 }
+
+MinionCard* Player::GetLastMinionCardPlayed() const
+{
+	return m_lastMinionCardPlayed;
+}
+
+void Player::SetLastMinionCardPlayed(MinionCard* cardPlayed)
+{
+	m_lastMinionCardPlayed = cardPlayed;
+}
+
 
 bool Player::placeMinionCardFromHand(MinionCard& card)
 {
@@ -86,7 +93,10 @@ bool Player::placeMinionCardFromHand(MinionCard& card)
 
 void Player::returnMinionCardToHand(const MinionCard& card)
 {
-	m_handCards[card]++;
+	if (m_handCards.find(card) != m_handCards.end())
+		m_handCards[card]++;
+	else
+		m_handCards.emplace(card, 1);
 }
 
 void Player::returnLastMinionCardToHand()
