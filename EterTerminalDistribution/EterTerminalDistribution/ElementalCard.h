@@ -1,21 +1,27 @@
 #pragma once
 #include "Card.h"
 #include "ActionType.h"
-#include "unordered_map"
+
+using ElementalCardType= std::pair<ActionCard, void*>;
+
 class ElementalCard : public Card
 {
 private:
-	ActionCard m_elementType;
+	ElementalCardType m_elementType;
+
 public:
 	//constructors
 	ElementalCard();
-	ElementalCard(ActionCard);
+	ElementalCard(ElementalCardType&);
 
 	//getters
-	CardType GetCardType() const ;
 	ActionCard GetActionCard() const;
+	CardType GetCardType() const ;
+	ElementalCardType GetElementalCardType() const;
 
 	//setters
-	void SetCardType(CardType);
 	void SetActionCard(ActionCard);
+	void SetCardType(CardType);
+	void SetElementalCardType(ElementalCardType);
+	
 };
