@@ -2,25 +2,26 @@
 #include "Card.h"
 #include "ActionType.h"
 #include <cstdint>
-using MageType = std::pair<ActionCard, ActionCard>;
+
+//used for calling the functions
+using MageCardType = std::pair<ActionCard,void*>;
 
 class MageCard : public Card
 {
 private:
-	MageType m_mageType;
+	MageCardType m_mageType;
 	bool m_isActiveFace;
 public:
-	MageCard(MageType Type,bool activeFace);
-	
+	MageCard(MageCardType Type,bool activeFace);
+
 	CardType GetCardType() const;
-	MageType GetMageType() const;
+	MageCardType GetMageType() const;
 	bool GetIsActiveFace() const;
 
-	void SetActionCard(ActionCard, uint16_t);
-	void SetActionCard(ActionCard, ActionCard);
+	void SetActionCard(ActionCard);
 
 	void SetCardType(CardType type);
-	void SetMageType(MageType mage);
+	void SetMageType(MageCardType mage);
 	void SetIsActiveFace(bool isActiveFace);
 };
 
