@@ -288,6 +288,16 @@ uint16_t Board::getMaxSize()
 	return this->m_max_size;
 }
 
+resizeableMatrix Board::getMatrix()
+{
+	return resizeableMatrix();
+}
+
+void Board::setMatrix(const resizeableMatrix& matrix)
+{
+	m_board = matrix;
+}
+
 bool Board::isBoardFilled()
 {
 	if (!isMatMaxSize())

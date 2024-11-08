@@ -3,7 +3,7 @@
 #include "unordered_map"
 #include "MinionCard.h"
 #include "Board.h"
-
+#include "Player.h"
 using handCard = std::unordered_map<MinionCard, uint16_t>;
 using position = std::pair<uint16_t, uint16_t>;
 
@@ -11,10 +11,10 @@ using position = std::pair<uint16_t, uint16_t>;
 void funcControlledExplosion(Board&,ExplosionCard&);
 
 //implement in player last card played
-void funcDestruction(Board&);
+void funcDestruction(Board&, Player&);
 
 //first 2 uint16_t for revealing Illusion and the next for placing Card
-void funcFlame(Board&,uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2);
+void funcFlame(Board&,uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2,MinionCard& CardToBePlaced);
 
 //player Red,player Blue
 void funcFire(Board&,handCard&,handCard&);
@@ -24,7 +24,7 @@ void funcAsh(Board&,uint16_t,uint16_t);
 
 void funcSpark(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
 
-void funcSquall(Board&,handCard&,uint16_t,uint16_t);
+void funcSquall(Board&,Player&,uint16_t,uint16_t);
 
 void funcGale(Board&,handCard&);
 

@@ -1,4 +1,7 @@
+
 #include "functionsElementalCards.h"
+
+//to note it may be more efficient to make m_board member public in Board class to not copy the contents of the matrix every time we modify it 
 
 // maybe generate new ExplosionCard
 void funcControlledExplosion(Board& board, ExplosionCard& explCard)
@@ -6,18 +9,34 @@ void funcControlledExplosion(Board& board, ExplosionCard& explCard)
 }
 
 // implement in player last card played
-void funcDestruction(Board& board)
+void funcDestruction(Board& board,Player& player)
 {
+	MinionCard* toberemoved = player.GetLastMinionCardPlayed();
+	resizeableMatrix matrix = board.getMatrix();
+	for (int i = 0;i < board.getRowCount();i++)
+		for (int j = 0;j < board.getColCount();j++)
+			if (&matrix[i][j].front() == toberemoved) {
+				matrix[i][j].pop_front();
+				break;
+			}
+	player.returnLastMinionCardToHand();
+	board.setMatrix(matrix);
 }
 
 // first 2 uint16_t for revealing Illusion and the next for placing Card
-void funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+void funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,MinionCard& CardToBePlaced)
 {
+	resizeableMatrix matrix = board.getMatrix();
+	matrix[x1][y1].front().SetIsIllusionCard(false);
+	matrix[x2][y2].push_front(CardToBePlaced);
+	board.setMatrix(matrix); 
+
 }
 
 // player Red, player Blue
 void funcFire(Board& board,handCard& cardsPl1, handCard& cardsPl2)
 {
+	//faci asta
 }
 
 // maybe also keep all the removed cards in unordered set
@@ -29,8 +48,13 @@ void funcSpark(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
 }
 
-void funcSquall(Board& board, handCard& cards, uint16_t x, uint16_t y)
+void funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 {
+	resizeableMatrix matrix = board.getMatrix();
+	hand Cards = player.GetHandCards();
+	Cards.emplace(matrix[x][y].front());
+	matrix[x][y].pop_front();
+
 }
 
 void funcGale(Board& board, handCard& cards)

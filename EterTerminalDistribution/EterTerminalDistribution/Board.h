@@ -62,6 +62,8 @@ public:
 	uint16_t getRowCount();
 	uint16_t getColCount();
 	uint16_t getMaxSize();
+	resizeableMatrix getMatrix();
+	void setMatrix(const resizeableMatrix& matrix);
 
 	bool isBoardFilled();
 	bool isBoardEmpty();
