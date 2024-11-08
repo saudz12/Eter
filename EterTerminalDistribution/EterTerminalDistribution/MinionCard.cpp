@@ -25,6 +25,11 @@ bool MinionCard::GetIsIllusionCard() const
     return m_isIllusionCard;
 }
 
+bool MinionCard::GetMarker() const
+{
+    return m_marker;
+}
+
 CardType MinionCard::GetCardType() const
 {
     return m_cardType;
@@ -53,6 +58,11 @@ void MinionCard::SetIsIllusionCard(bool isIllusionCard)
 void MinionCard::SetCardType(CardType type)
 {
     m_cardType = type;
+}
+
+void MinionCard::SetMarker(bool isMarked)
+{
+    m_marker = isMarked;
 }
 
 bool MinionCard::operator>(const MinionCard& card)

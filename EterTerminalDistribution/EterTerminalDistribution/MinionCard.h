@@ -8,6 +8,7 @@ private:
 	char m_color;
 	bool m_isEterCard;
 	bool m_isIllusionCard;
+	bool m_marker;
 public:
 	MinionCard(uint16_t value, char color);
 
@@ -21,6 +22,7 @@ public:
 	char GetColor() const;
 	bool GetIsEterCard() const;
 	bool GetIsIllusionCard() const;
+	bool GetMarker() const;
 	CardType GetCardType() const override;
 
 	//setters
@@ -29,6 +31,7 @@ public:
 	void SetIsEterCard(bool isEterCard);
 	void SetIsIllusionCard(bool isIllusionCard);
 	void SetCardType(CardType type) override;
+	void SetMarker(bool isMarked);
 
 };
 
