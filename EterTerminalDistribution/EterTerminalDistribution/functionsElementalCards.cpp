@@ -77,6 +77,10 @@ void funcMirage(Board& board, handCard& cards, uint16_t x1, uint16_t y1)
 // remove stack of cards
 void funcStorm(Board& board, uint16_t x, uint16_t y)
 {
+	resizeableMatrix matrix = board.getMatrix();
+	while (!matrix[x][y].empty())
+		matrix[x][y].pop_front();
+	board.setMatrix(matrix);
 }
 
 // swap cards or stack of cards
@@ -87,11 +91,25 @@ void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 // play again an illusion (cannot have 2 illusions at the same time)
 void funcMist(Board& board, uint16_t x, uint16_t y)
 {
+
 }
 
 // move a card/stack to an empty adjacent space and place new card in the empty space created
-void funcWave(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+void funcWave(Board& board, uint16_t x1, uint16_t y1,MinionCard newCard)
 {
+	resizeableMatrix matrix = board.getMatrix();
+	for(int i=-1;i<2;i++)
+		for(int j=-1;j<2;j++)
+		if (!matrix[x1+i][y1+j].empty()) 
+		{
+			while (!matrix[x1][y1].empty())
+			{
+				matrix[x1+i][y1+j].push_back(matrix[x1][y1].front());
+			}
+			matrix[x1][y1].push_front(newCard);
+			break;
+		}
+	board.setMatrix(matrix);
 }
 
 // move 2 cards separated by empty space into the empty space and place them as stacks
@@ -107,6 +125,7 @@ void funcBlizzard(line& line)
 // stack the cards of the row/column on top of each other
 void funcWaterfall(line& line)
 {
+
 }
 
 // increase value of a card by one, marker also placed on the card (tournament mode)
@@ -160,8 +179,14 @@ void funcAvalanche(Board& board, uint16_t x1 , uint16_t y1, uint16_t x2, uint16_
 }
 
 //cover a illusion with a card
-void funcRock(Board& board, uint16_t x, uint16_t y)
+void funcRock(Board& board, uint16_t x, uint16_t y,MinionCard& Card)
 {
+	resizeableMatrix matrix = board.getMatrix();
+	if (!matrix[x][y].front().GetIsIllusionCard())
+	{
+		std::cout << "Chosen card is not an illusion, choose an illusion card. \n.";
+	}
+	matrix[x][y].push_front(Card);
 }
 
 void funcDefault()

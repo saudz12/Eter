@@ -47,7 +47,7 @@ void funcTide(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
 void funcMist(Board&, uint16_t, uint16_t);
 
 //move a card/stack to empty adj space and place new card to the empty space created
-void funcWave(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
+void funcWave(Board&, uint16_t, uint16_t,MinionCard);
 
 //move 2 card separated by empty space into the empty space and place them as stacks 
 void funcWhirlpool(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
@@ -74,7 +74,7 @@ void funcBorder(Board&, uint16_t, uint16_t);
 void funcAvalanche(Board&, uint16_t, uint16_t, uint16_t, uint16_t,char direction);
 
 //cover a illusion with a card
-void funcRock(Board&,uint16_t,uint16_t);
+void funcRock(Board&,uint16_t,uint16_t,MinionCard&);
 
 void funcDefault();
 
