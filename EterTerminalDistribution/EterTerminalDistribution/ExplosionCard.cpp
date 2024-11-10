@@ -1,14 +1,63 @@
 #include "ExplosionCard.h"
 #include "Card.h"
+#include <random>
 
-ExplosionCard::ExplosionCard(const explMatrix& Matrix) : Card{CardType::ExplosionCard}
+std::pair<uint16_t, uint16_t> ExplosionCard::GeneratePositionInMatrix(uint16_t size)
 {
-	this->m_explosionMatrix = Matrix;
+	std::random_device rd; 
+	std::mt19937 gen(rd()); 
+	std::uniform_int_distribution<> distr(0, size-1); 
+	uint16_t i, j;
+	do
+	{
+		i = distr(gen);
+		j = distr(gen);
+	} while (m_explosionMap.find({i,j})!=m_explosionMap.end());
+	return { i,j };
 }
 
-explMatrix ExplosionCard::GetExplosionMatrix() const
+ReturnRemoveOrHoleCard ExplosionCard::GenerateEffect()
 {
-	return this->m_explosionMatrix;
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> distr(1, 100);
+	//1-49 return 
+	//50-98 remove
+	//99-100 hole
+	uint16_t chanceForCard = distr(gen);
+	if (chanceForCard >= 1 && chanceForCard <= 49)
+		return ReturnRemoveOrHoleCard::ReturnCard;
+	else if (chanceForCard >= 50 && chanceForCard <= 98)
+		return ReturnRemoveOrHoleCard::RemoveCard;
+	return ReturnRemoveOrHoleCard::HoleCard;
+}
+
+ExplosionCard::ExplosionCard(const explMap& Matrix) : Card{CardType::ExplosionCard}
+{
+	this->m_explosionMap = Matrix;
+}
+
+ExplosionCard::ExplosionCard(uint16_t size):Card{ CardType::ExplosionCard }
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> distr;
+	if (size == 3)
+		distr = std::uniform_int_distribution(2, 4);
+	else if (size == 4)
+		distr = std::uniform_int_distribution(3, 6);
+	uint16_t numberOfEffects = distr(gen);
+	for(int i = 0; i < numberOfEffects; ++i)
+	{
+		std::pair<uint16_t, uint16_t> pos = GeneratePositionInMatrix(size);
+		ReturnRemoveOrHoleCard effect=GenerateEffect();
+		m_explosionMap[pos] = effect;
+	}
+}
+
+explMap ExplosionCard::GetExplosionMap() const
+{
+	return this->m_explosionMap;
 }
 
 CardType ExplosionCard::GetCardType() const
@@ -16,9 +65,9 @@ CardType ExplosionCard::GetCardType() const
 	return m_cardType;
 }
 
-void ExplosionCard::SetExplosionMatrix(const explMatrix& Matrix)
+void ExplosionCard::SetExplosionMap(const explMap& Map)
 {
-	this->m_explosionMatrix = Matrix;
+	this->m_explosionMap = Map;
 }
 
 void ExplosionCard::SetCardType(CardType type)
@@ -26,15 +75,24 @@ void ExplosionCard::SetCardType(CardType type)
 	m_cardType = type;
 }
 
-void ExplosionCard::RotateToRight()
+void ExplosionCard::RotateToRight(uint16_t size)
 {
-	explMatrix auxMatrix{ this->m_explosionMatrix };
-	for (int i = 0; i < m_explosionMatrix.size(); ++i)
+	std::unordered_map<std::pair<uint16_t, uint16_t>, ReturnRemoveOrHoleCard,PairHash> newMap;
+	for (const auto& effect : m_explosionMap)
 	{
-		for (int j = 0; j < m_explosionMatrix[i].size(); ++j)
-		{
-			this->m_explosionMatrix[j][this->m_explosionMatrix.size() - i - 1] = auxMatrix[i][j];
-		}
+		uint16_t i, j;
+		i = effect.first.second;
+		j = size - 1 - effect.first.first;
+		newMap[{i, j}] = effect.second;
+	}
+	m_explosionMap = newMap;
+}
+
+void ExplosionCard::showExpl()
+{
+	for (const auto& effect : m_explosionMap)
+	{
+		std::cout << effect.first.first << " " << effect.first.second << "\n";
 	}
 }
 
