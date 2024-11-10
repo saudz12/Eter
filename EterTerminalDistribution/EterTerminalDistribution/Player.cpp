@@ -21,6 +21,11 @@ const hand& Player::GetHandCards() const
 	return m_handCards;
 }
 
+const hand& Player::GetRemovedCards() const
+{
+	return m_removedCards;
+}
+
 void Player::SetPlayerColor(char playerColor)
 {
 	m_playerColor = playerColor;
@@ -102,4 +107,27 @@ void Player::returnMinionCardToHand(const MinionCard& card)
 void Player::returnLastMinionCardToHand()
 {
 	m_handCards[(*m_lastMinionCardPlayed)]++;
+}
+
+void Player::addToRemovedCards(const MinionCard& card)
+{
+	if (m_removedCards.find(card) != m_removedCards.end())
+		m_removedCards[card]++;
+	else
+		m_removedCards.emplace(card, 1);
+}
+
+bool Player::placeMinionCardFromRemovedCard(const MinionCard& card)
+{
+	bool placed = false;
+	if (m_removedCards.find(card) != m_removedCards.end() && m_removedCards[card] > 0)
+	{
+		m_removedCards[card]--;
+		placed = true;
+	}
+	
+	if (m_removedCards[card] == 0)
+		m_removedCards.erase(card);
+
+	return placed;
 }

@@ -36,7 +36,7 @@ void funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
 //still need to implement if this move is valid or not
 void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 {
-	uint16_t cardCount = 0;
+	uint16_t cardCount = 0; //at least 2 card for elemental power to work
 	std::vector<std::tuple<MinionCard, int, int>> returningCards; //minion card on top, x and y coordonates
 	resizeableMatrix matrix = board.getMatrix();
 	for (size_t i = 0; i < board.getRowCount(); i++)
@@ -77,9 +77,20 @@ void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 		}
 	}
 }
+
 // maybe also keep all the removed cards in unordered set
-void funcAsh(Board& board, uint16_t x, uint16_t y)
+void funcAsh(Board& board, Player& player, MinionCard& card, uint16_t x, uint16_t y)
 {
+	if (player.placeMinionCardFromRemovedCard(card) == true)
+	{
+		std::cout << "Successfully placed card from removed cards pool at position(" << x << ", " << y << ")\n";
+	}
+	else
+	{
+		std::cout << "Failed to place card from removed cards pool at position (" << x << " , " << y << ")\n";
+	}
+
+	board.setPos(x, y, card.GetValue(), player.GetPlayerColor());
 }
 
 void funcSpark(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
