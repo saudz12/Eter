@@ -33,9 +33,49 @@ void funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
 
 }
 
-// player Red, player Blue
-void funcFire(Board& board, handCard& cardsPl1, handCard& cardsPl2)
+//still need to implement if this move is valid or not
+void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 {
+	uint16_t cardCount = 0;
+	std::vector<std::tuple<MinionCard, int, int>> returningCards; //minion card on top, x and y coordonates
+	resizeableMatrix matrix = board.getMatrix();
+	for (size_t i = 0; i < board.getRowCount(); i++)
+	{
+		for (size_t j = 0; j < board.getColCount(); j++)
+		{
+			MinionCard cardOnPos = board.getCardOnPos(i, j);
+			if (cardOnPos.GetValue() == value)
+			{
+				cardCount++;
+				returningCards.push_back({ cardOnPos, i, j });
+			}
+		}
+	}
+
+	if (cardCount < 2)
+	{
+		std::cout << "Not enough cards on board with chosen value\n";
+		return;
+	}
+
+	for (size_t i = 0; i < returningCards.size(); i++)
+	{
+		MinionCard card = std::get<0>(returningCards[i]);
+		int xCoordonate = std::get<1>(returningCards[i]);
+		int yCoordonate = std::get<2>(returningCards[i]);
+		if (board.removePos(xCoordonate, yCoordonate, matrix[xCoordonate][yCoordonate].size()) == 1)
+			std::cout << "Failed to remove card at position (" << xCoordonate << " , " << yCoordonate << ")\n";
+		else
+			std::cout << "Successfully removed card at position(" << xCoordonate << ", " << yCoordonate << ")\n";
+		if (card.GetColor() == player1.GetPlayerColor()) //checking which player is getting his card returned to hand
+		{
+			player1.returnMinionCardToHand(card);
+		}
+		else
+		{
+			player2.returnMinionCardToHand(card);
+		}
+	}
 }
 // maybe also keep all the removed cards in unordered set
 void funcAsh(Board& board, uint16_t x, uint16_t y)

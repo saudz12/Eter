@@ -17,10 +17,10 @@ void funcDestruction(Board&, Player&);
 void funcFlame(Board&,uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2,MinionCard& CardToBePlaced);
 
 //player Red,player Blue
-void funcFire(Board&,handCard&,handCard&);
+void funcFire(Board&, Player&, Player&, uint16_t value);
 
 //maybe also keep all the removed cards in unordered set
-void funcAsh(Board&,uint16_t,uint16_t);
+void funcAsh(Board&, uint16_t, uint16_t);
 
 void funcSpark(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
 
