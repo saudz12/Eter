@@ -7,13 +7,7 @@
 #define INSIDE_BOUND 0
 #define OUTSIDE_BOUND 2
 
-#include "MinionCard.h"
-
-using cardStack = std::deque<MinionCard>; //minioncard here
-using line = std::deque<cardStack>;
-using resizeableMatrix = std::deque<line>;
-using score = std::pair <uint16_t, uint16_t>; //<R/B>
-using lineChecker = std::deque<score>;
+#include "Player.h"
 
 class Board
 {
@@ -30,29 +24,42 @@ private:
 	//for explosions, keep check either here or in game
 	uint16_t m_lineCnt;
 
+	//score counter on each line
 	void increaseOnColorSides(uint16_t x, uint16_t y, char col);
 	void increaseOnColorColumn(uint16_t x, uint16_t y, char col);
 	void increaseOnColorRow(uint16_t x, uint16_t y, char col);
 	void increaseOnColorDiagonal(uint16_t x, uint16_t y, char col);
-	void increaseOnColorFirstDiagonal(uint16_t x, uint16_t y, char col);
-	void increaseOnColorSeconDiagonal(uint16_t x, uint16_t y, char col);
+	void increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, char col);
 
+	//check position to board bounds
 	int16_t XBoundTest(int16_t x);
 	int16_t YBoundTest(int16_t y);
 
+	//other check
 	bool posPlaceTest(int16_t x, int16_t y, uint16_t val);
 	bool isMatMaxSize();
 
+	//add lines to border
 	void addLineToLeft();
 	void addLineToRight();
 	void addLineOnTop();
 	void addLineOnBottom();
+
+	//will be changed if you can remove from middle
+	bool removeLineToLeft(uint16_t y);
+	bool removeLineToRight(uint16_t y);
+	bool removeLineOnTop(uint16_t x);
+	bool removeLineOnBottom(uint16_t x);
+
+	//other interactions
 
 public:
 
 	Board();
 	~Board() = default;
 
+	//Update board
+	//only checks it. to modify it it needs to return a reference. do the check somewhere beforehand to get modifyable card
 	MinionCard getCardOnPos(int16_t x, int16_t y);
 	//1 if not succesfull/invalid, 0 if ok
 	int16_t setPos(int16_t x, int16_t y, uint16_t val, char col);
@@ -62,7 +69,7 @@ public:
 	uint16_t getRowCount();
 	uint16_t getColCount();
 	uint16_t getMaxSize();
-	resizeableMatrix getMatrix();
+	resizeableMatrix& getMatrix();
 	void setMatrix(const resizeableMatrix& matrix);
 
 	bool isBoardFilled();

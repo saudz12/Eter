@@ -57,6 +57,18 @@ int Player::UpdateCard(int value, int cnt)
 	return 0;
 }
 
+void Player::updateCover(uint16_t x, uint16_t y, covered& coveredCardSet, resizeableMatrix& board)
+{
+	if (board[x][y].size() == 1)
+		return;
+
+	int pos = board[x][y].size() - 2;
+	MinionCard& lastPlaced = board[x][y].back();
+	MinionCard& coveredCard = board[x][y][pos];
+	if (lastPlaced.GetColor() != coveredCard.GetColor())
+		coveredCardSet.emplace(x, y, pos);
+}
+
 void Player::generateTrainingModeHand()
 {
 	//creating minion cards with their value and color
@@ -74,6 +86,11 @@ void Player::generateTrainingModeHand()
 MinionCard* Player::GetLastMinionCardPlayed() const
 {
 	return m_lastMinionCardPlayed;
+}
+
+covered& Player::getCovered()
+{
+	return this->m_coveredCardSet;
 }
 
 void Player::SetLastMinionCardPlayed(MinionCard* cardPlayed)

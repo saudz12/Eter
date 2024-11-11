@@ -15,8 +15,7 @@ bool Board::isMatMaxSize()
 	return getColCount() == m_max_size && getRowCount() == m_max_size;
 }
 
-
-
+//update 
 void Board::increaseOnColorSides(uint16_t x, uint16_t y, char col)
 {
 	if (col == 'R') {
@@ -97,8 +96,7 @@ void Board::increaseOnColorRow(uint16_t x, uint16_t y, char col)
 void Board::increaseOnColorDiagonal(uint16_t x, uint16_t y, char col)
 {
 	if (m_reachedMaxSize) {
-		increaseOnColorFirstDiagonal(x, y, col);
-		increaseOnColorSeconDiagonal(x, y, col);
+		increaseOnColorDiagonalNoResize(x, y, col);
 		return;
 	}
 
@@ -144,14 +142,14 @@ void Board::increaseOnColorDiagonal(uint16_t x, uint16_t y, char col)
 	}
 }
 
-void Board::increaseOnColorFirstDiagonal(uint16_t x, uint16_t y, char col)
+void Board::increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, char col)
 {
 	if (col == 'R') {
 		if (m_board[x][y].empty()) {
 			if (x == y) {
 				m_firstDiag.first++;
 			}
-			if (x + y == m_max_size) {
+			if (x + y == m_max_size - 1) {
 				m_seconDiag.first++;
 			}
 			return;
@@ -161,7 +159,7 @@ void Board::increaseOnColorFirstDiagonal(uint16_t x, uint16_t y, char col)
 				m_firstDiag.first++;
 				m_firstDiag.second--;
 			}
-			if (x + y == m_max_size) {
+			if (x + y == m_max_size - 1) {
 				m_seconDiag.first++;
 				m_seconDiag.second--;
 			}
@@ -188,10 +186,6 @@ void Board::increaseOnColorFirstDiagonal(uint16_t x, uint16_t y, char col)
 			}
 		}
 	}
-}
-
-void Board::increaseOnColorSeconDiagonal(uint16_t x, uint16_t y, char col)
-{
 }
 
 MinionCard Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
@@ -288,9 +282,9 @@ uint16_t Board::getMaxSize()
 	return this->m_max_size;
 }
 
-resizeableMatrix Board::getMatrix()
+resizeableMatrix& Board::getMatrix()
 {
-	return resizeableMatrix();
+	return this->m_board;
 }
 
 void Board::setMatrix(const resizeableMatrix& matrix)
@@ -310,6 +304,7 @@ bool Board::isBoardFilled()
 	return true;
 }
 
+//true if it is, false if not
 bool Board::isBoardEmpty()
 {
 	return getColCount() == 1 && getRowCount() == 1 && m_board[0][0].empty();
@@ -404,4 +399,39 @@ void Board::addLineOnBottom()
 {
 	m_board.push_back(line(getColCount()));
 	m_rowChecker.emplace_back(0, 0);
+}
+
+//returns 1 if you cannot delete that 
+bool Board::removeLineToLeft(uint16_t y)
+{
+	if (y < 0 || y > getColCount() - 1 || isBoardEmpty())
+		return 1;
+	for (int i = 0; i < getRowCount(); i++)
+		m_board[i].pop_front();
+	return 0;
+}
+
+bool Board::removeLineToRight(uint16_t y)
+{
+	if (y < 0 || y > getColCount() - 1 || isBoardEmpty())
+		return 1;
+	for (int i = 0; i < getRowCount(); i++)
+		m_board[i].pop_back();
+	return 0;
+}
+
+bool Board::removeLineOnTop(uint16_t x)
+{
+	if (x < 0 || x > getRowCount() - 1 || isBoardEmpty())
+		return 1;
+	m_board.pop_front();
+	return 0;
+}
+
+bool Board::removeLineOnBottom(uint16_t x)
+{
+	if (x < 0 || x > getRowCount() - 1 || isBoardEmpty())
+		return 1;
+	m_board.pop_front();
+	return 0;
 }

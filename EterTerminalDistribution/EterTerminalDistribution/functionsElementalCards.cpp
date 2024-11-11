@@ -4,8 +4,9 @@
 //to note it may be more efficient to make m_board member public in Board class to not copy the contents of the matrix every time we modify it 
 
 // maybe generate new ExplosionCard
-void funcControlledExplosion(Board& board, ExplosionCard& explCard)
+void funcControlledExplosion(resizeableMatrix& board, ExplosionCard& explCard)
 {
+	
 }
 
 // implement in player last card played
@@ -99,11 +100,11 @@ void funcSpark(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 
 void funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 {
-	resizeableMatrix matrix = board.getMatrix();
+	/*resizeableMatrix matrix = board.getMatrix();
 	hand Cards = player.GetHandCards();
 	Cards.emplace(matrix[x][y].front());
 	matrix[x][y].pop_front();
-	player.SetHandCards(Cards);
+	player.SetHandCards(Cards);*/
 }
 
 void funcGale(Board& board, handCard& cards)

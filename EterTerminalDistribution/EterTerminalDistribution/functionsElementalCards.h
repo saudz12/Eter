@@ -5,10 +5,10 @@
 #include "Board.h"
 #include "Player.h"
 using handCard = std::unordered_map<MinionCard, uint16_t>;
-using position = std::pair<uint16_t, uint16_t>;
+//using position = std::pair<uint16_t, uint16_t>;
 
 //maybe generate new ExplosionCard
-void funcControlledExplosion(Board&,ExplosionCard&);
+void funcControlledExplosion(resizeableMatrix&, ExplosionCard&);
 
 //implement in player last card played
 void funcDestruction(Board&, Player&);

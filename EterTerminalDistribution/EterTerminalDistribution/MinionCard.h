@@ -1,6 +1,18 @@
 #pragma once
 #include "Card.h"
 
+using position = std::tuple< uint16_t, uint16_t, uint16_t>;
+
+struct hashPosition {
+	size_t operator()(const position& toHash) const {
+		int x = std::get<0>(toHash);
+		int y = std::get<1>(toHash);
+		int pos = std::get<2>(toHash);
+
+		return std::hash<int>()(x) ^ std::hash<int>()(y) ^ std::hash<int>()(pos);
+	}
+};
+
 class MinionCard : public Card
 {
 private:

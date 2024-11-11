@@ -1,6 +1,25 @@
-#include "Player.h"
 #include "Board.h"
 #include "ConsolePrints.h"
+
+//Later add support for excat type
+void checkCoveredCards(const covered& coveredCardSet) {
+    if (coveredCardSet.size() == 0) {
+        std::cout << "You have no covered cards.\n";
+        return;
+    }
+    std::cout << "Cards on position {x, y, pos_in_stack}:\n";
+    for (auto& i : coveredCardSet) {
+        std::cout << "{" << std::get<0>(i) << ", " << std::get<1>(i) << ": " << std::get<2>(i) << "}\n";
+    }
+}
+
+void checkStack(const cardStack& stackToCheck) {
+    std::cout << "Bottom: (";
+    for (auto& i : stackToCheck) {
+        std::cout << i << ", ";
+    }
+    std::cout << ")";
+}
 
 int main() //for now we implement training mode here, later we will move it to a function
 {
@@ -32,7 +51,7 @@ int main() //for now we implement training mode here, later we will move it to a
             currHand = p2->GetHandCards();
 
         ///menu
-        std::cout << "\nOPTIONS:\n1. Place a card\n2. Show Hand\n3. Help\n";
+        std::cout << "\nOPTIONS:\n1. Place a card\n2. Show Hand\n3. Show Covered\n4. Check Stack\n5. Help\n";
         std::cin >> options;
         switch (options)
         {
@@ -58,9 +77,11 @@ int main() //for now we implement training mode here, later we will move it to a
             }
             if (curr_col == 'R') {
                 p1->UpdateCard(val, -1);
+                p1->updateCover(x, y, p2->getCovered(), b->getMatrix());
             }
             else {
                 p2->UpdateCard(val, -1);
+                p2->updateCover(x, y, p1->getCovered(), b->getMatrix());
             }
 
             wasPlaced = 1;
@@ -78,6 +99,27 @@ int main() //for now we implement training mode here, later we will move it to a
             break;
         }
         case 3: {
+            if (curr_col == 'R')
+                checkCoveredCards(p1->getCovered());
+            else
+                checkCoveredCards(p2->getCovered());
+            system("pause");
+            break;
+        }
+        case 4: {
+            std::cout << "Check stack on position: ";
+            uint16_t x, y;
+            std::cin >> x >> y;
+            if (x < 0 || x >= b->getRowCount() || y < 0 || y >= b->getColCount()) {
+                std::cout << "\nThat is not a valid position!\n";
+                system("pause");
+                break;
+            }
+            checkStack(b->getMatrix()[x][y]);
+            system("pause");
+            break;
+        }
+        case 5: {
             helpOption();
             system("pause");
             break;
@@ -222,3 +264,5 @@ int main() //for now we implement training mode here, later we will move it to a
     //}
 
 }
+
+
