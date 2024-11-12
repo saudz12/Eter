@@ -20,7 +20,7 @@ void funcFlame(Board&,uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2,MinionCard
 void funcFire(Board&, Player&, Player&, uint16_t value);
 
 //maybe also keep all the removed cards in unordered set
-void funcAsh(Board&, Player&, MinionCard&, uint16_t, uint16_t);
+void funcAsh(Board&, Player&, uint16_t, uint16_t, uint16_t);
 
 void funcSpark(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
 
@@ -56,7 +56,7 @@ void funcWhirlpool(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
 void funcBlizzard(line&);
 
 //stack the cards of the row/column on thop of each other
-void funcWaterfall(line&);
+void funcWaterfall(Board&, uint16_t);
 
 //increase value of a card by one, marker also place on the card(tournament mode)
 void funcSupport(Board&,uint16_t, uint16_t);

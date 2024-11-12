@@ -1,5 +1,5 @@
-
 #include "functionsElementalCards.h"
+#include <stack>
 
 //to note it may be more efficient to make m_board member public in Board class to not copy the contents of the matrix every time we modify it 
 
@@ -34,7 +34,7 @@ void funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
 
 }
 
-//still need to implement if this move is valid or not
+//this function still needs a way to check whether or not the move is valid
 void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 {
 	uint16_t cardCount = 0; //at least 2 card for elemental power to work
@@ -64,7 +64,7 @@ void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 		MinionCard card = std::get<0>(returningCards[i]);
 		int xCoordonate = std::get<1>(returningCards[i]);
 		int yCoordonate = std::get<2>(returningCards[i]);
-		if (board.removePos(xCoordonate, yCoordonate, matrix[xCoordonate][yCoordonate].size()) == 1)
+		if (board.removePos(xCoordonate, yCoordonate, matrix[xCoordonate][yCoordonate].size() - 1) == 1)
 			std::cout << "Failed to remove card at position (" << xCoordonate << " , " << yCoordonate << ")\n";
 		else
 			std::cout << "Successfully removed card at position(" << xCoordonate << ", " << yCoordonate << ")\n";
@@ -79,19 +79,17 @@ void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 	}
 }
 
-// maybe also keep all the removed cards in unordered set
-void funcAsh(Board& board, Player& player, MinionCard& card, uint16_t x, uint16_t y)
+void funcAsh(Board& board, Player& player, uint16_t value, uint16_t x, uint16_t y)
 {
-	if (player.placeMinionCardFromRemovedCard(card) == true)
+	if (player.placeMinionCardFromRemovedCard(value) == true)
 	{
 		std::cout << "Successfully placed card from removed cards pool at position(" << x << ", " << y << ")\n";
+		board.setPos(x, y, value, player.GetPlayerColor());
 	}
 	else
 	{
 		std::cout << "Failed to place card from removed cards pool at position (" << x << " , " << y << ")\n";
 	}
-
-	board.setPos(x, y, card.GetValue(), player.GetPlayerColor());
 }
 
 void funcSpark(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
@@ -174,10 +172,59 @@ void funcBlizzard(line& line)
 {
 }
 
-// stack the cards of the row/column on top of each other
-void funcWaterfall(line& line)
+//still needs validation 
+void funcWaterfall(Board& board, uint16_t columnIndex)
 {
+	if (columnIndex > board.getColCount() || columnIndex < 0)
+	{
+		std::cout << "Chosen column doesn't exit\n";
+		return;
+	}
 
+	resizeableMatrix matrix = board.getMatrix();
+	uint16_t condition = 0; //the final stack of cards must have at least 3 cards
+
+	std::stack<MinionCard> cards;
+
+	for (size_t i = 0; i < board.getRowCount(); i++)
+	{
+		if (!matrix[i][columnIndex].empty())
+		{
+			condition += matrix[i][columnIndex].size();
+			std::deque<MinionCard> cardsCopy = matrix[i][columnIndex];
+			while (!cardsCopy.empty())
+			{
+				cards.push(cardsCopy.back());
+				cardsCopy.pop_back();
+			}
+		}
+	}
+
+	if (condition < 3)
+	{
+		std::cout << "There must be at least 3 cards in this column for this elemental power card to work\n";
+		return;
+	}
+	else
+	{
+		for (size_t i = 0; i < board.getRowCount(); i++)
+		{
+				board.removeStack(i, columnIndex);
+		}
+		while (!cards.empty())
+		{
+			if (board.setPosWaterfall(board.getRowCount() - 1, columnIndex, cards.top().GetValue(), cards.top().GetColor()) == 0)
+			{
+				std::cout << "card placed successfully on " << board.getRowCount() - 1 << " " << columnIndex << '\n';
+			}
+			else
+			{
+				std::cout << "failed to place card on " << board.getRowCount() - 1 << " " << columnIndex << '\n';
+			}
+			cards.pop();
+		}
+		std::cout << "Waterfall used successfully on column " << columnIndex << "\n";
+	}
 }
 
 // increase value of a card by one, marker also placed on the card (tournament mode)

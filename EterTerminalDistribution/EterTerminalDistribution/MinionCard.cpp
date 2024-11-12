@@ -83,6 +83,16 @@ bool MinionCard::operator==(const MinionCard& card) const
     return true;
 }
 
+MinionCard& MinionCard::operator=(const MinionCard& card)
+{
+    m_value = card.m_value;
+    m_color = card.m_color;
+    m_isEterCard = card.m_isEterCard;
+    m_isIllusionCard = card.m_isIllusionCard;
+    m_marker = card.m_marker;
+    return *this;
+}
+
 std::ostream& operator<<(std::ostream& out, const MinionCard& card)
 {
     out << card.m_value << ":" <<card.m_color;

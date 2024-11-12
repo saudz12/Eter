@@ -54,7 +54,7 @@ public:
 	void returnLastMinionCardToHand(); //returns last played minion card to hand
 
 	void addToRemovedCards(const MinionCard& card);
-	bool placeMinionCardFromRemovedCard(const MinionCard& card); //returns true if card was found in removedCards, false otherwise
+	bool placeMinionCardFromRemovedCard(uint16_t value); //returns true if card was found in removedCards, false otherwise
 };
 
 //namespace std

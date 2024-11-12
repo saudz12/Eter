@@ -134,17 +134,16 @@ void Player::addToRemovedCards(const MinionCard& card)
 		m_removedCards.emplace(card, 1);
 }
 
-bool Player::placeMinionCardFromRemovedCard(const MinionCard& card)
+bool Player::placeMinionCardFromRemovedCard(uint16_t value)
 {
 	bool placed = false;
-	if (m_removedCards.find(card) != m_removedCards.end() && m_removedCards[card] > 0)
+	for (auto& card : m_removedCards)
 	{
-		m_removedCards[card]--;
-		placed = true;
+		if (card.first.GetValue() == value && card.second > 0)
+		{
+			m_removedCards[card.first]--;
+			placed = true;
+		}
 	}
-	
-	if (m_removedCards[card] == 0)
-		m_removedCards.erase(card);
-
 	return placed;
 }

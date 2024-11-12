@@ -191,6 +191,8 @@ void Board::increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, char col)
 MinionCard Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
 	if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
 		return MinionCard{ 0,'\0' };
+	if (m_board[x][y].empty())
+		return MinionCard{ 0,'\0' };
 	return m_board[x][y].back();
 }
 
@@ -237,9 +239,15 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) {
 	return 0;
 }
 
+int16_t Board::setPosWaterfall(int16_t x, int16_t y, uint16_t val, char col)
+{
+	m_board[x][y].push_back({ val, col });
+	return 0;
+}
+
 //1 esec, 0 succes
 int16_t Board::removePos(int16_t x, int16_t y, uint16_t pos) {
-	if (XBoundTest(x) != INSIDE_BOUND || YBoundTest(y) != INSIDE_BOUND)
+	/*if (XBoundTest(x) != INSIDE_BOUND || YBoundTest(y) != INSIDE_BOUND)
 		return 1;
 	if (pos == 0)
 		m_board[x][y].pop_front();
@@ -248,7 +256,22 @@ int16_t Board::removePos(int16_t x, int16_t y, uint16_t pos) {
 	else
 		m_board[x][y].erase(m_board[x][y].begin() + pos);
 
+	return 0;*/
+
+	if (XBoundTest(x) != INSIDE_BOUND || YBoundTest(y) != INSIDE_BOUND)
+		return 1;
+	m_board[x][y].pop_back();
 	return 0;
+}
+
+int16_t Board::removeStack(int16_t x, int16_t y)
+{
+	if (!m_board[x][y].empty())
+	{
+		m_board[x][y].clear();
+		return 0;
+	}
+	return 1;
 }
 
 //0 inseamna ca momentan e egal

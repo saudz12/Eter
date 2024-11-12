@@ -1,5 +1,6 @@
 #include "Board.h"
 #include "ConsolePrints.h"
+#include "functionsElementalCards.h"
 
 //Later add support for excat type
 void checkCoveredCards(const covered& coveredCardSet) {
@@ -37,6 +38,7 @@ int main() //for now we implement training mode here, later we will move it to a
     int rounds = 3;
     int options = 0;
     hand currHand;
+    hand removedCardsHand;
     
     while (rounds) {
         //get current player data
@@ -46,12 +48,21 @@ int main() //for now we implement training mode here, later we will move it to a
         curr_col = ok?'R':'B';
         playerTurn(ok);
         if (curr_col == 'R')
+        {
             currHand = p1->GetHandCards();
+            removedCardsHand = p1->GetRemovedCards();
+            MinionCard card(1, 'R');
+            p1->addToRemovedCards(card);
+        }
         else
+        {
             currHand = p2->GetHandCards();
+            removedCardsHand = p2->GetRemovedCards();
+
+        }
 
         ///menu
-        std::cout << "\nOPTIONS:\n1. Place a card\n2. Show Hand\n3. Show Covered\n4. Check Stack\n5. Help\n";
+        std::cout << "\nOPTIONS:\n1. Place a card\n2. Show Hand\n3. Show Covered\n4. Check Stack\n5. Use Elemental Power\n6. Help\n";
         std::cin >> options;
         switch (options)
         {
@@ -119,7 +130,51 @@ int main() //for now we implement training mode here, later we will move it to a
             system("pause");
             break;
         }
-        case 5: {
+        case 5:
+        {
+            std::cout << "\nELEMENTAL CARDS:\n1. Fire\n2. Ash\n3. Waterfall\n";
+            int card;
+            std::cin >> card;
+            switch (card)
+            {
+            case 1:
+            {
+                std::cout << "\nChoose a value\n";
+                int value;
+                std::cin >> value;
+                funcFire((*b), (*p1), (*p2), value);
+                break;
+            }
+            case 2:
+            {
+                if (removedCardsHand.empty())
+                {
+                    std::cout << "\nYou have no removed cards\n";
+                    break;
+                }
+                std::cout << "\nYour Removed Cards:\n";
+                for (auto& i : removedCardsHand) {
+                    std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << "Left\n";
+                }
+                std::cout << "\nWhich card and where: ";
+                std::cin >> val >> x >> y;
+                if (curr_col == 'R')
+                    funcAsh((*b), (*p1), val, x, y);
+                else
+                    funcAsh((*b), (*p2), val, x, y);
+                break;
+            }
+            case 3:
+            {
+                std::cout << "\nChoose a column\n";
+                int columnIndex;
+                std::cin >> columnIndex;
+                funcWaterfall((*b), columnIndex);
+                break;
+            }
+            }
+        }
+        case 6: {
             helpOption();
             system("pause");
             break;

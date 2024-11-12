@@ -28,6 +28,7 @@ public:
 	friend std::ostream& operator<<(std::ostream &out,const MinionCard &card);
 	bool operator>(const MinionCard& card);
 	bool operator==(const MinionCard& card) const;
+	MinionCard& operator=(const MinionCard& card);
 	
 	//getters
 	uint16_t GetValue() const;
