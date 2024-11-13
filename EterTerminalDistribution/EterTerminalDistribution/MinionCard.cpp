@@ -35,6 +35,11 @@ CardType MinionCard::GetCardType() const
     return m_cardType;
 }
 
+char MinionCard::GetBelongsTo() const
+{
+    return m_belongsTo;
+}
+
 void MinionCard::SetValue(uint16_t value) 
 {
     m_value = value;
@@ -63,6 +68,11 @@ void MinionCard::SetCardType(CardType type)
 void MinionCard::SetMarker(bool isMarked)
 {
     m_marker = isMarked;
+}
+
+void MinionCard::SetBelongsTo(char belongsTo)
+{
+    m_belongsTo = belongsTo;
 }
 
 bool MinionCard::operator>(const MinionCard& card)

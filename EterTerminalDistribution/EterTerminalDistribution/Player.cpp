@@ -21,6 +21,11 @@ const hand& Player::GetHandCards() const
 	return m_handCards;
 }
 
+hand& Player::GetHandCards()
+{
+	return m_handCards;
+}
+
 const hand& Player::GetRemovedCards() const
 {
 	return m_removedCards;
@@ -103,6 +108,7 @@ bool Player::placeMinionCardFromHand(MinionCard& card)
 {
 	if (m_handCards.at(card) != 0)
 	{
+		card.SetBelongsTo(m_playerColor);
 		m_handCards[card]--;
 		m_lastMinionCardPlayed = &card;
 		return true;

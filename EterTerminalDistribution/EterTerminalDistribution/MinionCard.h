@@ -21,6 +21,7 @@ private:
 	bool m_isEterCard;
 	bool m_isIllusionCard;
 	bool m_marker;
+	char m_belongsTo;
 public:
 	MinionCard(uint16_t value, char color);
 
@@ -37,6 +38,7 @@ public:
 	bool GetIsIllusionCard() const;
 	bool GetMarker() const;
 	CardType GetCardType() const override;
+	char GetBelongsTo() const;
 
 	//setters
 	void SetValue(uint16_t value);
@@ -45,7 +47,7 @@ public:
 	void SetIsIllusionCard(bool isIllusionCard);
 	void SetCardType(CardType type) override;
 	void SetMarker(bool isMarked);
-
+	void SetBelongsTo(char belongsTo);
 };
 
 namespace std

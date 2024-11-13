@@ -34,6 +34,7 @@ public:
 	char GetPlayerColor() const;
 	bool GetUsedIllusion() const;
 	const hand& GetHandCards() const;
+	hand& GetHandCards();
 	const hand& GetRemovedCards() const;
 	MinionCard* GetLastMinionCardPlayed() const;
 	covered& getCovered();

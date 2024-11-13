@@ -105,8 +105,25 @@ void funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 	player.SetHandCards(Cards);*/
 }
 
-void funcGale(Board& board, handCard& cards)
+void funcGale(Board& board, handCard& cardsPlRed,handCard& cardsPlBlue)
 {
+	resizeableMatrix matrix = board.getMatrix();
+	for (size_t i = 0; i < board.getRowCount(); ++i)
+	{
+		for (size_t j = 0; j < board.getColCount(); ++j)
+		{
+			while (matrix[i][j].size() >= 2)
+			{
+				MinionCard topCard = matrix[i][j].back();
+				matrix[i][j].pop_back();
+				if (topCard.GetBelongsTo() == 'R')
+					cardsPlRed.insert({ topCard, 1 });
+				else
+					cardsPlBlue.insert({ topCard,1 });
+			}
+		}
+	}
+	board.setMatrix(matrix);
 }
 
 // modify board, handcard if modified
@@ -117,6 +134,27 @@ void funcHurricane(Board& board, handCard& cards)
 // move card one position to another
 void funcGust(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
+	/*
+	int x1, y1, x2, y2;
+                std::cout << "from (x1,y1):";
+                std::cin >> x1 >> y1;
+                std::cout << "to (x2,y2):";
+                std::cin >> x2 >> y2;
+                funcGust(*b, x1, y1, x2,y2);
+	*/
+	resizeableMatrix matrix = board.getMatrix();
+
+	if (!((x1 == x2 && std::abs(y1 - y2) == 1) || (y1 == y2) && std::abs(x1 - x2)))
+		return;
+	if (!(matrix[x1][y1].back().GetValue() > matrix[x2][y2].back().GetValue()))
+		return;
+
+	MinionCard movedCard = matrix[x1][y1].back();
+	matrix[x1][y1].pop_back();
+
+	matrix[x2][y2].push_back(movedCard);
+
+	board.setMatrix(matrix);
 }
 
 // exchange illusion card with other card

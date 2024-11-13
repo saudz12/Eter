@@ -4,6 +4,7 @@
 #include "MinionCard.h"
 #include "Board.h"
 #include "Player.h"
+
 using handCard = std::unordered_map<MinionCard, uint16_t>;
 //using position = std::pair<uint16_t, uint16_t>;
 
@@ -26,7 +27,7 @@ void funcSpark(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
 
 void funcSquall(Board&,Player&,uint16_t,uint16_t);
 
-void funcGale(Board&,handCard&);
+void funcGale(Board&,handCard&,handCard&);
 
 //modify board,handcard if modified
 void funcHurricane(Board&,handCard&);
