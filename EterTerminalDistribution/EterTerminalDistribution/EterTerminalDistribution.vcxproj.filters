@@ -45,6 +45,12 @@
     <ClCompile Include="ConsolePrints.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="functionsElementalCards.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="functionsMageCards.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h">
@@ -84,6 +90,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Includes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="funcAssociationsToCard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="functionsElementalCards.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="functionsMageCards.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveLaterToGameClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

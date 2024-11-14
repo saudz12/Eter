@@ -310,6 +310,13 @@ resizeableMatrix& Board::getMatrix()
 	return this->m_board;
 }
 
+//do position check outside of function or add new static card stack member and return it to represent nothing then check if == respective
+cardStack& Board::getStackOnPos(uint16_t x, uint16_t y)
+{
+	return m_board[x][y];
+}
+
+//MAKE DEEP COPY OR USE CLONE_MATRIX METHOD
 void Board::setMatrix(const resizeableMatrix& matrix)
 {
 	m_board = matrix;
@@ -331,6 +338,18 @@ bool Board::isBoardFilled()
 bool Board::isBoardEmpty()
 {
 	return getColCount() == 1 && getRowCount() == 1 && m_board[0][0].empty();
+}
+
+//false good, true not good - sorry
+bool Board::checkPosition(uint16_t x, uint16_t y)
+{
+	return x < 0 || x >= getRowCount() || y < 0 || y >= getColCount();
+}
+
+//false good, true not good - sorry
+bool Board::checkPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+{
+	return x1 < 0 || x1 >= getRowCount() || x2 < 0 || x2 >= getRowCount() || y1 < 0 || y1 >= getColCount() || y2 < 0 || y2 >= getColCount();
 }
 
 void Board::printBoard()
@@ -457,4 +476,20 @@ bool Board::removeLineOnBottom(uint16_t x)
 		return 1;
 	m_board.pop_front();
 	return 0;
+}
+
+void Board::cloneMatrix(const Board& from, Board& to)
+{
+	uint16_t nCols = from.m_colChecker.size();
+	uint16_t nRows = from.m_rowChecker.size();
+
+	to.m_board.resize(nRows);
+	for (int i = 0; i < nRows; i++) {
+		to.m_board[i].resize(nCols);
+		for (int j = 0; j < nCols; j++) {
+			for (auto& card : from.m_board[i][j]) {
+				to.m_board[i][j].push_back(card);
+			}
+		}
+	}
 }

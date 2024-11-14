@@ -72,11 +72,18 @@ public:
 	uint16_t getColCount();
 	uint16_t getMaxSize();
 	resizeableMatrix& getMatrix();
+	cardStack& getStackOnPos(uint16_t x, uint16_t y);
 	void setMatrix(const resizeableMatrix& matrix);
 
 	bool isBoardFilled();
 	bool isBoardEmpty();
+	//false = valid, true = not good - sorry --change them later
+	bool checkPosition(uint16_t x, uint16_t y);
+	//false = valid, true = not good - sorry
+	bool checkPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
 	void printBoard();
+
+	static void cloneMatrix(const Board& from, Board& to);
 };
 

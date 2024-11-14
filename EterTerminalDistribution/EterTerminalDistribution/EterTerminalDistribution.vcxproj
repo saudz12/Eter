@@ -157,6 +157,7 @@
     <ClInclude Include="MageCard.h" />
     <ClInclude Include="MageType.h" />
     <ClInclude Include="MinionCard.h" />
+    <ClInclude Include="MoveLaterToGameClass.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ReturnOrRemoveType.h" />
   </ItemGroup>

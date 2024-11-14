@@ -311,8 +311,46 @@ void funcBorder(Board& board, uint16_t x, uint16_t y)
 {
 }
 
+//will clean it later
+//Moves 2 stacks on the same lane by 1 square to a empty place ( -- x x -- ) --> can have ( -- -- x x ) or ( x x -- -- ) 
 void funcAvalanche(Board& board, uint16_t x1 , uint16_t y1, uint16_t x2, uint16_t y2, char direction)
 {
+	if (std::abs(y1 - y2) != 1 && x1 != x2) {
+		if (direction != 'L' && direction != 'R') {
+			std::cout << "Invalid direction.\n";
+			return;
+		}
+		if (direction == 'L'){
+			if (std::min(y1, y2) == 0) {
+				std::cout << "Invalid direction.\n";
+				return;
+			}
+			auto& destinationStack = board.getStackOnPos((y1 < y2) ? x1 : x2, std::min(y1, y2));
+			if (!destinationStack.empty()) {
+				std::cout << "Not an empty space!.\n";
+				return;
+			}
+			auto& leftStack = board.getStackOnPos((y1 < y2) ? x1 : x2, std::min(y1, y2));
+			auto& rightStack = board.getStackOnPos((y1 > y2) ? x1 : x2, std::max(y1, y2));
+			destinationStack = std::move(leftStack);
+			leftStack = std::move(rightStack);
+			rightStack = std::move(cardStack());
+
+			return;
+		}
+		if (std::max(y1, y2) == board.getColCount() - 1) {
+			std::cout << "Invalid direction.\n";
+			return;
+		}
+
+		return;
+	}
+	else if (std::abs(x1 - x2) != 1 && y1 != y2) {
+
+		return;
+	}
+	std::cout << "Stacks MUST be Adjacent.\n";
+	return;
 }
 
 //cover a illusion with a card
@@ -322,6 +360,7 @@ void funcRock(Board& board, uint16_t x, uint16_t y,MinionCard& Card)
 	if (!matrix[x][y].front().GetIsIllusionCard())
 	{
 		std::cout << "Chosen card is not an illusion, choose an illusion card. \n.";
+		return;
 	}
 	matrix[x][y].push_front(Card);
 }
