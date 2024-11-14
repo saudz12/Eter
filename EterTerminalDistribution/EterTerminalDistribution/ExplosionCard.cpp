@@ -47,12 +47,12 @@ ExplosionCard::ExplosionCard(uint16_t size):Card{ CardType::ExplosionCard }
 	else if (size == 4)
 		distr = std::uniform_int_distribution(3, 6);
 	uint16_t numberOfEffects = distr(gen);
-	for(int i = 0; i < numberOfEffects; ++i)
+	for (int i = 0; i < numberOfEffects; ++i)
 	{
 		std::pair<uint16_t, uint16_t> pos = GeneratePositionInMatrix(size);
-		ReturnRemoveOrHoleCard effect=GenerateEffect();
+		ReturnRemoveOrHoleCard effect = GenerateEffect();
 		m_explosionMap[pos] = effect;
-	}
+	}	
 }
 
 explMap ExplosionCard::GetExplosionMap() const

@@ -8,6 +8,7 @@
 #define OUTSIDE_BOUND 2
 
 #include "Player.h"
+#include "ExplosionCard.h"
 
 class Board
 {
@@ -73,7 +74,10 @@ public:
 	uint16_t getMaxSize();
 	resizeableMatrix& getMatrix();
 	cardStack& getStackOnPos(uint16_t x, uint16_t y);
+	uint16_t getLineCount();
+
 	void setMatrix(const resizeableMatrix& matrix);
+	
 
 	bool isBoardFilled();
 	bool isBoardEmpty();
@@ -85,5 +89,7 @@ public:
 	void printBoard();
 
 	static void cloneMatrix(const Board& from, Board& to);
+
+	void applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& p2);
 };
 

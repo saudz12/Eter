@@ -236,6 +236,13 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) {
 		increaseOnColorDiagonal(x, y, col);
 
 	m_board[x][y].push_back({ val, col });
+	if (m_rowChecker[x].first + m_rowChecker[x].second == m_max_size)
+		m_lineCnt++;
+	if (m_colChecker[y].first + m_colChecker[y].second == m_max_size)
+		m_lineCnt++;
+	if (m_lineCnt == 2)
+		std::cout << "#NOW YOU CAN USE THE EXPLOSION!#\n";
+
 	return 0;
 }
 
@@ -314,6 +321,11 @@ resizeableMatrix& Board::getMatrix()
 cardStack& Board::getStackOnPos(uint16_t x, uint16_t y)
 {
 	return m_board[x][y];
+}
+
+uint16_t Board::getLineCount()
+{
+	return m_lineCnt;
 }
 
 //MAKE DEEP COPY OR USE CLONE_MATRIX METHOD
@@ -491,5 +503,51 @@ void Board::cloneMatrix(const Board& from, Board& to)
 				to.m_board[i][j].push_back(card);
 			}
 		}
+	}
+}
+
+void Board::applyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1, Player& pl2)
+{
+	explMap currExlpMap = explCard.GetExplosionMap();
+	for (const auto& elem : currExlpMap)
+	{
+		auto[positionX,positionY] = elem.first;
+		ReturnRemoveOrHoleCard effect = elem.second;
+		
+		switch (effect)
+		{
+		case ReturnRemoveOrHoleCard::RemoveCard:
+			if (!m_board[positionX][positionY].empty())
+			{
+				MinionCard lastCard = m_board[positionX][positionY].back();
+				m_board[positionX][positionY].pop_back();
+			}
+			break;
+		case ReturnRemoveOrHoleCard::ReturnCard:
+			if (!m_board[positionX][positionY].empty())
+			{
+				MinionCard lastCard = m_board[positionX][positionY].back();
+				m_board[positionX][positionY].pop_back();
+				if (lastCard.GetBelongsTo() == pl1.GetPlayerColor())
+					pl1.returnMinionCardToHand(lastCard);
+				else
+					pl2.returnMinionCardToHand(lastCard);
+			}
+			break;
+		case ReturnRemoveOrHoleCard::HoleCard:
+			if (!m_board[positionX][positionY].empty())
+			{
+				while (m_board[positionX][positionY].size()>1)
+				{
+					m_board[positionX][positionY].pop_back();
+				}
+				m_board[positionX][positionY].back().SetCardType(CardType::HoleCard);
+			}
+			break;
+		case ReturnRemoveOrHoleCard::Default:
+			break;
+		default:
+			break;
+		}	
 	}
 }

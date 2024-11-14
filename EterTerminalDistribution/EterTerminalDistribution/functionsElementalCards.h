@@ -9,7 +9,7 @@ using handCard = std::unordered_map<MinionCard, uint16_t>;
 //using position = std::pair<uint16_t, uint16_t>;
 
 //maybe generate new ExplosionCard
-void funcControlledExplosion(resizeableMatrix&, ExplosionCard&);
+void funcControlledExplosion(Board&,Player&,Player&);
 
 //implement in player last card played
 void funcDestruction(Board&, Player&);
@@ -23,7 +23,7 @@ void funcFire(Board&, Player&, Player&, uint16_t value);
 //maybe also keep all the removed cards in unordered set
 void funcAsh(Board&, Player&, uint16_t, uint16_t, uint16_t);
 
-void funcSpark(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
+void funcSpark(Board&,char);
 
 void funcSquall(Board&,Player&,uint16_t,uint16_t);
 

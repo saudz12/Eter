@@ -1,12 +1,19 @@
 #include "functionsElementalCards.h"
 #include <stack>
+#include "ExplosionCard.h"
 
 //to note it may be more efficient to make m_board member public in Board class to not copy the contents of the matrix every time we modify it 
 
 // maybe generate new ExplosionCard
-void funcControlledExplosion(resizeableMatrix& board, ExplosionCard& explCard)
+void funcControlledExplosion(Board& board,Player& pl1,Player& pl2)
 {
-	
+	if (board.getRowCount() != board.getMaxSize() || board.getColCount() != board.getMaxSize())
+	{
+		std::cout << "this card cannot be placed because the board is not to it's max size";
+		return;
+	}
+	ExplosionCard explCard(board.getMaxSize());
+	board.applyExplosionOnBoard(explCard, pl1, pl2);
 }
 
 // implement in player last card played
@@ -92,8 +99,54 @@ void funcAsh(Board& board, Player& player, uint16_t value, uint16_t x, uint16_t 
 	}
 }
 
-void funcSpark(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+void funcSpark(Board& board,char plColor)
 {
+	int x1, y1, x2, y2;
+
+	std::cout << "choose a wherefrom to remove one of your cards:\n";
+	std::cin >> x1 >> y1;
+
+	std::cout << "choose a destination to place the card\n";
+	std::cin >> x2 >> y2;
+
+	uint16_t lines = board.getRowCount(), cols = board.getColCount();
+
+	if (x1<0 || x1>lines||
+		x2<0 || x2>lines ||
+		 y1<0 || y1>cols||
+		  y2<0 || y2>cols )
+			return;
+
+	resizeableMatrix matrix = board.getMatrix();
+	std::vector<std::pair<MinionCard,uint16_t>> plCards;
+
+	if (!matrix[x1][y1].empty())
+	{
+		std::cout<<"here are the cards that you can replace\n";
+		int index = 0;
+		for (size_t k = 0; k < matrix[x1][y1].size(); ++k)
+		{
+			if (matrix[x1][y1][k].GetColor() == plColor)
+			{
+				plCards.emplace_back(matrix[x1][y1][k],k);
+				std::cout << k << " .value:" << matrix[x1][y1][k] << '\n';
+			}
+		}
+		std::cout << "which card (index) would you like to take out and place on a different place?\n";
+		int chosenIndex;
+		std::cin >> chosenIndex;
+		while (!(chosenIndex >= 1 && chosenIndex < matrix[x1][y1].size()))
+		{
+			std::cout << "invalid index, try an index that belongs to the range\n";
+			std::cin >> chosenIndex;
+		}
+	
+		matrix[x1][y1].erase(matrix[x1][y1].begin()+chosenIndex );
+		matrix[x2][y2].push_back(plCards[chosenIndex-1].first);
+		board.setMatrix(matrix);
+	}
+	else
+		std::cout << "invalid position, no cards here\n";
 }
 
 void funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
