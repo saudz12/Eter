@@ -1,5 +1,6 @@
 #include "ConsolePrints.h"
-#include "MoveLaterToGameClass.h"
+#include "functionsElementalCards.h"
+#include "funcAssociationsToCard.h"
 
 //Later add support for excat type
 void checkCoveredCards(const covered& coveredCardSet) {
@@ -23,7 +24,7 @@ void checkStack(const cardStack& stackToCheck) {
 
 void checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, char curr_col, hand& currHand, hand& removedCardsHand) {
     uint16_t x, y, val;
-    std::cout << "\nELEMENTAL CARDS:\n1. Fire\n2. Ash\n3. Waterfall\n4. Squall\n";
+    std::cout << "\nELEMENTAL CARDS:\n1. Fire\n2. Ash\n3. Waterfall\n4. Avalanche\n5.Squall\n";
     int card;
     std::cin >> card;
     switch (card)
@@ -65,11 +66,24 @@ void checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, char curr_c
     }
     case 4: {
         
-        if (curr_col == 'R')
+        /*if (curr_col == 'R')
             funcSquall(*b, *p2);
         else
             funcSquall(*b, *p1);
-        break;
+        break;*/
+
+    }
+    case 5: {
+        uint16_t x, y;
+        //std::function<void(Board&, Player&, uint16_t, uint16_t)> myFunc(funcSquall);
+        std::cout << "\nWhich(by {x, y}):";
+        std::cin >> x >> y;
+        if (curr_col == 'R') {
+            funcSquall(*b, *p2, x, y);
+        }
+        else {
+            funcSquall(*b, *p1, x, y);
+        }
     }
     }
     system("pause");

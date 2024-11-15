@@ -312,6 +312,16 @@ uint16_t Board::getMaxSize()
 	return this->m_max_size;
 }
 
+lineChecker& Board::getRowCheker()
+{
+	return this->m_rowChecker;
+}
+
+lineChecker& Board::getColChecker()
+{
+	return this->m_rowChecker;
+}
+
 resizeableMatrix& Board::getMatrix()
 {
 	return this->m_board;
@@ -332,6 +342,35 @@ uint16_t Board::getLineCount()
 void Board::setMatrix(const resizeableMatrix& matrix)
 {
 	m_board = matrix;
+}
+
+void Board::updateColCheker(uint16_t y, uint16_t option)
+{
+	switch (option)
+	{
+	case RED_ADD:
+		m_colChecker[y].first++;
+		break;
+	case RED_DEC:
+		m_colChecker[y].first--;
+		break;
+	case BLUE_ADD:
+		m_colChecker[y].second++;
+		break;
+	case BLUE_DEC:
+		m_colChecker[y].second--;
+		break;
+	case RED_ADD_BLUE_DEC:
+		m_colChecker[y].first++;
+		m_colChecker[y].second--;
+		break;
+	case BLUE_ADD_RED_DEC:
+		m_colChecker[y].first--;
+		m_colChecker[y].second++;
+		break;
+	default:
+		break;
+	}
 }
 
 bool Board::isBoardFilled()
@@ -456,39 +495,44 @@ void Board::addLineOnBottom()
 }
 
 //returns 1 if you cannot delete that 
-bool Board::removeLineToLeft(uint16_t y)
+bool Board::removeLeftMargin(uint16_t y)
 {
 	if (y < 0 || y > getColCount() - 1 || isBoardEmpty())
 		return 1;
 	for (int i = 0; i < getRowCount(); i++)
 		m_board[i].pop_front();
+	m_colChecker.pop_front();
 	return 0;
 }
 
-bool Board::removeLineToRight(uint16_t y)
+bool Board::removeRightMargin(uint16_t y)
 {
 	if (y < 0 || y > getColCount() - 1 || isBoardEmpty())
 		return 1;
 	for (int i = 0; i < getRowCount(); i++)
 		m_board[i].pop_back();
+	m_colChecker.pop_back();
 	return 0;
 }
 
-bool Board::removeLineOnTop(uint16_t x)
+bool Board::removeTopMargin(uint16_t x)
 {
 	if (x < 0 || x > getRowCount() - 1 || isBoardEmpty())
 		return 1;
 	m_board.pop_front();
+	m_rowChecker.pop_front();
 	return 0;
 }
 
-bool Board::removeLineOnBottom(uint16_t x)
+bool Board::removeBottomMargin(uint16_t x)
 {
 	if (x < 0 || x > getRowCount() - 1 || isBoardEmpty())
 		return 1;
 	m_board.pop_front();
+	m_rowChecker.pop_back();
 	return 0;
 }
+
 
 void Board::cloneMatrix(const Board& from, Board& to)
 {

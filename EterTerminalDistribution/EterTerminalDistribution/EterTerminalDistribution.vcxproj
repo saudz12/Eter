@@ -139,6 +139,7 @@
     <ClCompile Include="HoleCard.cpp" />
     <ClCompile Include="MageCard.cpp" />
     <ClCompile Include="MinionCard.cpp" />
+    <ClCompile Include="MoveLaterToGameClass.cpp" />
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>

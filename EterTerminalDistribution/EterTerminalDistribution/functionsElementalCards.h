@@ -1,9 +1,6 @@
 #pragma once
 #include "ExplosionCard.h"
-#include "unordered_map"
-#include "MinionCard.h"
-#include "Board.h"
-#include "Player.h"
+#include "MoveLaterToGameClass.h"
 
 using handCard = std::unordered_map<MinionCard, uint16_t>;
 //using position = std::pair<uint16_t, uint16_t>;

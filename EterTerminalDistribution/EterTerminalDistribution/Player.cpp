@@ -153,3 +153,24 @@ bool Player::placeMinionCardFromRemovedCard(uint16_t value)
 	}
 	return placed;
 }
+
+bool Player::printCoveredCards()
+{
+	if (m_coveredCardSet.size() == 0) {
+		std::cout << "You have no covered cards..\n";
+		return false;
+	}
+	int i = 0;
+	std::cout << "Covered cards:\n";
+	for (auto& card :m_coveredCardSet) {
+		std::cout << ++i << ". " << card << "\n";
+	}
+	return true;
+}
+
+std::ostream& operator<<(std::ostream& os, const position& posTuple)
+{
+	os << "{" << std::get<0>(posTuple) << ", " << std::get<0>(posTuple) << ": " << std::get<0>(posTuple) << "}";
+
+	return os;
+}

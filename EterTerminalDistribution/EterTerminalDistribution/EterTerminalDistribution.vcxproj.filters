@@ -51,6 +51,9 @@
     <ClCompile Include="functionsMageCards.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MoveLaterToGameClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h">

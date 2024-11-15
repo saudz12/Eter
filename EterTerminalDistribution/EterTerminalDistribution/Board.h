@@ -6,6 +6,12 @@
 #define RIGHT_BOUND 1
 #define INSIDE_BOUND 0
 #define OUTSIDE_BOUND 2
+#define RED_ADD 1
+#define BLUE_ADD 2
+#define RED_ADD_BLUE_DEC 3
+#define BLUE_ADD_RED_DEC 4
+#define RED_DEC 5
+#define BLUE_DEC 6
 
 #include "Player.h"
 #include "ExplosionCard.h"
@@ -47,10 +53,10 @@ private:
 	void addLineOnBottom();
 
 	//will be changed if you can remove from middle
-	bool removeLineToLeft(uint16_t y);
-	bool removeLineToRight(uint16_t y);
-	bool removeLineOnTop(uint16_t x);
-	bool removeLineOnBottom(uint16_t x);
+	bool removeLeftMargin(uint16_t y);
+	bool removeRightMargin(uint16_t y);
+	bool removeTopMargin(uint16_t x);
+	bool removeBottomMargin(uint16_t x);
 
 	//other interactions
 
@@ -72,12 +78,16 @@ public:
 	uint16_t getRowCount();
 	uint16_t getColCount();
 	uint16_t getMaxSize();
+	lineChecker& getRowCheker();
+	lineChecker& getColChecker();
 	resizeableMatrix& getMatrix();
 	cardStack& getStackOnPos(uint16_t x, uint16_t y);
 	uint16_t getLineCount();
 
 	void setMatrix(const resizeableMatrix& matrix);
 	
+	void updateColCheker(uint16_t y, uint16_t option);
+	void updateRowChecker(uint16_t x, uint16_t option);
 
 	bool isBoardFilled();
 	bool isBoardEmpty();
