@@ -47,12 +47,13 @@ ExplosionCard::ExplosionCard(uint16_t size):Card{ CardType::ExplosionCard }
 	else if (size == 4)
 		distr = std::uniform_int_distribution(3, 6);
 	uint16_t numberOfEffects = distr(gen);
-	for (int i = 0; i < numberOfEffects; ++i)
+	for (size_t i = 0; i < numberOfEffects; ++i)
 	{
 		std::pair<uint16_t, uint16_t> pos = GeneratePositionInMatrix(size);
 		ReturnRemoveOrHoleCard effect = GenerateEffect();
 		m_explosionMap[pos] = effect;
 	}	
+	showExpl(size);
 }
 
 explMap ExplosionCard::GetExplosionMap() const
@@ -88,11 +89,34 @@ void ExplosionCard::RotateToRight(uint16_t size)
 	m_explosionMap = newMap;
 }
 
-void ExplosionCard::showExpl()
+void ExplosionCard::showExpl(size_t size)
 {
-	for (const auto& effect : m_explosionMap)
+	std::cout << "The explosion:\n";
+	for (size_t i = 0; i < size; ++i)
 	{
-		std::cout << effect.first.first << " " << effect.first.second << "\n";
+		for (size_t j = 0; j < size; ++j)
+		{
+			if (m_explosionMap.find({ i,j }) != m_explosionMap.end())
+			{
+				switch (m_explosionMap[{i,j}])
+				{
+				case ReturnRemoveOrHoleCard::ReturnCard:
+					std::cout << "Ret ";
+					break;
+				case ReturnRemoveOrHoleCard::RemoveCard:
+					std::cout << "Rem ";
+					break;
+				case ReturnRemoveOrHoleCard::HoleCard:
+					std::cout << "Hol ";
+					break;
+				default:
+					break;
+				}
+			}
+			else
+				std::cout << "--- ";
+		}
+		std::cout << '\n';
 	}
 }
 

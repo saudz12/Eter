@@ -23,7 +23,7 @@ void checkStack(const cardStack& stackToCheck) {
 
 void checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, char curr_col, hand& currHand, hand& removedCardsHand) {
     uint16_t x, y, val;
-    std::cout << "\nELEMENTAL CARDS:\n1. Fire\n2. Ash\n3. Waterfall\n4. Avalanche\n";
+    std::cout << "\nELEMENTAL CARDS:\n1. Fire\n2. Ash\n3. Waterfall\n4. Squall\n";
     int card;
     std::cin >> card;
     switch (card)
@@ -64,11 +64,11 @@ void checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, char curr_c
         break;
     }
     case 4: {
-        uint16_t x1, x2, y1, y2;
-        char dir;
-        std::cout << "\nChose 2 neighbouring(same line) stacks and direction to push: ";
-        std::cin >> x1 >> y1 >> x2 >> y2 >> dir;
-        funcAvalanche(*b, x1, y1, x2, y2, dir);
+        
+        if (curr_col == 'R')
+            funcSquall(*b, *p2);
+        else
+            funcSquall(*b, *p1);
         break;
     }
     }
@@ -115,7 +115,7 @@ int main() //for now we implement training mode here, later we will move it to a
         }
 
         ///menu
-        std::cout << "\nOPTIONS:\n1. Place a card\n2. Show Hand\n3. Show Covered\n4. Check Stack\n5. Use Elemental Power\n6. Test Isolated Spaces in Board\n7. Help\n";
+        std::cout << "\nOPTIONS:\n1. Place a card\n2. Show Hand\n3. Show Covered\n4. Check Stack\n5. Use Elemental Power\n6. Test Isolated Spaces in Board\n7. Help\n8. Use explosion card\n";
         std::cin >> options;
         switch (options)
         {
@@ -148,7 +148,7 @@ int main() //for now we implement training mode here, later we will move it to a
                 p2->updateCover(x, y, p1->getCovered(), myBoard->getMatrix());
             }
 
-            wasPlaced = 1;
+            wasPlaced = true;
             
             std::cout << "Succesfull move!\n";
             system("pause");
@@ -186,6 +186,7 @@ int main() //for now we implement training mode here, later we will move it to a
         case 5:
         {
             checkElementalCardFunction(myBoard, p1, p2, curr_col, currHand, removedCardsHand);
+            wasPlaced = true;
             break;
         }
         case 6: {
@@ -198,6 +199,44 @@ int main() //for now we implement training mode here, later we will move it to a
             system("pause");
             break;
         }
+        case 8:
+            if (myBoard->getLineCount() == 2)
+            {
+                ExplosionCard explCard(myBoard->getMaxSize());
+                
+                std::cout << "0. Don't use the explosion\n1. Use the explosion\n2. Rotate the explosion\n";
+                uint16_t explosionOption;
+                bool getOut = false;
+                std::cin >> explosionOption;
+                do
+                {
+                    switch (explosionOption)
+                    {
+                    case 0:
+                        getOut = true;
+                        break;
+                    case 1:
+                        myBoard->applyExplosionOnBoard(explCard, *p1, *p2);
+                        getOut = true;
+                        break;
+                    case 2:
+                        explCard.RotateToRight(myBoard->getMaxSize());
+                        explCard.showExpl(myBoard->getMaxSize());
+                        std::cin >> explosionOption;
+                        break;
+                    default:
+                        break;
+                    }
+                } while (getOut==false);
+                
+            }
+            else
+            {
+                wasPlaced = false;
+                std::cout << "you cannot place a explosion card right now\n";
+            }
+            system("pause");
+            break;
         default:
             break;
         }
