@@ -24,7 +24,7 @@ void checkStack(const cardStack& stackToCheck) {
 
 void checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, char curr_col, hand& currHand, hand& removedCardsHand) {
     uint16_t x, y, val;
-    std::cout << "\nELEMENTAL CARDS:\n1. Fire\n2. Ash\n3. Waterfall\n4. Avalanche\n5.Squall\n6.Hurricane\n7.Cancell elemental card\n";
+    std::cout << "\nELEMENTAL CARDS:\n1. Fire\n2. Ash\n3. Waterfall\n4. Avalanche\n5. Squall\n6. Hurricane\n7. Whirlpool\n8. Cancel elemental card\n";
     int card;
     std::cin >> card;
     switch (card)
@@ -90,6 +90,13 @@ void checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, char curr_c
         break;
     }
     case 7: {
+        uint16_t rowIndex, columnIndex;
+        std::cout << "\nChoose the coordonates for the whirlpool card:\n";
+        std::cin >> rowIndex >> columnIndex;
+        funcWhirlpool(*b, rowIndex, columnIndex);
+        break;
+    }
+    case 8: {
         return;
     }
     default: {

@@ -636,8 +636,196 @@ void funcWave(Board& board, uint16_t x1, uint16_t y1, MinionCard newCard)
 }
 
 // move 2 cards separated by empty space into the empty space and place them as stacks
-void funcWhirlpool(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 {
+	resizeableMatrix& matrix = board.getMatrix();
+
+	if (!matrix[x][y].empty())
+	{
+		std::cout << "Chosen space must be empty\n";
+		return;
+	}
+
+	if ((x < 0 || x >= board.getRowCount()) || (y < 0 || y >= board.getColCount()))
+	{
+		std::cout << "Chosen space is out of bounds\n";
+		return;
+	}
+	
+	std::cout << "Type R if you want to whirlpool the row or C if you want to whirlpool the column\n";
+	char lineType;
+	std::cin >> lineType;
+
+	if (lineType == 'R')
+	{
+		if (y - 1 < 0 || y + 1 >= board.getColCount()) //check if the adjacent spaces are out of bounds
+		{
+			std::cout << "Adjacent spaces are out of bounds\n";
+			return;
+		}
+
+		if (matrix[x][y - 1].empty() || matrix[x][y + 1].empty()) //check if the adjancent spaces are empty;
+		{
+			std::cout << "One or both of the adjacents spaces are empty\n";
+			return;
+		}
+
+		MinionCard leftCard = matrix[x][y - 1].back();
+		matrix[x][y - 1].pop_back();
+		if (leftCard.GetColor() == 'R')
+		{
+			board.updateRowChecker(x, RED_DEC);
+			board.updateColChecker(y - 1, RED_DEC);
+		}
+		else
+		{
+			board.updateRowChecker(x, BLUE_DEC);
+			board.updateColChecker(y - 1, BLUE_DEC);
+		}
+
+		MinionCard rightCard = matrix[x][y + 1].back();
+		matrix[x][y + 1].pop_back();
+		if (rightCard.GetColor() == 'R')
+		{
+			board.updateRowChecker(x, RED_DEC);
+			board.updateColChecker(y + 1, RED_DEC);
+		}
+		else
+		{
+			board.updateRowChecker(x, BLUE_DEC);
+			board.updateColChecker(y + 1, BLUE_DEC);
+		}
+
+		if (leftCard.GetValue() < rightCard.GetValue())
+		{
+			matrix[x][y].push_back(leftCard);
+			matrix[x][y].push_back(rightCard);
+		}
+		else if (leftCard.GetValue() > rightCard.GetValue())
+		{
+			matrix[x][y].push_back(rightCard);
+			matrix[x][y].push_back(leftCard);
+		}
+		else if (leftCard.GetValue() == rightCard.GetValue())
+		{
+			std::cout << "Cards are equal in value, type L if you want the left card on top, type R if you want the right card on top\n";
+			char direction;
+			std::cin >> direction;
+			if (direction == 'L')
+			{
+				matrix[x][y].push_back(rightCard);
+				matrix[x][y].push_back(leftCard);
+			}
+			else if (direction == 'R')
+			{
+				matrix[x][y].push_back(leftCard);
+				matrix[x][y].push_back(rightCard);
+			}
+			else
+			{
+				"You didn't type L or R";
+			}
+		}
+		if (matrix[x][y].back().GetColor() == 'R')
+		{
+			board.updateRowChecker(x, RED_ADD);
+			board.updateColChecker(y, RED_ADD);
+		}
+		else
+		{
+			board.updateRowChecker(x, BLUE_ADD);
+			board.updateColChecker(y, BLUE_ADD);
+		}
+	}
+	else if (lineType == 'C')
+	{
+		if (x - 1 < 0 || x + 1 >= board.getRowCount()) //check if the adjacent spaces are out of bounds
+		{
+			std::cout << "Adjacent spaces are out of bounds\n";
+			return;
+		}
+
+		if (matrix[x - 1][y].empty() || matrix[x + 1][y].empty()) //check if the adjancent spaces are empty;
+		{
+			std::cout << "One or both of the adjacents spaces are empty\n";
+			return;
+		}
+
+		MinionCard upCard = matrix[x - 1][y].back();
+		matrix[x - 1][y].pop_back();
+		if (upCard.GetColor() == 'R')
+		{
+			board.updateRowChecker(x - 1, RED_DEC);
+			board.updateColChecker(y, RED_DEC);
+		}
+		else
+		{
+			board.updateRowChecker(x - 1, BLUE_DEC);
+			board.updateColChecker(y, BLUE_DEC);
+		}
+
+		MinionCard downCard = matrix[x + 1][y].back();
+		matrix[x + 1][y].pop_back();
+		if (downCard.GetColor() == 'R')
+		{
+			board.updateRowChecker(x + 1, RED_DEC);
+			board.updateColChecker(y, RED_DEC);
+		}
+		else
+		{
+			board.updateRowChecker(x + 1, BLUE_DEC);
+			board.updateColChecker(y, BLUE_DEC);
+		}
+
+		if (upCard.GetValue() < downCard.GetValue())
+		{
+			matrix[x][y].push_back(upCard);
+			matrix[x][y].push_back(downCard);
+		}
+		else if (upCard.GetValue() > downCard.GetValue())
+		{
+			matrix[x][y].push_back(downCard);
+			matrix[x][y].push_back(upCard);
+		}
+		else if (upCard.GetValue() == downCard.GetValue())
+		{
+			std::cout << "Cards are equal in value, type U if you want the above card on top, type D if you want the below card on top\n";
+			char direction;
+			std::cin >> direction;
+			if (direction == 'U')
+			{
+				matrix[x][y].push_back(downCard);
+				matrix[x][y].push_back(upCard);
+			}
+			else if (direction == 'D')
+			{
+				matrix[x][y].push_back(upCard);
+				matrix[x][y].push_back(downCard);
+			}
+			else
+			{
+				"You didn't type U or D";
+				return;
+			}
+		}
+		if (matrix[x][y].back().GetColor() == 'R')
+		{
+			board.updateRowChecker(x, RED_ADD);
+			board.updateColChecker(y, RED_ADD);
+		}
+		else
+		{
+			board.updateRowChecker(x, BLUE_ADD);
+			board.updateColChecker(y, BLUE_ADD);
+		}
+	}
+	else
+	{
+		std::cout << "You didn't type R or C\n";
+		return;
+	}
+	board.checkForUpdates();
+	std::cout << "Whirlpool used successfully on " << x << " " << y << '\n';
 }
 
 // make the line unplayable for the next round
