@@ -312,7 +312,7 @@ uint16_t Board::getMaxSize()
 	return this->m_max_size;
 }
 
-lineChecker& Board::getRowCheker()
+lineChecker& Board::getRowChecker()
 {
 	return this->m_rowChecker;
 }
@@ -344,7 +344,7 @@ void Board::setMatrix(const resizeableMatrix& matrix)
 	m_board = matrix;
 }
 
-void Board::updateColCheker(uint16_t y, uint16_t option)
+void Board::updateColChecker(uint16_t y, uint16_t option)
 {
 	switch (option)
 	{
@@ -370,6 +370,57 @@ void Board::updateColCheker(uint16_t y, uint16_t option)
 		break;
 	default:
 		break;
+	}
+}
+
+void Board::updateRowChecker(uint16_t x, uint16_t option)
+{
+	switch (option)
+	{
+	case RED_ADD:
+		m_rowChecker[x].first++;
+		break;
+	case RED_DEC:
+		m_rowChecker[x].first--;
+		break;
+	case BLUE_ADD:
+		m_rowChecker[x].second++;
+		break;
+	case BLUE_DEC:
+		m_rowChecker[x].second--;
+		break;
+	case RED_ADD_BLUE_DEC:
+		m_rowChecker[x].first++;
+		m_rowChecker[x].second--;
+		break;
+	case BLUE_ADD_RED_DEC:
+		m_rowChecker[x].first--;
+		m_rowChecker[x].second++;
+		break;
+	default:
+		break;
+	}
+}
+
+void Board::checkForUpdates()
+{
+	if (m_colChecker[0].first + m_colChecker[0].second == 0) {
+		for (int i = 0; i < getRowCount() - 1; i++)
+			m_board[i].pop_front();
+		m_colChecker.pop_front();
+	}
+	if (m_colChecker[getColCount() - 1].first + m_colChecker[getColCount() - 1].second == 0) {
+		for (int i = 0; i < getRowCount() - 1; i++)
+			m_board[i].pop_back();
+		m_colChecker.pop_back();
+	}
+	if (m_rowChecker[0].first + m_rowChecker[0].second == 0) {
+		m_board.pop_front();
+		m_rowChecker.pop_front();
+	}
+	if (m_rowChecker[getRowCount() - 1].first + m_rowChecker[getRowCount() - 1].second == 0) {
+		m_board.pop_back();
+		m_rowChecker.pop_back();
 	}
 }
 

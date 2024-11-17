@@ -24,7 +24,7 @@ void checkStack(const cardStack& stackToCheck) {
 
 void checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, char curr_col, hand& currHand, hand& removedCardsHand) {
     uint16_t x, y, val;
-    std::cout << "\nELEMENTAL CARDS:\n1. Fire\n2. Ash\n3. Waterfall\n4. Avalanche\n5.Squall\n";
+    std::cout << "\nELEMENTAL CARDS:\n1. Fire\n2. Ash\n3. Waterfall\n4. Avalanche\n5.Squall\n6.Hurricane\n7.Cancell elemental card\n";
     int card;
     std::cin >> card;
     switch (card)
@@ -85,6 +85,16 @@ void checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, char curr_c
             funcSquall(*b, *p1, x, y);
         }
     }
+    case 6: {
+        funcHurricane(*b, p1->GetHandCards(), p2->GetHandCards());
+        break;
+    }
+    case 7: {
+        return;
+    }
+    default: {
+        break;
+    }
     }
     system("pause");
 }
@@ -106,6 +116,8 @@ int main() //for now we implement training mode here, later we will move it to a
     int options = 0;
     hand currHand;
     hand removedCardsHand;
+
+    bool elementalCardUsedTester = false;
     
     while (rounds) {
         //get current player data
@@ -186,7 +198,6 @@ int main() //for now we implement training mode here, later we will move it to a
         }
         case 4: {
             std::cout << "Check stack on position: ";
-            uint16_t x, y;
             std::cin >> x >> y;
             if (x < 0 || x >= myBoard->getRowCount() || y < 0 || y >= myBoard->getColCount()) {
                 std::cout << "\nThat is not a valid position!\n";
@@ -200,6 +211,7 @@ int main() //for now we implement training mode here, later we will move it to a
         case 5:
         {
             checkElementalCardFunction(myBoard, p1, p2, curr_col, currHand, removedCardsHand);
+            elementalCardUsedTester = true;
             wasPlaced = true;
             break;
         }
@@ -257,6 +269,10 @@ int main() //for now we implement training mode here, later we will move it to a
         if (wasPlaced) {
             wasPlaced = false;
             //check win condition
+            if (elementalCardUsedTester == true) { ///big error  - elemental cards need different check ;-;
+                elementalCardUsedTester = false;
+                continue;
+            }
             if (myBoard->entityWon(x, y, curr_col)) {
                 if (curr_col == 'R')
                     myScore.first++;
@@ -275,7 +291,7 @@ int main() //for now we implement training mode here, later we will move it to a
                 system("pause");
                 continue;
             }
-            ///Tiebreaker
+            ///Tiebreaker - uodate it
             if (myBoard->isBoardFilled() || currHand.empty()) {
                 //The other player has one more move left!
                 ok = !ok;

@@ -26,8 +26,8 @@ void funcSquall(Board&,Player&,uint16_t,uint16_t);
 
 void funcGale(Board&,handCard&,handCard&);
 
-//modify board,handcard if modified
-void funcHurricane(Board&,handCard&);
+//shit a line 1 space in its orientation. Overflowing stacks return the respective cards to the users hand
+void funcHurricane(Board&,hand&, hand&);
 
 //move card one position to antoher
 void funcGust(Board&,uint16_t,uint16_t,uint16_t,uint16_t);

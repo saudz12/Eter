@@ -226,8 +226,299 @@ void funcGale(Board& board, handCard& cardsPlRed,handCard& cardsPlBlue)
 }
 
 // modify board, handcard if modified
-void funcHurricane(Board& board, handCard& cards)
+void funcHurricane(Board& board, hand& h1, hand& h2)
 {
+	resizeableMatrix& matrix = board.getMatrix();
+
+	//--from here
+	std::string type;
+	std::cout << "\nMove Row(R) or Column(C): ";
+	std::cin >> type;
+
+	if (type != "R" && type != "C") {
+		std::cout << "Invalid Type..\n";
+		return;
+	}
+
+	uint16_t lineCnt;
+	std::cout << "\nWhich line: ";
+	std::cin >> lineCnt;
+
+	if (lineCnt < 0  && (type == "R" && lineCnt > board.getLineCount() - 1 || type == "C" && lineCnt > board.getColCount() - 1)) {
+		std::cout << "Invalid line..\n";
+		return;
+	}
+	if (type == "R") {
+		for(auto& stack : matrix[lineCnt])
+			if (stack.empty()) {
+				std::cout << "Row has empty spaces..\n";
+				return;
+			}
+	}
+	if (type == "C") {
+		for(auto& row : matrix)
+			if (row[lineCnt].empty()) {
+				std::cout << "Column has empty spaces..\n";
+				return;
+			}
+	}
+
+	std::string dir;
+	std::cout << "\nWhich direction (left(L)/right(R) for Row, up(U)/down(D) for Column): ";
+	std::cin >> dir;
+
+	if (type == "R" && dir != "L" && dir != "R" || type == "C" && dir != "U" && dir != "D") {
+		std::cout << "Ivalid direction..\n";
+		return;
+	}
+	//--to here can be moved outside of function - either a checkHurricane(input) and get input in game OR do check full in game, then pass them as parameters
+	
+	//I dont like nesting so the code looks ugly - can fix it later by request
+	//if type = row
+
+	hand& cards = h1; //like this for the moment so we have it init
+
+	if (type == "R") {
+
+		//if we shift to left
+		if (dir == "L") {
+			cardStack& firstStack = matrix[lineCnt][0];
+			
+			//update hand by card stack -- can move to function 
+			for (auto& card : firstStack) {
+				if (card.GetColor() == 'R')
+					cards = h1;
+				else
+					cards = h2;
+				if (cards.find(card) != cards.end())
+					cards[card]++;
+				else
+					cards.insert({ card, 1 });
+			}
+
+			//reset counts
+			for (int i = 0; i < board.getColCount() - 1; i++) {
+				auto& currStack = matrix[lineCnt][i];
+				auto& nextStack = matrix[lineCnt][i + 1];
+
+				//move this to a separate function - resturcture board
+				if (currStack.back().GetColor() == 'R')
+				{
+					board.updateRowChecker(lineCnt, RED_DEC);
+					board.updateColChecker(i, RED_DEC);
+				}
+				else
+				{
+					board.updateRowChecker(lineCnt, BLUE_DEC);
+					board.updateColChecker(i, BLUE_DEC);
+				}
+
+				if (nextStack.back().GetColor() == 'R')
+				{
+					board.updateRowChecker(lineCnt, RED_ADD);
+					board.updateColChecker(i, RED_ADD);
+				}
+				else
+				{
+					board.updateRowChecker(lineCnt, BLUE_ADD);
+					board.updateColChecker(i, BLUE_ADD);
+				}
+			}
+			auto& lastCard = matrix[lineCnt][0];
+			if (lastCard.back().GetColor() == 'R') {
+				board.updateRowChecker(lineCnt, RED_DEC);
+				board.updateColChecker(board.getColCount() - 1, RED_DEC);
+			}
+			else {
+				board.updateRowChecker(lineCnt, BLUE_DEC);
+				board.updateColChecker(board.getColCount() - 1, BLUE_DEC);
+			}
+
+			for (int i = 0; i <= board.getColCount() - 1; i++)
+				matrix[lineCnt][i] = std::move(matrix[lineCnt][i + 1]);
+
+			matrix[lineCnt][board.getColCount() - 1] = std::move(cardStack());
+
+			board.checkForUpdates();
+			return;
+		}
+		//we know we are shifting to right
+		cardStack& firstStack = matrix[lineCnt][board.getColCount() - 1];
+		
+		for (auto& card : firstStack) {
+			if (card.GetColor() == 'R')
+				cards = h1;
+			else
+				cards = h2;
+			if (cards.find(card) != cards.end())
+				cards[card]++;
+			else
+				cards.insert({ card, 1 });
+		}
+
+		for (int i = board.getColCount() - 1; i > 0; i--) {
+			auto& currStack = matrix[lineCnt][i];
+			auto& nextStack = matrix[lineCnt][i - 1];
+
+			//move this to a separate function - resturcture board
+			if (currStack.back().GetColor() == 'R')
+			{
+				board.updateRowChecker(lineCnt, RED_DEC);
+				board.updateColChecker(i, RED_DEC);
+			}
+			else
+			{
+				board.updateRowChecker(lineCnt, BLUE_DEC);
+				board.updateColChecker(i, BLUE_DEC);
+			}
+
+			if (nextStack.back().GetColor() == 'R')
+			{
+				board.updateRowChecker(lineCnt, RED_ADD);
+				board.updateColChecker(i, RED_ADD);
+			}
+			else
+			{
+				board.updateRowChecker(lineCnt, BLUE_ADD);
+				board.updateColChecker(i, BLUE_ADD);
+			}
+		}
+		auto& lastCard = matrix[lineCnt][0];
+		if (lastCard.back().GetColor() == 'R') {
+			board.updateColChecker(0, RED_DEC);
+			board.updateRowChecker(lineCnt, RED_DEC);
+		}
+		else {
+			board.updateColChecker(0, BLUE_DEC);
+			board.updateRowChecker(lineCnt, BLUE_DEC);
+		}
+
+		for (int i = board.getColCount() - 1; i > 0; i--)
+			matrix[lineCnt][i] = std::move(matrix[lineCnt][i - 1]);
+
+		matrix[lineCnt][0] = std::move(cardStack());
+
+		board.checkForUpdates();
+		return;
+	}
+
+	//we know we are shifting a column
+
+	if (dir == "U") {
+		cardStack& firstStack = matrix[0][lineCnt];
+		for (auto& card : firstStack) {
+			if (card.GetColor() == 'R')
+				cards = h1;
+			else
+				cards = h2;
+			if (cards.find(card) != cards.end())
+				cards[card]++;
+			else
+				cards.insert({ card, 1 });
+		}
+		for (int i = 0; i < board.getRowCount() - 1; i++) {
+			auto& currStack = matrix[i][lineCnt];
+			auto& nextStack = matrix[i + 1][lineCnt];
+
+			//move this to a separate function - resturcture board
+			if (currStack.back().GetColor() == 'R')
+			{
+				board.updateRowChecker(i, RED_DEC);
+				board.updateColChecker(lineCnt, RED_DEC);
+			}
+			else
+			{
+				board.updateRowChecker(i, BLUE_DEC);
+				board.updateColChecker(lineCnt, BLUE_DEC);
+			}
+
+			if (nextStack.back().GetColor() == 'R')
+			{
+				board.updateRowChecker(i, RED_ADD);
+				board.updateColChecker(lineCnt, RED_ADD);
+			}
+			else
+			{
+				board.updateRowChecker(i, BLUE_ADD);
+				board.updateColChecker(lineCnt, BLUE_ADD);
+			}
+		}
+		auto& lastCard = matrix[board.getRowCount() - 1][lineCnt];
+		if (lastCard.back().GetColor() == 'R') {
+			board.updateColChecker(lineCnt, RED_DEC);
+			board.updateRowChecker(board.getRowCount() - 1, RED_DEC);
+		}
+		else {
+			board.updateColChecker(lineCnt, BLUE_DEC);
+			board.updateRowChecker(board.getRowCount() - 1, BLUE_DEC);
+		}
+		
+		for (int i = 0; i < board.getRowCount() - 1; i++)
+			matrix[i][lineCnt] = std::move(matrix[i + 1][lineCnt]);
+
+		matrix[board.getRowCount() - 1][lineCnt] = std::move(cardStack());
+		
+		board.checkForUpdates();
+		return;
+	}
+
+	//only down remains
+	cardStack& firstStack = matrix[board.getRowCount() - 1][lineCnt];
+	for (auto& card : firstStack) {
+		if (card.GetColor() == 'R')
+			cards = h1;
+		else
+			cards = h2;
+		if (cards.find(card) != cards.end())
+			cards[card]++;
+		else
+			cards.insert({ card, 1 });
+	}
+	for (int i = board.getRowCount() - 1; i > 0; i--) {
+		auto& currStack = matrix[i][lineCnt];
+		auto& nextStack = matrix[i - 1][lineCnt];
+
+		//move this to a separate function - resturcture board
+		if (currStack.back().GetColor() == 'R')
+		{
+			board.updateRowChecker(i, RED_DEC);
+			board.updateColChecker(lineCnt, RED_DEC);
+		}
+		else
+		{
+			board.updateRowChecker(i, BLUE_DEC);
+			board.updateColChecker(lineCnt, BLUE_DEC);
+		}
+
+		if (nextStack.back().GetColor() == 'R')
+		{
+			board.updateRowChecker(i, RED_ADD);
+			board.updateColChecker(lineCnt, RED_ADD);
+		}
+		else
+		{
+			board.updateRowChecker(i, BLUE_ADD);
+			board.updateColChecker(lineCnt, BLUE_ADD);
+		}
+	}
+	auto& lastCard = matrix[0][lineCnt];
+	if (lastCard.back().GetColor() == 'R') {
+		board.updateColChecker(lineCnt, RED_DEC);
+		board.updateRowChecker(0, RED_DEC);
+	}
+	else {
+		board.updateColChecker(lineCnt, BLUE_DEC);
+		board.updateRowChecker(0, BLUE_DEC);
+	}
+
+	for (int i = board.getRowCount() - 1; i > 0; i--)
+		matrix[i][lineCnt] = std::move(matrix[i - 1][lineCnt]);
+
+	matrix[0][lineCnt] = std::move(cardStack());
+
+	
+	board.checkForUpdates();
+	return;
 }
 
 // move card one position to another
@@ -410,40 +701,89 @@ void funcBorder(Board& board, uint16_t x, uint16_t y)
 }
 
 //will clean it later
-//Moves 2 stacks on the same lane by 1 square to a empty place ( -- x x -- ) --> can have ( -- -- x x ) or ( x x -- -- ) 
+//Moves 2 stacks on the same lane by 1 square to a empty place ( - x x - ) --> can have ( - - x x ) or ( x x - - ).
 void funcAvalanche(Board& board, uint16_t x1 , uint16_t y1, uint16_t x2, uint16_t y2, char direction)
 {
-	if (std::abs(y1 - y2) != 1 && x1 != x2) {
+	if (std::abs(y1 - y2) != 1 && x1 == x2) { //horizontal - side to side in the sime row
 		if (direction != 'L' && direction != 'R') {
 			std::cout << "Invalid direction.\n";
 			return;
 		}
+		auto& leftStack = board.getStackOnPos(x1, std::min(y1, y2));
+		auto& rightStack = board.getStackOnPos(x2, std::max(y1, y2));
+		
+		//check left
 		if (direction == 'L'){
 			if (std::min(y1, y2) == 0) {
 				std::cout << "Invalid direction.\n";
 				return;
 			}
-			auto& destinationStack = board.getStackOnPos((y1 < y2) ? x1 : x2, std::min(y1, y2));
+			auto& destinationStack = board.getStackOnPos(x1, std::min(y1, y2) - 1);
 			if (!destinationStack.empty()) {
 				std::cout << "Not an empty space!.\n";
 				return;
 			}
-			auto& leftStack = board.getStackOnPos((y1 < y2) ? x1 : x2, std::min(y1, y2));
-			auto& rightStack = board.getStackOnPos((y1 > y2) ? x1 : x2, std::max(y1, y2));
 			destinationStack = std::move(leftStack);
 			leftStack = std::move(rightStack);
 			rightStack = std::move(cardStack());
 
 			return;
 		}
+
+		//now we only have right available
 		if (std::max(y1, y2) == board.getColCount() - 1) {
 			std::cout << "Invalid direction.\n";
 			return;
 		}
-
+		auto& destinationStack = board.getStackOnPos(x1, std::max(y1, y2) + 1);
+		if (!destinationStack.empty()) {
+			std::cout << "Not an empty space!.\n";
+			return;
+		}
+		destinationStack = std::move(rightStack);
+		rightStack = std::move(rightStack);
+		leftStack = std::move(cardStack());
 		return;
 	}
-	else if (std::abs(x1 - x2) != 1 && y1 != y2) {
+	else if (std::abs(x1 - x2) != 1 && y1 == y2) {//vertical - side to side in the same column
+		if (direction != 'U' && direction != 'D') {
+			std::cout << "Invalid direction.\n";
+			return;
+		}
+		auto& upperStack = board.getStackOnPos(std::min(x1, x2), y1);
+		auto& lowerStack = board.getStackOnPos(std::max(x1, x2), y2);
+
+		//check up
+		if (direction == 'U') {
+			if (std::min(x1, x2) == 0) {
+				std::cout << "Invalid direction.\n";
+				return;
+			}
+			auto& destinationStack = board.getStackOnPos(std::min(x1, x2) - 1, y1);
+			if (!destinationStack.empty()) {
+				std::cout << "Not an empty space!.\n";
+				return;
+			}
+			destinationStack = std::move(upperStack);
+			upperStack = std::move(lowerStack);
+			lowerStack = std::move(cardStack());
+
+			return;
+		}
+
+		//now we only have right available
+		if (std::min(x1, x2) == board.getRowCount() - 1) {
+			std::cout << "Invalid direction.\n";
+			return;
+		}
+		auto& destinationStack = board.getStackOnPos(std::max(x1, x2) + 1, y1);
+		if (!destinationStack.empty()) {
+			std::cout << "Not an empty space!.\n";
+			return;
+		}
+		destinationStack = std::move(lowerStack);
+		lowerStack = std::move(upperStack);
+		upperStack = std::move(cardStack());
 
 		return;
 	}

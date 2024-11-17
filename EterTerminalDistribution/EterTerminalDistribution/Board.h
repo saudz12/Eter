@@ -78,7 +78,7 @@ public:
 	uint16_t getRowCount();
 	uint16_t getColCount();
 	uint16_t getMaxSize();
-	lineChecker& getRowCheker();
+	lineChecker& getRowChecker();
 	lineChecker& getColChecker();
 	resizeableMatrix& getMatrix();
 	cardStack& getStackOnPos(uint16_t x, uint16_t y);
@@ -86,8 +86,9 @@ public:
 
 	void setMatrix(const resizeableMatrix& matrix);
 	
-	void updateColCheker(uint16_t y, uint16_t option);
+	void updateColChecker(uint16_t y, uint16_t option);
 	void updateRowChecker(uint16_t x, uint16_t option);
+	void checkForUpdates();
 
 	bool isBoardFilled();
 	bool isBoardEmpty();
