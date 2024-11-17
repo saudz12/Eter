@@ -57,7 +57,7 @@ public:
 	bool placeMinionCardFromRemovedCard(uint16_t value); //returns true if card was found in removedCards, false otherwise
 
 	//true if there are covered cards
-	bool printCoveredCards();
+	bool printCoveredCards(resizeableMatrix& matrix);
 };
 
 std::ostream& operator<<(std::ostream& os, const position& posTuple);

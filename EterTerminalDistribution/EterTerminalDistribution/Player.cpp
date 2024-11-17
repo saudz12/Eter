@@ -67,10 +67,10 @@ void Player::updateCover(uint16_t x, uint16_t y, covered& coveredCardSet, resize
 	if (board[x][y].size() == 1)
 		return;
 
-	int pos = board[x][y].size() - 2;
+	int pos = board[x][y].size() - 1;
 	MinionCard& lastPlaced = board[x][y].back();
 	MinionCard& coveredCard = board[x][y][pos];
-	if (lastPlaced.GetColor() != coveredCard.GetColor())
+	if (lastPlaced.GetColor() == coveredCard.GetColor())
 		coveredCardSet.emplace(x, y, pos);
 }
 
@@ -154,7 +154,7 @@ bool Player::placeMinionCardFromRemovedCard(uint16_t value)
 	return placed;
 }
 
-bool Player::printCoveredCards()
+bool Player::printCoveredCards(resizeableMatrix& matrix)
 {
 	if (m_coveredCardSet.size() == 0) {
 		std::cout << "You have no covered cards..\n";
@@ -163,7 +163,11 @@ bool Player::printCoveredCards()
 	int i = 0;
 	std::cout << "Covered cards:\n";
 	for (auto& card :m_coveredCardSet) {
-		std::cout << ++i << ". " << card << "\n";
+		auto [x, y, posInStack] = card;
+
+		std::cout << ++i << ". " <<"position:"<< posInStack << "," 
+			<<"color"<<matrix[x][y][posInStack].GetColor()<<","
+			<<"value"<< matrix[x][y][posInStack].GetValue() << "\n";
 	}
 	return true;
 }

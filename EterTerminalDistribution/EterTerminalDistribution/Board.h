@@ -57,7 +57,6 @@ private:
 	bool removeRightMargin(uint16_t y);
 	bool removeTopMargin(uint16_t x);
 	bool removeBottomMargin(uint16_t x);
-
 	//other interactions
 
 public:
@@ -83,6 +82,9 @@ public:
 	resizeableMatrix& getMatrix();
 	cardStack& getStackOnPos(uint16_t x, uint16_t y);
 	uint16_t getLineCount();
+
+	bool removeRow(uint16_t x);
+	bool removeColumn(uint16_t y);
 
 	void setMatrix(const resizeableMatrix& matrix);
 	

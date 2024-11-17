@@ -584,6 +584,40 @@ bool Board::removeBottomMargin(uint16_t x)
 	return 0;
 }
 
+bool Board::removeRow(uint16_t x)
+{
+	if (x < 0 || x > getRowCount() - 1 || isBoardEmpty())
+		return 1;
+	for (size_t i = 0; i < getColCount(); ++i)
+	{
+		if (m_board[x][i].back().GetColor() == 'R')
+			m_colChecker[i].first -= 1;
+		else
+			m_colChecker[i].second -= 1;
+	}
+	m_board.erase(m_board.begin() + x);
+	m_rowChecker.erase(m_rowChecker.begin()+x);
+	
+	return 0;
+}
+
+bool Board::removeColumn(uint16_t y)
+{
+	if (y < 0 || y > getColCount() - 1 || isBoardEmpty())
+		return 1;
+	for (size_t i = 0; i < getRowCount(); ++i)
+	{
+		if (m_board[i][y].back().GetColor() == 'R')
+			m_rowChecker[i].first -= 1;
+		else
+			m_rowChecker[i].second -= 1;
+	}
+	for (size_t i = 0; i < getRowCount(); i++)
+		m_board[i].erase(m_board[i].begin() + y);
+	m_colChecker.erase(m_colChecker.begin() + y);
+	return 0;
+}
+
 
 void Board::cloneMatrix(const Board& from, Board& to)
 {
