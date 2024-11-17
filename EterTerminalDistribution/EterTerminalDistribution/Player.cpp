@@ -74,6 +74,11 @@ void Player::updateCover(uint16_t x, uint16_t y, covered& coveredCardSet, resize
 		coveredCardSet.emplace(x, y, pos);
 }
 
+void Player::applyTansformToCovered(uint16_t x, uint16_t y, std::pair<uint16_t, uint16_t> modify, covered& p1, covered& p2)
+{
+	
+}
+
 void Player::generateTrainingModeHand()
 {
 	//creating minion cards with their value and color

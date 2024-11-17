@@ -38,7 +38,7 @@ void funcMirage(Board&,handCard&,uint16_t,uint16_t,const MinionCard&);
 //remove stack of cards
 void funcStorm(Board&,uint16_t,uint16_t);
 
-//swap cards or stack of cards
+//tide(board, first set of coordonates, second set of coordonates) -- exchange 2 stacks
 void funcTide(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
 
 //play again a illusion(cannot have 2 illsuion at the same time)

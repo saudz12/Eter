@@ -273,11 +273,11 @@ void funcHurricane(Board& board, hand& h1, hand& h2)
 	}
 	//--to here can be moved outside of function - either a checkHurricane(input) and get input in game OR do check full in game, then pass them as parameters
 	
-	//I dont like nesting so the code looks ugly - can fix it later by request
-	//if type = row
+	//code looks ugly - can fix it later by request
 
 	hand& cards = h1; //like this for the moment so we have it init
 
+	//if type = row
 	if (type == "R") {
 
 		//if we shift to left
@@ -306,6 +306,7 @@ void funcHurricane(Board& board, hand& h1, hand& h2)
 				{
 					board.updateRowChecker(lineCnt, RED_DEC);
 					board.updateColChecker(i, RED_DEC);
+					
 				}
 				else
 				{
@@ -575,6 +576,39 @@ void funcStorm(Board& board, uint16_t x, uint16_t y)
 // swap cards or stack of cards
 void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
+	cardStack& first = board.getStackOnPos(x1, y1);
+	cardStack& second = board.getStackOnPos(x2, y2);
+
+	if (first.back().GetColor() == 'R') {
+		board.updateRowChecker(x1, RED_DEC);
+		board.updateColChecker(y1, RED_DEC);
+		board.updateRowChecker(x2, RED_ADD);
+		board.updateColChecker(y2, RED_ADD);
+	}
+	else {
+		board.updateRowChecker(x1, BLUE_DEC);
+		board.updateColChecker(y1, BLUE_DEC);
+		board.updateRowChecker(x2, BLUE_ADD);
+		board.updateColChecker(y2, BLUE_ADD);
+	}
+	if (second.back().GetColor() == 'R') {
+		board.updateRowChecker(x1, RED_ADD);
+		board.updateColChecker(y1, RED_ADD);
+		board.updateRowChecker(x2, RED_DEC);
+		board.updateColChecker(y2, RED_DEC);
+	}
+	else {
+		board.updateRowChecker(x1, BLUE_ADD);
+		board.updateColChecker(y1, BLUE_ADD);
+		board.updateRowChecker(x2, BLUE_DEC);
+		board.updateColChecker(y2, BLUE_DEC);
+	}
+
+	cardStack aux = std::move(first);
+	first = std::move(second);
+	second = std::move(aux);
+
+	//std::swap(first, second);
 }
 
 // play again an illusion (cannot have 2 illusions at the same time)

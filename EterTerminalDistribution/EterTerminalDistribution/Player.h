@@ -46,7 +46,9 @@ public:
 	//Updates
 	int UpdateCard(int value, int cnt);
 	//primeste coveredul la celelalt player
-	void updateCover(uint16_t x, uint16_t y, covered& coveredCards, resizeableMatrix& board);
+	static void updateCover(uint16_t x, uint16_t y, covered& coveredCards, resizeableMatrix& board);
+	//T(a, b) + T(c, d) = T(a + c, b + d) <-- aplicam asemenea transofmrari pe un coveredSet cand miscam un stack de marime > 1 -- cam consuming dar tabla e pera mica ca sa se simta
+	void applyTansformToCovered(uint16_t x, uint16_t y, std::pair<uint16_t, uint16_t> modify, covered& p1, covered& p2);
 
 	void SetLastMinionCardPlayed(MinionCard* cardPlayed);
 	bool placeMinionCardFromHand(MinionCard& card); //returns true if card was found in handCards, false otherwise
