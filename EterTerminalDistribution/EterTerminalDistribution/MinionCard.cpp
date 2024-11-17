@@ -40,6 +40,11 @@ char MinionCard::GetBelongsTo() const
     return m_belongsTo;
 }
 
+bool MinionCard::GetIsHole() const
+{
+    return m_isHole;
+}
+
 void MinionCard::SetValue(uint16_t value) 
 {
     m_value = value;
@@ -73,6 +78,11 @@ void MinionCard::SetMarker(bool isMarked)
 void MinionCard::SetBelongsTo(char belongsTo)
 {
     m_belongsTo = belongsTo;
+}
+
+void MinionCard::SetIsHole(bool isHole)
+{
+    m_isHole = isHole;
 }
 
 bool MinionCard::operator>(const MinionCard& card)

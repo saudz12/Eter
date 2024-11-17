@@ -512,7 +512,7 @@ bool Board::posPlaceTest(int16_t x, int16_t y, uint16_t val)
 {
 	if (m_board[x][y].empty())
 		return true;
-	if (val > m_board[x][y].back().GetValue() || val==-1)
+	if (val > m_board[x][y].back().GetValue() || val==0)
 		return true;
 	return false;
 }

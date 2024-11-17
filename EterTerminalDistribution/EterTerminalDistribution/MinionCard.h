@@ -22,9 +22,10 @@ private:
 	bool m_isIllusionCard;
 	bool m_marker;
 	char m_belongsTo;
+	bool m_isHole;
 public:
 	MinionCard(uint16_t value, char color);
-
+	MinionCard();
 	//overload functions
 	friend std::ostream& operator<<(std::ostream &out,const MinionCard &card);
 	bool operator>(const MinionCard& card);
@@ -39,6 +40,7 @@ public:
 	bool GetMarker() const;
 	CardType GetCardType() const override;
 	char GetBelongsTo() const;
+	bool GetIsHole() const;
 
 	//setters
 	void SetValue(uint16_t value);
@@ -48,6 +50,7 @@ public:
 	void SetCardType(CardType type) override;
 	void SetMarker(bool isMarked);
 	void SetBelongsTo(char belongsTo);
+	void SetIsHole(bool isHole);
 };
 
 namespace std

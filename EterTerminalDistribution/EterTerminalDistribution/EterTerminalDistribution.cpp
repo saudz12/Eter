@@ -265,9 +265,9 @@ int main() //for now we implement training mode here, later we will move it to a
             break;
         case 9:
             if (curr_col == 'R')
-                funcAirMage1(*myBoard, *p1);
+                funcWaterMage2(*myBoard, 'B', *p2);
             else
-                funcAirMage1(*myBoard, *p2);
+                funcWaterMage2(*myBoard, 'R', *p1);
             system("pause");
             break;
         default:
