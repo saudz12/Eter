@@ -548,8 +548,18 @@ void funcGust(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 }
 
 // exchange illusion card with other card
-void funcMirage(Board& board, handCard& cards, uint16_t x1, uint16_t y1)
+void funcMirage(Board& board, handCard& cards, uint16_t x1, uint16_t y1,const MinionCard& chosenCard)
 {
+	resizeableMatrix& matrix = board.getMatrix();
+	if (!matrix[x1][y1].front().GetIsIllusionCard()) {
+		std::cout << "Chosen card position is not an illusion\n";
+		return;
+	}
+	///trebuie facuta adaugare la nr de carti / insertie in handcard si schimbarea valorii cartii de pe tabla
+	cards.insert({matrix[x1][y1].front(),1 });
+	//cards.find(chosenCard)--;
+	matrix[x1][y1].front() = chosenCard;
+
 }
 
 // remove stack of cards

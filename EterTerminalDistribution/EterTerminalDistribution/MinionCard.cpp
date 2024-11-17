@@ -1,7 +1,7 @@
 #include "MinionCard.h"
 
 MinionCard::MinionCard(uint16_t value, char color) 
-    : Card{ CardType::MinionCard }, m_value{ value }, m_color{ color }, m_isEterCard{ false }, m_isIllusionCard{ false }
+    : Card{ CardType::MinionCard }, m_value{ value }, m_color{ color }, m_isEterCard{ false }, m_isIllusionCard{ false },m_marker{false},m_belongsTo('R')
 {
 }
 
