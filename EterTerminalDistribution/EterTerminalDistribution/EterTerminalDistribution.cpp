@@ -141,7 +141,7 @@ int main() //for now we implement training mode here, later we will move it to a
         }
 
         ///menu
-        std::cout << "\nOPTIONS:\n1. Place a card\n2. Show Hand\n3. Show Covered\n4. Check Stack\n5. Use Elemental Power\n6. Test Isolated Spaces in Board\n7. Help\n8. Use explosion card\n";
+        std::cout << "\nOPTIONS:\n1. Place a card\n2. Show Hand\n3. Show Covered\n4. Check Stack\n5. Use Elemental Power\n6. Test Isolated Spaces in Board\n7. Help\n8. Use explosion card\n9. Use Mage Card\n";
         std::cin >> options;
         switch (options)
         {
@@ -261,6 +261,13 @@ int main() //for now we implement training mode here, later we will move it to a
                 wasPlaced = false;
                 std::cout << "you cannot place a explosion card right now\n";
             }
+            system("pause");
+            break;
+        case 9:
+            if (curr_col == 'R')
+                funcAirMage1(*myBoard, *p1);
+            else
+                funcAirMage1(*myBoard, *p2);
             system("pause");
             break;
         default:

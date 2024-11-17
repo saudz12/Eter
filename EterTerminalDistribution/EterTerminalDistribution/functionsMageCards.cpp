@@ -1,5 +1,5 @@
 #include "functionsMageCards.h"
-
+#include "MoveLaterToGameClass.h"
 // remove opponent's card that covers one of player's cards
 void funcFireMage1(Board& board,Player& pl)
 {
@@ -99,23 +99,148 @@ void funcFireMage2(Board& board,Player& pl)
 }
 
 // cover opponent card with lower value card of yours
-void funcEarthMage1(Board& board, Card& card, uint16_t x , uint16_t y)
+void funcEarthMage1(Board& board,Player& pl, uint16_t x , uint16_t y)
 {
+	hand& currHand = pl.GetHandCards();
+	char curr_col = pl.GetPlayerColor();
+	for (auto& i : currHand) {
+		std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << "Left\n";
+	}
+	std::cout << "Choose a card from the hand and where to place it in the board\n";
+	uint16_t val;
+	std::cin >> val >> x >> y;
+	MinionCard toSearch(val, curr_col);
+	//check if card in hand. reduce and remove only if can place.
+	if (currHand.find(toSearch) == currHand.end()) {
+		std::cout << "\nYou don't own any cards of that type!\n";
+		system("pause");
+	}
+	if (board.setPos(x, y, 5, curr_col) == 1) {
+		std::cout << "\nYou can't place that card there!\n";
+		system("pause");
+	}
+	resizeableMatrix& matrix = board.getMatrix();
+	matrix[x][y].back().SetValue(val);
+	pl.UpdateCard(val, -1);
 }
 
 // hole card, position to cover
-void funcEarthMage2(Board& board, HoleCard& hCard, uint16_t x, uint16_t y)
+void funcEarthMage2(Board& board)
 {
+	MinionCard holeCard(0,'N');
 }
 
 // original position, destination position (player's card)
-void funcAirMage1(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+void funcAirMage1(Board& board,Player& pl)
 {
+	char currColor = pl.GetPlayerColor();
+	uint16_t x1, y1, x2, y2;
+	std::cout << "from where\n";
+	std::cin >> x1 >> y1;
+
+	std::cout << "to where\n";
+	std::cin >> x2 >> y2;
+
+	if (x1 < 0 || x2 < 0 || y2 >= board.getColCount() || y1 >= board.getColCount())
+	{
+		std::cout << "invalid positions\n";
+		return;
+	}
+
+	Board cloneBoard;
+	Board::cloneMatrix(board, cloneBoard);
+
+	resizeableMatrix& matrix = board.getMatrix();
+
+	if (matrix[x1][y1].empty())
+	{
+		std::cout << "no cards here\n";
+		return;
+	}
+	if (matrix[x1][y1].back().GetColor() != pl.GetPlayerColor())
+	{
+		std::cout << "on this position there are no cards of your color\n";
+		return;
+	}
+	std::cout << "Select what you would want to do with the card\n0. move the card\n1. move the stack of cards\n";
+	uint16_t option;
+	std::cin >> option;
+	lineChecker& colChecker=board.getColChecker(), &rowChecker=board.getRowChecker();
+
+	if (!matrix[x1][y1].empty())
+	{
+		if (currColor == 'R')
+		{
+			if (x1 != x2)
+			{
+				rowChecker[x1].first--;
+				rowChecker[x2].first++;
+			}
+			
+			if (y1 != y2)
+			{
+				colChecker[y1].first --;
+				colChecker[y2].first++;
+			}
+		}
+		else
+		{
+			if (x1 != x2)
+			{
+				rowChecker[x2].second ++;
+				rowChecker[x1].second --;
+			}
+			if (y1 != y2)
+			{
+				colChecker[y1].second --;
+				colChecker[y2].second++;
+			}
+		}
+	}
+
+	if (option == 0)
+	{
+		MinionCard& lastCard = matrix[x1][y1].back();
+		matrix[x1][y1].pop_back();
+		if (!matrix[x2][y2].empty())
+		{
+			std::cout << "second position is not empty\n";
+			return;
+		}
+		matrix[x2][y2].emplace_back(lastCard);
+		if (isolatedSpaces(board))
+		{
+			std::cout << "this card cannot be placed because creates isolated spaces\n";
+			Board::cloneMatrix(cloneBoard, board);
+			return;
+		}
+	}
+	else
+	{
+		std::deque<MinionCard>& stackCardOnPosition = matrix[x1][y1];
+		
+		matrix[x1][y1].clear();
+		if (!matrix[x2][y2].empty())
+		{
+			std::cout << "second position is not empty\n";
+			return;
+		}
+		matrix[x2].insert(matrix[x2].begin() + y2, stackCardOnPosition);
+		if (isolatedSpaces(board))
+		{
+			std::cout << "this card cannot be placed because creates isolated spaces\n";
+			Board::cloneMatrix(cloneBoard, board);
+			return;
+		}
+	}
+
+	//board.checkForUpdates();
 }
 
 // position for additional Eter card
 void funcAirMage2(Board& board, uint16_t x, uint16_t y)
 {
+
 }
 
 // original position, destination position (opponent's card)

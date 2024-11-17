@@ -33,7 +33,7 @@ void funcHurricane(Board&,hand&, hand&);
 void funcGust(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
 
 //exchange illusion card with other card
-void funcMirage(Board&,handCard&,uint16_t,uint16_t, const MinionCard& chosenCard);
+void funcMirage(Board&,handCard&,uint16_t,uint16_t,const MinionCard&);
 
 //remove stack of cards
 void funcStorm(Board&,uint16_t,uint16_t);

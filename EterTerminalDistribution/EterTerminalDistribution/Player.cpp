@@ -67,10 +67,10 @@ void Player::updateCover(uint16_t x, uint16_t y, covered& coveredCardSet, resize
 	if (board[x][y].size() == 1)
 		return;
 
-	int pos = board[x][y].size() - 1;
+	int pos = board[x][y].size() - 2;
 	MinionCard& lastPlaced = board[x][y].back();
 	MinionCard& coveredCard = board[x][y][pos];
-	if (lastPlaced.GetColor() == coveredCard.GetColor())
+	if (lastPlaced.GetColor() != coveredCard.GetColor())
 		coveredCardSet.emplace(x, y, pos);
 }
 

@@ -8,13 +8,13 @@ void funcFireMage1(Board&,Player&);
 void funcFireMage2(Board&, Player&);
 
 //cover opponent card with lower value card of yours
-void funcEarthMage1(Board&,Card&,uint16_t,uint16_t);
+void funcEarthMage1(Board&,Player&,uint16_t,uint16_t);
 
 //hole card,position to cover
-void funcEarthMage2(Board&, HoleCard&, uint16_t, uint16_t);
+void funcEarthMage2(Board&);
 
 //original position, destination position(player's card)
-void funcAirMage1(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
+void funcAirMage1(Board&, Player& pl);
 
 //position for additional Eter card
 void funcAirMage2(Board&, uint16_t, uint16_t);
