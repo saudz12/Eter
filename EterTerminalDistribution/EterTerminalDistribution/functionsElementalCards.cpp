@@ -556,8 +556,8 @@ void funcMirage(Board& board, handCard& cards, uint16_t x1, uint16_t y1,const Mi
 		return;
 	}
 	///trebuie facuta adaugare la nr de carti / insertie in handcard si schimbarea valorii cartii de pe tabla
-	cards.insert({matrix[x1][y1].front(),1 });
-	//cards.find(chosenCard)--;
+	cards[matrix[x1][y1].front()]++;
+	cards[chosenCard]--;
 	matrix[x1][y1].front() = chosenCard;
 
 }
