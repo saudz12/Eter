@@ -20,6 +20,7 @@ private:
 	char m_playerColor;
 	hand m_removedCards;
 	bool m_illusionUsage; //true if illusion has been used, false otherwise
+	MinionCard* m_illusionCard; 
 	MinionCard* m_lastMinionCardPlayed; //pointer towards the last card played
 
 	void generateTrainingModeHand();
@@ -30,16 +31,18 @@ public:
 
 	//getters
 	char GetPlayerColor() const;
-	bool GetUsedIllusion() const;
+	bool UsedIllusion() const;
 	const hand& GetHandCards() const;
 	hand& GetHandCards();
 	const hand& GetRemovedCards() const;
+	MinionCard* getIllusionCard() const;
 	MinionCard* GetLastMinionCardPlayed() const;
 	coveredSet& getCovered();
 
 	//setters
 	void SetPlayerColor(char playerColor);
 	void SetIllusionUsage(bool illusionUsage);
+	void setIllusionCard(MinionCard* illusionCard);
 	void SetHandCards(const hand& handCards);
 
 	//Updates

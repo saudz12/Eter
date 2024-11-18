@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(char playerColor = 'R')
-	: m_playerColor{ playerColor }, m_illusionUsage{ false } 
+	: m_playerColor{ playerColor }, m_illusionUsage{ false }, m_illusionCard{nullptr}
 {
 	generateTrainingModeHand();
 }
@@ -11,7 +11,7 @@ char Player::GetPlayerColor() const
 	return m_playerColor;
 }
 
-bool Player::GetUsedIllusion() const
+bool Player::UsedIllusion() const
 {
 	return m_illusionUsage;
 }
@@ -31,6 +31,11 @@ const hand& Player::GetRemovedCards() const
 	return m_removedCards;
 }
 
+MinionCard* Player::getIllusionCard() const
+{
+	return m_illusionCard;
+}
+
 void Player::SetPlayerColor(char playerColor)
 {
 	m_playerColor = playerColor;
@@ -39,6 +44,11 @@ void Player::SetPlayerColor(char playerColor)
 void Player::SetIllusionUsage(bool illusionUsage)
 {
 	m_illusionUsage = illusionUsage;
+}
+
+void Player::setIllusionCard(MinionCard* illusionCard)
+{
+	m_illusionCard = illusionCard;
 }
 
 void Player::SetHandCards(const hand& handCards)

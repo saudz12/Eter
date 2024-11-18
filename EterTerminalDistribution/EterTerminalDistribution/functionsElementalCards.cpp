@@ -408,8 +408,6 @@ void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 		board.updateColChecker(y2, BLUE_DEC);
 	}
 
-
-
 	cardStack aux = std::move(first);
 	first = std::move(second);
 	second = std::move(aux);
@@ -418,9 +416,16 @@ void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 }
 
 // play again an illusion (cannot have 2 illusions at the same time)
-void funcMist(Board& board, uint16_t x, uint16_t y)
+void funcMist(Board& board, Player& p, uint16_t x, uint16_t y, uint16_t val)
 {
-
+	if (!p.UsedIllusion() || p.getIllusionCard() == nullptr) {
+		board.setPos(x, y, val, p.GetPlayerColor());
+		board.getStackOnPos(x, y).back().SetIsIllusionCard(true);
+		p.SetIllusionUsage(true);
+		p.setIllusionCard(&board.getStackOnPos(x, y).back());
+		return;
+	}
+	return;
 }
 
 // move a card/stack to an empty adjacent space and place new card in the empty space created

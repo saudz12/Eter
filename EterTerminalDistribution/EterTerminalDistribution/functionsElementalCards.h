@@ -42,7 +42,7 @@ void funcStorm(Board&,uint16_t,uint16_t);
 void funcTide(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
 
 //play again a illusion(cannot have 2 illsuion at the same time)
-void funcMist(Board&, uint16_t, uint16_t);
+void funcMist(Board&, Player&, uint16_t, uint16_t, uint16_t);
 
 //move a card/stack to empty adj space and place new card to the empty space created
 void funcWave(Board&, uint16_t, uint16_t,MinionCard);
