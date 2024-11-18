@@ -62,7 +62,7 @@ int Player::UpdateCard(int value, int cnt)
 	return 0;
 }
 
-void Player::updateCover(uint16_t x, uint16_t y, covered& coveredCardSet, resizeableMatrix& board)
+void Player::updateCover(uint16_t x, uint16_t y, coveredSet& coveredCardSet, resizeableMatrix& board)
 {
 	if (board[x][y].size() == 1)
 		return;
@@ -74,9 +74,48 @@ void Player::updateCover(uint16_t x, uint16_t y, covered& coveredCardSet, resize
 		coveredCardSet.emplace(x, y, pos);
 }
 
-void Player::applyTansformToCovered(uint16_t x, uint16_t y, std::pair<uint16_t, uint16_t> modify, covered& p1, covered& p2)
+void Player::applyTansformToCovered(Player& p1, Player& p2, cardStack& stack, uint16_t oldX, uint16_t oldY, uint16_t newX, uint16_t newY)
 {
-	
+	auto& p1Covered = p1.getCovered();
+	auto& p2Covered = p2.getCovered();
+
+	coveredSet p1Moved;
+	coveredSet p2Moved;
+
+	for (int i = 0; i < stack.size() - 1; i++) {
+		position toFind{ oldX, oldY, i };
+		auto currCardColor = stack[i].GetColor();
+		if (currCardColor == COL_RED) {
+			p1Moved.insert({ newX, newY, i });
+			p1Covered.erase(p1Covered.find(toFind));
+		}
+		else {
+			p2Moved.insert({newX, newY, i});
+			p2Covered.erase(p2Covered.find(toFind));
+		}
+	}
+	for (auto& newPosition : p1Moved) {
+		p1Covered.insert(newPosition);
+	}
+	for (auto& newPosition : p2Moved) {
+		p2Covered.insert(newPosition);
+	}
+}
+
+void Player::returnStackToHand(hand& h1, hand& h2, cardStack& stack)
+{
+	hand& currHand = h1;
+	for (auto& card : stack) {
+		if (card.GetColor() == 'R')
+			currHand = h1;
+		else
+			currHand = h2;
+
+		if (currHand.find(card) != currHand.end())
+			currHand[card]++;
+		else
+			currHand.insert({ card, 1 });
+	}
 }
 
 void Player::generateTrainingModeHand()
@@ -98,7 +137,7 @@ MinionCard* Player::GetLastMinionCardPlayed() const
 	return m_lastMinionCardPlayed;
 }
 
-covered& Player::getCovered()
+coveredSet& Player::getCovered()
 {
 	return this->m_coveredCardSet;
 }

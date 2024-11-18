@@ -2,6 +2,8 @@
 #include "Card.h"
 
 using position = std::tuple< uint16_t, uint16_t, uint16_t>;
+constexpr auto COL_RED = 'R';
+constexpr auto COL_BLUE = 'B';
 
 struct hashPosition {
 	size_t operator()(const position& toHash) const {
@@ -25,7 +27,7 @@ private:
 	bool m_isHole;
 public:
 	MinionCard(uint16_t value, char color);
-	MinionCard();
+	MinionCard() = default;
 	//overload functions
 	friend std::ostream& operator<<(std::ostream &out,const MinionCard &card);
 	bool operator>(const MinionCard& card);

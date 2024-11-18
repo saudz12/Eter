@@ -76,4 +76,3 @@ void funcRock(Board&,uint16_t,uint16_t,MinionCard&);
 
 void funcDefault();
 
-

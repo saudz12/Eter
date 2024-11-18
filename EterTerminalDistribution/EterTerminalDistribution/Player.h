@@ -1,10 +1,9 @@
 #pragma once
 #include "MinionCard.h"
-#include <unordered_set>
 
 using hand = std::unordered_map<MinionCard, uint16_t>;
 //using coords = std::pair<uint16_t, uint16_t>;
-using covered = std::unordered_set<position, hashPosition>;
+using coveredSet = std::unordered_set<position, hashPosition>;
 
 //moved from board. when implementing game, move updateCover functiouns to it
 using cardStack = std::deque<MinionCard>;
@@ -17,7 +16,7 @@ class Player
 {
 private:
 	hand m_handCards;
-	covered m_coveredCardSet;
+	coveredSet m_coveredCardSet;
 	char m_playerColor;
 	hand m_removedCards;
 	bool m_illusionUsage; //true if illusion has been used, false otherwise
@@ -36,7 +35,7 @@ public:
 	hand& GetHandCards();
 	const hand& GetRemovedCards() const;
 	MinionCard* GetLastMinionCardPlayed() const;
-	covered& getCovered();
+	coveredSet& getCovered();
 
 	//setters
 	void SetPlayerColor(char playerColor);
@@ -46,9 +45,10 @@ public:
 	//Updates
 	int UpdateCard(int value, int cnt);
 	//primeste coveredul la celelalt player
-	static void updateCover(uint16_t x, uint16_t y, covered& coveredCards, resizeableMatrix& board);
+	static void updateCover(uint16_t x, uint16_t y, coveredSet& coveredCards, resizeableMatrix& board);
 	//T(a, b) + T(c, d) = T(a + c, b + d) <-- aplicam asemenea transofmrari pe un coveredSet cand miscam un stack de marime > 1 -- cam consuming dar tabla e pera mica ca sa se simta
-	void applyTansformToCovered(uint16_t x, uint16_t y, std::pair<uint16_t, uint16_t> modify, covered& p1, covered& p2);
+	static void applyTansformToCovered(Player& p1, Player& p2, cardStack& stack, uint16_t oldX, uint16_t oldY, uint16_t newX, uint16_t newY);
+	static void returnStackToHand(hand& h1, hand& h2, cardStack& stack);
 
 	void SetLastMinionCardPlayed(MinionCard* cardPlayed);
 	bool placeMinionCardFromHand(MinionCard& card); //returns true if card was found in handCards, false otherwise

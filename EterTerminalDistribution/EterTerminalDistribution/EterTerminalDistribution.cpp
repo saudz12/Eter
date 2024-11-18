@@ -3,7 +3,7 @@
 #include "funcAssociationsToCard.h"
 
 //Later add support for excat type
-void checkCoveredCards(const covered& coveredCardSet) {
+void checkCoveredCards(const coveredSet& coveredCardSet) {
     if (coveredCardSet.size() == 0) {
         std::cout << "You have no covered cards.\n";
         return;
@@ -24,7 +24,7 @@ void checkStack(const cardStack& stackToCheck) {
 
 void checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, char curr_col, hand& currHand, hand& removedCardsHand) {
     uint16_t x, y, val;
-    std::cout << "\nELEMENTAL CARDS:\n1. Fire\n2. Ash\n3. Waterfall\n4. Avalanche\n5. Squall\n6. Hurricane\n7. Whirlpool\n8. Cancel elemental card\n";
+    std::cout << "\nELEMENTAL CARDS:\n1. Fire\n2. Ash\n3. Waterfall\n4. Avalanche\n5. Squall\n6. Hurricane\n7. Tide\n8. Cancel elemental card\n";
     int card;
     std::cin >> card;
     switch (card)
@@ -90,11 +90,12 @@ void checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, char curr_c
         break;
     }
     case 7: {
-        uint16_t rowIndex, columnIndex;
-        std::cout << "\nChoose the coordonates for the whirlpool card:\n";
-        std::cin >> rowIndex >> columnIndex;
-        funcWhirlpool(*b, rowIndex, columnIndex);
-        break;
+        uint16_t x1, x2, y1, y2;
+        std::cout << "Exchange stack on pos(x, y): ";
+        std::cin >> x1 >> y1;
+        std::cout << "\nwith: ";
+        std::cin >> x2 >> y2;
+        funcTide(*b, x1, y1, x2, y2);
     }
     case 8: {
         return;
@@ -174,11 +175,11 @@ int main() //for now we implement training mode here, later we will move it to a
             }
             if (curr_col == 'R') {
                 p1->UpdateCard(val, -1);
-                p1->updateCover(x, y, p2->getCovered(), myBoard->getMatrix());
+                Player::updateCover(x, y, p2->getCovered(), myBoard->getMatrix());
             }
             else {
                 p2->UpdateCard(val, -1);
-                p2->updateCover(x, y, p1->getCovered(), myBoard->getMatrix());
+                Player::updateCover(x, y, p1->getCovered(), myBoard->getMatrix());
             }
 
             wasPlaced = true;

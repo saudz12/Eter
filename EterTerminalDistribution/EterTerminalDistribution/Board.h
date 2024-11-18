@@ -19,7 +19,7 @@
 class Board
 {
 private:
-	resizeableMatrix m_board;
+	resizeableMatrix m_matrix;
 	uint16_t m_max_size;
 	lineChecker m_rowChecker;
 	lineChecker m_colChecker;
@@ -53,10 +53,10 @@ private:
 	void addLineOnBottom();
 
 	//will be changed if you can remove from middle
-	bool removeLeftMargin(uint16_t y);
-	bool removeRightMargin(uint16_t y);
-	bool removeTopMargin(uint16_t x);
-	bool removeBottomMargin(uint16_t x);
+	bool removeLeftMargin();
+	bool removeRightMargin();
+	bool removeTopMargin();
+	bool removeBottomMargin();
 	//other interactions
 
 public:
@@ -90,6 +90,7 @@ public:
 	
 	void updateColChecker(uint16_t y, uint16_t option);
 	void updateRowChecker(uint16_t x, uint16_t option);
+	void shiftLine(uint16_t start, uint16_t end, uint16_t ratio, uint16_t lineNo, uint16_t direction);
 	void checkForUpdates();
 
 	bool isBoardFilled();

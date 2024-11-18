@@ -12,7 +12,7 @@ void funcFireMage1(Board& board,Player& pl)
 	if (matrix[x][y].empty())
 		return;
 
-	covered& coveredSet = pl.getCovered();
+	coveredSet& coveredSet = pl.getCovered();
 	if (!coveredSet.empty())
 	{
 		pl.printCoveredCards(matrix);

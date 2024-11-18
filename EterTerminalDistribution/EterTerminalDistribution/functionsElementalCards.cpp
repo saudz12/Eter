@@ -285,60 +285,10 @@ void funcHurricane(Board& board, hand& h1, hand& h2)
 			cardStack& firstStack = matrix[lineCnt][0];
 			
 			//update hand by card stack -- can move to function 
-			for (auto& card : firstStack) {
-				if (card.GetColor() == 'R')
-					cards = h1;
-				else
-					cards = h2;
-				if (cards.find(card) != cards.end())
-					cards[card]++;
-				else
-					cards.insert({ card, 1 });
-			}
+			Player::returnStackToHand(h1, h2, firstStack);
 
-			//reset counts
-			for (int i = 0; i < board.getColCount() - 1; i++) {
-				auto& currStack = matrix[lineCnt][i];
-				auto& nextStack = matrix[lineCnt][i + 1];
-
-				//move this to a separate function - resturcture board
-				if (currStack.back().GetColor() == 'R')
-				{
-					board.updateRowChecker(lineCnt, RED_DEC);
-					board.updateColChecker(i, RED_DEC);
-					
-				}
-				else
-				{
-					board.updateRowChecker(lineCnt, BLUE_DEC);
-					board.updateColChecker(i, BLUE_DEC);
-				}
-
-				if (nextStack.back().GetColor() == 'R')
-				{
-					board.updateRowChecker(lineCnt, RED_ADD);
-					board.updateColChecker(i, RED_ADD);
-				}
-				else
-				{
-					board.updateRowChecker(lineCnt, BLUE_ADD);
-					board.updateColChecker(i, BLUE_ADD);
-				}
-			}
-			auto& lastCard = matrix[lineCnt][0];
-			if (lastCard.back().GetColor() == 'R') {
-				board.updateRowChecker(lineCnt, RED_DEC);
-				board.updateColChecker(board.getColCount() - 1, RED_DEC);
-			}
-			else {
-				board.updateRowChecker(lineCnt, BLUE_DEC);
-				board.updateColChecker(board.getColCount() - 1, BLUE_DEC);
-			}
-
-			for (int i = 0; i <= board.getColCount() - 1; i++)
-				matrix[lineCnt][i] = std::move(matrix[lineCnt][i + 1]);
-
-			matrix[lineCnt][board.getColCount() - 1] = std::move(cardStack());
+			//update counts
+			board.shiftLine(0, board.getColCount() - 1, +1, lineCnt, 1);
 
 			board.checkForUpdates();
 			return;
@@ -346,177 +296,31 @@ void funcHurricane(Board& board, hand& h1, hand& h2)
 		//we know we are shifting to right
 		cardStack& firstStack = matrix[lineCnt][board.getColCount() - 1];
 		
-		for (auto& card : firstStack) {
-			if (card.GetColor() == 'R')
-				cards = h1;
-			else
-				cards = h2;
-			if (cards.find(card) != cards.end())
-				cards[card]++;
-			else
-				cards.insert({ card, 1 });
-		}
+		Player::returnStackToHand(h1, h2, firstStack);
 
-		for (int i = board.getColCount() - 1; i > 0; i--) {
-			auto& currStack = matrix[lineCnt][i];
-			auto& nextStack = matrix[lineCnt][i - 1];
-
-			//move this to a separate function - resturcture board
-			if (currStack.back().GetColor() == 'R')
-			{
-				board.updateRowChecker(lineCnt, RED_DEC);
-				board.updateColChecker(i, RED_DEC);
-			}
-			else
-			{
-				board.updateRowChecker(lineCnt, BLUE_DEC);
-				board.updateColChecker(i, BLUE_DEC);
-			}
-
-			if (nextStack.back().GetColor() == 'R')
-			{
-				board.updateRowChecker(lineCnt, RED_ADD);
-				board.updateColChecker(i, RED_ADD);
-			}
-			else
-			{
-				board.updateRowChecker(lineCnt, BLUE_ADD);
-				board.updateColChecker(i, BLUE_ADD);
-			}
-		}
-		auto& lastCard = matrix[lineCnt][0];
-		if (lastCard.back().GetColor() == 'R') {
-			board.updateColChecker(0, RED_DEC);
-			board.updateRowChecker(lineCnt, RED_DEC);
-		}
-		else {
-			board.updateColChecker(0, BLUE_DEC);
-			board.updateRowChecker(lineCnt, BLUE_DEC);
-		}
-
-		for (int i = board.getColCount() - 1; i > 0; i--)
-			matrix[lineCnt][i] = std::move(matrix[lineCnt][i - 1]);
-
-		matrix[lineCnt][0] = std::move(cardStack());
+		board.shiftLine(board.getColCount() - 1, 0, -1, lineCnt, 1);
 
 		board.checkForUpdates();
 		return;
 	}
 
 	//we know we are shifting a column
-
 	if (dir == "U") {
 		cardStack& firstStack = matrix[0][lineCnt];
-		for (auto& card : firstStack) {
-			if (card.GetColor() == 'R')
-				cards = h1;
-			else
-				cards = h2;
-			if (cards.find(card) != cards.end())
-				cards[card]++;
-			else
-				cards.insert({ card, 1 });
-		}
-		for (int i = 0; i < board.getRowCount() - 1; i++) {
-			auto& currStack = matrix[i][lineCnt];
-			auto& nextStack = matrix[i + 1][lineCnt];
-
-			//move this to a separate function - resturcture board
-			if (currStack.back().GetColor() == 'R')
-			{
-				board.updateRowChecker(i, RED_DEC);
-				board.updateColChecker(lineCnt, RED_DEC);
-			}
-			else
-			{
-				board.updateRowChecker(i, BLUE_DEC);
-				board.updateColChecker(lineCnt, BLUE_DEC);
-			}
-
-			if (nextStack.back().GetColor() == 'R')
-			{
-				board.updateRowChecker(i, RED_ADD);
-				board.updateColChecker(lineCnt, RED_ADD);
-			}
-			else
-			{
-				board.updateRowChecker(i, BLUE_ADD);
-				board.updateColChecker(lineCnt, BLUE_ADD);
-			}
-		}
-		auto& lastCard = matrix[board.getRowCount() - 1][lineCnt];
-		if (lastCard.back().GetColor() == 'R') {
-			board.updateColChecker(lineCnt, RED_DEC);
-			board.updateRowChecker(board.getRowCount() - 1, RED_DEC);
-		}
-		else {
-			board.updateColChecker(lineCnt, BLUE_DEC);
-			board.updateRowChecker(board.getRowCount() - 1, BLUE_DEC);
-		}
 		
-		for (int i = 0; i < board.getRowCount() - 1; i++)
-			matrix[i][lineCnt] = std::move(matrix[i + 1][lineCnt]);
+		Player::returnStackToHand(h1, h2, firstStack);
 
-		matrix[board.getRowCount() - 1][lineCnt] = std::move(cardStack());
-		
+		board.shiftLine(0, board.getRowCount() - 1, +1, lineCnt, 0);
+
 		board.checkForUpdates();
 		return;
 	}
-
 	//only down remains
 	cardStack& firstStack = matrix[board.getRowCount() - 1][lineCnt];
-	for (auto& card : firstStack) {
-		if (card.GetColor() == 'R')
-			cards = h1;
-		else
-			cards = h2;
-		if (cards.find(card) != cards.end())
-			cards[card]++;
-		else
-			cards.insert({ card, 1 });
-	}
-	for (int i = board.getRowCount() - 1; i > 0; i--) {
-		auto& currStack = matrix[i][lineCnt];
-		auto& nextStack = matrix[i - 1][lineCnt];
+	
+	Player::returnStackToHand(h1, h2, firstStack);
 
-		//move this to a separate function - resturcture board
-		if (currStack.back().GetColor() == 'R')
-		{
-			board.updateRowChecker(i, RED_DEC);
-			board.updateColChecker(lineCnt, RED_DEC);
-		}
-		else
-		{
-			board.updateRowChecker(i, BLUE_DEC);
-			board.updateColChecker(lineCnt, BLUE_DEC);
-		}
-
-		if (nextStack.back().GetColor() == 'R')
-		{
-			board.updateRowChecker(i, RED_ADD);
-			board.updateColChecker(lineCnt, RED_ADD);
-		}
-		else
-		{
-			board.updateRowChecker(i, BLUE_ADD);
-			board.updateColChecker(lineCnt, BLUE_ADD);
-		}
-	}
-	auto& lastCard = matrix[0][lineCnt];
-	if (lastCard.back().GetColor() == 'R') {
-		board.updateColChecker(lineCnt, RED_DEC);
-		board.updateRowChecker(0, RED_DEC);
-	}
-	else {
-		board.updateColChecker(lineCnt, BLUE_DEC);
-		board.updateRowChecker(0, BLUE_DEC);
-	}
-
-	for (int i = board.getRowCount() - 1; i > 0; i--)
-		matrix[i][lineCnt] = std::move(matrix[i - 1][lineCnt]);
-
-	matrix[0][lineCnt] = std::move(cardStack());
-
+	board.shiftLine(board.getRowCount() - 1, 0, -1, lineCnt, 0);
 	
 	board.checkForUpdates();
 	return;
@@ -603,6 +407,8 @@ void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 		board.updateRowChecker(x2, BLUE_DEC);
 		board.updateColChecker(y2, BLUE_DEC);
 	}
+
+
 
 	cardStack aux = std::move(first);
 	first = std::move(second);
