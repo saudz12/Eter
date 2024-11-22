@@ -190,13 +190,13 @@ void Board::increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, char col)
 
 MinionCard Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
 	if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
-		return MinionCard{ 0,'\0' };
+		return MinionCard{ 0,'\0', false };
 	if (m_matrix[x][y].empty())
-		return MinionCard{ 0,'\0' };
+		return MinionCard{ 0,'\0', false };
 	return m_matrix[x][y].back();
 }
 
-int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) {
+int16_t Board::setPos(int16_t x, int16_t y, const MinionCard& card, Player& p) {
 	const int boundCondX = XBoundTest(x);
 	const int boundCondY = YBoundTest(y);
 
@@ -206,7 +206,7 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) {
 		return 1;
 
 	if (boundCondX == INSIDE_BOUND && boundCondY == INSIDE_BOUND || x != 0 && y == 0 && isBoardEmpty()) {
-		if (!posPlaceTest(x, y, val)) {
+		if (!posPlaceTest(x, y, card)) {
 			return 1;
 		}
 	}
@@ -227,15 +227,24 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) {
 	if (boundCondY == RIGHT_BOUND) {
 		addLineToRight();
 	}
-	increaseOnColorRow(x, y, col);
-	increaseOnColorColumn(x, y, col);
+	increaseOnColorRow(x, y, card.GetColor());
+	increaseOnColorColumn(x, y, card.GetColor());
 
 	if (!isMatMaxSize())
 		m_reachedMaxSize = false;
 	else if (x == y || x + y == m_max_size - 1)
-		increaseOnColorDiagonal(x, y, col);
+		increaseOnColorDiagonal(x, y, card.GetColor());
 
-	m_matrix[x][y].push_back({ val, col });
+	if (m_matrix[x][y].back().GetIsIllusionCard())
+	{
+		m_matrix[x][y].back().SetIsIllusionCard(false);
+		if (card.GetValue() > m_matrix[x][y].back().GetValue())
+			m_matrix[x][y].push_back(card);
+		else
+			p.addToRemovedCards(card);
+	}
+	else
+		m_matrix[x][y].push_back(card);
 	if (m_rowChecker[x].first + m_rowChecker[x].second == m_max_size)
 		m_lineCnt++;
 	if (m_colChecker[y].first + m_colChecker[y].second == m_max_size)
@@ -246,9 +255,9 @@ int16_t Board::setPos(int16_t x, int16_t y, uint16_t val, char col) {
 	return 0;
 }
 
-int16_t Board::setPosWaterfall(int16_t x, int16_t y, uint16_t val, char col)
+int16_t Board::setPosWaterfall(int16_t x, int16_t y, const MinionCard& card)
 {
-	m_matrix[x][y].push_back({ val, col });
+	m_matrix[x][y].push_back(card);
 	return 0;
 }
 
@@ -569,11 +578,19 @@ int16_t Board::YBoundTest(int16_t y)
 }
 
 //verifica daca il putem pune peste o carte; de pozitie in tabla daca este valida se ocupa setPos(); true daca putem pune;
-bool Board::posPlaceTest(int16_t x, int16_t y, uint16_t val)
+//cartea eter si iluzia se pot pune doar pe spatiile goale
+bool Board::posPlaceTest(int16_t x, int16_t y, const MinionCard& card)
 {
 	if (m_matrix[x][y].empty())
 		return true;
-	if (val > m_matrix[x][y].back().GetValue() || val==0)
+	if (!m_matrix[x][y].empty() && (card.GetIsEterCard() || card.GetIsIllusionCard()))
+		return false;
+	if (card.GetValue() > m_matrix[x][y].back().GetValue() || card.GetValue() == 0)
+		return true;
+	//nu se poate pune carte peste cartea eter
+	if (m_matrix[x][y].back().GetIsEterCard())
+		return false;
+	if (m_matrix[x][y].back().GetIsIllusionCard())
 		return true;
 	return false;
 }
@@ -709,6 +726,7 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1, Pla
 			if (!m_matrix[positionX][positionY].empty())
 			{
 				MinionCard lastCard = m_matrix[positionX][positionY].back();
+				lastCard.SetIsIllusionCard(false);
 				m_matrix[positionX][positionY].pop_back();
 				if (lastCard.GetBelongsTo() == pl1.GetPlayerColor())
 					pl1.returnMinionCardToHand(lastCard);

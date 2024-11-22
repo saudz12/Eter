@@ -19,47 +19,59 @@ private:
 	coveredSet m_coveredCardSet;
 	char m_playerColor;
 	hand m_removedCards;
-	bool m_illusionUsage; //true if illusion has been used, false otherwise
-	MinionCard* m_illusionCard; 
-	MinionCard* m_lastMinionCardPlayed; //pointer towards the last card played
+	//true if illusion has been used, false otherwise
+	bool m_illusionUsage; 
+	//true if eter card has been used, false otherwise
+	bool m_eterCardUsage;
+	//pointer towards the last card played
+	MinionCard* m_lastMinionCardPlayed;
+	//pointer towards the illusion card
+	MinionCard* m_illusionCard;
 
-	void generateTrainingModeHand();
-	
+	void generateTrainingModeHand(); //hand for training mode
+	void generateHand(); //hand for other modes;
 public:
 	//constructor
 	Player(char playerColor);
+	~Player() = default;
 
 	//getters
 	char GetPlayerColor() const;
-	bool UsedIllusion() const;
+	bool GetIllusionUsage() const;
+	bool GetEterCardUsage() const;
 	const hand& GetHandCards() const;
 	hand& GetHandCards();
 	const hand& GetRemovedCards() const;
-	MinionCard* getIllusionCard() const;
 	MinionCard* GetLastMinionCardPlayed() const;
+	MinionCard* GetIllusionCard() const;
 	coveredSet& getCovered();
 
 	//setters
+	void SetEterCardUsage(bool eterCardUsage);
 	void SetPlayerColor(char playerColor);
 	void SetIllusionUsage(bool illusionUsage);
-	void setIllusionCard(MinionCard* illusionCard);
 	void SetHandCards(const hand& handCards);
 
 	//Updates
-	int UpdateCard(int value, int cnt);
+	int UpdateCard(const MinionCard& card, int cnt);
 	//primeste coveredul la celelalt player
 	static void updateCover(uint16_t x, uint16_t y, coveredSet& coveredCards, resizeableMatrix& board);
 	//T(a, b) + T(c, d) = T(a + c, b + d) <-- aplicam asemenea transofmrari pe un coveredSet cand miscam un stack de marime > 1 -- cam consuming dar tabla e pera mica ca sa se simta
 	static void applyTansformToCovered(Player& p1, Player& p2, cardStack& stack, uint16_t oldX, uint16_t oldY, uint16_t newX, uint16_t newY);
 	static void returnStackToHand(hand& h1, hand& h2, cardStack& stack);
 
+	void SetIllusionCard(MinionCard* illusionCard);
 	void SetLastMinionCardPlayed(MinionCard* cardPlayed);
-	bool placeMinionCardFromHand(MinionCard& card); //returns true if card was found in handCards, false otherwise
-	void returnMinionCardToHand(const MinionCard& card); //returns a specific minion card to hand
-	void returnLastMinionCardToHand(); //returns last played minion card to hand
+	//returns true if card was found in handCards, false otherwise
+	bool placeMinionCardFromHand(MinionCard& card);
+	//returns a specific minion card to hand
+	void returnMinionCardToHand(const MinionCard& card);
+	//returns last played minion card to hand
+	void returnLastMinionCardToHand();
 
 	void addToRemovedCards(const MinionCard& card);
-	bool placeMinionCardFromRemovedCard(uint16_t value); //returns true if card was found in removedCards, false otherwise
+	//returns true if card was found in removedCards, false otherwise
+	bool placeMinionCardFromRemovedCard(const MinionCard& card);
 
 	//true if there are covered cards
 	bool printCoveredCards(resizeableMatrix& matrix);

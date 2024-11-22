@@ -1,7 +1,8 @@
 #include "functionsMageCards.h"
 #include "MoveLaterToGameClass.h"
+
 // remove opponent's card that covers one of player's cards
-void funcFireMage1(Board& board,Player& pl)
+void funcFireMage1(Board& board, Player& pl)
 {
 	uint16_t x, y;
 	std::cout << "select the position where you want to remove the opponent's card:\n";
@@ -27,7 +28,7 @@ void funcFireMage2(Board& board,Player& pl)
 {
 	resizeableMatrix& matrix = board.getMatrix();
 
-	std::cout << "what would to remove : 0.column , 1.row \n";
+	std::cout << "what to remove : 0.column , 1.row \n";
 	uint16_t option;
 	std::cin >> option;
 	
@@ -98,7 +99,7 @@ void funcFireMage2(Board& board,Player& pl)
 	board.checkForUpdates();
 }
 
-// cover opponent card with lower value card of yours
+ //cover opponent card with lower value card of yours
 void funcEarthMage1(Board& board,Player& pl, uint16_t x , uint16_t y)
 {
 	hand& currHand = pl.GetHandCards();
@@ -109,30 +110,30 @@ void funcEarthMage1(Board& board,Player& pl, uint16_t x , uint16_t y)
 	std::cout << "Choose a card from the hand and where to place it in the board\n";
 	uint16_t val;
 	std::cin >> val >> x >> y;
-	MinionCard toSearch(val, curr_col);
+	MinionCard toSearch(val, curr_col, false);
 	//check if card in hand. reduce and remove only if can place.
 	if (currHand.find(toSearch) == currHand.end()) {
 		std::cout << "\nYou don't own any cards of that type!\n";
 		system("pause");
 	}
-	if (board.setPos(x, y, 5, curr_col) == 1) {
+	if (board.setPos(x, y, toSearch, pl) == 1) {
 		std::cout << "\nYou can't place that card there!\n";
 		system("pause");
 	}
 	resizeableMatrix& matrix = board.getMatrix();
 	matrix[x][y].back().SetValue(val);
-	pl.UpdateCard(val, -1);
+	pl.UpdateCard(toSearch, -1);
 }
 
 // hole card, position to cover
 void funcEarthMage2(Board& board)
 {
-	MinionCard holeCard(0,'N');
+	MinionCard holeCard(0,'N', false);
 	holeCard.SetIsHole(true);
 }
 
 // original position, destination position (player's card)
-void funcAirMage1(Board& board,Player& pl)
+void funcAirMage1(Board& board, Player& pl)
 {
 	char currColor = pl.GetPlayerColor();
 	uint16_t x1, y1, x2, y2;
@@ -158,6 +159,13 @@ void funcAirMage1(Board& board,Player& pl)
 		std::cout << "no cards here\n";
 		return;
 	}
+
+	if (matrix[x1][y1].back().GetIsEterCard())
+	{
+		std::cout << "Can't use Air Mage on eter card\n";
+		return;
+	}
+
 	if (matrix[x1][y1].back().GetColor() != pl.GetPlayerColor())
 	{
 		std::cout << "on this position there are no cards of your color\n";
@@ -262,8 +270,8 @@ void funcWaterMage2(Board& board,char color,Player& pl)//opponent
 	resizeableMatrix& matrix = board.getMatrix();
 	lineChecker& rowChecker = board.getRowChecker();
 	lineChecker& colChecker = board.getColChecker();
-	uint16_t lastLine = board.getRowCount()-1;
-	uint16_t lastColumn = board.getColCount()-1;
+	uint16_t lastLine = board.getRowCount() - 1;
+	uint16_t lastColumn = board.getColCount() - 1;
 	if (option==0)
 	{
 		bool ok = true;

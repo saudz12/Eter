@@ -1,10 +1,10 @@
 #include "MinionCard.h"
 
-MinionCard::MinionCard(uint16_t value, char color) 
+MinionCard::MinionCard(uint16_t value, char color, bool isEter) 
     : Card{ CardType::MinionCard }, 
     m_value{ value }, 
     m_color{ color }, 
-    m_isEterCard{ false }, 
+    m_isEterCard{ isEter }, 
     m_isIllusionCard{ false }, 
     m_marker{ false }, 
     m_belongsTo('R'), 
@@ -69,7 +69,8 @@ void MinionCard::SetIsEterCard(bool isEterCard)
 
 void MinionCard::SetIsIllusionCard(bool isIllusionCard)
 {
-    m_isIllusionCard = isIllusionCard;
+    if (!m_isEterCard)
+        m_isIllusionCard = isIllusionCard;
 }
 
 void MinionCard::SetCardType(CardType type)
@@ -122,6 +123,11 @@ MinionCard& MinionCard::operator=(const MinionCard& card)
 
 std::ostream& operator<<(std::ostream& out, const MinionCard& card)
 {
-    out << card.m_value << ":" <<card.m_color;
+    if (card.GetIsEterCard())
+        out << "E:" << card.GetColor();
+    if (card.GetIsIllusionCard())
+        out << "I:" << card.GetColor();
+    else
+        out << card.GetValue() << ":" << card.GetColor();
     return out;
 }

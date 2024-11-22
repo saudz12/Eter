@@ -1,9 +1,10 @@
 #include "Player.h"
 
 Player::Player(char playerColor = 'R')
-	: m_playerColor{ playerColor }, m_illusionUsage{ false }, m_illusionCard{nullptr}
+	: m_playerColor{ playerColor }, m_illusionUsage{ false }, m_eterCardUsage{ false }
 {
-	generateTrainingModeHand();
+	//generateTrainingModeHand();
+	generateHand();
 }
 
 char Player::GetPlayerColor() const
@@ -11,9 +12,14 @@ char Player::GetPlayerColor() const
 	return m_playerColor;
 }
 
-bool Player::UsedIllusion() const
+bool Player::GetIllusionUsage() const
 {
 	return m_illusionUsage;
+}
+
+bool Player::GetEterCardUsage() const
+{
+	return m_eterCardUsage;
 }
 
 const hand& Player::GetHandCards() const
@@ -31,9 +37,9 @@ const hand& Player::GetRemovedCards() const
 	return m_removedCards;
 }
 
-MinionCard* Player::getIllusionCard() const
+void Player::SetEterCardUsage(bool eterCardUsage)
 {
-	return m_illusionCard;
+	m_eterCardUsage = eterCardUsage;
 }
 
 void Player::SetPlayerColor(char playerColor)
@@ -46,29 +52,23 @@ void Player::SetIllusionUsage(bool illusionUsage)
 	m_illusionUsage = illusionUsage;
 }
 
-void Player::setIllusionCard(MinionCard* illusionCard)
-{
-	m_illusionCard = illusionCard;
-}
-
 void Player::SetHandCards(const hand& handCards)
 {
 	m_handCards = handCards;
 }
 
 //1 if unsucessfull, 0 updates was completed
-int Player::UpdateCard(int value, int cnt)
+int Player::UpdateCard(const MinionCard& card, int cnt)
 {
 	//bounds
-	if (value < 1 && value > 4 || cnt != 1 && cnt != -1)
+	if (cnt != 1 && cnt != -1)
 		return 1;
 	//change if found
-	MinionCard toUpdate(value, m_playerColor);
-	if (m_handCards.find(toUpdate) == m_handCards.end())
+	if (m_handCards.find(card) == m_handCards.end())
 		return 1;
-	m_handCards[toUpdate] += cnt;
-	if (m_handCards[toUpdate] == 0)
-		m_handCards.erase(toUpdate);
+	m_handCards[card] += cnt;
+	if (m_handCards[card] == 0)
+		m_handCards.erase(card);
 	return 0;
 }
 
@@ -130,11 +130,13 @@ void Player::returnStackToHand(hand& h1, hand& h2, cardStack& stack)
 
 void Player::generateTrainingModeHand()
 {
+	m_handCards.clear();
+
 	//creating minion cards with their value and color
-	MinionCard combatCard1(1, m_playerColor);
-	MinionCard combatCard2(2, m_playerColor);
-	MinionCard combatCard3(3, m_playerColor);
-	MinionCard combatCard4(4, m_playerColor);
+	MinionCard combatCard1(1, m_playerColor, false);
+	MinionCard combatCard2(2, m_playerColor, false);
+	MinionCard combatCard3(3, m_playerColor, false);
+	MinionCard combatCard4(4, m_playerColor, false);
 
 	m_handCards.emplace(combatCard1, 2);
 	m_handCards.emplace(combatCard2, 2);
@@ -142,14 +144,35 @@ void Player::generateTrainingModeHand()
 	m_handCards.emplace(combatCard4, 1);
 }
 
+void Player::generateHand()
+{
+	m_handCards.clear();
+
+	m_handCards.emplace(MinionCard{ 1, m_playerColor, false }, 2);
+	m_handCards.emplace(MinionCard{ 2, m_playerColor, false }, 3);
+	m_handCards.emplace(MinionCard{ 3, m_playerColor, false }, 3);
+	m_handCards.emplace(MinionCard{ 4, m_playerColor, false }, 1);
+	m_handCards.emplace(MinionCard{ 1, m_playerColor, true }, 1); //eter card has the value 1 
+}
+
 MinionCard* Player::GetLastMinionCardPlayed() const
 {
 	return m_lastMinionCardPlayed;
 }
 
+MinionCard* Player::GetIllusionCard() const
+{
+	return m_illusionCard;
+}
+
 coveredSet& Player::getCovered()
 {
 	return this->m_coveredCardSet;
+}
+
+void Player::SetIllusionCard(MinionCard* illusionCard)
+{
+	m_illusionCard = illusionCard;
 }
 
 void Player::SetLastMinionCardPlayed(MinionCard* cardPlayed)
@@ -194,14 +217,14 @@ void Player::addToRemovedCards(const MinionCard& card)
 		m_removedCards.emplace(card, 1);
 }
 
-bool Player::placeMinionCardFromRemovedCard(uint16_t value)
+bool Player::placeMinionCardFromRemovedCard(const MinionCard& card)
 {
 	bool placed = false;
-	for (auto& card : m_removedCards)
+	if (m_removedCards.find(card) != m_removedCards.end())
 	{
-		if (card.first.GetValue() == value && card.second > 0)
+		if (m_removedCards[card] != 0)
 		{
-			m_removedCards[card.first]--;
+			m_removedCards[card]--;
 			placed = true;
 		}
 	}

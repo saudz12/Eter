@@ -26,7 +26,7 @@ private:
 	char m_belongsTo;
 	bool m_isHole;
 public:
-	MinionCard(uint16_t value, char color);
+	MinionCard(uint16_t value, char color, bool isEter);
 	
 	//overload functions
 	friend std::ostream& operator<<(std::ostream &out,const MinionCard &card);

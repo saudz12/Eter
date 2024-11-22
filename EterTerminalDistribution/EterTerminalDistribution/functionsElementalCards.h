@@ -6,46 +6,46 @@ using handCard = std::unordered_map<MinionCard, uint16_t>;
 //using position = std::pair<uint16_t, uint16_t>;
 
 //maybe generate new ExplosionCard
-void funcControlledExplosion(Board&,Player&,Player&);
+void funcControlledExplosion(Board&, Player&, Player&);
 
 //implement in player last card played
 void funcDestruction(Board&, Player&);
 
 //first 2 uint16_t for revealing Illusion and the next for placing Card
-void funcFlame(Board&,uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2,MinionCard& CardToBePlaced);
+void funcFlame(Board&, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard&, Player& );
 
 //player Red,player Blue
-void funcFire(Board&, Player&, Player&, uint16_t value);
+void funcFire(Board&, Player&, Player&, uint16_t);
 
 //maybe also keep all the removed cards in unordered set
 void funcAsh(Board&, Player&, uint16_t, uint16_t, uint16_t);
 
-void funcSpark(Board&,char);
+void funcSpark(Board&, Player& p);
 
-void funcSquall(Board&,Player&,uint16_t,uint16_t);
+void funcSquall(Board&, Player&, uint16_t, uint16_t);
 
-void funcGale(Board&,handCard&,handCard&);
+void funcGale(Board&, handCard&, handCard&);
 
 //shit a line 1 space in its orientation. Overflowing stacks return the respective cards to the users hand
-void funcHurricane(Board&,hand&, hand&);
+void funcHurricane(Board&, hand&, hand&);
 
 //move card one position to antoher
-void funcGust(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
+void funcGust(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
 
 //exchange illusion card with other card
-void funcMirage(Board&,handCard&,uint16_t,uint16_t,const MinionCard&);
+void funcMirage(Board&, Player& p, uint16_t, uint16_t, const MinionCard&);
 
 //remove stack of cards
-void funcStorm(Board&,uint16_t,uint16_t);
+void funcStorm(Board& board, Player& p1, Player& p2, uint16_t x, uint16_t y);
 
 //tide(board, first set of coordonates, second set of coordonates) -- exchange 2 stacks
-void funcTide(Board&,uint16_t,uint16_t,uint16_t,uint16_t);
+void funcTide(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
 
 //play again a illusion(cannot have 2 illsuion at the same time)
-void funcMist(Board&, Player&, uint16_t, uint16_t, uint16_t);
+void funcMist(Board&, Player&, uint16_t, uint16_t, uint16_t, MinionCard&);
 
 //move a card/stack to empty adj space and place new card to the empty space created
-void funcWave(Board&, uint16_t, uint16_t,MinionCard);
+void funcWave(Board&, uint16_t, uint16_t, MinionCard);
 
 //move 2 card separated by empty space into the empty space and place them as stacks 
 void funcWhirlpool(Board&, uint16_t, uint16_t);
@@ -57,22 +57,22 @@ void funcBlizzard(line&);
 void funcWaterfall(Board&, uint16_t);
 
 //increase value of a card by one, marker also place on the card(tournament mode)
-void funcSupport(Board&,uint16_t, uint16_t);
+void funcSupport(Board&, uint16_t, uint16_t);
 
 //remove all visible 1 value cards
 void funcEarthquake(Board&);
 
 //value of a card decreased by 1,marked placed on card
-void funcCrumble(Board&,uint16_t,uint16_t);
+void funcCrumble(Board&, uint16_t, uint16_t);
 
 //defines a border in a position
 void funcBorder(Board&, uint16_t, uint16_t);
 
 //move 2 neighboring cards/stacks vertically/horizontally
-void funcAvalanche(Board&, uint16_t, uint16_t, uint16_t, uint16_t,char direction);
+void funcAvalanche(Board&, uint16_t, uint16_t, uint16_t, uint16_t, char);
 
 //cover a illusion with a card
-void funcRock(Board&,uint16_t,uint16_t,MinionCard&);
+void funcRock(Board&, uint16_t, uint16_t, MinionCard&);
 
 void funcDefault();
 

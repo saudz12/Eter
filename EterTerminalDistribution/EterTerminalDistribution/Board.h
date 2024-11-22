@@ -43,7 +43,7 @@ private:
 	int16_t YBoundTest(int16_t y);
 
 	//other check
-	bool posPlaceTest(int16_t x, int16_t y, uint16_t val);
+	bool posPlaceTest(int16_t x, int16_t y, const MinionCard& card);
 	bool isMatMaxSize();
 
 	//add lines to border
@@ -68,8 +68,8 @@ public:
 	//only checks it. to modify it it needs to return a reference. do the check somewhere beforehand to get modifyable card
 	MinionCard getCardOnPos(int16_t x, int16_t y);
 	//1 if not succesfull/invalid, 0 if ok
-	int16_t setPos(int16_t x, int16_t y, uint16_t val, char col);
-	int16_t setPosWaterfall(int16_t x, int16_t y, uint16_t val, char col);
+	int16_t setPos(int16_t x, int16_t y, const MinionCard& card, Player& p);
+	int16_t setPosWaterfall(int16_t x, int16_t y, const MinionCard& card);
 	int16_t removePos(int16_t x, int16_t y, uint16_t pos);
 	int16_t removeStack(int16_t x, int16_t y);
 	char entityWon(int16_t x, int16_t y, char col);
