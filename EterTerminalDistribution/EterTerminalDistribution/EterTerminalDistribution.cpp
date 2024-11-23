@@ -222,7 +222,7 @@ int main() //for now we implement training mode here, later we will move it to a
     int16_t x, y;
     uint16_t val;
     
-    Player* currPlayer;
+    Player* currPlayer = nullptr;
 
     bool ok = true;
     bool wasPlaced = false;
@@ -424,9 +424,23 @@ int main() //for now we implement training mode here, later we will move it to a
                         getOut = true;
                         break;
                     case 1:
+                    {
+                        Board copyBoard;
+                        Board::cloneMatrix(*myBoard, copyBoard);
+                        Player copyPl1 = *p1;
+                        Player copyPl2 = *p2;
                         myBoard->applyExplosionOnBoard(explCard, *p1, *p2);
-                        getOut = true;
+                        if (isolatedSpaces(*myBoard))
+                        {
+                            Board::cloneMatrix(copyBoard, *myBoard);
+                            *p1 = copyPl1;
+                            *p2 = copyPl2;
+                            std::cout << "Can't have isolated stacks/cards..\n";
+                        }
+                        else 
+                            getOut = true;
                         break;
+                    }
                     case 2:
                         explCard.RotateToRight(myBoard->getMaxSize());
                         explCard.showExpl(myBoard->getMaxSize());

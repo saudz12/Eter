@@ -261,6 +261,24 @@ void Player::printHandCards()
 	}
 }
 
+Player& Player::operator=(const Player& p)
+{
+	if (this == &p)
+	{
+		return *this;
+	}
+
+	m_handCards = p.m_handCards;
+	m_coveredCardSet = p.m_coveredCardSet;
+	m_playerColor = p.m_playerColor;
+	m_illusionUsage = p.m_illusionUsage;
+	m_eterCardUsage = p.m_eterCardUsage;
+	m_lastMinionCardPlayed = p.m_lastMinionCardPlayed;
+	m_illusionCard = p.m_illusionCard;
+
+	return *this;
+}
+
 std::ostream& operator<<(std::ostream& os, const position& posTuple)
 {
 	os << "{" << std::get<0>(posTuple) << ", " << std::get<0>(posTuple) << ": " << std::get<0>(posTuple) << "}";

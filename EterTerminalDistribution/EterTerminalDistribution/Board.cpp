@@ -377,6 +377,10 @@ void Board::updateColChecker(uint16_t y, uint16_t option)
 		m_colChecker[y].first--;
 		m_colChecker[y].second++;
 		break;
+	case ZERO:
+		m_colChecker[y].first = 0;
+		m_colChecker[y].second = 0;
+		break;
 	default:
 		break;
 	}
@@ -405,6 +409,10 @@ void Board::updateRowChecker(uint16_t x, uint16_t option)
 	case BLUE_ADD_RED_DEC:
 		m_rowChecker[x].first--;
 		m_rowChecker[x].second++;
+		break;
+	case ZERO:
+		m_rowChecker[x].first = 0;
+		m_rowChecker[x].second = 0;
 		break;
 	default:
 		break;
@@ -692,6 +700,9 @@ void Board::cloneMatrix(const Board& from, Board& to)
 	uint16_t nCols = from.m_colChecker.size();
 	uint16_t nRows = from.m_rowChecker.size();
 
+	to.m_rowChecker = from.m_rowChecker;
+	to.m_colChecker = from.m_colChecker;
+
 	to.m_matrix.resize(nRows);
 	for (int i = 0; i < nRows; i++) {
 		to.m_matrix[i].resize(nCols);
@@ -703,7 +714,7 @@ void Board::cloneMatrix(const Board& from, Board& to)
 	}
 }
 
-void Board::applyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1, Player& pl2)
+void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& pl2)
 {
 	explMap currExlpMap = explCard.GetExplosionMap();
 	for (const auto& elem : currExlpMap)
@@ -717,7 +728,24 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1, Pla
 			if (!m_matrix[positionX][positionY].empty() && !m_matrix[positionX][positionY].back().GetIsEterCard())
 			{
 				MinionCard lastCard = m_matrix[positionX][positionY].back();
+				lastCard.SetIsIllusionCard(false);
 				m_matrix[positionX][positionY].pop_back();
+
+				if (lastCard.GetColor() == pl1.GetPlayerColor())
+					pl1.addToRemovedCards(lastCard);
+				else
+					pl2.addToRemovedCards(lastCard);
+
+				if (lastCard.GetColor() == 'R')
+				{
+					updateRowChecker(positionX, RED_DEC);
+					updateColChecker(positionY, RED_DEC);
+				}
+				else
+				{
+					updateRowChecker(positionX, BLUE_DEC);
+					updateColChecker(positionY, BLUE_DEC);
+				}
 			}
 			break;
 		case ReturnRemoveOrHoleCard::ReturnCard:
@@ -730,16 +758,28 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1, Pla
 					pl1.returnMinionCardToHand(lastCard);
 				else
 					pl2.returnMinionCardToHand(lastCard);
+				if (lastCard.GetColor() == 'R')
+				{
+					updateRowChecker(positionX, RED_DEC);
+					updateColChecker(positionY, RED_DEC);
+				}
+				else
+				{
+					updateRowChecker(positionX, BLUE_DEC);
+					updateColChecker(positionY, BLUE_DEC);
+				}
 			}
 			break;
 		case ReturnRemoveOrHoleCard::HoleCard:
 			if (!m_matrix[positionX][positionY].empty() && !m_matrix[positionX][positionY].back().GetIsEterCard())
 			{
-				while (m_matrix[positionX][positionY].size()>1)
+				while (m_matrix[positionX][positionY].size() > 1)
 				{
 					m_matrix[positionX][positionY].pop_back();
 				}
 				m_matrix[positionX][positionY].back().SetCardType(CardType::HoleCard);
+				updateRowChecker(positionX, ZERO);
+				updateColChecker(positionY, ZERO);
 			}
 			break;
 		case ReturnRemoveOrHoleCard::Default:

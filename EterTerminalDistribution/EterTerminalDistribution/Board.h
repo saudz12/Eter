@@ -12,6 +12,7 @@
 #define BLUE_ADD_RED_DEC 4
 #define RED_DEC 5
 #define BLUE_DEC 6
+#define ZERO 7
 
 #include "Player.h"
 #include "ExplosionCard.h"

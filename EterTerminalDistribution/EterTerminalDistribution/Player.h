@@ -77,6 +77,8 @@ public:
 	bool printCoveredCards(resizeableMatrix& matrix);
 
 	void printHandCards();
+	
+	Player& operator=(const Player& p);
 };
 
 std::ostream& operator<<(std::ostream& os, const position& posTuple);
