@@ -75,6 +75,8 @@ public:
 
 	//true if there are covered cards
 	bool printCoveredCards(resizeableMatrix& matrix);
+
+	void printHandCards();
 };
 
 std::ostream& operator<<(std::ostream& os, const position& posTuple);

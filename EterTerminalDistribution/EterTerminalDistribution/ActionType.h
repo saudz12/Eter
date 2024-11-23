@@ -3,7 +3,7 @@
 
 enum class ActionCard : uint16_t {
 	ControlledExplosion,
-	Desctruction,
+	Destruction,
 	Flame,
 	Fire,
 	Ash,

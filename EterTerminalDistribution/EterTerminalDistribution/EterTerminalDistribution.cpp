@@ -22,89 +22,194 @@ void checkStack(const cardStack& stackToCheck) {
     std::cout << ")";
 }
 
-void checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, char curr_col, hand& currHand, hand& removedCardsHand) {
-    uint16_t x, y, val;
-    std::cout << "\nELEMENTAL CARDS:\n1. Fire\n2. Ash\n3. Waterfall\n4. Avalanche\n5. Squall\n6. Hurricane\n7. Tide\n8. Cancel elemental card\n";
-    int card;
+void checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, Player* currPlayer, hand& currHand, hand& removedCardsHand) {
+    std::cout << "\nELEMENTAL CARDS:\n";
+    std::cout << "1. Controlled Explosion\n2. Destruction\n3. Flame\n4. Fire\n5. Ash\n6. Spark\n7. Squall\n8. Gale\n";
+    std::cout << "9. Hurricane\n10. Gust\n11. Mirage\n12. Storm\n13. Tide\n14. Mist\n15. Wave\n16. Whirlpool\n";
+    std::cout << "17. Blizzard\n18. Waterfall\n19. Support\n20. Earthquake\n21. Crumble\n22. Border\n23. Avalanche\n24. Rock\n";
+    std::cout << "25. Go back\n";
+    uint16_t card;
     std::cin >> card;
     switch (card)
     {
-    case 1:
-    {
-        std::cout << "\nChoose a value\n";
-        int value;
-        std::cin >> value;
-        funcFire((*b), (*p1), (*p2), value);
+    case 1: {
+        funcControlledExplosion(*b, *p1, *p2);
         break;
     }
-    case 2:
-    {
-        if (removedCardsHand.empty())
+    case 2: {
+        if (currPlayer->GetPlayerColor() == 'R')
+            funcDestruction(*b, *p2);
+        else
+            funcDestruction(*b, *p1);
+        break;
+    }
+    case 3: {
+        uint16_t illusionX, illusionY, x, y, val;
+        std::cout << "Type the coordonates of the illusion card you want to reveal\n";
+        std::cin >> illusionX >> illusionY;
+
+        currPlayer->printHandCards();
+        uint16_t placeOption;
+        std::cout << "Options:\n1. Place eter card\n2. Play a minion card as an illusion\n3. Play a minion card\n";
+        std::cin >> placeOption;
+
+        bool wasPlaced = false;
+
+        switch (placeOption)
         {
-            std::cout << "\nYou have no removed cards\n";
+        case 1:
+        {
+            if (currPlayer->GetEterCardUsage())
+            {
+                std::cout << "You have already used your eter card\n";
+                break;
+            }
+            std::cout << "Choose the position: ";
+            std::cin >> x >> y;
+            MinionCard cardToPlace(1, currPlayer->GetPlayerColor(), true);
+
+            if (currHand.find(cardToPlace) == currHand.end()) {
+                std::cout << "\nYou don't own any cards of that type!\n";
+                system("pause");
+                break;
+            }
+
+            if (funcFlame(*b, illusionX, illusionY, x, y, cardToPlace, *currPlayer) == 1) {
+                system("pause");
+                break;
+            }
+            currPlayer->SetEterCardUsage(true);
+            currPlayer->UpdateCard(cardToPlace, -1);
+            wasPlaced = true;
             break;
         }
-        std::cout << "\nYour Removed Cards:\n";
-        for (auto& i : removedCardsHand) {
-            std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << "Left\n";
+        case 2:
+        {
+            if (currPlayer->GetIllusionUsage())
+            {
+                std::cout << "You have already used your illusion\n";
+                break;
+            }
+            std::cout << "\nChoose a card and the position: ";
+            std::cin >> val >> x >> y;
+            MinionCard cardToPlace(val, currPlayer->GetPlayerColor(), false);
+
+            if (currHand.find(cardToPlace) == currHand.end()) {
+                std::cout << "\nYou don't own any cards of that type!\n";
+                system("pause");
+                break;
+            }
+
+            cardToPlace.SetIsIllusionCard(true);
+
+            if (funcFlame(*b, illusionX, illusionY, x, y, cardToPlace, *currPlayer) == 1) {
+                system("pause");
+                break;
+            }
+
+            cardToPlace.SetIsIllusionCard(false);
+            currPlayer->UpdateCard(cardToPlace, -1);
+            currPlayer->SetIllusionUsage(true);
+            currPlayer->SetIllusionCard(&b->getCardOnPos(x, y));
+            wasPlaced = true;
+            break;
         }
-        std::cout << "\nWhich card and where: ";
-        std::cin >> val >> x >> y;
-        if (curr_col == 'R')
-            funcAsh((*b), (*p1), val, x, y);
-        else
-            funcAsh((*b), (*p2), val, x, y);
-        break;
-    }
-    case 3:
-    {
-        std::cout << "\nChoose a column\n";
-        int columnIndex;
-        std::cin >> columnIndex;
-        funcWaterfall((*b), columnIndex);
+        case 3:
+        {
+            std::cout << "\nChoose a card and the position: ";
+            std::cin >> val >> x >> y;
+            MinionCard cardToPlace(val, currPlayer->GetPlayerColor(), false);
+
+            if (currHand.find(cardToPlace) == currHand.end()) {
+                std::cout << "\nYou don't own any cards of that type!\n";
+                system("pause");
+                break;
+            }
+
+            if (funcFlame(*b, illusionX, illusionY, x, y, cardToPlace, *currPlayer) == 1) {
+                system("pause");
+                break;
+            }
+            currPlayer->UpdateCard(cardToPlace, -1);
+            wasPlaced = true;
+            break;
+        }
+        default:
+            break;
+        }
+
+        if (wasPlaced)
+        {
+            currPlayer->SetLastMinionCardPlayed(&b->getCardOnPos(x, y));
+            if (currPlayer->GetPlayerColor() == 'R')
+                Player::updateCover(x, y, p2->getCovered(), b->getMatrix());
+            else
+                Player::updateCover(x, y, p1->getCovered(), b->getMatrix());
+
+            std::cout << "Succesfull move!\n";
+        }
+
         break;
     }
     case 4: {
-        
-        /*if (curr_col == 'R')
-            funcSquall(*b, *p2);
-        else
-            funcSquall(*b, *p1);
-        break;*/
-
+        uint16_t value;
+        std::cout << "Type a value for the card you want to return\n";
+        std::cin >> value;
+        funcFire(*b, *p1, *p2, value);
+        break;
     }
     case 5: {
-        uint16_t x, y;
-        //std::function<void(Board&, Player&, uint16_t, uint16_t)> myFunc(funcSquall);
-        std::cout << "\nWhich(by {x, y}):";
-        std::cin >> x >> y;
-        if (curr_col == 'R') {
-            funcSquall(*b, *p2, x, y);
+        std::cout << "Removed card:\n";
+        for (auto& i : removedCardsHand)
+        {
+                std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << "Left\n";
         }
-        else {
-            funcSquall(*b, *p1, x, y);
+        uint16_t x, y, val;
+        std::cout << "Type which card you want place and the coordonates: ";
+        std::cin >> val >> x >> y;
+
+        MinionCard card(val, currPlayer->GetPlayerColor(), false);
+
+        if (!currPlayer->placeMinionCardFromRemovedCard(card)) {
+            std::cout << "\nYou don't own any cards of that type!\n";
+            system("pause");
+            break;
         }
+
+        if (b->setPos(x, y, card, *currPlayer) == 1) {
+            std::cout << "\nYou can't place that card there!\n";
+            system("pause");
+            break;
+        }
+
+        currPlayer->SetLastMinionCardPlayed(&b->getCardOnPos(x, y));
+        if (currPlayer->GetPlayerColor() == 'R')
+            Player::updateCover(x, y, p2->getCovered(), b->getMatrix());
+        else
+            Player::updateCover(x, y, p1->getCovered(), b->getMatrix());
+
+        std::cout << "Succesfull move!\n";
+        break;
     }
     case 6: {
-        funcHurricane(*b, p1->GetHandCards(), p2->GetHandCards());
+        funcSpark(*b, *currPlayer);
         break;
     }
     case 7: {
-        uint16_t x1, x2, y1, y2;
-        std::cout << "Exchange stack on pos(x, y): ";
-        std::cin >> x1 >> y1;
-        std::cout << "\nwith: ";
-        std::cin >> x2 >> y2;
-        funcTide(*b, x1, y1, x2, y2);
+        std::cout << "Type the coodonates of your opponent's card: ";
+        uint16_t x, y;
+        std::cin >> x >> y;
+        if (currPlayer->GetPlayerColor() == 'R')
+            funcSquall(*b, *p2, x, y);
+        else
+            funcSquall(*b, *p1, x, y);
+        break;
     }
     case 8: {
-        return;
-    }
-    default: {
+        funcGale(*b, *p1, *p2);
         break;
     }
     }
-    system("pause");
 }
 
 int main() //for now we implement training mode here, later we will move it to a function
@@ -117,13 +222,16 @@ int main() //for now we implement training mode here, later we will move it to a
     int16_t x, y;
     uint16_t val;
     
+    Player* currPlayer;
+
     bool ok = true;
-    char curr_col = 'R';
     bool wasPlaced = false;
     int rounds = 3;
     int options = 0;
     hand currHand;
     hand removedCardsHand;
+    bool eterCardUsage;
+    bool illusionUsage;
 
     bool elementalCardUsedTester = false;
     
@@ -132,76 +240,141 @@ int main() //for now we implement training mode here, later we will move it to a
         system("cls");
         myBoard->printBoard();
         wasPlaced = false;
-        curr_col = ok?'R':'B';
+        currPlayer = ok ? p1 : p2;
         playerTurn(ok);
-        if (curr_col == 'R')
+        if (currPlayer->GetPlayerColor() == 'R')
         {
             currHand = p1->GetHandCards();
             removedCardsHand = p1->GetRemovedCards();
-            MinionCard card(1, 'R');
-            p1->addToRemovedCards(card);
+            eterCardUsage = p1->GetEterCardUsage();
+            illusionUsage = p1->GetIllusionUsage();
         }
         else
         {
             currHand = p2->GetHandCards();
             removedCardsHand = p2->GetRemovedCards();
-
+            eterCardUsage = p2->GetEterCardUsage();
+            illusionUsage = p2->GetIllusionUsage();
         }
 
         ///menu
-        std::cout << "\nOPTIONS:\n1. Place a card\n2. Show Hand\n3. Show Covered\n4. Check Stack\n5. Use Elemental Power\n6. Test Isolated Spaces in Board\n7. Help\n8. Use explosion card\n9. Use Mage Card\n";
+        std::cout << "\nOPTIONS:\n1. Place a card\n2. Show Hand\n3. Show Covered\n4. Check Stack\n";
+        std::cout <<  "5. Use Elemental Power\n6. Test Isolated Spaces in Board\n7. Help\n8. Use explosion card\n9. Use Mage Card\n";
         std::cin >> options;
         switch (options)
         {
         case 1: {
-            std::cout << "\nYour Hand:\n";
-            for (auto& i : currHand) {
-                std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << "Left\n";
-            }
-            std::cout << "\nWhich card and where: ";
-            std::cin >> val >> x >> y;
+            currPlayer->printHandCards();
+            uint16_t placeOption;
+            std::cout << "\nOptions:\n1. Place eter card\n2. Play a minion card as an illusion\n3. Play a minion card\n";
+            std::cin >> placeOption;
 
-            //check if card in hand. reduce and remove only if can place.
-            MinionCard toSearch(val, curr_col);
-            if (currHand.find(toSearch) == currHand.end()) {
-                std::cout << "\nYou don't own any cards of that type!\n";
-                system("pause");
+            switch (placeOption)
+            {
+            case 1:
+            {
+                if (currPlayer->GetEterCardUsage())
+                {
+                    std::cout << "You have already used your eter card\n";
+                    break;
+                }
+                std::cout << "Choose the position: ";
+                std::cin >> x >> y;
+                MinionCard cardToPlace(1, currPlayer->GetPlayerColor(), true);
+
+                if (currHand.find(cardToPlace) == currHand.end()) {
+                    std::cout << "\nYou don't own any cards of that type!\n";
+                    system("pause");
+                    break;
+                }
+
+                if (myBoard->setPos(x, y, cardToPlace, *currPlayer) == 1) {
+                    std::cout << "\nYou can't place that card there!\n";
+                    system("pause");
+                    break;
+                }
+                currPlayer->SetEterCardUsage(true);
+                currPlayer->UpdateCard(cardToPlace, -1);
+                wasPlaced = true;
                 break;
             }
-            if (myBoard->setPos(x, y, val, curr_col) == 1) {
-                std::cout << "\nYou can't place that card there!\n";
-                system("pause");
+            case 2:
+            {
+                if (currPlayer->GetIllusionUsage())
+                {
+                    std::cout << "You have already used your illusion\n";
+                    break;
+                }
+                std::cout << "\nChoose a card and the position: ";
+                std::cin >> val >> x >> y;
+                MinionCard cardToPlace(val, currPlayer->GetPlayerColor(), false);
+
+                if (currHand.find(cardToPlace) == currHand.end()) {
+                    std::cout << "\nYou don't own any cards of that type!\n";
+                    system("pause");
+                    break;
+                }
+
+                cardToPlace.SetIsIllusionCard(true);
+
+                if (myBoard->setPos(x, y, cardToPlace, *currPlayer) == 1) {
+                    std::cout << "\nYou can't place that card there!\n";
+                    system("pause");
+                    break;
+                }
+
+                cardToPlace.SetIsIllusionCard(false);
+                currPlayer->UpdateCard(cardToPlace, -1);
+                currPlayer->SetIllusionUsage(true);
+                currPlayer->SetIllusionCard(&myBoard->getCardOnPos(x, y));
+                wasPlaced = true;
                 break;
             }
-            if (curr_col == 'R') {
-                p1->UpdateCard(val, -1);
-                Player::updateCover(x, y, p2->getCovered(), myBoard->getMatrix());
+            case 3:
+            {
+                std::cout << "\nChoose a card and the position: ";
+                std::cin >> val >> x >> y;
+                MinionCard cardToPlace(val, currPlayer->GetPlayerColor(), false);
+
+                if (currHand.find(cardToPlace) == currHand.end()) {
+                    std::cout << "\nYou don't own any cards of that type!\n";
+                    system("pause");
+                    break;
+                }
+
+                if (myBoard->setPos(x, y, cardToPlace, *currPlayer) == 1) {
+                    std::cout << "\nYou can't place that card there!\n";
+                    system("pause");
+                    break;
+                }
+                currPlayer->UpdateCard(cardToPlace, -1);
+                wasPlaced = true;
+                break;
             }
-            else {
-                p2->UpdateCard(val, -1);
-                Player::updateCover(x, y, p1->getCovered(), myBoard->getMatrix());
+            default:
+                break;
             }
 
-            wasPlaced = true;
-            
-            std::cout << "Succesfull move!\n";
+            if (wasPlaced)
+            {
+                currPlayer->SetLastMinionCardPlayed(&myBoard->getCardOnPos(x, y));
+                if (currPlayer->GetPlayerColor() == 'R')
+                    Player::updateCover(x, y, p2->getCovered(), myBoard->getMatrix());
+                else
+                    Player::updateCover(x, y, p1->getCovered(), myBoard->getMatrix());
+
+                std::cout << "Succesfull move!\n";
+            }
             system("pause");
             break;
         }
         case 2: {
-            std::cout << "\nYour Hand:\n";
-            for (auto& i : currHand) {
-                std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << " Left\n";
-            }
+            currPlayer->printHandCards();
             system("pause");
             break;
         }
         case 3: {
-            if (curr_col == 'R')
-                checkCoveredCards(p1->getCovered());
-            else
-                checkCoveredCards(p2->getCovered());
-            system("pause");
+            checkCoveredCards(currPlayer->getCovered());
             break;
         }
         case 4: {
@@ -218,9 +391,10 @@ int main() //for now we implement training mode here, later we will move it to a
         }
         case 5:
         {
-            checkElementalCardFunction(myBoard, p1, p2, curr_col, currHand, removedCardsHand);
+            checkElementalCardFunction(myBoard, p1, p2, currPlayer, currHand, removedCardsHand);
             elementalCardUsedTester = true;
             wasPlaced = true;
+            system("pause");
             break;
         }
         case 6: {
@@ -272,24 +446,22 @@ int main() //for now we implement training mode here, later we will move it to a
             system("pause");
             break;
         case 9:
-            if (curr_col == 'R')
-                funcWaterMage2(*myBoard, 'B', *p2);
-            else
-                funcWaterMage2(*myBoard, 'R', *p1);
+            
             system("pause");
             break;
         default:
             break;
         }
+
         if (wasPlaced) {
             wasPlaced = false;
             //check win condition
-            if (elementalCardUsedTester == true) { ///big error  - elemental cards need different check ;-;
+            /*if (elementalCardUsedTester == true) { ///big error  - elemental cards need different check ;-;
                 elementalCardUsedTester = false;
                 continue;
-            }
-            if (myBoard->entityWon(x, y, curr_col)) {
-                if (curr_col == 'R')
+            }*/
+            if (myBoard->entityWon(x, y, currPlayer->GetPlayerColor())) {
+                if (currPlayer->GetPlayerColor() == 'R')
                     myScore.first++;
                 else
                     myScore.second++;
@@ -306,19 +478,16 @@ int main() //for now we implement training mode here, later we will move it to a
                 system("pause");
                 continue;
             }
-            ///Tiebreaker - uodate it
+            ///Tiebreaker - update it
             if (myBoard->isBoardFilled() || currHand.empty()) {
                 //The other player has one more move left!
                 ok = !ok;
-                curr_col = ok ? 'R' : 'B';
-                if (curr_col == 'R')
-                    currHand = p1->GetHandCards();
-                else
-                    currHand = p2->GetHandCards();
+                currPlayer = ok ? p1 : p2;
+                currHand = currPlayer->GetHandCards();
 
                 system("cls");
                 myBoard->printBoard();
-                curr_col = ok ? 'R' : 'B';
+                currPlayer = ok ? p1 : p2;
                 playerTurn(ok);
 
                 ///menu
@@ -327,41 +496,112 @@ int main() //for now we implement training mode here, later we will move it to a
                 switch (options)
                 {
                 case 1: {
-                    std::cout << "\nYour Hand:\n";
-                    for (auto& i : currHand) {
-                        std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << "Left\n";
-                    }
-                    std::cout << "\nWhich card and where: ";
-                    std::cin >> val >> x >> y;
+                    currPlayer->printHandCards();
+                    uint16_t placeOption;
+                    std::cout << "\nOptions:\n1. Place eter card\n2. Play a minion card as an illusion\n3. Play a minion card\n";
+                    std::cin >> placeOption;
 
-                    //check if card in hand. reduce and remove only if can place.
-                    MinionCard toSearch(val, curr_col);
-                    if (currHand.find(toSearch) == currHand.end()) {
-                        std::cout << "\nYou don't own any cards of that type!\n";
-                        system("pause");
+                    switch (placeOption)
+                    {
+                    case 1:
+                    {
+                        if (currPlayer->GetEterCardUsage())
+                        {
+                            std::cout << "You have already used your eter card\n";
+                            break;
+                        }
+                        std::cout << "Choose the position: ";
+                        std::cin >> x >> y;
+                        MinionCard cardToPlace(1, currPlayer->GetPlayerColor(), true);
+
+                        if (currHand.find(cardToPlace) == currHand.end()) {
+                            std::cout << "\nYou don't own any cards of that type!\n";
+                            system("pause");
+                            break;
+                        }
+
+                        if (myBoard->setPos(x, y, cardToPlace, *currPlayer) == 1) {
+                            std::cout << "\nYou can't place that card there!\n";
+                            system("pause");
+                            break;
+                        }
+                        currPlayer->SetEterCardUsage(true);
+                        currPlayer->UpdateCard(cardToPlace, -1);
+                        wasPlaced = true;
                         break;
                     }
-                    if (myBoard->setPos(x, y, val, curr_col) == 1) {
-                        std::cout << "\nYou can't place that card there!\n";
-                        system("pause");
+                    case 2:
+                    {
+                        if (currPlayer->GetIllusionUsage())
+                        {
+                            std::cout << "You have already used your illusion\n";
+                            break;
+                        }
+                        std::cout << "\nChoose a card and the position: ";
+                        std::cin >> val >> x >> y;
+                        MinionCard cardToPlace(val, currPlayer->GetPlayerColor(), false);
+
+                        if (currHand.find(cardToPlace) == currHand.end()) {
+                            std::cout << "\nYou don't own any cards of that type!\n";
+                            system("pause");
+                            break;
+                        }
+
+                        cardToPlace.SetIsIllusionCard(true);
+
+                        if (myBoard->setPos(x, y, cardToPlace, *currPlayer) == 1) {
+                            std::cout << "\nYou can't place that card there!\n";
+                            system("pause");
+                            break;
+                        }
+
+                        cardToPlace.SetIsIllusionCard(false);
+                        currPlayer->UpdateCard(cardToPlace, -1);
+                        currPlayer->SetIllusionUsage(true);
+                        currPlayer->SetIllusionCard(&myBoard->getCardOnPos(x, y));
+                        wasPlaced = true;
                         break;
                     }
-                    if (curr_col == 'R') {
-                        p1->UpdateCard(val, -1);
+                    case 3:
+                    {
+                        std::cout << "\nChoose a card and the position: ";
+                        std::cin >> val >> x >> y;
+                        MinionCard cardToPlace(val, currPlayer->GetPlayerColor(), false);
+
+                        if (currHand.find(cardToPlace) == currHand.end()) {
+                            std::cout << "\nYou don't own any cards of that type!\n";
+                            system("pause");
+                            break;
+                        }
+
+                        if (myBoard->setPos(x, y, cardToPlace, *currPlayer) == 1) {
+                            std::cout << "\nYou can't place that card there!\n";
+                            system("pause");
+                            break;
+                        }
+                        currPlayer->UpdateCard(cardToPlace, -1);
+                        wasPlaced = true;
+                        break;
                     }
-                    else {
-                        p2->UpdateCard(val, -1);
+                    default:
+                        break;
                     }
 
-                    std::cout << "Succesfull move!\n";
+                    if (wasPlaced)
+                    {
+                        currPlayer->SetLastMinionCardPlayed(&myBoard->getCardOnPos(x, y));
+                        if (currPlayer->GetPlayerColor() == 'R')
+                            Player::updateCover(x, y, p2->getCovered(), myBoard->getMatrix());
+                        else
+                            Player::updateCover(x, y, p1->getCovered(), myBoard->getMatrix());
+
+                        std::cout << "Succesfull move!\n";
+                    }
                     system("pause");
                     break;
                 }
                 case 2: {
-                    std::cout << "\nYour Hand:\n";
-                    for (auto& i : currHand) {
-                        std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << "Left\n";
-                    }
+                    currPlayer->printHandCards();
                     system("pause");
                     break;
                 }
@@ -376,8 +616,8 @@ int main() //for now we implement training mode here, later we will move it to a
                 default:
                     break;
                 }
-                if (myBoard->entityWon(x, y, curr_col)) {
-                    if (curr_col == 'R')
+                if (myBoard->entityWon(x, y, currPlayer->GetPlayerColor())) {
+                    if (currPlayer->GetPlayerColor() == 'R')
                         myScore.first++;
                     else
                         myScore.second++;
@@ -395,7 +635,7 @@ int main() //for now we implement training mode here, later we will move it to a
                 }
             }
             ok = !ok;
-            curr_col = ok ? 'R' : 'B';
+            currPlayer = ok ? p1 : p2;
         }
     }
 

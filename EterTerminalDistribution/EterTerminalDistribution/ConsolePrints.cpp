@@ -6,7 +6,7 @@ void playerTurn(bool ok) {
 	if (ok)
 		std::cout << "Player 1(Red's) Turn\n"; 
 	else
-		std::cout << "Player 2(Blue's Turn:\n";
+		std::cout << "Player 2(Blue's) Turn:\n";
 }
 
 void showHand(hand& currHand)

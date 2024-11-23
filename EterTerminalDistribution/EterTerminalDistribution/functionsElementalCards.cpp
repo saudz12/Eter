@@ -2,7 +2,7 @@
 
 //to note it may be more efficient to make m_board member public in Board class to not copy the contents of the matrix every time we modify it 
 
-// maybe generate new ExplosionCard
+//generate a new explosion and use it
 void funcControlledExplosion(Board& board, Player& pl1, Player& pl2)
 {
 	if (board.getRowCount() != board.getMaxSize() || board.getColCount() != board.getMaxSize())
@@ -14,39 +14,42 @@ void funcControlledExplosion(Board& board, Player& pl1, Player& pl2)
 	board.applyExplosionOnBoard(explCard, pl1, pl2);
 }
 
-// implement in player last card played
+//remove from play last card played by opponent
 void funcDestruction(Board& board, Player& player)
 {
 	MinionCard* toberemoved = player.GetLastMinionCardPlayed();
-	if (!toberemoved->GetIsEterCard())
-	{
-		resizeableMatrix& matrix = board.getMatrix();
-		for (int i = 0; i < board.getRowCount(); i++)
-			for (int j = 0; j < board.getColCount(); j++)
-				if (&matrix[i][j].back() == toberemoved) {
-					matrix[i][j].pop_back();
-					break;
-				}
-		player.returnLastMinionCardToHand();
-	}
-	else
+	if (toberemoved->GetIsEterCard())
 	{
 		std::cout << "Can't use Destruction elemental card on eter card\n";
+		return;
 	}
+
+	resizeableMatrix& matrix = board.getMatrix();
+	for (int i = 0; i < board.getRowCount(); i++)
+		for (int j = 0; j < board.getColCount(); j++)
+			if (&matrix[i][j].back() == toberemoved) {
+				matrix[i][j].pop_back();
+				break;
+			}
+	player.returnLastMinionCardToHand();
 }
 
-// first 2 uint16_t for revealing Illusion and the next for placing Card
-void funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard& CardToBePlaced, Player& p)
+//reveals an illusion and then play a card
+//first 2 uint16_t for revealing Illusion and the next for placing Card
+//returns 1 if it failed to place card, 0 if it succeeded
+uint16_t funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard& CardToBePlaced, Player& p)
 {
 	resizeableMatrix& matrix = board.getMatrix();
-	matrix[x1][y1].back().SetIsIllusionCard(false);
-	if (board.setPos(x1, y1, CardToBePlaced, p) == 1)
+	if (board.setPos(x2, y2, CardToBePlaced, p) == 1)
 	{
 		std::cout << "Failed to place minion card with Flame elemental card\n";
+		return 1;
 	}
+	matrix[x1][y1].back().SetIsIllusionCard(false);
+	return 0;
 }
 
-//this function still needs a way to check whether or not the move is valid
+//return to hand all cards with a specific value
 void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 {
 	//at least 2 card for elemental power to work
@@ -58,11 +61,14 @@ void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 	{
 		for (size_t j = 0; j < board.getColCount(); j++)
 		{
-			MinionCard cardOnPos = board.getCardOnPos(i, j);
-			if (cardOnPos.GetValue() == value && !cardOnPos.GetIsEterCard())
+			if (!matrix[i][j].empty())
 			{
-				cardCount++;
-				returningCards.push_back({ cardOnPos, i, j });
+				MinionCard cardOnPos = board.getCardOnPos(i, j);
+				if (cardOnPos.GetValue() == value && !cardOnPos.GetIsEterCard())
+				{
+					cardCount++;
+					returningCards.push_back({ cardOnPos, i, j });
+				}
 			}
 		}
 	}
@@ -94,6 +100,7 @@ void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 	}
 }
 
+//play a card which was removed
 void funcAsh(Board& board, Player& player, const MinionCard& card, uint16_t x, uint16_t y)
 {
 	if (player.placeMinionCardFromRemovedCard(card) == true)
@@ -124,11 +131,12 @@ void funcSpark(Board& board, Player& player, uint16_t x1, uint16_t y1, uint16_t 
 }
 */
 
+//move a card which was covered by your opponent's card
 void funcSpark(Board& board, Player& p) 
 {
 	int x1, y1, x2, y2;
 
-	std::cout << "choose a wherefrom to remove one of your cards:\n";
+	std::cout << "choose where from to remove one of your cards:\n";
 	std::cin >> x1 >> y1;
 
 	std::cout << "choose a destination to place the card\n";
@@ -158,7 +166,7 @@ void funcSpark(Board& board, Player& p)
 			if (matrix[x1][y1][k].GetColor() == p.GetPlayerColor())
 			{
 				plCards.emplace_back(matrix[x1][y1][k],k);
-				std::cout << k << " .value:" << matrix[x1][y1][k] << '\n';
+				std::cout << k + 1 << " .value:" << matrix[x1][y1][k] << '\n';
 			}
 		}
 		std::cout << "which card (index) would you like to take out and place on a different place?\n";
@@ -180,6 +188,7 @@ void funcSpark(Board& board, Player& p)
 		std::cout << "invalid position, no cards here\n";
 }
 
+//return to your opponent's hand one of his visible cards
 void funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 {
 	Board oldModel;
@@ -198,6 +207,12 @@ void funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 	if (matrix[x][y].back().GetIsEterCard())
 	{
 		std::cout << "Can't use Squall elemental card on eter card\n";
+		return;
+	}
+
+	if (matrix[x][y].back().GetIsIllusionCard())
+	{
+		std::cout << "Can't use Squall elemental card on illusion\n";
 		return;
 	}
 
@@ -226,7 +241,7 @@ void funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 	return;
 }
 
-//not finished
+//remove all cards which are covered by other cards
 void funcGale(Board& board, Player& p1, Player& p2)
 {
 	resizeableMatrix& matrix = board.getMatrix();
@@ -236,12 +251,12 @@ void funcGale(Board& board, Player& p1, Player& p2)
 		{
 			while (matrix[i][j].size() >= 2)
 			{
-				MinionCard& topCard = matrix[i][j].back();
-				matrix[i][j].pop_back();
-				if (topCard.GetBelongsTo() == p1.GetPlayerColor())
-					p1.returnMinionCardToHand(topCard);
+				MinionCard& bottomCard = matrix[i][j].front();
+				matrix[i][j].pop_front();
+				if (bottomCard.GetBelongsTo() == p1.GetPlayerColor())
+					p1.addToRemovedCards(bottomCard);
 				else
-					p2.returnMinionCardToHand(topCard);
+					p2.addToRemovedCards(bottomCard);
 			}
 		}
 	}
@@ -279,7 +294,7 @@ void funcHurricane(Board& board, hand& h1, hand& h2)
 			}
 			if (stack.back().GetIsEterCard())
 			{
-				std::cout << "Row has eter card\n";
+				std::cout << "Can't use Hurricane elemental card on eter card\n";
 				return;
 			}
 		}
@@ -293,7 +308,7 @@ void funcHurricane(Board& board, hand& h1, hand& h2)
 			}
 			if (row[lineCnt].back().GetIsEterCard())
 			{
-				std::cout << "Column has eter card\n";
+				std::cout << "Can't use Hurricane elemental card on eter card\n";
 				return;
 			}
 		}
@@ -304,7 +319,7 @@ void funcHurricane(Board& board, hand& h1, hand& h2)
 	std::cin >> dir;
 
 	if (type == "R" && dir != "L" && dir != "R" || type == "C" && dir != "U" && dir != "D") {
-		std::cout << "Ivalid direction..\n";
+		std::cout << "Invalid direction..\n";
 		return;
 	}
 	//--to here can be moved outside of function - either a checkHurricane(input) and get input in game OR do check full in game, then pass them as parameters
@@ -377,7 +392,7 @@ void funcGust(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 
 	if (matrix[x1][y1].back().GetIsEterCard() || matrix[x2][y2].back().GetIsEterCard())
 	{
-		std::cout << "One of the chosen spots has an eter card\n";
+		std::cout << "Can't use Gust elemental card on eter card\n";
 		return;
 	}
 
@@ -487,10 +502,9 @@ void funcMist(Board& board, Player& p, uint16_t x, uint16_t y, MinionCard& card)
 			return;
 		}
 		p.SetIllusionUsage(true);
-		p.SetIllusionCard(&board.getCardOnPos(x, y));
+		//p.SetIllusionCard(&board.getCardOnPos(x, y));
 		return;
 	}
-	return;
 }
 
 // move a card/stack to an empty adjacent space and place new card in the empty space created
@@ -798,6 +812,12 @@ void funcSupport(Board& board, uint16_t x, uint16_t y)
 	if (matrix[x][y].back().GetIsEterCard())
 	{
 		std::cout << "Can't use Support elemental card on eter card\n";
+		return;
+	}
+
+	if (matrix[x][y].back().GetIsIllusionCard())
+	{
+		std::cout << "Can't use Support elemental card on illusion card\n";
 		return;
 	}
 

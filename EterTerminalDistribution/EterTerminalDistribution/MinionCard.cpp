@@ -125,7 +125,7 @@ std::ostream& operator<<(std::ostream& out, const MinionCard& card)
 {
     if (card.GetIsEterCard())
         out << "E:" << card.GetColor();
-    if (card.GetIsIllusionCard())
+    else if (card.GetIsIllusionCard())
         out << "I:" << card.GetColor();
     else
         out << card.GetValue() << ":" << card.GetColor();

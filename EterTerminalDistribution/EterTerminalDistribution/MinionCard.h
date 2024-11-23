@@ -27,6 +27,7 @@ private:
 	bool m_isHole;
 public:
 	MinionCard(uint16_t value, char color, bool isEter);
+	MinionCard() = default;
 	
 	//overload functions
 	friend std::ostream& operator<<(std::ostream &out,const MinionCard &card);

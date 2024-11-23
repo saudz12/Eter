@@ -10,7 +10,7 @@ inline void* associateCardWithFunc(ActionCard AcCard)
 	case ActionCard::ControlledExplosion:
 		return (void*)funcControlledExplosion;
 		break;
-	case ActionCard::Desctruction:
+	case ActionCard::Destruction:
 		return (void*)funcDestruction;
 		break;
 	case ActionCard::Flame:

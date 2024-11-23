@@ -66,7 +66,7 @@ public:
 
 	//Update board
 	//only checks it. to modify it it needs to return a reference. do the check somewhere beforehand to get modifyable card
-	MinionCard getCardOnPos(int16_t x, int16_t y);
+	MinionCard& getCardOnPos(int16_t x, int16_t y);
 	//1 if not succesfull/invalid, 0 if ok
 	int16_t setPos(int16_t x, int16_t y, const MinionCard& card, Player& p);
 	int16_t setPosWaterfall(int16_t x, int16_t y, const MinionCard& card);

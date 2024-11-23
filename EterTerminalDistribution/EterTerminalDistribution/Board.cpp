@@ -188,11 +188,11 @@ void Board::increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, char col)
 	}
 }
 
-MinionCard Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
-	if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
-		return MinionCard{ 0,'\0', false };
+MinionCard& Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
+	/*if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
+		return;
 	if (m_matrix[x][y].empty())
-		return MinionCard{ 0,'\0', false };
+		return;*/
 	return m_matrix[x][y].back();
 }
 
@@ -235,7 +235,7 @@ int16_t Board::setPos(int16_t x, int16_t y, const MinionCard& card, Player& p) {
 	else if (x == y || x + y == m_max_size - 1)
 		increaseOnColorDiagonal(x, y, card.GetColor());
 
-	if (m_matrix[x][y].back().GetIsIllusionCard())
+	if (!m_matrix[x][y].empty() && m_matrix[x][y].back().GetIsIllusionCard())
 	{
 		m_matrix[x][y].back().SetIsIllusionCard(false);
 		if (card.GetValue() > m_matrix[x][y].back().GetValue())
@@ -581,18 +581,16 @@ int16_t Board::YBoundTest(int16_t y)
 //cartea eter si iluzia se pot pune doar pe spatiile goale
 bool Board::posPlaceTest(int16_t x, int16_t y, const MinionCard& card)
 {
-	if (m_matrix[x][y].empty())
-		return true;
-	if (!m_matrix[x][y].empty() && (card.GetIsEterCard() || card.GetIsIllusionCard()))
-		return false;
-	if (card.GetValue() > m_matrix[x][y].back().GetValue() || card.GetValue() == 0)
-		return true;
-	//nu se poate pune carte peste cartea eter
-	if (m_matrix[x][y].back().GetIsEterCard())
-		return false;
-	if (m_matrix[x][y].back().GetIsIllusionCard())
-		return true;
-	return false;
+	if (!m_matrix[x][y].empty())
+	{
+		if (card.GetIsEterCard() || card.GetIsIllusionCard())
+			return false;
+		if (m_matrix[x][y].back().GetIsEterCard())
+			return false;
+		if (card.GetValue() <= m_matrix[x][y].back().GetValue() && !m_matrix[x][y].back().GetIsIllusionCard())
+			return false;
+	}
+	return true;
 }
 
 void Board::addLineToLeft()
@@ -716,14 +714,14 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1, Pla
 		switch (effect)
 		{
 		case ReturnRemoveOrHoleCard::RemoveCard:
-			if (!m_matrix[positionX][positionY].empty())
+			if (!m_matrix[positionX][positionY].empty() && !m_matrix[positionX][positionY].back().GetIsEterCard())
 			{
 				MinionCard lastCard = m_matrix[positionX][positionY].back();
 				m_matrix[positionX][positionY].pop_back();
 			}
 			break;
 		case ReturnRemoveOrHoleCard::ReturnCard:
-			if (!m_matrix[positionX][positionY].empty())
+			if (!m_matrix[positionX][positionY].empty() && !m_matrix[positionX][positionY].back().GetIsEterCard())
 			{
 				MinionCard lastCard = m_matrix[positionX][positionY].back();
 				lastCard.SetIsIllusionCard(false);
@@ -735,7 +733,7 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1, Pla
 			}
 			break;
 		case ReturnRemoveOrHoleCard::HoleCard:
-			if (!m_matrix[positionX][positionY].empty())
+			if (!m_matrix[positionX][positionY].empty() && !m_matrix[positionX][positionY].back().GetIsEterCard())
 			{
 				while (m_matrix[positionX][positionY].size()>1)
 				{

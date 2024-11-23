@@ -249,6 +249,18 @@ bool Player::printCoveredCards(resizeableMatrix& matrix)
 	return true;
 }
 
+void Player::printHandCards()
+{
+	std::cout << "\nYour Hand:\n";
+	for (auto& i : m_handCards) 
+	{
+		if (i.first.GetIsEterCard() && m_eterCardUsage == false)
+			std::cout << "Eter Card: " << i.second << " Left\n";
+		else 
+			std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << " Left\n";
+	}
+}
+
 std::ostream& operator<<(std::ostream& os, const position& posTuple)
 {
 	os << "{" << std::get<0>(posTuple) << ", " << std::get<0>(posTuple) << ": " << std::get<0>(posTuple) << "}";

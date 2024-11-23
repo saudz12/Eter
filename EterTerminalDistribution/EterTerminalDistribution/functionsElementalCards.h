@@ -12,19 +12,19 @@ void funcControlledExplosion(Board&, Player&, Player&);
 void funcDestruction(Board&, Player&);
 
 //first 2 uint16_t for revealing Illusion and the next for placing Card
-void funcFlame(Board&, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard&, Player& );
+uint16_t funcFlame(Board&, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard&, Player& );
 
 //player Red,player Blue
 void funcFire(Board&, Player&, Player&, uint16_t);
 
 //maybe also keep all the removed cards in unordered set
-void funcAsh(Board&, Player&, uint16_t, uint16_t, uint16_t);
+void funcAsh(Board&, Player&, const MinionCard&, uint16_t, uint16_t);
 
 void funcSpark(Board&, Player& p);
 
 void funcSquall(Board&, Player&, uint16_t, uint16_t);
 
-void funcGale(Board&, handCard&, handCard&);
+void funcGale(Board& board, Player&, Player&);
 
 //shit a line 1 space in its orientation. Overflowing stacks return the respective cards to the users hand
 void funcHurricane(Board&, hand&, hand&);
@@ -33,16 +33,16 @@ void funcHurricane(Board&, hand&, hand&);
 void funcGust(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
 
 //exchange illusion card with other card
-void funcMirage(Board&, Player& p, uint16_t, uint16_t, const MinionCard&);
+void funcMirage(Board&, Player&, uint16_t, uint16_t, const MinionCard&);
 
 //remove stack of cards
-void funcStorm(Board& board, Player& p1, Player& p2, uint16_t x, uint16_t y);
+void funcStorm(Board&, Player&, Player&, uint16_t, uint16_t);
 
 //tide(board, first set of coordonates, second set of coordonates) -- exchange 2 stacks
 void funcTide(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
 
 //play again a illusion(cannot have 2 illsuion at the same time)
-void funcMist(Board&, Player&, uint16_t, uint16_t, uint16_t, MinionCard&);
+void funcMist(Board&, Player&, uint16_t, uint16_t, MinionCard&);
 
 //move a card/stack to empty adj space and place new card to the empty space created
 void funcWave(Board&, uint16_t, uint16_t, MinionCard);
