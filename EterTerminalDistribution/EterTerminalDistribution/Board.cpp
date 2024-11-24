@@ -548,9 +548,9 @@ void Board::updateRowChecker(uint16_t x, uint16_t option)
 	}
 }
 
-void Board::shiftLine(uint16_t start, uint16_t end, uint16_t ratio, uint16_t lineNo, uint16_t direction)
+void Board::shiftLine(uint16_t start, uint16_t end, uint16_t ratio, uint16_t lineNo, uint16_t orientation)
 {
-	auto quickCheck = [direction](uint16_t a, uint16_t b) {return direction ? a : b; };
+	auto quickCheck = [&orientation](uint16_t a, uint16_t b) {return orientation ? a : b; };
 
 	cardStack& firstStack = m_matrix[quickCheck(lineNo, start)][quickCheck(start, lineNo)];
 

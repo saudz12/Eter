@@ -97,7 +97,7 @@ public:
 	void updateColChecker(uint16_t y, uint16_t option);
 	void updateRowChecker(uint16_t x, uint16_t option);
 
-	void shiftLine(uint16_t start, uint16_t end, uint16_t ratio, uint16_t lineNo, uint16_t direction);
+	void shiftLine(uint16_t start, uint16_t end, uint16_t ratio, uint16_t lineNo, uint16_t orientation);
 	void checkForUpdates();
 
 	bool isBoardFilled();

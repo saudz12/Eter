@@ -297,53 +297,63 @@ void funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::stri
 {
 	resizeableMatrix& matrix = board.getMatrix();
 
-	hand& cards = h1; //like this for the moment so we have it init
-
-	//if type = row
+	uint16_t start, end, ratio, orientation;
+	
 	if (type == ID_ROW) {
-		//if we shift to left
 		if (direction == DIR_LEFT) {
-			cardStack& firstStack = matrix[lineCnt][0];
-
-			//update hand by card stack -- can move to function 
-			Player::returnStackToHand(h1, h2, firstStack);
-
-			//update counts
-			board.shiftLine(0, board.getColCount() - 1, +1, lineCnt, 1);
-
-			board.checkForUpdates();
-			return;
+			start = 0;
+			end = board.getColCount() - 1;
+			ratio = +1;
 		}
-		//we know we are shifting to right
-		cardStack& firstStack = matrix[lineCnt][board.getColCount() - 1];
-
-		Player::returnStackToHand(h1, h2, firstStack);
-
-		board.shiftLine(board.getColCount() - 1, 0, -1, lineCnt, 1);
-
-		board.checkForUpdates();
-		return;
+		else {
+			start = board.getColCount() - 1;
+			end = 0;
+			ratio = -1;
+		}
+		orientation = 1;
 	}
-
-	//we know we are shifting a column
-	if (direction == DIR_UP) {
-		cardStack& firstStack = matrix[0][lineCnt];
-
-		Player::returnStackToHand(h1, h2, firstStack);
-
-		board.shiftLine(0, board.getRowCount() - 1, +1, lineCnt, 0);
-
-		board.checkForUpdates();
-		return;
+	else {
+		if (direction == DIR_UP) {
+			start = 0;
+			end = board.getRowCount() - 1;
+			ratio = +1;
+		}
+		else {
+			start = board.getRowCount() - 1;
+			end = 0;
+			ratio = -1;
+		}
+		orientation = 0;
 	}
-	//only down remains
-	cardStack& firstStack = matrix[board.getRowCount() - 1][lineCnt];
+	
 
+	int firstX = orientation?lineCnt:start;
+	int firstY = orientation?start:lineCnt;
+
+	/*
+	int firstX;
+	int firstY;
+
+	auto setup = [&firstX, &firstY](uint16_t start, uint16_t lineCnt, uint16_t orientation) {
+		if (orientation) {
+			firstX = lineCnt;
+			firstY = start;
+		}
+		else {
+			firstX = start;
+			firstY = lineCnt;
+		}
+	};
+
+	setup(start, lineCnt, orientation);
+	*/
+
+	cardStack& firstStack = matrix[firstX][firstY];
 	Player::returnStackToHand(h1, h2, firstStack);
 
-	board.shiftLine(board.getRowCount() - 1, 0, -1, lineCnt, 0);
-
+	board.shiftLine(start, end, ratio, lineCnt, orientation);
 	board.checkForUpdates();
+
 	return;
 }
 
