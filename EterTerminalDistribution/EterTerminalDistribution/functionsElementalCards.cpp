@@ -44,28 +44,23 @@ void funcDestruction(Board& board, Player& player)
 	for (int i = 0; i < board.getRowCount(); i++)
 		for (int j = 0; j < board.getColCount(); j++)
 			if (!matrix[i][j].empty() && board.getCardOnPos(i, j) == *toberemoved) {
-				matrix[i][j].pop_back();
-				if (toberemoved->GetColor() == 'R')
+				if (board.removePos(i, j) == 1)
 				{
-					board.updateColChecker(j, RED_DEC);
-					board.updateRowChecker(i, RED_DEC);
-				}
-				else
-				{
-					board.updateColChecker(j, BLUE_DEC);
-					board.updateRowChecker(i, BLUE_DEC);
+					std::cout << "Failed to remove card\n";
+					return;
 				}
 				break;
 			}
 
-	if (isolatedSpaces(board)) {
+	/*if (isolatedSpaces(board)) {
 		Board::cloneMatrix(copyBoard, board);
 		std::cout << "Can't have isolated stacks/cards..\n";
 		return;
 	}
 
 	player.addToRemovedCards(*toberemoved);
-	player.SetLastMinionCardPlayed(nullptr);
+	player.SetLastMinionCardPlayed(nullptr);*/
+	//board.checkForUpdates();
 }
 
 //reveals an illusion and then play a card
@@ -124,7 +119,7 @@ void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 		int xCoordonate = std::get<1>(returningCards[i]);
 		int yCoordonate = std::get<2>(returningCards[i]);
 
-		if (board.removePos(xCoordonate, yCoordonate, matrix[xCoordonate][yCoordonate].size() - 1) == 1)
+		if (board.removePos(xCoordonate, yCoordonate) == 1)
 			std::cout << "Failed to remove card at position (" << xCoordonate << " , " << yCoordonate << ")\n";
 		else
 			std::cout << "Successfully removed card at position(" << xCoordonate << ", " << yCoordonate << ")\n";

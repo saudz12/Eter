@@ -189,10 +189,6 @@ void Board::increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, char col)
 }
 
 MinionCard& Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
-	/*if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
-		return;
-	if (m_matrix[x][y].empty())
-		return;*/
 	return m_matrix[x][y].back();
 }
 
@@ -262,29 +258,58 @@ int16_t Board::setPosWaterfall(int16_t x, int16_t y, const MinionCard& card)
 }
 
 //1 esec, 0 succes
-int16_t Board::removePos(int16_t x, int16_t y, uint16_t pos) {
-	/*if (XBoundTest(x) != INSIDE_BOUND || YBoundTest(y) != INSIDE_BOUND)
-		return 1;
-	if (pos == 0)
-		m_board[x][y].pop_front();
-	if (pos == m_board[x][y].size() - 1)
-		m_board[x][y].pop_back();
-	else
-		m_board[x][y].erase(m_board[x][y].begin() + pos);
-
-	return 0;*/
-
+int16_t Board::removePos(int16_t x, int16_t y) {
 	if (XBoundTest(x) != INSIDE_BOUND || YBoundTest(y) != INSIDE_BOUND)
 		return 1;
+
+	if (m_matrix[x][y].empty())
+		return 1;
+
+	if (x == y)
+	{
+		if (m_matrix[x][y].back().GetColor() == 'R')
+			updateFirstDiagChecker(RED_DEC);
+		else
+			updateFirstDiagChecker(BLUE_DEC);
+	}
+
+	if (x == m_matrix.size() - y - 1)
+	{
+		if (m_matrix[x][y].back().GetColor() == 'R')
+			updateSeconDiagChecker(RED_DEC);
+		else
+			updateSeconDiagChecker(BLUE_DEC);
+	}
+
 	m_matrix[x][y].pop_back();
+
+	updateColChecker(y, ZERO);
+	updateRowChecker(x, ZERO);
+
+	if (!m_matrix[x][y].empty())
+	{
+		if (m_matrix[x][y].back().GetColor() == 'R')
+		{
+			updateColChecker(y, RED_ADD);
+			updateRowChecker(x, RED_ADD);
+		}
+		else
+		{
+			updateColChecker(y, BLUE_ADD);
+			updateRowChecker(x, BLUE_ADD);
+		}
+	}
 	return 0;
 }
 
+//1 esec, 0 succes
 int16_t Board::removeStack(int16_t x, int16_t y)
 {
 	if (!m_matrix[x][y].empty())
 	{
 		m_matrix[x][y].clear();
+		updateColChecker(y, ZERO);
+		updateRowChecker(x, ZERO);
 		return 0;
 	}
 	return 1;
@@ -351,6 +376,72 @@ uint16_t Board::getLineCount()
 void Board::setMatrix(const resizeableMatrix& matrix)
 {
 	m_matrix = matrix;
+}
+
+void Board::updateFirstDiagChecker(uint16_t option)
+{
+	switch (option)
+	{
+	case RED_ADD:
+		m_firstDiag.first++;
+		break;
+	case RED_DEC:
+		m_firstDiag.first--;
+		break;
+	case BLUE_ADD:
+		m_firstDiag.second++;
+		break;
+	case BLUE_DEC:
+		m_firstDiag.second--;
+		break;
+	case RED_ADD_BLUE_DEC:
+		m_firstDiag.first++;
+		m_firstDiag.second--;
+		break;
+	case BLUE_ADD_RED_DEC:
+		m_firstDiag.first--;
+		m_firstDiag.second++;
+		break;
+	case ZERO:
+		m_firstDiag.first = 0;
+		m_firstDiag.second = 0;
+		break;
+	default:
+		break;
+	}
+}
+
+void Board::updateSeconDiagChecker(uint16_t option)
+{
+	switch (option)
+	{
+	case RED_ADD:
+		m_seconDiag.first++;
+		break;
+	case RED_DEC:
+		m_seconDiag.first--;
+		break;
+	case BLUE_ADD:
+		m_seconDiag.second++;
+		break;
+	case BLUE_DEC:
+		m_seconDiag.second--;
+		break;
+	case RED_ADD_BLUE_DEC:
+		m_seconDiag.first++;
+		m_seconDiag.second--;
+		break;
+	case BLUE_ADD_RED_DEC:
+		m_seconDiag.first--;
+		m_seconDiag.second++;
+		break;
+	case ZERO:
+		m_seconDiag.first = 0;
+		m_seconDiag.second = 0;
+		break;
+	default:
+		break;
+	}
 }
 
 void Board::updateColChecker(uint16_t y, uint16_t option)
@@ -655,7 +746,7 @@ bool Board::removeTopMargin()
 
 bool Board::removeBottomMargin()
 {
-	m_matrix.pop_front();
+	m_matrix.pop_back();
 	m_rowChecker.pop_back();
 	return 0;
 }
@@ -702,6 +793,8 @@ void Board::cloneMatrix(const Board& from, Board& to)
 
 	to.m_rowChecker = from.m_rowChecker;
 	to.m_colChecker = from.m_colChecker;
+	to.m_firstDiag = from.m_firstDiag;
+	to.m_seconDiag = from.m_seconDiag;
 
 	to.m_matrix.resize(nRows);
 	for (int i = 0; i < nRows; i++) {
@@ -729,23 +822,12 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Pl
 			{
 				MinionCard lastCard = m_matrix[positionX][positionY].back();
 				lastCard.SetIsIllusionCard(false);
-				m_matrix[positionX][positionY].pop_back();
-
+				removePos(positionX, positionY);
 				if (lastCard.GetColor() == pl1.GetPlayerColor())
 					pl1.addToRemovedCards(lastCard);
 				else
 					pl2.addToRemovedCards(lastCard);
 
-				if (lastCard.GetColor() == 'R')
-				{
-					updateRowChecker(positionX, RED_DEC);
-					updateColChecker(positionY, RED_DEC);
-				}
-				else
-				{
-					updateRowChecker(positionX, BLUE_DEC);
-					updateColChecker(positionY, BLUE_DEC);
-				}
 			}
 			break;
 		case ReturnRemoveOrHoleCard::ReturnCard:
@@ -753,33 +835,22 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Pl
 			{
 				MinionCard lastCard = m_matrix[positionX][positionY].back();
 				lastCard.SetIsIllusionCard(false);
-				m_matrix[positionX][positionY].pop_back();
+				removePos(positionX, positionY);
 				if (lastCard.GetBelongsTo() == pl1.GetPlayerColor())
 					pl1.returnMinionCardToHand(lastCard);
 				else
 					pl2.returnMinionCardToHand(lastCard);
-				if (lastCard.GetColor() == 'R')
-				{
-					updateRowChecker(positionX, RED_DEC);
-					updateColChecker(positionY, RED_DEC);
-				}
-				else
-				{
-					updateRowChecker(positionX, BLUE_DEC);
-					updateColChecker(positionY, BLUE_DEC);
-				}
 			}
 			break;
 		case ReturnRemoveOrHoleCard::HoleCard:
 			if (!m_matrix[positionX][positionY].empty() && !m_matrix[positionX][positionY].back().GetIsEterCard())
 			{
-				while (m_matrix[positionX][positionY].size() > 1)
-				{
-					m_matrix[positionX][positionY].pop_back();
-				}
-				m_matrix[positionX][positionY].back().SetCardType(CardType::HoleCard);
-				updateRowChecker(positionX, ZERO);
-				updateColChecker(positionY, ZERO);
+				removeStack(positionX, positionY);
+
+				MinionCard holeCard(0, 'N', false);
+				holeCard.SetCardType(CardType::HoleCard);
+
+				m_matrix[positionX][positionY].push_back(holeCard);
 			}
 			break;
 		case ReturnRemoveOrHoleCard::Default:
@@ -788,4 +859,5 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Pl
 			break;
 		}	
 	}
+	checkForUpdates();
 }
