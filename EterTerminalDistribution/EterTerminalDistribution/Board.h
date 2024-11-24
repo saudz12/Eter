@@ -21,16 +21,20 @@ class Board
 {
 private:
 	resizeableMatrix m_matrix;
-	uint16_t m_max_size;
+	
+	//score by color management
 	lineChecker m_rowChecker;
 	lineChecker m_colChecker;
 	score m_firstDiag;
 	score m_seconDiag;
 
-	bool m_reachedMaxSize;
-
 	//for explosions, keep check either here or in game
 	uint16_t m_lineCnt;
+
+	//matrix size management
+	uint16_t m_max_size;
+	bool m_reachedMaxSize;
+
 
 	//score counter on each line
 	void increaseOnColorSides(uint16_t x, uint16_t y, char col);
@@ -92,6 +96,7 @@ public:
 	void updateSeconDiagChecker(uint16_t option);
 	void updateColChecker(uint16_t y, uint16_t option);
 	void updateRowChecker(uint16_t x, uint16_t option);
+
 	void shiftLine(uint16_t start, uint16_t end, uint16_t ratio, uint16_t lineNo, uint16_t direction);
 	void checkForUpdates();
 

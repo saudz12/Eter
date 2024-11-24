@@ -293,78 +293,18 @@ void funcGale(Board& board, Player& p1, Player& p2)
 }
 
 // modify board, handcard if modified
-void funcHurricane(Board& board, hand& h1, hand& h2)
+void funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::string_view type, std::string_view direction)
 {
 	resizeableMatrix& matrix = board.getMatrix();
-
-	//--from here
-	std::string type;
-	std::cout << "\nMove Row(R) or Column(C): ";
-	std::cin >> type;
-
-	if (type != "R" && type != "C") {
-		std::cout << "Invalid Type..\n";
-		return;
-	}
-
-	uint16_t lineCnt;
-	std::cout << "\nWhich line: ";
-	std::cin >> lineCnt;
-
-	if (lineCnt < 0  && (type == "R" && lineCnt > board.getLineCount() - 1 || type == "C" && lineCnt > board.getColCount() - 1)) {
-		std::cout << "Invalid line..\n";
-		return;
-	}
-	if (type == "R") {
-		for(auto& stack : matrix[lineCnt])
-		{
-			if (stack.empty()) {
-				std::cout << "Row has empty spaces..\n";
-				return;
-			}
-			if (stack.back().GetIsEterCard())
-			{
-				std::cout << "Can't use Hurricane elemental card on eter card\n";
-				return;
-			}
-		}
-	}
-	if (type == "C") {
-		for(auto& row : matrix)
-		{
-			if (row[lineCnt].empty()) {
-				std::cout << "Column has empty spaces..\n";
-				return;
-			}
-			if (row[lineCnt].back().GetIsEterCard())
-			{
-				std::cout << "Can't use Hurricane elemental card on eter card\n";
-				return;
-			}
-		}
-	}
-
-	std::string dir;
-	std::cout << "\nWhich direction (left(L)/right(R) for Row, up(U)/down(D) for Column): ";
-	std::cin >> dir;
-
-	if (type == "R" && dir != "L" && dir != "R" || type == "C" && dir != "U" && dir != "D") {
-		std::cout << "Invalid direction..\n";
-		return;
-	}
-	//--to here can be moved outside of function - either a checkHurricane(input) and get input in game OR do check full in game, then pass them as parameters
-	
-	//code looks ugly - can fix it later by request
 
 	hand& cards = h1; //like this for the moment so we have it init
 
 	//if type = row
-	if (type == "R") {
-
+	if (type == ID_ROW) {
 		//if we shift to left
-		if (dir == "L") {
+		if (direction == DIR_LEFT) {
 			cardStack& firstStack = matrix[lineCnt][0];
-			
+
 			//update hand by card stack -- can move to function 
 			Player::returnStackToHand(h1, h2, firstStack);
 
@@ -376,7 +316,7 @@ void funcHurricane(Board& board, hand& h1, hand& h2)
 		}
 		//we know we are shifting to right
 		cardStack& firstStack = matrix[lineCnt][board.getColCount() - 1];
-		
+
 		Player::returnStackToHand(h1, h2, firstStack);
 
 		board.shiftLine(board.getColCount() - 1, 0, -1, lineCnt, 1);
@@ -386,9 +326,9 @@ void funcHurricane(Board& board, hand& h1, hand& h2)
 	}
 
 	//we know we are shifting a column
-	if (dir == "U") {
+	if (direction == DIR_UP) {
 		cardStack& firstStack = matrix[0][lineCnt];
-		
+
 		Player::returnStackToHand(h1, h2, firstStack);
 
 		board.shiftLine(0, board.getRowCount() - 1, +1, lineCnt, 0);
@@ -398,11 +338,11 @@ void funcHurricane(Board& board, hand& h1, hand& h2)
 	}
 	//only down remains
 	cardStack& firstStack = matrix[board.getRowCount() - 1][lineCnt];
-	
+
 	Player::returnStackToHand(h1, h2, firstStack);
 
 	board.shiftLine(board.getRowCount() - 1, 0, -1, lineCnt, 0);
-	
+
 	board.checkForUpdates();
 	return;
 }

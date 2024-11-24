@@ -2,7 +2,7 @@
 
 int main()
 {
-	GameDemo training(3,3);
-	training.runDemo();
+	GameDemo test(3,3);
+	test.runDemo();
 	return 0;
 }
