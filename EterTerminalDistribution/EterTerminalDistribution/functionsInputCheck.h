@@ -8,15 +8,13 @@ using handCard = std::unordered_map<MinionCard, uint16_t>;
 
 
 
-int checkFuncControlledExplosion(Board&, Player&, Player&);
 
-int checkFuncDestruction(Board&, Player&);
 
 int checkFuncFlame(Board&, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard&, Player&);
 
 int checkFuncFire(Board&, Player&, Player&, uint16_t);
 
-int checkFuncAsh(Board&, Player&, const MinionCard&, uint16_t, uint16_t);
+int checkFuncAsh(const MinionCard&, uint16_t, uint16_t);
 
 int checkFuncSpark(Board&, Player& p);
 

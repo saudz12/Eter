@@ -66,14 +66,10 @@ void funcDestruction(Board& board, Player& player)
 //reveals an illusion and then play a card
 //first 2 uint16_t for revealing Illusion and the next for placing Card
 //returns 1 if it failed to place card, 0 if it succeeded
+//moved the if to checkInput
 uint16_t funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard& CardToBePlaced, Player& p)
 {
 	resizeableMatrix& matrix = board.getMatrix();
-	if (board.setPos(x2, y2, CardToBePlaced, p) == 1)
-	{
-		std::cout << "Failed to place minion card with Flame elemental card\n";
-		return 1;
-	}
 	matrix[x1][y1].back().SetIsIllusionCard(false);
 	return 0;
 }
@@ -256,7 +252,7 @@ void funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 
 	
 	if (matrix[x][y].empty()) {
-		std::cout << "Empty Space..\n";
+		//std::cout << "Empty Space..\n";
 		return;
 	}
 

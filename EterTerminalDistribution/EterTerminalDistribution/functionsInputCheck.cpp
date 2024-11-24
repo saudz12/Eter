@@ -2,26 +2,40 @@
 // add input checks here
 // return 0 means all good
 // 1 and higher means an error
-int checkFuncControlledExplosion(Board&, Player&, Player&) {
-	return 0;
-}
-int checkFuncDestruction(Board&, Player&) {
-	return 0;
-}
-int checkFuncFlame(Board&, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard&, Player&)
-{
-	return 0;
-}
-int checkFuncFire(Board&, Player&, Player&, uint16_t) {
-	return 0;
-}
 
+int checkFuncFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard& CardToBePlaced, Player& p)
+{
+	if (x1 < 0 || x1 > 3 || y1 < 0 || y1 > 3)/// bound check
+		return 1;
+	if (x2 < 0 || x2 > 3 || y2 < 0 || y2 > 3)
+		return 1;
+	if (board.setPos(x2, y2, CardToBePlaced, p) == 1)
+		//std::cout << "Failed to place minion card with Flame elemental card\n";
+		return 2;
+	return 0;
+}
+int checkFuncFire(Board&, Player&, Player&, uint16_t cardValue) {
+	if (cardValue < 1 || cardValue > 4)
+		return 1;
+	return 0;
+}
+int checkFuncAsh(const MinionCard& card ,uint16_t x, uint16_t y) {
+	if (card.GetValue() > 4 || card.GetValue() < 1)
+		return 2;
+	if (x < 0 || x > 3 || y < 0 || y > 3)/// bound check
+		return 1;
+	return 0;
+}
 int checkFuncSpark(Board&, Player& p)
 {
 	return 0;
 }
 
-int checkFuncSquall(Board&, Player&, uint16_t, uint16_t) {
+int checkFuncSquall(Board&, Player&, uint16_t x1, uint16_t y1) {
+	if (x1 < 0 || x1 > 3)
+		return 1;
+	if (y1 < 0 || y1 > 3)
+		return 1;
 	return 0;
 }
 
@@ -30,7 +44,7 @@ int checkFuncGale(Board& board, Player&, Player&)
 	return 0;
 }
 
-int checkFuncHurricane(Board&, hand&, hand&) {
+int checkFuncHurricane(Board&, hand& p1, hand& p2) {// for saud, dont touch
 	return 0;
 }
 
