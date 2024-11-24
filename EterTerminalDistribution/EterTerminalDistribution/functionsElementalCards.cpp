@@ -63,7 +63,7 @@ uint16_t funcDestruction(Board& board, Player& player)
 
 	player.addToRemovedCards(*toberemoved);
 	player.SetLastMinionCardPlayed(nullptr);
-	//board.checkForUpdates();
+	board.checkForUpdates();
 
 	return 0;
 }

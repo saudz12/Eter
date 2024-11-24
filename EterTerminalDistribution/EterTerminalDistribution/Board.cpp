@@ -310,24 +310,33 @@ int16_t Board::removePos(int16_t x, int16_t y) {
 			updateSeconDiagChecker(BLUE_DEC);
 	}
 
-	m_matrix[x][y].pop_back();
+	if (m_matrix[x][y].back().GetColor() == 'R')
+	{
+		updateRowChecker(x, RED_DEC);
+		updateColChecker(y, RED_DEC);
+	}
+	else
+	{
+		updateRowChecker(x, BLUE_DEC);
+		updateColChecker(y, BLUE_DEC);
+	}
 
-	updateColChecker(y, ZERO);
-	updateRowChecker(x, ZERO);
+	m_matrix[x][y].pop_back();
 
 	if (!m_matrix[x][y].empty())
 	{
 		if (m_matrix[x][y].back().GetColor() == 'R')
 		{
-			updateColChecker(y, RED_ADD);
 			updateRowChecker(x, RED_ADD);
+			updateRowChecker(y, RED_ADD);
 		}
 		else
 		{
-			updateColChecker(y, BLUE_ADD);
 			updateRowChecker(x, BLUE_ADD);
+			updateRowChecker(y, BLUE_ADD);
 		}
 	}
+
 	return 0;
 }
 
@@ -602,18 +611,22 @@ void Board::shiftLine(uint16_t start, uint16_t end, uint16_t ratio, uint16_t lin
 
 void Board::checkForUpdates()
 {
-	while (m_colChecker.front().first + m_colChecker.front().second == 0) {
+	while (!m_colChecker.empty() && m_colChecker.front().first == 0 && m_colChecker.front().second == 0) {
 		removeLeftMargin();
 	}
-	while (m_colChecker.back().first + m_colChecker.back().second == 0) {
+
+	while (!m_colChecker.empty() && m_colChecker.back().first == 0 && m_colChecker.back().second == 0) {
 		removeRightMargin();
 	}
-	while (m_rowChecker.front().first + m_rowChecker.front().second == 0) {
+
+	while (!m_rowChecker.empty() && m_rowChecker.front().first == 0 && m_rowChecker.front().second == 0) {
 		removeTopMargin();
 	}
-	while (m_rowChecker.back().first + m_rowChecker.back().second == 0) {
+
+	while (!m_rowChecker.empty() && m_rowChecker.back().first == 0 && m_rowChecker.back().second == 0) {
 		removeBottomMargin();
 	}
+
 	if (m_colChecker.size() + m_rowChecker.size() == 0) {
 		m_colChecker.emplace_back(0, 0);
 		m_rowChecker.emplace_back(0, 0);
