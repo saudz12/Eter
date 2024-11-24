@@ -5,9 +5,10 @@
 
 int checkFuncFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard& CardToBePlaced, Player& p)
 {
-	if (x1 < 0 || x1 > 3 || y1 < 0 || y1 > 3)/// bound check
+	uint16_t lines = board.getLineCount(), cols = board.getColCount();
+	if (x1 < 0 || x1 > lines || y1 < 0 || y1 > cols)/// bound check
 		return 1;
-	if (x2 < 0 || x2 > 3 || y2 < 0 || y2 > 3)
+	if (x2 < 0 || x2 > lines || y2 < 0 || y2 >cols)
 		return 1;
 	if (board.setPos(x2, y2, CardToBePlaced, p) == 1)
 		//std::cout << "Failed to place minion card with Flame elemental card\n";
@@ -19,30 +20,58 @@ int checkFuncFire(Board&, Player&, Player&, uint16_t cardValue) {
 		return 1;
 	return 0;
 }
-int checkFuncAsh(const MinionCard& card ,uint16_t x, uint16_t y) {
+int checkFuncAsh(Board& board, const MinionCard& card, uint16_t x, uint16_t y) {
+	uint16_t lines = board.getLineCount(), cols = board.getColCount();
 	if (card.GetValue() > 4 || card.GetValue() < 1)
 		return 2;
-	if (x < 0 || x > 3 || y < 0 || y > 3)/// bound check
+	if (x < 0 || x > lines || y < 0 || y > cols)/// bound check
 		return 1;
 	return 0;
 }
-int checkFuncSpark(Board&, Player& p)
+int checkFuncSpark(Board& board, uint16_t x1,uint16_t y1,uint16_t x2, uint16_t y2)
 {
+	uint16_t lines = board.getRowCount(), cols = board.getColCount();
+	resizeableMatrix& matrix = board.getMatrix();
+	if (x1<0 || x1>lines ||
+		x2<0 || x2>lines ||
+		y1<0 || y1>cols ||
+		y2<0 || y2>cols)
+		return 1;
+	if (matrix[x1][y1].back().GetIsEterCard())
+		return 2;
+	//std::cout << "Can't use Spark elemental card on eter card\n";
 	return 0;
 }
 
-int checkFuncSquall(Board&, Player&, uint16_t x1, uint16_t y1) {
-	if (x1 < 0 || x1 > 3)
+int checkFuncSquall(Board& board, uint16_t x1, uint16_t y1) {
+	uint16_t lines = board.getRowCount(), cols = board.getColCount();
+	resizeableMatrix& matrix = board.getMatrix();
+
+	if (x1 < 0 || x1 > lines)
 		return 1;
-	if (y1 < 0 || y1 > 3)
+	if (y1 < 0 || y1 > cols)
 		return 1;
+
+
+	if (matrix[x1][y1].empty()) {
+		//std::cout << "Empty Space..\n";
+		return 2;
+	}
+
+	if (matrix[x1][y1].back().GetIsEterCard())
+	{
+		//std::cout << "Can't use Squall elemental card on eter card\n";
+		return 3;
+	}
+
+	if (matrix[x1][y1].back().GetIsIllusionCard())
+	{
+		//std::cout << "Can't use Squall elemental card on illusion\n";
+		return 4;
+	}
 	return 0;
 }
 
-int checkFuncGale(Board& board, Player&, Player&)
-{
-	return 0;
-}
 
 int checkFuncHurricane(Board&, hand& p1, hand& p2) {// for saud, dont touch
 	return 0;

@@ -184,7 +184,7 @@ void funcSpark(Board& board, Player& player, uint16_t x1, uint16_t y1, uint16_t 
 */
 
 //move a card which was covered by your opponent's card
-void funcSpark(Board& board, Player& p) 
+void funcSpark(Board& board, Player& p)  //this function needs to be reworked
 {
 	int x1, y1, x2, y2;
 
@@ -193,23 +193,12 @@ void funcSpark(Board& board, Player& p)
 
 	std::cout << "choose a destination to place the card\n";
 	std::cin >> x2 >> y2;
-
-	uint16_t lines = board.getRowCount(), cols = board.getColCount();
-
-	if (x1<0 || x1>lines||
-		x2<0 || x2>lines ||
-		 y1<0 || y1>cols||
-		  y2<0 || y2>cols )
-			return;
-
+	
 	resizeableMatrix& matrix = board.getMatrix();
 	std::vector<std::pair<MinionCard,uint16_t>> plCards;
 
-	if (matrix[x1][y1].back().GetIsEterCard())
-	{
-		std::cout << "Can't use Spark elemental card on eter card\n";
-	}
-	else if (!matrix[x1][y1].empty())
+	
+	if (!matrix[x1][y1].empty())
 	{
 		std::cout<<"here are the cards that you can replace\n";
 		int index = 0;
@@ -238,6 +227,7 @@ void funcSpark(Board& board, Player& p)
 	}
 	else
 		std::cout << "invalid position, no cards here\n";
+		
 }
 
 //return to your opponent's hand one of his visible cards
@@ -249,24 +239,6 @@ void funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 	//funcionToCheck(currModel, T...);
 
 	resizeableMatrix& matrix = board.getMatrix();
-
-	
-	if (matrix[x][y].empty()) {
-		//std::cout << "Empty Space..\n";
-		return;
-	}
-
-	if (matrix[x][y].back().GetIsEterCard())
-	{
-		std::cout << "Can't use Squall elemental card on eter card\n";
-		return;
-	}
-
-	if (matrix[x][y].back().GetIsIllusionCard())
-	{
-		std::cout << "Can't use Squall elemental card on illusion\n";
-		return;
-	}
 
 	MinionCard toReturn = matrix[x][y].back();
 

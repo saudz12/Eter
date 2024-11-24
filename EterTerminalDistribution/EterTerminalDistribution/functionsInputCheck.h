@@ -14,13 +14,12 @@ int checkFuncFlame(Board&, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, c
 
 int checkFuncFire(Board&, Player&, Player&, uint16_t);
 
-int checkFuncAsh(const MinionCard&, uint16_t, uint16_t);
+int checkFuncAsh(Board&,const MinionCard&, uint16_t, uint16_t);
 
-int checkFuncSpark(Board&, Player& p);
+int checkFuncSpark(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
 
-int checkFuncSquall(Board&, Player&, uint16_t, uint16_t);
+int checkFuncSquall(Board&, uint16_t, uint16_t);
 
-int checkFuncGale(Board& board, Player&, Player&);
 
 int checkFuncHurricane(Board&, hand&, hand&);
 
