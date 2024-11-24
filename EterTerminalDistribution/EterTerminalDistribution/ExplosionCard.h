@@ -17,12 +17,9 @@ class ExplosionCard : public Card
 {
 private:
 	explMap m_explosionMap;
-	
 	std::pair<uint16_t,uint16_t> GeneratePositionInMatrix(uint16_t);
 	ReturnRemoveOrHoleCard GenerateEffect();
-	
 public:
-
 	ExplosionCard(const explMap& explosionMap);
 	ExplosionCard(uint16_t);
 	explMap GetExplosionMap() const;	
@@ -35,4 +32,3 @@ public:
 	void RotateToRight(uint16_t);
 	void showExpl(size_t);
 };
-

@@ -136,6 +136,7 @@
     <ClCompile Include="ExplosionCard.cpp" />
     <ClCompile Include="functionsElementalCards.cpp" />
     <ClCompile Include="functionsMageCards.cpp" />
+    <ClCompile Include="GameDemo.cpp" />
     <ClCompile Include="HoleCard.cpp" />
     <ClCompile Include="MageCard.cpp" />
     <ClCompile Include="MinionCard.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="funcAssociationsToCard.h" />
     <ClInclude Include="functionsElementalCards.h" />
     <ClInclude Include="functionsMageCards.h" />
+    <ClInclude Include="GameDemo.h" />
     <ClInclude Include="HoleCard.h" />
     <ClInclude Include="Includes.h" />
     <ClInclude Include="MageCard.h" />

@@ -149,7 +149,7 @@ void funcAirMage1(Board& board, Player& pl)
 		return;
 	}
 
-	Board cloneBoard;
+	Board cloneBoard(3);
 	Board::cloneMatrix(board, cloneBoard);
 
 	resizeableMatrix& matrix = board.getMatrix();

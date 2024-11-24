@@ -15,4 +15,12 @@ void showHand(hand& currHand);
 
 void helpOption();
 
+void printOptionsForPlayer();
+
+void printMenu();
+
+void printOptionsForCards();
+
+void printExplosionOptions();
+
 

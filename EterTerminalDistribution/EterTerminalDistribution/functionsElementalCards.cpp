@@ -5,7 +5,7 @@
 //generate a new explosion and use it
 void funcControlledExplosion(Board& board, Player& pl1, Player& pl2)
 {
-	Board copyBoard;
+	Board copyBoard(3);
 	Board::cloneMatrix(board, copyBoard);
 
 	Player copyPl1 = pl1;
@@ -30,7 +30,7 @@ void funcControlledExplosion(Board& board, Player& pl1, Player& pl2)
 //remove from play last card played by opponent
 void funcDestruction(Board& board, Player& player)
 {
-	Board copyBoard;
+	Board copyBoard(3);
 	Board::cloneMatrix(board, copyBoard);
 
 	MinionCard* toberemoved = player.GetLastMinionCardPlayed();
@@ -77,7 +77,7 @@ uint16_t funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t
 //return to hand all cards with a specific value
 void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 {
-	Board copyBoard;
+	Board copyBoard(3);
 	Board::cloneMatrix(board, copyBoard);
 	Player copyPl1 = player1;
 	Player copyPl2 = player2;
@@ -233,7 +233,7 @@ void funcSpark(Board& board, Player& p)  //this function needs to be reworked
 //return to your opponent's hand one of his visible cards
 void funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 {
-	Board oldModel;
+	Board oldModel(3);
 	Board::cloneMatrix(board, oldModel);
 
 	//funcionToCheck(currModel, T...);

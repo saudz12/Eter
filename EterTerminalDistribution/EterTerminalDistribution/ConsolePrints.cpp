@@ -29,3 +29,24 @@ void helpOption() {
 	std::cout << "The first to have a full line(row, collumn or diagonal of size 3) with cards of his color wins. Like checkmate in chess, the other player will be given a chance to ruin your chance of checking/crossing. \n";
 	std::cout << " \n";
 }
+
+void printOptionsForPlayer()
+{
+	std::cout << "\nOPTIONS:\n1. Place a card\n2. Show Hand\n3. Show Covered\n4. Check Stack\n";
+}
+
+void printMenu()
+{
+	printOptionsForPlayer();
+	std::cout << "5. Use Elemental Power\n6. Test Isolated Spaces in Board\n7. Help\n8. Use explosion card\n9. Use Mage Card\n";
+}
+
+void printOptionsForCards()
+{
+	std::cout << "\nOptions:\n1. Place eter card\n2. Play a minion card as an illusion\n3. Play a minion card\n";
+}
+
+void printExplosionOptions()
+{
+	std::cout << "0. Don't use the explosion\n1. Use the explosion\n2. Rotate the explosion\n";
+}
