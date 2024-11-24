@@ -26,6 +26,9 @@ public:
     bool placeEterCard(size_t&,size_t&);
     bool placeIllusionCard(size_t&, size_t&);
     bool placeMinionCard(size_t&, size_t&);
+    bool useExplosionCard();
+
+    void restartRound();
 
     void checkCoveredCards(const coveredSet& coveredCardSet);
     void checkStack(const cardStack& stackToCheck);

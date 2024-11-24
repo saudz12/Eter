@@ -118,55 +118,7 @@ void GameDemo::runDemo()
             break;
         }
         case 8:
-            if (m_board->getLineCount() == 2)
-            {
-                ExplosionCard explCard(m_board->getMaxSize());
-
-                printExplosionOptions();
-                uint16_t explosionOption;
-                bool getOut = false;
-                std::cin >> explosionOption;
-                do
-                {
-                    switch (explosionOption)
-                    {
-                    case 0:
-                        getOut = true;
-                        break;
-                    case 1:
-                    {
-                        Board copyBoard(3);
-                        Board::cloneMatrix(*m_board, copyBoard);
-                        Player copyPl1 = *m_p1;
-                        Player copyPl2 = *m_p2;
-                        m_board->applyExplosionOnBoard(explCard, *m_p1, *m_p2);
-                        if (isolatedSpaces(*m_board))
-                        {
-                            Board::cloneMatrix(copyBoard, *m_board);
-                            *m_p1 = copyPl1;
-                            *m_p2 = copyPl2;
-                            std::cout << "Can't have isolated stacks/cards..\n";
-                        }
-                        else
-                            getOut = true;
-                        break;
-                    }
-                    case 2:
-                        explCard.RotateToRight(m_board->getMaxSize());
-                        explCard.showExpl(m_board->getMaxSize());
-                        std::cin >> explosionOption;
-                        break;
-                    default:
-                        break;
-                    }
-                } while (getOut == false);
-
-            }
-            else
-            {
-                m_wasPlaced = false;
-                std::cout << "you cannot place a explosion card right now\n";
-            }
+            m_wasPlaced = useExplosionCard();
             system("pause");
             break;
         case 9:
@@ -185,20 +137,7 @@ void GameDemo::runDemo()
                 continue;
             }
             if (m_board->entityWon(x, y, m_currPlayer->GetPlayerColor())) {
-                if (m_currPlayer->GetPlayerColor() == 'R')
-                    m_score.first++;
-                else
-                    m_score.second++;
-                m_rounds--;
-                std::cout << "Player1: " << m_score.first << " | Player2: " << m_score.second << "\n";
-                delete m_board;
-                delete m_p1;
-                delete m_p2;
-                if (m_rounds != 0) {
-                    m_board = new Board(3);
-                    m_p1 = new Player('R');
-                    m_p2 = new Player('B');
-                }
+                restartRound();
                 system("pause");
                 continue;
             }*/
@@ -468,6 +407,79 @@ bool GameDemo::placeMinionCard(size_t& x, size_t& y)
     }
     m_currPlayer->UpdateCard(cardToPlace, -1);
     return true;
+}
+
+bool GameDemo::useExplosionCard()
+{
+    if (m_board->getLineCount() == 2)
+    {
+        ExplosionCard explCard(m_board->getMaxSize());
+
+        printExplosionOptions();
+        uint16_t explosionOption;
+        bool getOut = false;
+        std::cin >> explosionOption;
+        do
+        {
+            switch (explosionOption)
+            {
+            case 0:
+                getOut = true;
+                return false;
+            case 1:
+            {
+                Board copyBoard(3);
+                Board::cloneMatrix(*m_board, copyBoard);
+                Player copyPl1 = *m_p1;
+                Player copyPl2 = *m_p2;
+                m_board->applyExplosionOnBoard(explCard, *m_p1, *m_p2);
+                if (isolatedSpaces(*m_board))
+                {
+                    Board::cloneMatrix(copyBoard, *m_board);
+                    *m_p1 = copyPl1;
+                    *m_p2 = copyPl2;
+                    std::cout << "Can't have isolated stacks/cards..\n";
+                }
+                else
+                    getOut = true;
+                break;
+            }
+            case 2:
+                explCard.RotateToRight(m_board->getMaxSize());
+                explCard.showExpl(m_board->getMaxSize());
+                std::cin >> explosionOption;
+                break;
+            default:
+                break;
+            }
+        } while (getOut == false);
+
+    }
+    else
+    {
+        std::cout << "you cannot place a explosion card right now\n";
+        return false;
+    }
+    return true;
+}
+
+void GameDemo::restartRound()
+{
+    if (m_currPlayer->GetPlayerColor() == 'R')
+        m_score.first++;
+    else
+        m_score.second++;
+    m_rounds--;
+    std::cout << "Player1: " << m_score.first << " | Player2: " << m_score.second << "\n";
+    delete m_board;
+    delete m_p1;
+    delete m_p2;
+    if (m_rounds != 0) {
+        m_board = new Board(3);
+        m_p1 = new Player('R');
+        m_p2 = new Player('B');
+    }
+
 }
 
 void GameDemo::checkCoveredCards(const coveredSet& coveredCardSet) 
