@@ -54,10 +54,10 @@ private:
 	void addLineOnBottom();
 
 	//will be changed if you can remove from middle
-	bool removeLeftMargin();
-	bool removeRightMargin();
-	bool removeTopMargin();
-	bool removeBottomMargin();
+	void removeLeftMargin();
+	void removeRightMargin();
+	void removeTopMargin();
+	void removeBottomMargin();
 	//other interactions
 
 public:

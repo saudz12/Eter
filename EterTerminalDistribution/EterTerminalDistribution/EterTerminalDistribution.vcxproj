@@ -135,6 +135,7 @@
     <ClCompile Include="EterTerminalDistribution.cpp" />
     <ClCompile Include="ExplosionCard.cpp" />
     <ClCompile Include="functionsElementalCards.cpp" />
+    <ClCompile Include="functionsInputCheck.cpp" />
     <ClCompile Include="functionsMageCards.cpp" />
     <ClCompile Include="GameDemo.cpp" />
     <ClCompile Include="HoleCard.cpp" />

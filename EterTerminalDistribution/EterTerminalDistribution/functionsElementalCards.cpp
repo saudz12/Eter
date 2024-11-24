@@ -1,9 +1,10 @@
 #include "functionsElementalCards.h"
+#include "functionsInputCheck.h"
 
 //to note it may be more efficient to make m_board member public in Board class to not copy the contents of the matrix every time we modify it 
 
 //generate a new explosion and use it
-void funcControlledExplosion(Board& board, Player& pl1, Player& pl2)
+uint16_t funcControlledExplosion(Board& board, Player& pl1, Player& pl2)
 {
 	Board copyBoard(3);
 	Board::cloneMatrix(board, copyBoard);
@@ -14,7 +15,7 @@ void funcControlledExplosion(Board& board, Player& pl1, Player& pl2)
 	if (board.getRowCount() != board.getMaxSize() || board.getColCount() != board.getMaxSize())
 	{
 		std::cout << "This card cannot be placed because the board is not to it's max size\n";
-		return;
+		return 1;
 	}
 	ExplosionCard explCard(board.getMaxSize());
 	board.applyExplosionOnBoard(explCard, pl1, pl2);
@@ -23,12 +24,14 @@ void funcControlledExplosion(Board& board, Player& pl1, Player& pl2)
 		pl1 = copyPl1;
 		pl2 = copyPl2;
 		std::cout << "Can't have isolated stacks/cards..\n";
-		return;
+		return 1;
 	}
+
+	return 0;
 }
 
 //remove from play last card played by opponent
-void funcDestruction(Board& board, Player& player)
+uint16_t funcDestruction(Board& board, Player& player)
 {
 	Board copyBoard(3);
 	Board::cloneMatrix(board, copyBoard);
@@ -37,30 +40,32 @@ void funcDestruction(Board& board, Player& player)
 	if (toberemoved->GetIsEterCard())
 	{
 		std::cout << "Can't use Destruction elemental card on eter card\n";
-		return;
+		return 1;
 	}
 
 	resizeableMatrix& matrix = board.getMatrix();
 	for (int i = 0; i < board.getRowCount(); i++)
 		for (int j = 0; j < board.getColCount(); j++)
-			if (!matrix[i][j].empty() && board.getCardOnPos(i, j) == *toberemoved) {
+			if (!matrix[i][j].empty() && &board.getCardOnPos(i, j) == &*toberemoved) {
 				if (board.removePos(i, j) == 1)
 				{
 					std::cout << "Failed to remove card\n";
-					return;
+					return 1;
 				}
 				break;
 			}
 
-	/*if (isolatedSpaces(board)) {
+	if (isolatedSpaces(board)) {
 		Board::cloneMatrix(copyBoard, board);
 		std::cout << "Can't have isolated stacks/cards..\n";
-		return;
+		return 1;
 	}
 
 	player.addToRemovedCards(*toberemoved);
-	player.SetLastMinionCardPlayed(nullptr);*/
+	player.SetLastMinionCardPlayed(nullptr);
 	//board.checkForUpdates();
+
+	return 0;
 }
 
 //reveals an illusion and then play a card
@@ -69,14 +74,19 @@ void funcDestruction(Board& board, Player& player)
 //moved the if to checkInput
 uint16_t funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard& CardToBePlaced, Player& p)
 {
+	if (checkFuncFlame(board, x1, y1, x2, y2, CardToBePlaced, p) != 0)
+		return 1;
 	resizeableMatrix& matrix = board.getMatrix();
 	matrix[x1][y1].back().SetIsIllusionCard(false);
 	return 0;
 }
 
 //return to hand all cards with a specific value
-void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
+uint16_t funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 {
+	if (checkFuncFire(board, value) != 0)
+		return 1;
+
 	Board copyBoard(3);
 	Board::cloneMatrix(board, copyBoard);
 	Player copyPl1 = player1;
@@ -106,7 +116,7 @@ void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 	if (cardCount < 2)
 	{
 		std::cout << "Not enough cards on board with chosen value\n";
-		return;
+		return 1;
 	}
 
 	for (size_t i = 0; i < returningCards.size(); i++)
@@ -116,20 +126,7 @@ void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 		int yCoordonate = std::get<2>(returningCards[i]);
 
 		if (board.removePos(xCoordonate, yCoordonate) == 1)
-			std::cout << "Failed to remove card at position (" << xCoordonate << " , " << yCoordonate << ")\n";
-		else
-			std::cout << "Successfully removed card at position(" << xCoordonate << ", " << yCoordonate << ")\n";
-
-		if (card.GetColor() == 'R')
-		{
-			board.updateColChecker(yCoordonate, RED_DEC);
-			board.updateRowChecker(xCoordonate, RED_DEC);
-		}
-		else
-		{
-			board.updateColChecker(yCoordonate, BLUE_DEC);
-			board.updateRowChecker(xCoordonate, BLUE_DEC);
-		}
+			return 1;
 
 		//checking which player is getting his card returned to hand
 		if (card.GetColor() == player1.GetPlayerColor())
@@ -148,22 +145,31 @@ void funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 		player1 = copyPl1;
 		player2 = copyPl2;
 		std::cout << "Can't have isolated stacks/cards..\n";
-		return;
+		return 1;
 	}
+	board.checkForUpdates();
+
+	return 0;
 }
 
 //play a card which was removed
-void funcAsh(Board& board, Player& player, const MinionCard& card, uint16_t x, uint16_t y)
+uint16_t funcAsh(Board& board, Player& player, const MinionCard& card, uint16_t x, uint16_t y)
 {
+	if (checkFuncAsh(board, card, x, y) != 0)
+		return 1;
+
 	if (player.placeMinionCardFromRemovedCard(card) == true)
 	{
-		std::cout << "Successfully placed card from removed cards pool at position(" << x << ", " << y << ")\n";
-		board.setPos(x, y, card, player);
+		if (board.setPos(x, y, card, player) == 1)
+			return 1;
 	}
 	else
 	{
-		std::cout << "Failed to place card from removed cards pool at position (" << x << " , " << y << ")\n";
+		player.addToRemovedCards(card);
+		return 1;
 	}
+
+	return 0;
 }
 
 /* versiune saud cu set si move -- ramane de terminat do not touch!!! 

@@ -16,11 +16,13 @@ int checkFuncFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t
 		return 2;
 	return 0;
 }
+
 int checkFuncFire(Board&, uint16_t cardValue) {
 	if (cardValue < 1 || cardValue > 4)
 		return 1;
 	return 0;
 }
+
 int checkFuncAsh(Board& board, const MinionCard& card, uint16_t x, uint16_t y) {
 	uint16_t lines = board.getLineCount(), cols = board.getColCount();
 	if (card.GetValue() > 4 || card.GetValue() < 1)
@@ -29,6 +31,7 @@ int checkFuncAsh(Board& board, const MinionCard& card, uint16_t x, uint16_t y) {
 		return 1;
 	return 0;
 }
+
 int checkFuncSpark(Board& board, uint16_t x1,uint16_t y1,uint16_t x2, uint16_t y2)
 {
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();

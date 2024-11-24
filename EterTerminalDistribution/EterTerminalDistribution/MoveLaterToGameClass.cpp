@@ -16,7 +16,7 @@ bool isolatedSpaces(Board& boardModel)
 
 	checkedMat.resize(l);
 	for (int i = 0; i < l; i++)
-		checkedMat[i].resize(c, 0);
+		checkedMat[i].resize(c, false);
 
 	for (uint16_t i = 0; i < l; i++) {
 		for (uint16_t j = 0; j < c; j++) {
@@ -90,7 +90,7 @@ bool isolatedSpaces(Board& boardModel)
 		visitedStack.pop_front();
 	}
 
-	return uniqueVisited != cardStackCount;
+	return (uniqueVisited != cardStackCount);
 }
 
 void TestIsolatedSpacesFunc(Board& boardModel) {

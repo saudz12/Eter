@@ -223,6 +223,7 @@ int16_t Board::setPos(int16_t x, int16_t y, const MinionCard& card, Player& p) {
 	if (boundCondY == RIGHT_BOUND) {
 		addLineToRight();
 	}
+
 	increaseOnColorRow(x, y, card.GetColor());
 	increaseOnColorColumn(x, y, card.GetColor());
 
@@ -235,12 +236,40 @@ int16_t Board::setPos(int16_t x, int16_t y, const MinionCard& card, Player& p) {
 	{
 		m_matrix[x][y].back().SetIsIllusionCard(false);
 		if (card.GetValue() > m_matrix[x][y].back().GetValue())
+		{
 			m_matrix[x][y].push_back(card);
+		}
 		else
+		{
 			p.addToRemovedCards(card);
+			if (card.GetColor() != m_matrix[x][y].back().GetColor())
+			{
+				if (card.GetColor() == 'R')
+				{
+					updateColChecker(y, BLUE_ADD_RED_DEC);
+					updateRowChecker(x, BLUE_ADD_RED_DEC);
+					if (x == y)
+						updateFirstDiagChecker(BLUE_ADD_RED_DEC);
+					if (x == m_matrix.size() - y - 1)
+						updateSeconDiagChecker(BLUE_ADD_RED_DEC);
+				}
+				else
+				{
+					{
+						updateColChecker(y, RED_ADD_BLUE_DEC);
+						updateRowChecker(x, RED_ADD_BLUE_DEC);
+						if (x == y)
+							updateFirstDiagChecker(RED_ADD_BLUE_DEC);
+						if (x == m_matrix.size() - y - 1)
+							updateSeconDiagChecker(RED_ADD_BLUE_DEC);
+					}
+				}
+			}
+		}
 	}
 	else
 		m_matrix[x][y].push_back(card);
+
 	if (m_rowChecker[x].first + m_rowChecker[x].second == m_max_size)
 		m_lineCnt++;
 	if (m_colChecker[y].first + m_colChecker[y].second == m_max_size)
@@ -573,16 +602,16 @@ void Board::shiftLine(uint16_t start, uint16_t end, uint16_t ratio, uint16_t lin
 
 void Board::checkForUpdates()
 {
-	while (m_colChecker[0].first + m_colChecker[0].second == 0) {
+	while (m_colChecker.front().first + m_colChecker.front().second == 0) {
 		removeLeftMargin();
 	}
-	while (m_colChecker[getColCount() - 1].first + m_colChecker[getColCount() - 1].second == 0) {
+	while (m_colChecker.back().first + m_colChecker.back().second == 0) {
 		removeRightMargin();
 	}
-	while (m_rowChecker[0].first + m_rowChecker[0].second == 0) {
+	while (m_rowChecker.front().first + m_rowChecker.front().second == 0) {
 		removeTopMargin();
 	}
-	while (m_rowChecker[getRowCount() - 1].first + m_rowChecker[getRowCount() - 1].second == 0) {
+	while (m_rowChecker.back().first + m_rowChecker.back().second == 0) {
 		removeBottomMargin();
 	}
 	if (m_colChecker.size() + m_rowChecker.size() == 0) {
@@ -720,35 +749,30 @@ void Board::addLineOnBottom()
 	m_rowChecker.emplace_back(0, 0);
 }
 
-//returns 1 if you cannot delete that 
-bool Board::removeLeftMargin()
+void Board::removeLeftMargin()
 {
 	for (int i = 0; i < getRowCount(); i++)
 		m_matrix[i].pop_front();
 	m_colChecker.pop_front();
-	return 0;
 }
 
-bool Board::removeRightMargin()
+void Board::removeRightMargin()
 {
 	for (int i = 0; i < getRowCount(); i++)
-		m_matrix[i].pop_back();
+			m_matrix[i].pop_back();
 	m_colChecker.pop_back();
-	return 0;
 }
 
-bool Board::removeTopMargin()
+void Board::removeTopMargin()
 {
 	m_matrix.pop_front();
 	m_rowChecker.pop_front();
-	return 0;
 }
 
-bool Board::removeBottomMargin()
+void Board::removeBottomMargin()
 {
 	m_matrix.pop_back();
 	m_rowChecker.pop_back();
-	return 0;
 }
 
 bool Board::removeRow(uint16_t x)
