@@ -414,17 +414,6 @@ void funcGust(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 	*/
 	resizeableMatrix& matrix = board.getMatrix();
 
-	if (matrix[x1][y1].back().GetIsEterCard() || matrix[x2][y2].back().GetIsEterCard())
-	{
-		std::cout << "Can't use Gust elemental card on eter card\n";
-		return;
-	}
-
-	if (!((x1 == x2 && std::abs(y1 - y2) == 1) || (y1 == y2) && std::abs(x1 - x2)))
-		return;
-	if (!(matrix[x1][y1].back().GetValue() > matrix[x2][y2].back().GetValue()))
-		return;
-
 	MinionCard& movedCard = matrix[x1][y1].back();
 	matrix[x1][y1].pop_back();
 
@@ -435,12 +424,8 @@ void funcGust(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 void funcMirage(Board& board, Player& p, uint16_t x1, uint16_t y1, const MinionCard& chosenCard)
 {
 	resizeableMatrix& matrix = board.getMatrix();
-	if (!matrix[x1][y1].back().GetIsIllusionCard()) {
-		std::cout << "Chosen card position is not an illusion\n";
-		return;
-	}
-	
 	MinionCard returningCard = board.getCardOnPos(x1, y1);
+
 	returningCard.SetIsIllusionCard(false);
 	p.returnMinionCardToHand(returningCard);
 	board.setPos(x1, y1, chosenCard, p);
@@ -452,12 +437,6 @@ void funcStorm(Board& board, Player& p1, Player& p2, uint16_t x, uint16_t y)
 {
 	resizeableMatrix& matrix = board.getMatrix();
 
-	if (matrix[x][y].size() < 2)
-	{
-		std::cout << "The stack does not have enough cards..\n";
-		return;
-	}
-	
 	if (matrix[x][y].back().GetIsIllusionCard())
 		matrix[x][y].back().SetIsIllusionCard(false);
 
@@ -477,11 +456,6 @@ void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 	cardStack& first = board.getStackOnPos(x1, y1);
 	cardStack& second = board.getStackOnPos(x2, y2);
 
-	if (first.back().GetIsEterCard() || second.back().GetIsEterCard())
-	{
-		std::cout << "Can't use Tide elemental card on eter card\n";
-		return;
-	}
 
 	if (first.back().GetColor() == 'R') {
 		board.updateRowChecker(x1, RED_DEC);

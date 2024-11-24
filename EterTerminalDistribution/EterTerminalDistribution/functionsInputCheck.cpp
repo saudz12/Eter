@@ -2,6 +2,7 @@
 // add input checks here
 // return 0 means all good
 // 1 and higher means an error
+// kept the error messages in comments in their corresponding locations for later use
 
 int checkFuncFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard& CardToBePlaced, Player& p)
 {
@@ -15,7 +16,7 @@ int checkFuncFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t
 		return 2;
 	return 0;
 }
-int checkFuncFire(Board&, Player&, Player&, uint16_t cardValue) {
+int checkFuncFire(Board&, uint16_t cardValue) {
 	if (cardValue < 1 || cardValue > 4)
 		return 1;
 	return 0;
@@ -73,23 +74,81 @@ int checkFuncSquall(Board& board, uint16_t x1, uint16_t y1) {
 }
 
 
-int checkFuncHurricane(Board&, hand& p1, hand& p2) {// for saud, dont touch
+int checkFuncHurricane(Board&, hand& p1, hand& p2) {// for saud, don't touch !!!!
 	return 0;
 }
 
-int checkFuncGust(Board&, uint16_t, uint16_t, uint16_t, uint16_t) {
+int checkFuncGust(Board&board , uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+	resizeableMatrix& matrix = board.getMatrix();
+	uint16_t lines = board.getRowCount(), cols = board.getColCount();
+
+	if (x1<0 || x1>lines ||
+		x2<0 || x2>lines ||
+		y1<0 || y1>cols ||
+		y2<0 || y2>cols) // bound check
+		return 1;
+
+	if (matrix[x1][y1].back().GetIsEterCard() || matrix[x2][y2].back().GetIsEterCard())
+		return 2;
+		//std::cout << "Can't use Gust elemental card on eter card\n";
+	
+
+	if (!((x1 == x2 && std::abs(y1 - y2) == 1) || (y1 == y2) && std::abs(x1 - x2)))
+		return 3;
+
+	if (!(matrix[x1][y1].back().GetValue() > matrix[x2][y2].back().GetValue()))
+		return 4;
+
 	return 0;
 }
 
-int checkFuncMirage(Board&, Player&, uint16_t, uint16_t, const MinionCard&) {
+int checkFuncMirage(Board& board, uint16_t x1, uint16_t y1, const MinionCard&) {
+	resizeableMatrix& matrix = board.getMatrix();
+	uint16_t lines = board.getRowCount(), cols = board.getColCount();
+	if (x1 < 0 || x1 > lines || 
+		y1 < 0 || y1 > cols) //bound check
+		return 1;
+	
+	if (!matrix[x1][y1].back().GetIsIllusionCard())
+		return 2;
+		//std::cout << "Chosen card position is not an illusion\n";
+	
 	return 0;
 }
 
-int checkFuncStorm(Board&, Player&, Player&, uint16_t, uint16_t) {
+int checkFuncStorm(Board& board,uint16_t x, uint16_t y) {
+
+	resizeableMatrix& matrix = board.getMatrix();
+	uint16_t lines = board.getRowCount(), cols = board.getColCount();
+
+	if (x < 0 || x > lines ||
+		y < 0 || y > cols) //bound check
+		return 1;
+	if (matrix[x][y].size() < 2)
+	{
+		//std::cout << "The stack does not have enough cards..\n";
+		return 2;
+	}
 	return 0;
 }
 
-int checkFuncTide(Board&, uint16_t, uint16_t, uint16_t, uint16_t) {
+int checkFuncTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+	
+	cardStack& first = board.getStackOnPos(x1, y1);
+	cardStack& second = board.getStackOnPos(x2, y2);
+	uint16_t lines = board.getRowCount(), cols = board.getColCount();
+
+	if (x1<0 || x1>lines ||
+		x2<0 || x2>lines ||
+		y1<0 || y1>cols ||
+		y2<0 || y2>cols) // bound check
+		return 1;
+	
+	if (first.back().GetIsEterCard() || second.back().GetIsEterCard())
+	{
+		//std::cout << "Can't use Tide elemental card on eter card\n";
+		return 2;
+	}
 	return 0;
 }
 

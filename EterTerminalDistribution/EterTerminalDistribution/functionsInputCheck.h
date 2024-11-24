@@ -12,7 +12,7 @@ using handCard = std::unordered_map<MinionCard, uint16_t>;
 
 int checkFuncFlame(Board&, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard&, Player&);
 
-int checkFuncFire(Board&, Player&, Player&, uint16_t);
+int checkFuncFire(Board&, uint16_t);
 
 int checkFuncAsh(Board&,const MinionCard&, uint16_t, uint16_t);
 
@@ -25,9 +25,9 @@ int checkFuncHurricane(Board&, hand&, hand&);
 
 int checkFuncGust(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
 
-int checkFuncMirage(Board&, Player&, uint16_t, uint16_t, const MinionCard&);
+int checkFuncMirage(Board&, uint16_t, uint16_t, const MinionCard&);
 
-int checkFuncStorm(Board&, Player&, Player&, uint16_t, uint16_t);
+int checkFuncStorm(Board&, uint16_t, uint16_t);
 
 int checkFuncTide(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
 
