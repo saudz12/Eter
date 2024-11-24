@@ -119,55 +119,7 @@ void GameDemo::runDemo()
             break;
         }
         case 8:
-            if (m_board->getLineCount() == 2)
-            {
-                ExplosionCard explCard(m_board->getMaxSize());
-
-                printExplosionOptions();
-                uint16_t explosionOption;
-                bool getOut = false;
-                std::cin >> explosionOption;
-                do
-                {
-                    switch (explosionOption)
-                    {
-                    case 0:
-                        getOut = true;
-                        break;
-                    case 1:
-                    {
-                        Board copyBoard(3);
-                        Board::cloneMatrix(*m_board, copyBoard);
-                        Player copyPl1 = *m_p1;
-                        Player copyPl2 = *m_p2;
-                        m_board->applyExplosionOnBoard(explCard, *m_p1, *m_p2);
-                        if (isolatedSpaces(*m_board))
-                        {
-                            Board::cloneMatrix(copyBoard, *m_board);
-                            *m_p1 = copyPl1;
-                            *m_p2 = copyPl2;
-                            std::cout << "Can't have isolated stacks/cards..\n";
-                        }
-                        else
-                            getOut = true;
-                        break;
-                    }
-                    case 2:
-                        explCard.RotateToRight(m_board->getMaxSize());
-                        explCard.showExpl(m_board->getMaxSize());
-                        std::cin >> explosionOption;
-                        break;
-                    default:
-                        break;
-                    }
-                } while (getOut == false);
-
-            }
-            else
-            {
-                m_wasPlaced = false;
-                std::cout << "you cannot place a explosion card right now\n";
-            }
+            m_wasPlaced=useExplosionCard();
             system("pause");
             break;
         case 9:
@@ -186,20 +138,7 @@ void GameDemo::runDemo()
                 continue;
             }*/
             if (m_board->entityWon(x, y, m_currPlayer->GetPlayerColor())) {
-                if (m_currPlayer->GetPlayerColor() == 'R')
-                    m_score.first++;
-                else
-                    m_score.second++;
-                m_rounds--;
-                std::cout << "Player1: " << m_score.first << " | Player2: " << m_score.second << "\n";
-                delete m_board;
-                delete m_p1;
-                delete m_p2;
-                if (m_rounds != 0) {
-                    m_board = new Board(3);
-                    m_p1 = new Player('R');
-                    m_p2 = new Player('B');
-                }
+                restartRound();
                 system("pause");
                 continue;
             }
@@ -471,6 +410,79 @@ bool GameDemo::placeMinionCard(size_t& x, size_t& y)
     return true;
 }
 
+bool GameDemo::useExplosionCard()
+{
+    if (m_board->getLineCount() == 2)
+    {
+        ExplosionCard explCard(m_board->getMaxSize());
+
+        printExplosionOptions();
+        uint16_t explosionOption;
+        bool getOut = false;
+        std::cin >> explosionOption;
+        do
+        {
+            switch (explosionOption)
+            {
+            case 0:
+                getOut = true;
+                return false;
+            case 1:
+            {
+                Board copyBoard(3);
+                Board::cloneMatrix(*m_board, copyBoard);
+                Player copyPl1 = *m_p1;
+                Player copyPl2 = *m_p2;
+                m_board->applyExplosionOnBoard(explCard, *m_p1, *m_p2);
+                if (isolatedSpaces(*m_board))
+                {
+                    Board::cloneMatrix(copyBoard, *m_board);
+                    *m_p1 = copyPl1;
+                    *m_p2 = copyPl2;
+                    std::cout << "Can't have isolated stacks/cards..\n";
+                }
+                else
+                    getOut = true;
+                break;
+            }
+            case 2:
+                explCard.RotateToRight(m_board->getMaxSize());
+                explCard.showExpl(m_board->getMaxSize());
+                std::cin >> explosionOption;
+                break;
+            default:
+                break;
+            }
+        } while (getOut == false);
+
+    }
+    else
+    {
+        std::cout << "you cannot place a explosion card right now\n";
+        return false;
+    }
+    return true;
+}
+
+void GameDemo::restartRound()
+{
+    if (m_currPlayer->GetPlayerColor() == 'R')
+        m_score.first++;
+    else
+        m_score.second++;
+    m_rounds--;
+    std::cout << "Player1: " << m_score.first << " | Player2: " << m_score.second << "\n";
+    delete m_board;
+    delete m_p1;
+    delete m_p2;
+    if (m_rounds != 0) {
+        m_board = new Board(3);
+        m_p1 = new Player('R');
+        m_p2 = new Player('B');
+    }
+    
+}
+
 void GameDemo::checkCoveredCards(const coveredSet& coveredCardSet) 
 {
 
@@ -517,7 +529,7 @@ void GameDemo::checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, P
         break;
     }
     case 3: {
-        uint16_t illusionX, illusionY, x, y, val;
+        uint16_t illusionX, illusionY,  val;
         std::cout << "Type the coordonates of the illusion card you want to reveal\n";
         std::cin >> illusionX >> illusionY;
 
@@ -527,84 +539,22 @@ void GameDemo::checkElementalCardFunction(Board*& b, Player*& p1, Player*& p2, P
         std::cin >> placeOption;
 
         bool wasPlaced = false;
-
+        size_t x, y;
         switch (placeOption)
         {
         case 1:
         {
-            if (currPlayer->GetEterCardUsage())
-            {
-                std::cout << "You have already used your eter card\n";
-                break;
-            }
-            std::cout << "Choose the position: ";
-            std::cin >> x >> y;
-            MinionCard cardToPlace(1, currPlayer->GetPlayerColor(), true);
-
-            if (currHand.find(cardToPlace) == currHand.end()) {
-                std::cout << "\nYou don't own any cards of that type!\n";
-                system("pause");
-                break;
-            }
-
-            if (funcFlame(*b, illusionX, illusionY, x, y, cardToPlace, *currPlayer) == 1) {
-                system("pause");
-                break;
-            }
-            currPlayer->SetEterCardUsage(true);
-            currPlayer->UpdateCard(cardToPlace, -1);
-            wasPlaced = true;
+            m_wasPlaced=placeEterCard(x,y);
             break;
         }
         case 2:
         {
-            if (currPlayer->GetIllusionUsage())
-            {
-                std::cout << "You have already used your illusion\n";
-                break;
-            }
-            std::cout << "\nChoose a card and the position: ";
-            std::cin >> val >> x >> y;
-            MinionCard cardToPlace(val, currPlayer->GetPlayerColor(), false);
-
-            if (currHand.find(cardToPlace) == currHand.end()) {
-                std::cout << "\nYou don't own any cards of that type!\n";
-                system("pause");
-                break;
-            }
-
-            cardToPlace.SetIsIllusionCard(true);
-
-            if (funcFlame(*b, illusionX, illusionY, x, y, cardToPlace, *currPlayer) == 1) {
-                system("pause");
-                break;
-            }
-
-            cardToPlace.SetIsIllusionCard(false);
-            currPlayer->UpdateCard(cardToPlace, -1);
-            currPlayer->SetIllusionUsage(true);
-            currPlayer->SetIllusionCard(&b->getCardOnPos(x, y));
-            wasPlaced = true;
+            m_wasPlaced=placeIllusionCard(x, y);
             break;
         }
         case 3:
         {
-            std::cout << "\nChoose a card and the position: ";
-            std::cin >> val >> x >> y;
-            MinionCard cardToPlace(val, currPlayer->GetPlayerColor(), false);
-
-            if (currHand.find(cardToPlace) == currHand.end()) {
-                std::cout << "\nYou don't own any cards of that type!\n";
-                system("pause");
-                break;
-            }
-
-            if (funcFlame(*b, illusionX, illusionY, x, y, cardToPlace, *currPlayer) == 1) {
-                system("pause");
-                break;
-            }
-            currPlayer->UpdateCard(cardToPlace, -1);
-            wasPlaced = true;
+            m_wasPlaced = placeEterCard(x, y);
             break;
         }
         default:
