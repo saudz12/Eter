@@ -412,7 +412,6 @@ void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 	cardStack& first = board.getStackOnPos(x1, y1);
 	cardStack& second = board.getStackOnPos(x2, y2);
 
-
 	if (first.back().GetColor() == 'R') {
 		board.updateRowChecker(x1, RED_DEC);
 		board.updateColChecker(y1, RED_DEC);

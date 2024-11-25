@@ -41,3 +41,46 @@ const int CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_view t
 	}
 	return NO_ERRORS;
 }
+
+const int CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view linetype)
+{
+	resizeableMatrix& matrix = board.getMatrix();
+
+	int ratioX = (linetype == ID_ROW) ? 0 : 1;
+	int ratioY = (linetype == ID_ROW) ? 1 : 0;
+
+	if (!matrix[x][y].empty()) {
+		return EMPTY_SPACE;
+	}
+
+	if ((x < 0 || x >= board.getRowCount()) || (y < 0 || y >= board.getColCount())) {
+		return OUTSIDE_BOUNDS;
+	}
+
+	//check if the adjacent spaces are out of bounds
+	if (linetype == ID_ROW) {
+		if (y - 1 < 0 || y + 1 >= board.getColCount())
+		{
+			return ADJACENT_OUTSIDE_BOUNDS;
+		}
+	else {
+		if (x - 1 < 0 || x + 1 >= board.getRowCount())
+		{
+			return ADJACENT_OUTSIDE_BOUNDS;
+		}
+	}
+
+	}
+	//check if the adjancent spaces are empty
+	if (matrix[x - ratioX][y - ratioY].empty() || matrix[x + ratioX][y + ratioY].empty())
+	{
+		return ADJACENT_SPACES_EMPTY;
+	}
+	//check if one of the adjancent spaces is an eter card
+	if (matrix[x - ratioX][y - ratioY].back().GetIsEterCard() || matrix[x + ratioX][y + ratioY].back().GetIsEterCard())
+	{
+		return ETER_PROPERTY_VIOALTION;
+	}
+
+	return NO_ERRORS;
+}
