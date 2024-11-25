@@ -133,11 +133,11 @@ void GameDemo::runDemo()
                 elementalCardUsedTester = false;
                 continue;
             }*/
-            if (m_board->entityWon(x, y, m_currPlayer->GetPlayerColor())) {
+            /*if (m_board->entityWon(x, y, m_currPlayer->GetPlayerColor())) {
                 restartRound();
                 system("pause");
                 continue;
-            }
+            }*/
             ///Tiebreaker - update it
             if (m_board->isBoardFilled() || m_currHand.empty()) {
                 //The other player has one more move left!
@@ -698,7 +698,13 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         break;
     }
     case 6: {
-        funcSpark(b, *currPlayer);
+        if (funcSpark(b, *currPlayer) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+            std::cout << "Failed to use Spark\n";
         break;
     }
     case 7: {
@@ -706,9 +712,25 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         uint16_t x, y;
         std::cin >> x >> y;
         if (currPlayer->GetPlayerColor() == 'R')
-            funcSquall(b, *p2, x, y);
+        {
+            if (funcSquall(b, *p2, x, y) == 0)
+            {
+                wasUsed = true;
+                wasCardUsed = true;
+            }
+            else
+                std::cout << "Failed to use Squall\n";
+        }
         else
-            funcSquall(b, *p1, x, y);
+        {
+            if (funcSquall(b, *p1, x, y) == 0)
+            {
+                wasUsed = true;
+                wasCardUsed = true;
+            }
+            else
+                std::cout << "Failed to use Squall\n";
+        }
         break;
     }
     case 8: {

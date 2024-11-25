@@ -4,7 +4,7 @@
 // 1 and higher means an error
 // kept the error messages in comments in their corresponding locations for later use
 
-int checkFuncFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard& CardToBePlaced, Player& p)
+uint16_t checkFuncFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard& CardToBePlaced, Player& p)
 {
 	uint16_t lines = board.getLineCount(), cols = board.getColCount();
 	if (x1 < 0 || x1 > lines || y1 < 0 || y1 > cols)/// bound check
@@ -17,13 +17,13 @@ int checkFuncFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t
 	return 0;
 }
 
-int checkFuncFire(Board&, uint16_t cardValue) {
+uint16_t checkFuncFire(Board&, uint16_t cardValue) {
 	if (cardValue < 1 || cardValue > 4)
 		return 1;
 	return 0;
 }
 
-int checkFuncAsh(Board& board, const MinionCard& card, uint16_t x, uint16_t y) {
+uint16_t checkFuncAsh(Board& board, const MinionCard& card, uint16_t x, uint16_t y) {
 	uint16_t lines = board.getLineCount(), cols = board.getColCount();
 	if (card.GetValue() > 4 || card.GetValue() < 1)
 		return 2;
@@ -32,7 +32,7 @@ int checkFuncAsh(Board& board, const MinionCard& card, uint16_t x, uint16_t y) {
 	return 0;
 }
 
-int checkFuncSpark(Board& board, uint16_t x1,uint16_t y1,uint16_t x2, uint16_t y2)
+uint16_t checkFuncSpark(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 	resizeableMatrix& matrix = board.getMatrix();
@@ -47,7 +47,7 @@ int checkFuncSpark(Board& board, uint16_t x1,uint16_t y1,uint16_t x2, uint16_t y
 	return 0;
 }
 
-int checkFuncSquall(Board& board, uint16_t x1, uint16_t y1) {
+uint16_t checkFuncSquall(Board& board, uint16_t x1, uint16_t y1) {
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 	resizeableMatrix& matrix = board.getMatrix();
 
@@ -77,11 +77,11 @@ int checkFuncSquall(Board& board, uint16_t x1, uint16_t y1) {
 }
 
 
-int checkFuncHurricane(Board&, hand& p1, hand& p2) {// for saud, don't touch !!!!
+uint16_t checkFuncHurricane(Board&, hand& p1, hand& p2) {// for saud, don't touch !!!!
 	return 0;
 }
 
-int checkFuncGust(Board&board , uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+uint16_t checkFuncGust(Board&board , uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
 	resizeableMatrix& matrix = board.getMatrix();
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 
@@ -105,7 +105,7 @@ int checkFuncGust(Board&board , uint16_t x1, uint16_t y1, uint16_t x2, uint16_t 
 	return 0;
 }
 
-int checkFuncMirage(Board& board, uint16_t x1, uint16_t y1, const MinionCard&) {
+uint16_t checkFuncMirage(Board& board, uint16_t x1, uint16_t y1, const MinionCard&) {
 	resizeableMatrix& matrix = board.getMatrix();
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 	if (x1 < 0 || x1 > lines || 
@@ -119,7 +119,7 @@ int checkFuncMirage(Board& board, uint16_t x1, uint16_t y1, const MinionCard&) {
 	return 0;
 }
 
-int checkFuncStorm(Board& board,uint16_t x, uint16_t y) {
+uint16_t checkFuncStorm(Board& board,uint16_t x, uint16_t y) {
 
 	resizeableMatrix& matrix = board.getMatrix();
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
@@ -135,7 +135,7 @@ int checkFuncStorm(Board& board,uint16_t x, uint16_t y) {
 	return 0;
 }
 
-int checkFuncTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+uint16_t checkFuncTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
 	
 	cardStack& first = board.getStackOnPos(x1, y1);
 	cardStack& second = board.getStackOnPos(x2, y2);
@@ -155,78 +155,78 @@ int checkFuncTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t 
 	return 0;
 }
 
-int checkFuncMist(Board&, Player&, uint16_t, uint16_t, MinionCard&) {
+uint16_t checkFuncMist(Board&, Player&, uint16_t, uint16_t, MinionCard&) {
 	return 0;
 }
 
-int checkFuncWave(Board&, uint16_t, uint16_t, MinionCard) {
+uint16_t checkFuncWave(Board&, uint16_t, uint16_t, MinionCard) {
 	return 0;
 }
 
-int checkFuncWhirlpool(Board&, uint16_t, uint16_t) {
+uint16_t checkFuncWhirlpool(Board&, uint16_t, uint16_t) {
 	return 0;
 }
 
-int checkFuncBlizzard(line&) {
+uint16_t checkFuncBlizzard(line&) {
 	return 0;
 }
 
-int checkFuncWaterfall(Board&, uint16_t) {
+uint16_t checkFuncWaterfall(Board&, uint16_t) {
 	return 0;
 }
 
-int checkFuncSupport(Board&, uint16_t, uint16_t) {
+uint16_t checkFuncSupport(Board&, uint16_t, uint16_t) {
 	return 0;
 }
 
-int checkFuncEarthquake(Board&) {
+uint16_t checkFuncEarthquake(Board&) {
 	return 0;
 }
 
-int checkFuncCrumble(Board&, uint16_t, uint16_t) {
+uint16_t checkFuncCrumble(Board&, uint16_t, uint16_t) {
 	return 0;
 }
 
-int checkFuncBorder(Board&, uint16_t, uint16_t) {
+uint16_t checkFuncBorder(Board&, uint16_t, uint16_t) {
 	return 0;
 }
 
-int checkFuncAvalanche(Board&, uint16_t, uint16_t, uint16_t, uint16_t, char) {
+uint16_t checkFuncAvalanche(Board&, uint16_t, uint16_t, uint16_t, uint16_t, char) {
 	return 0;
 }
 
-int checkFuncRock(Board&, uint16_t, uint16_t, MinionCard&) {
+uint16_t checkFuncRock(Board&, uint16_t, uint16_t, MinionCard&) {
 	return 0;
 }
 
-int checkFuncFireMage1(Board&, Player&) {
+uint16_t checkFuncFireMage1(Board&, Player&) {
 	return 0;
 }
 
-int checkFuncFireMage2(Board&, Player&) {
+uint16_t checkFuncFireMage2(Board&, Player&) {
 	return 0;
 }
 
-int checkFuncEarthMage1(Board&, Player&, uint16_t, uint16_t) {
+uint16_t checkFuncEarthMage1(Board&, Player&, uint16_t, uint16_t) {
 	return 0;
 }
 
-int checkFuncEarthMage2(Board&) {
+uint16_t checkFuncEarthMage2(Board&) {
 	return 0;
 }
 
-int checkFuncAirMage1(Board&, Player& pl) {
+uint16_t checkFuncAirMage1(Board&, Player& pl) {
 	return 0;
 }
 
-int checkFuncAirMage2(Board&, uint16_t, uint16_t) {
+uint16_t checkFuncAirMage2(Board&, uint16_t, uint16_t) {
 	return 0;
 }
 
-int checkFuncWaterMage1(Board&, Player&) {
+uint16_t checkFuncWaterMage1(Board&, Player&) {
 	return 0;
 }
 
-int checkFuncWaterMage2(Board& board, char color, Player& pl) {
+uint16_t checkFuncWaterMage2(Board& board, char color, Player& pl) {
 	return 0;
 }

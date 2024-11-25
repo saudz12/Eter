@@ -173,7 +173,7 @@ uint16_t funcAsh(Board& board, Player& player, const MinionCard& card, uint16_t 
 }
 
 /* versiune saud cu set si move -- ramane de terminat do not touch!!! 
-void funcSpark(Board& board, Player& player, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+uint16_t funcSpark(Board& board, Player& player, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
 	if (!player.printCoveredCards()) {
 		return;
@@ -190,8 +190,9 @@ void funcSpark(Board& board, Player& player, uint16_t x1, uint16_t y1, uint16_t 
 */
 
 //move a card which was covered by your opponent's card
-void funcSpark(Board& board, Player& p)  //this function needs to be reworked
+uint16_t funcSpark(Board& board, Player& p)  //this function needs to be reworked
 {
+
 	int x1, y1, x2, y2;
 
 	std::cout << "choose where from to remove one of your cards:\n";
@@ -199,6 +200,9 @@ void funcSpark(Board& board, Player& p)  //this function needs to be reworked
 
 	std::cout << "choose a destination to place the card\n";
 	std::cin >> x2 >> y2;
+
+	if (checkFuncSpark(board, x1, y1, x2, y2) != 0)
+		return 1;
 	
 	resizeableMatrix& matrix = board.getMatrix();
 	std::vector<std::pair<MinionCard,uint16_t>> plCards;
@@ -206,13 +210,13 @@ void funcSpark(Board& board, Player& p)  //this function needs to be reworked
 	
 	if (!matrix[x1][y1].empty())
 	{
-		std::cout<<"here are the cards that you can replace\n";
+		std::cout << "here are the cards that you can replace\n";
 		int index = 0;
 		for (size_t k = 0; k < matrix[x1][y1].size(); ++k)
 		{
 			if (matrix[x1][y1][k].GetColor() == p.GetPlayerColor())
 			{
-				plCards.emplace_back(matrix[x1][y1][k],k);
+				plCards.emplace_back(matrix[x1][y1][k], k);
 				std::cout << k + 1 << " .value:" << matrix[x1][y1][k] << '\n';
 			}
 		}
@@ -224,25 +228,32 @@ void funcSpark(Board& board, Player& p)  //this function needs to be reworked
 			std::cout << "invalid index, try an index that belongs to the range\n";
 			std::cin >> chosenIndex;
 		}
-	
+
 		matrix[x1][y1].erase(matrix[x1][y1].begin() + chosenIndex - 1);
 		if (board.setPos(x2, y2, plCards[chosenIndex - 1].first, p) == 1)
 		{
 			std::cout << "Failed to place minion card\n";
+			return 1;
 		}
 	}
 	else
+	{
 		std::cout << "invalid position, no cards here\n";
-		
+		return 1;
+	}
+
+	return 0;
 }
 
 //return to your opponent's hand one of his visible cards
-void funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
+uint16_t funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 {
+	if (checkFuncSquall(board, x, y) != 0)
+		return 1;
+
 	Board oldModel(3);
 	Board::cloneMatrix(board, oldModel);
 
-	//funcionToCheck(currModel, T...);
 
 	resizeableMatrix& matrix = board.getMatrix();
 
@@ -250,25 +261,21 @@ void funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 
 	if (toReturn.GetColor() != player.GetPlayerColor()) {
 		std::cout << "Not oponent card..\n";
-		return;
+		return 1;
 	}
 
-	matrix[x][y].pop_back();
+	board.removePos(x, y);
 	
 	if (isolatedSpaces(board)) {
 		Board::cloneMatrix(oldModel, board);
 		std::cout << "Can't have isolated stacks/cards..\n";
-		return;
+		return 1;
 	}
 
-	hand& otherHand = player.GetHandCards();
-	if (otherHand.find(toReturn) != otherHand.end()) {
-		otherHand[toReturn]++;
-	}
-	else
-		otherHand.insert({toReturn, 1});
+	player.returnMinionCardToHand(toReturn);
+	board.checkForUpdates();
 
-	return;
+	return 0;
 }
 
 //remove all cards which are covered by other cards
@@ -716,7 +723,7 @@ void funcWaterfall(Board& board, uint16_t columnIndex)
 }
 
 // increase value of a card by one, marker also placed on the card (tournament mode)
-void funcSupport(Board& board, uint16_t x, uint16_t y)  
+void funcSupport(Board& board, uint16_t x, uint16_t y)
 {
 	resizeableMatrix& matrix = board.getMatrix();
 
@@ -889,7 +896,7 @@ void funcAvalanche(Board& board, uint16_t x1 , uint16_t y1, uint16_t x2, uint16_
 }
 
 //cover a illusion with a card
-void funcRock(Board& board, uint16_t x, uint16_t y, MinionCard& Card)	
+void funcRock(Board& board, uint16_t x, uint16_t y, MinionCard& Card)
 {
 	resizeableMatrix matrix = board.getMatrix();
 	if (!matrix[x][y].back().GetIsIllusionCard())
