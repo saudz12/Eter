@@ -548,25 +548,22 @@ void Board::updateRowChecker(uint16_t x, uint16_t option)
 	}
 }
 
-void Board::shiftLine(uint16_t start, uint16_t end, uint16_t ratio, uint16_t lineNo, uint16_t orientation)
+void Board::shiftLine(uint16_t start, uint16_t end, int16_t ratio, uint16_t lineNo, uint16_t orientation)
 {
 	auto quickCheck = [&orientation](uint16_t a, uint16_t b) {return orientation ? a : b; };
 
-	cardStack& firstStack = m_matrix[quickCheck(lineNo, start)][quickCheck(start, lineNo)];
+	uint16_t lastX = quickCheck(lineNo, end);
+	uint16_t lastY = quickCheck(end, lineNo);
 
-	for (int i = start; i != end; i += ratio) {
+	uint16_t firstX = quickCheck(lineNo, start);
+	uint16_t firstY = quickCheck(start, lineNo);
+
+	for (int i = start; i != end; i += ratio)
+	{
 		uint16_t currX = quickCheck(lineNo, i);
 		uint16_t currY = quickCheck(i, lineNo);
 
-		auto& currStack = m_matrix[currX][currY];
-
-		uint16_t nextX = quickCheck(lineNo, i + ratio);
-		uint16_t nextY = quickCheck(i + ratio, lineNo);
-
-		auto& nextStack = m_matrix[nextX][nextY];
-
-		//move this to a separate function - resturcture board
-		if (currStack.back().GetColor() == 'R')
+		if (m_matrix[currX][currY].back().GetColor() == 'R')
 		{
 			updateRowChecker(currX, RED_DEC);
 			updateColChecker(currY, RED_DEC);
@@ -577,37 +574,44 @@ void Board::shiftLine(uint16_t start, uint16_t end, uint16_t ratio, uint16_t lin
 			updateColChecker(currY, BLUE_DEC);
 		}
 
-		if (nextStack.back().GetColor() == 'R')
+		uint16_t nextX = quickCheck(lineNo, i + ratio);
+		uint16_t nextY = quickCheck(i + ratio, lineNo);
+
+		if (m_matrix[nextX][nextY].back().GetColor() == 'R')
 		{
-			updateRowChecker(nextX, RED_ADD);
-			updateColChecker(nextY, RED_ADD);
+			updateRowChecker(currX, RED_ADD);
+			updateColChecker(currY, RED_ADD);
 		}
 		else
 		{
-			updateRowChecker(nextX, BLUE_ADD);
-			updateColChecker(nextY, BLUE_ADD);
+			updateRowChecker(currX, BLUE_ADD);
+			updateColChecker(currY, BLUE_ADD);
 		}
 	}
 
-	uint16_t lastX = quickCheck(lineNo, end);
-	uint16_t lastY = quickCheck(end, lineNo);
-
-	auto& lastCard = m_matrix[lastX][lastY];
-
-	if (lastCard.back().GetColor() == 'R') {
+	if (m_matrix[lastX][lastY].back().GetColor() == 'R')
+	{
 		updateRowChecker(lastX, RED_DEC);
 		updateColChecker(lastY, RED_DEC);
 	}
-	else {
+	else
+	{
 		updateRowChecker(lastX, BLUE_DEC);
 		updateColChecker(lastY, BLUE_DEC);
 	}
 
 	for (int i = start; i != end; i += ratio)
-		m_matrix[quickCheck(lineNo, i)][quickCheck(i, lineNo)] = std::move(m_matrix[quickCheck(lineNo, i + ratio)][quickCheck(i + ratio, lineNo)]);
+	{
+		uint16_t currX = quickCheck(lineNo, i);
+		uint16_t currY = quickCheck(i, lineNo);
 
-	m_matrix[lastX][lastY] = std::move(cardStack());
+		uint16_t nextX = quickCheck(lineNo, i + ratio);
+		uint16_t nextY = quickCheck(i + ratio, lineNo);
+
+		m_matrix[currX][currY] = std::move(m_matrix[nextX][nextY]);
+	}
 }
+
 
 void Board::checkForUpdates()
 {

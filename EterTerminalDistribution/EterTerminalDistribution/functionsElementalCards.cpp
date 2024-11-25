@@ -254,7 +254,6 @@ uint16_t funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 	Board oldModel(3);
 	Board::cloneMatrix(board, oldModel);
 
-
 	resizeableMatrix& matrix = board.getMatrix();
 
 	MinionCard toReturn = matrix[x][y].back();
@@ -279,7 +278,7 @@ uint16_t funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 }
 
 //remove all cards which are covered by other cards
-void funcGale(Board& board, Player& p1, Player& p2)
+uint16_t funcGale(Board& board, Player& p1, Player& p2)
 {
 	resizeableMatrix& matrix = board.getMatrix();
 	for (size_t i = 0; i < board.getRowCount(); ++i)
@@ -297,14 +296,19 @@ void funcGale(Board& board, Player& p1, Player& p2)
 			}
 		}
 	}
+	
+	return 0;
 }
 
 // modify board, handcard if modified
-void funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::string_view type, std::string_view direction)
+uint16_t funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::string_view type, std::string_view direction)
 {
+	Board oldModel(3);
+	Board::cloneMatrix(board, oldModel);
+
 	resizeableMatrix& matrix = board.getMatrix();
 
-	uint16_t start, end, ratio, orientation;
+	int start, end, ratio, orientation;
 	
 	if (type == ID_ROW) {
 		if (direction == DIR_LEFT) {
@@ -334,8 +338,8 @@ void funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::stri
 	}
 	
 
-	int firstX = orientation?lineCnt:start;
-	int firstY = orientation?start:lineCnt;
+	int firstX = orientation ? lineCnt : start;
+	int firstY = orientation ? start : lineCnt;
 
 	/*
 	int firstX;
@@ -355,13 +359,21 @@ void funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::stri
 	setup(start, lineCnt, orientation);
 	*/
 
+	board.shiftLine(start, end, ratio, lineCnt, orientation);
+
+	if (isolatedSpaces(board))
+	{
+		Board::cloneMatrix(oldModel, board);
+		std::cout << "Can't have isolated stacks/cards..\n";
+		return 1;
+	}
+
 	cardStack& firstStack = matrix[firstX][firstY];
 	Player::returnStackToHand(h1, h2, firstStack);
 
-	board.shiftLine(start, end, ratio, lineCnt, orientation);
 	board.checkForUpdates();
 
-	return;
+	return 0;
 }
 
 // move card one position to another

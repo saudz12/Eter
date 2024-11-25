@@ -24,10 +24,10 @@ uint16_t funcSpark(Board&, Player& p);
 
 uint16_t funcSquall(Board&, Player&, uint16_t, uint16_t);
 
-void funcGale(Board& board, Player&, Player&);
+uint16_t funcGale(Board& board, Player&, Player&);
 
-//shit a line 1 space in its orientation. Overflowing stacks return the respective cards to the users hand
-void funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::string_view type, std::string_view direction);
+//shift a line 1 space in its orientation. Overflowing stacks return the respective cards to the users hand
+uint16_t funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::string_view type, std::string_view direction);
 
 //move card one position to antoher
 void funcGust(Board&, uint16_t, uint16_t, uint16_t, uint16_t);

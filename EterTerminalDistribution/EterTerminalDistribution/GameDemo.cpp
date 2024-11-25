@@ -734,7 +734,13 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         break;
     }
     case 8: {
-        funcGale(b, *p1, *p2);
+        if (funcGale(b, *p1, *p2) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+            std::cout << "Failed to use Gale\n";
         break;
     }
     case 9: {
@@ -748,8 +754,14 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         std::cout << "\nWhich direction (left(L)/right(R) for Row, up(U)/down(D) for Column): ";
         std::cin >> dir;
         int condition;
-        if (condition = CheckHurricaneInput(b, lineCnt, type, dir) != NO_ERRORS) {
-            funcHurricane(b, p1->GetHandCards(), p2->GetHandCards(), lineCnt, type, dir);
+        if (condition = CheckHurricaneInput(b, lineCnt, type, dir) == NO_ERRORS) {
+            if (funcHurricane(b, p1->GetHandCards(), p2->GetHandCards(), lineCnt, type, dir) == 0)
+            {
+                wasUsed = true;
+                wasCardUsed = true;
+            }
+            else
+                std::cout << "Failed to use Hurricane\n";
         }
         else {
             ErrorMesageHuricane(condition);
