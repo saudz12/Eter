@@ -376,35 +376,57 @@ uint16_t funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::
 	return 0;
 }
 
-// move card one position to another
-void funcGust(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+// move a card onto a neighboring card of a lower value
+uint16_t funcGust(Board& board, Player& pl, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
-	/*
-	int x1, y1, x2, y2;
-                std::cout << "from (x1,y1):";
-                std::cin >> x1 >> y1;
-                std::cout << "to (x2,y2):";
-                std::cin >> x2 >> y2;
-                funcGust(*b, x1, y1, x2,y2);
-	*/
+	if (checkFuncGust(board, x1, y1, x2, y2) != 0)
+		return 1;
+
+	Board oldModel(3);
+	Board::cloneMatrix(board, oldModel);
+	Player copyPl = pl;
+
 	resizeableMatrix& matrix = board.getMatrix();
 
 	MinionCard& movedCard = matrix[x1][y1].back();
-	matrix[x1][y1].pop_back();
+	if (board.removePos(x1, y1) == 1)
+		return 1;
 
-	matrix[x2][y2].push_back(movedCard);
+	if (board.setPos(x2, y2, movedCard, pl) == 1)
+		return 1;
+
+	if (isolatedSpaces(board))
+	{
+		pl = copyPl;
+		Board::cloneMatrix(oldModel, board);
+		std::cout << "Can't have isolated stacks/cards..\n";
+		return 1;
+	}
+
+	board.checkForUpdates();
+
+	return 0;
 }
 
 // exchange illusion card with other card
-void funcMirage(Board& board, Player& p, uint16_t x1, uint16_t y1, const MinionCard& chosenCard)
+uint16_t funcMirage(Board& board, Player& p, uint16_t x1, uint16_t y1, const MinionCard& chosenCard)
 {
+	if (checkFuncMirage(board, x1, y1, chosenCard) != 0)
+		return 1;
+
 	resizeableMatrix& matrix = board.getMatrix();
 	MinionCard returningCard = board.getCardOnPos(x1, y1);
-
 	returningCard.SetIsIllusionCard(false);
-	p.returnMinionCardToHand(returningCard);
-	board.setPos(x1, y1, chosenCard, p);
 
+	if (board.removePos(x1, y1) == 1)
+		return 1;
+
+	p.returnMinionCardToHand(returningCard);
+
+	if (board.setPos(x1, y1, chosenCard, p) == 1)
+		return 1;
+
+	return 0;
 }
 
 // remove stack of cards

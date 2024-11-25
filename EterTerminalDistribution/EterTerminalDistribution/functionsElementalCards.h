@@ -30,10 +30,10 @@ uint16_t funcGale(Board& board, Player&, Player&);
 uint16_t funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::string_view type, std::string_view direction);
 
 //move card one position to antoher
-void funcGust(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
+uint16_t funcGust(Board&, Player&, uint16_t, uint16_t, uint16_t, uint16_t);
 
 //exchange illusion card with other card
-void funcMirage(Board&, Player&, uint16_t, uint16_t, const MinionCard&);
+uint16_t funcMirage(Board&, Player&, uint16_t, uint16_t, const MinionCard&);
 
 //remove stack of cards
 void funcStorm(Board&, Player&, Player&, uint16_t, uint16_t);

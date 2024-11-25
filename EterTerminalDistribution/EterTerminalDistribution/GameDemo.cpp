@@ -768,6 +768,59 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         }
         break;
     }
+    case 10: {
+        uint16_t x1, y1, x2, y2;
+        std::cout << "\nChoose a card you want to move: ";
+        std::cin >> x1 >> y1;
+        std::cout << "\nChoose a neighboring card of a lower value you want to cover: ";
+        std::cin >> x2 >> y2;
+
+        if (b.getCardOnPos(x1, y1).GetColor() == 'R')
+        {
+            if (funcGust(b, *p1, x1, y1, x2, y2) == 0)
+            {
+                wasUsed = true;
+                wasCardUsed = true;
+            }
+            else
+                std::cout << "Failed to use Gust\n";
+        }
+        else if (b.getCardOnPos(x1, y1).GetColor() == 'B')
+        {
+            if (funcGust(b, *p2, x1, y1, x2, y2) == 0)
+            {
+                wasUsed = true;
+                wasCardUsed = true;
+            }
+            else
+                std::cout << "Failed to use Gust\n";
+        }
+    }
+    case 11: {
+        uint16_t x, y;
+        std::cout << "\nType the position of your illusion: ";
+        std::cin >> x >> y;
+        m_currPlayer->printHandCards();
+        std::cout << "\nChoose a card: ";
+        uint16_t val;
+        std::cin >> val;
+        MinionCard toPlace(val, currPlayer->GetPlayerColor(), false);
+
+        if (funcMirage(b, *currPlayer, x, y, toPlace) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+            currPlayer->SetLastMinionCardPlayed(&b.getCardOnPos(x, y));
+            currPlayer->SetIllusionCard(nullptr);
+            currPlayer->UpdateCard(toPlace, -1);
+            if (m_currPlayer->GetPlayerColor() == 'R')
+                Player::updateCover(x, y, m_p2->getCovered(), m_board->getMatrix());
+            else
+                Player::updateCover(x, y, m_p1->getCovered(), m_board->getMatrix());
+        }
+        else
+            std::cout << "Failed to use Mirage\n";
+    }
     }
 }
 
