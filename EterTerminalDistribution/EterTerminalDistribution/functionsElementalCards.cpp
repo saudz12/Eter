@@ -505,27 +505,6 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 
 	if (lineType == 'R')
 	{
-		//check if the adjacent spaces are out of bounds
-		if (y - 1 < 0 || y + 1 >= board.getColCount())
-		{
-			std::cout << "Adjacent spaces are out of bounds\n";
-			return;
-		}
-
-		//check if the adjancent spaces are empty
-		if (matrix[x][y - 1].empty() || matrix[x][y + 1].empty())
-		{
-			std::cout << "One or both of the adjacents spaces are empty\n";
-			return;
-		}
-
-		//check if one of the adjancent spaces is an eter card
-		if (matrix[x][y - 1].back().GetIsEterCard() || matrix[x][y + 1].back().GetIsEterCard())
-		{
-			std::cout << "Can't use Whirlpool elemental card on eter card\n";
-			return;
-		}
-
 		MinionCard leftCard = matrix[x][y - 1].back();
 		matrix[x][y - 1].pop_back();
 		if (leftCard.GetColor() == 'R')
@@ -595,27 +574,6 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 	}
 	else if (lineType == 'C')
 	{
-		//check if the adjacent spaces are out of bounds
-		if (x - 1 < 0 || x + 1 >= board.getRowCount())
-		{
-			std::cout << "Adjacent spaces are out of bounds\n";
-			return;
-		}
-
-		//check if the adjancent spaces are empty
-		if (matrix[x - 1][y].empty() || matrix[x + 1][y].empty())
-		{
-			std::cout << "One or both of the adjacents spaces are empty\n";
-			return;
-		}
-
-		//check if one of the adjancent spaces is an eter card
-		if (matrix[x - 1][y].back().GetIsEterCard() || matrix[x + 1][y].back().GetIsEterCard())
-		{
-			std::cout << "Can't use Whirlpool elemental card on eter card\n";
-			return;
-		}
-
 		MinionCard upCard = matrix[x - 1][y].back();
 		matrix[x - 1][y].pop_back();
 		if (upCard.GetColor() == 'R')

@@ -161,7 +161,7 @@
     <ClInclude Include="GameDemo.h" />
     <ClInclude Include="HoleCard.h" />
     <ClInclude Include="Includes.h" />
-    <ClInclude Include="InputChceking.h" />
+    <ClInclude Include="InputChecking.h" />
     <ClInclude Include="MageCard.h" />
     <ClInclude Include="MageType.h" />
     <ClInclude Include="MinionCard.h" />

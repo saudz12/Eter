@@ -2,8 +2,10 @@
 #include "Board.h"
 #include "Player.h"
 #include "MoveLaterToGameClass.h"
+#include "InputChecking.h"
 #include "ConsolePrints.h"
 #include "ErrorPrints.h"
+#include "functionsElementalCards.h"
 
 class GameDemo
 {

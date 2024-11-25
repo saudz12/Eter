@@ -1,16 +1,25 @@
-#include "InputChceking.h"
+#include "InputChecking.h"
 
 const int CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_view type, std::string_view direction)
 {
 	const resizeableMatrix& matrix = board.getMatrix();
 
+	//valid typing
 	if (type != ID_ROW && type != ID_COLUMN) {
 		return INVALID_LINE_TYPE;
 	}
 
+	//insine bounds
 	if (lineCnt < 0 || type == ID_ROW && lineCnt > board.getLineCount() - 1 || type == ID_COLUMN && lineCnt > board.getColCount() - 1) {
 		return OUTSIDE_BOUNDS;
 	}
+
+	//valid direction
+	if (type == ID_ROW && direction != DIR_LEFT && direction != DIR_RIGHT || type == ID_COLUMN && direction != DIR_UP && direction != DIR_DOWN) {
+		return INVALID_DIRECTION;
+	}
+
+	//full line and no eters
 	if (type == ID_ROW) {
 		for (auto& stack : matrix[lineCnt])
 		{
@@ -36,19 +45,23 @@ const int CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_view t
 		}
 	}
 
-	if (type == ID_ROW && direction != DIR_LEFT && direction != DIR_RIGHT || type == ID_COLUMN && direction != DIR_UP && direction != DIR_DOWN) {
-		return INVALID_DIRECTION;
-	}
 	return NO_ERRORS;
 }
 
-const int CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view linetype)
+const int CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view linetype, std::string_view preference)
 {
 	resizeableMatrix& matrix = board.getMatrix();
 
 	int ratioX = (linetype == ID_ROW) ? 0 : 1;
 	int ratioY = (linetype == ID_ROW) ? 1 : 0;
 
+	if (linetype != ID_ROW && linetype != ID_COLUMN) {
+		return INVALID_LINE_TYPE;
+	}
+
+	if (linetype == ID_ROW && (preference != DIR_LEFT || preference != DIR_RIGHT) || linetype == ID_COLUMN && (preference != DIR_UP || preference != DIR_DOWN)) {
+		return INVALID_DIRECTION;
+	}
 	if (!matrix[x][y].empty()) {
 		return EMPTY_SPACE;
 	}
@@ -63,6 +76,7 @@ const int CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view 
 		{
 			return ADJACENT_OUTSIDE_BOUNDS;
 		}
+	}
 	else {
 		if (x - 1 < 0 || x + 1 >= board.getRowCount())
 		{
@@ -70,7 +84,6 @@ const int CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view 
 		}
 	}
 
-	}
 	//check if the adjancent spaces are empty
 	if (matrix[x - ratioX][y - ratioY].empty() || matrix[x + ratioX][y + ratioY].empty())
 	{
