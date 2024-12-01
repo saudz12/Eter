@@ -1,6 +1,8 @@
 #include "MageCard.h"
+#include "funcAssociationsToCard.h"
+#include "functionsMageCards.h"
 
-MageCard::MageCard(MageType type,bool activeFace) : Card(CardType::MageCard)
+MageCard::MageCard(MageCardType type,bool activeFace) : Card(CardType::MageCard)
 {
 	m_mageType = type;
 	m_isActiveFace = activeFace;
@@ -11,7 +13,7 @@ CardType MageCard::GetCardType() const
 	return m_cardType;
 }
 
-MageType MageCard::GetMageType() const
+MageCardType MageCard::GetMageType() const
 {
 	return m_mageType;
 }
@@ -21,12 +23,18 @@ bool MageCard::GetIsActiveFace() const
 	return m_isActiveFace;
 }
 
+void MageCard::SetActionCard(ActionCard card)
+{
+	m_mageType.first = card;
+	m_mageType.second = (void*)associateCardWithFunc(m_mageType.first);
+}
+
 void MageCard::SetCardType(CardType type)
 {
 	m_cardType = type;
 }
 
-void MageCard::SetMageType(MageType mage)
+void MageCard::SetMageType(MageCardType mage)
 {
 	m_mageType = mage;
 }
