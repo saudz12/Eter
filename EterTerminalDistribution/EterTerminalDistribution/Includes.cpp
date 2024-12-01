@@ -53,3 +53,8 @@ Directions GetDirection(char d) {
 		return Directions::INVALID_DIR;
 	}
 }
+
+std::ostream& operator<<(std::ostream& os, const Colours& col) {
+	os << GetColour(col);
+	return os;
+}

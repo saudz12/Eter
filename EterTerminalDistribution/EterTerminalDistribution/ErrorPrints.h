@@ -58,6 +58,10 @@ enum class WhirlpoolErrors : int16_t {
 	ADJACENT_SPACES_EMPTY
 };
 
+enum class ElementalErrors : int16_t {
+
+};
+
 void ErrorMesageHuricane(int message);
 void ErrorMessageWhirlpool(int message);
 void ErrorMessageFlame(int message);

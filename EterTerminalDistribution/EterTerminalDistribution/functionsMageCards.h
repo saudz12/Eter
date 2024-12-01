@@ -23,7 +23,7 @@ void funcAirMage2(Board&, uint16_t, uint16_t);
 void funcWaterMage1(Board&, Player&);
 
 //move row/column to other side of the board
-void funcWaterMage2(Board& board, char color, Player& pl);
+void funcWaterMage2(Board& board, Colours color, Player& pl);
 
 bool searchInColumnStacks(resizeableMatrix& matrix, Player& pl, uint16_t column);
 

@@ -1,5 +1,4 @@
 #include "functionsElementalCards.h"
-#include "functionsInputCheck.h"
 
 //to note it may be more efficient to make m_board member public in Board class to not copy the contents of the matrix every time we modify it 
 
@@ -74,8 +73,8 @@ uint16_t funcDestruction(Board& board, Player& player)
 //moved the if to checkInput
 uint16_t funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard& CardToBePlaced, Player& p)
 {
-	if (checkFuncFlame(board, x1, y1, x2, y2, CardToBePlaced, p) != 0)
-		return 1;
+	/*if (checkFuncFlame(board, x1, y1, x2, y2, CardToBePlaced, p) != 0)
+		return 1;*/
 	resizeableMatrix& matrix = board.getMatrix();
 	matrix[x1][y1].back().SetIsIllusionCard(false);
 	return 0;
@@ -84,8 +83,8 @@ uint16_t funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t
 //return to hand all cards with a specific value
 uint16_t funcFire(Board& board, Player& player1, Player& player2, uint16_t value)
 {
-	if (checkFuncFire(board, value) != 0)
-		return 1;
+	/*if (checkFuncFire(board, value) != 0)
+		return 1;*/
 
 	Board copyBoard(3);
 	Board::cloneMatrix(board, copyBoard);
@@ -155,8 +154,8 @@ uint16_t funcFire(Board& board, Player& player1, Player& player2, uint16_t value
 //play a card which was removed
 uint16_t funcAsh(Board& board, Player& player, const MinionCard& card, uint16_t x, uint16_t y)
 {
-	if (checkFuncAsh(board, card, x, y) != 0)
-		return 1;
+	/*if (checkFuncAsh(board, card, x, y) != 0)
+		return 1;*/
 
 	if (player.placeMinionCardFromRemovedCard(card) == true)
 	{
@@ -201,8 +200,8 @@ uint16_t funcSpark(Board& board, Player& p)  //this function needs to be reworke
 	std::cout << "choose a destination to place the card\n";
 	std::cin >> x2 >> y2;
 
-	if (checkFuncSpark(board, x1, y1, x2, y2) != 0)
-		return 1;
+	/*if (checkFuncSpark(board, x1, y1, x2, y2) != 0)
+		return 1;*/
 	
 	resizeableMatrix& matrix = board.getMatrix();
 	std::vector<std::pair<MinionCard,uint16_t>> plCards;
@@ -248,8 +247,8 @@ uint16_t funcSpark(Board& board, Player& p)  //this function needs to be reworke
 //return to your opponent's hand one of his visible cards
 uint16_t funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 {
-	if (checkFuncSquall(board, x, y) != 0)
-		return 1;
+	/*if (checkFuncSquall(board, x, y) != 0)
+		return 1;*/
 
 	Board oldModel(3);
 	Board::cloneMatrix(board, oldModel);
@@ -379,8 +378,8 @@ uint16_t funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::
 // move a card onto a neighboring card of a lower value
 uint16_t funcGust(Board& board, Player& pl, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
-	if (checkFuncGust(board, x1, y1, x2, y2) != 0)
-		return 1;
+	/*if (checkFuncGust(board, x1, y1, x2, y2) != 0)
+		return 1;*/
 
 	Board oldModel(3);
 	Board::cloneMatrix(board, oldModel);
@@ -411,8 +410,8 @@ uint16_t funcGust(Board& board, Player& pl, uint16_t x1, uint16_t y1, uint16_t x
 // exchange illusion card with other card
 uint16_t funcMirage(Board& board, Player& p, uint16_t x1, uint16_t y1, const MinionCard& chosenCard)
 {
-	if (checkFuncMirage(board, x1, y1, chosenCard) != 0)
-		return 1;
+	/*if (checkFuncMirage(board, x1, y1, chosenCard) != 0)
+		return 1;*/
 
 	resizeableMatrix& matrix = board.getMatrix();
 	MinionCard returningCard = board.getCardOnPos(x1, y1);
@@ -453,7 +452,7 @@ void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 	cardStack& first = board.getStackOnPos(x1, y1);
 	cardStack& second = board.getStackOnPos(x2, y2);
 
-	if (first.back().GetColor() == 'R') {
+	if (first.back().GetColor() == Colours::RED) {
 		board.updateRowChecker(x1, RED_DEC);
 		board.updateColChecker(y1, RED_DEC);
 		board.updateRowChecker(x2, RED_ADD);
@@ -465,7 +464,7 @@ void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 		board.updateRowChecker(x2, BLUE_ADD);
 		board.updateColChecker(y2, BLUE_ADD);
 	}
-	if (second.back().GetColor() == 'R') {
+	if (second.back().GetColor() == Colours::RED) {
 		board.updateRowChecker(x1, RED_ADD);
 		board.updateColChecker(y1, RED_ADD);
 		board.updateRowChecker(x2, RED_DEC);
@@ -524,7 +523,7 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 	{
 		MinionCard leftCard = matrix[x][y - 1].back();
 		matrix[x][y - 1].pop_back();
-		if (leftCard.GetColor() == 'R')
+		if (leftCard.GetColor() == Colours::RED)
 		{
 			board.updateRowChecker(x, RED_DEC);
 			board.updateColChecker(y - 1, RED_DEC);
@@ -537,7 +536,7 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 
 		MinionCard rightCard = matrix[x][y + 1].back();
 		matrix[x][y + 1].pop_back();
-		if (rightCard.GetColor() == 'R')
+		if (rightCard.GetColor() == Colours::RED)
 		{
 			board.updateRowChecker(x, RED_DEC);
 			board.updateColChecker(y + 1, RED_DEC);
@@ -578,7 +577,7 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 				"You didn't type L or R";
 			}
 		}
-		if (matrix[x][y].back().GetColor() == 'R')
+		if (matrix[x][y].back().GetColor() == Colours::RED)
 		{
 			board.updateRowChecker(x, RED_ADD);
 			board.updateColChecker(y, RED_ADD);
@@ -593,7 +592,7 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 	{
 		MinionCard upCard = matrix[x - 1][y].back();
 		matrix[x - 1][y].pop_back();
-		if (upCard.GetColor() == 'R')
+		if (upCard.GetColor() == Colours::RED)
 		{
 			board.updateRowChecker(x - 1, RED_DEC);
 			board.updateColChecker(y, RED_DEC);
@@ -606,7 +605,7 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 
 		MinionCard downCard = matrix[x + 1][y].back();
 		matrix[x + 1][y].pop_back();
-		if (downCard.GetColor() == 'R')
+		if (downCard.GetColor() == Colours::RED)
 		{
 			board.updateRowChecker(x + 1, RED_DEC);
 			board.updateColChecker(y, RED_DEC);
@@ -648,7 +647,7 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 				return;
 			}
 		}
-		if (matrix[x][y].back().GetColor() == 'R')
+		if (matrix[x][y].back().GetColor() == Colours::RED)
 		{
 			board.updateRowChecker(x, RED_ADD);
 			board.updateColChecker(y, RED_ADD);

@@ -7,13 +7,24 @@ Player::Player(char playerColor = 'R')
 	generateHand();
 }
 
+Player::Player(Colours playerColor = Colours::RED)
+	: m_playerColor{ playerColor }, m_illusionUsage{ false }, m_eterCardUsage{ false }
+{
+	generateHand();
+}
+
 Player::Player()
 	: m_playerColor{ 'R' }, m_illusionUsage{ false }, m_eterCardUsage{ false }
 {
 	generateHand();
 }
 
-char Player::GetPlayerColor() const
+//char Player::GetPlayerColor() const
+//{
+//	return m_playerColor;
+//}
+
+Colours Player::GetPlayerColor() const
 {
 	return m_playerColor;
 }
@@ -48,7 +59,12 @@ void Player::SetEterCardUsage(bool eterCardUsage)
 	m_eterCardUsage = eterCardUsage;
 }
 
-void Player::SetPlayerColor(char playerColor)
+//void Player::SetPlayerColor(char playerColor)
+//{
+//	m_playerColor = playerColor;
+//}
+
+void Player::SetPlayerColor(Colours playerColor)
 {
 	m_playerColor = playerColor;
 }
@@ -101,7 +117,7 @@ void Player::applyTansformToCovered(Player& p1, Player& p2, cardStack& stack, ui
 	for (int i = 0; i < stack.size() - 1; i++) {
 		position toFind{ oldX, oldY, i };
 		auto currCardColor = stack[i].GetColor();
-		if (currCardColor == COL_RED) {
+		if (currCardColor == Colours::RED) {
 			p1Moved.insert({ newX, newY, i });
 			p1Covered.erase(p1Covered.find(toFind));
 		}
@@ -122,7 +138,7 @@ void Player::returnStackToHand(hand& h1, hand& h2, cardStack& stack)
 {
 	hand& currHand = h1;
 	for (auto& card : stack) {
-		if (card.GetColor() == 'R')
+		if (card.GetColor() == Colours::RED)
 			currHand = h1;
 		else
 			currHand = h2;

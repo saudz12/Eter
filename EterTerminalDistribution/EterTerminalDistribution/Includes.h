@@ -54,3 +54,5 @@ enum class Directions : int16_t
 };
 
 Directions GetDirection(char d);
+
+std::ostream& operator<<(std::ostream& os, const Colours& col);

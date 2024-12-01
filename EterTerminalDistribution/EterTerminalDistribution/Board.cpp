@@ -25,11 +25,11 @@ bool Board::isMatMaxSize()
 }
 
 //update 
-void Board::increaseOnColorSides(uint16_t x, uint16_t y, char col)
+void Board::increaseOnColorSides(uint16_t x, uint16_t y, Colours col)
 {
-	if (col == 'R') {
+	if (col == Colours::RED) {
 		if (!m_matrix[x][y].empty())
-			if (m_matrix[x][y].back().GetColor() == 'B') {
+			if (m_matrix[x][y].back().GetColor() == Colours::BLUE) {
 				m_rowChecker[x].second--;
 				m_colChecker[y].second--;
 			}
@@ -40,9 +40,11 @@ void Board::increaseOnColorSides(uint16_t x, uint16_t y, char col)
 	}
 	else {
 		if (!m_matrix[x][y].empty())
-			if (m_matrix[x][y].back().GetColor() == 'R') {
-				m_rowChecker[x].first--;
-				m_colChecker[y].first--;
+			if (m_matrix[x][y].back().GetColor() == Colours::RED) {
+				m_rowChecker[x].second++;
+				m_colChecker[y].second++;
+
+				return;
 			}
 			else
 				return;
@@ -51,11 +53,11 @@ void Board::increaseOnColorSides(uint16_t x, uint16_t y, char col)
 	}
 }
 
-void Board::increaseOnColorColumn(uint16_t x, uint16_t y, char col)
+void Board::increaseOnColorColumn(uint16_t x, uint16_t y, Colours col)
 {
-	if (col == 'R') {
+	if (col == Colours::RED) {
 		if (!m_matrix[x][y].empty())
-			if (m_matrix[x][y].back().GetColor() == 'B') {
+			if (m_matrix[x][y].back().GetColor() == Colours::BLUE) {
 				m_colChecker[y].second--;
 			}
 			else
@@ -64,7 +66,7 @@ void Board::increaseOnColorColumn(uint16_t x, uint16_t y, char col)
 	}
 	else {
 		if (!m_matrix[x][y].empty())
-			if (m_matrix[x][y].back().GetColor() == 'R') {
+			if (m_matrix[x][y].back().GetColor() == Colours::RED) {
 				m_colChecker[y].first--;
 			}
 			else
@@ -73,11 +75,11 @@ void Board::increaseOnColorColumn(uint16_t x, uint16_t y, char col)
 	}
 }
 
-void Board::increaseOnColorRow(uint16_t x, uint16_t y, char col)
+void Board::increaseOnColorRow(uint16_t x, uint16_t y, Colours col)
 {
-	if (col == 'R') {
+	if (col == Colours::RED) {
 		if (!m_matrix[x][y].empty())
-			if (m_matrix[x][y].back().GetColor() == 'B') {
+			if (m_matrix[x][y].back().GetColor() == Colours::BLUE) {
 				m_rowChecker[x].second--;
 			}
 			else
@@ -86,7 +88,7 @@ void Board::increaseOnColorRow(uint16_t x, uint16_t y, char col)
 	}
 	else {
 		if (!m_matrix[x][y].empty())
-			if (m_matrix[x][y].back().GetColor() == 'R') {
+			if (m_matrix[x][y].back().GetColor() == Colours::RED) {
 				m_rowChecker[x].first--;
 			}
 			else
@@ -102,7 +104,7 @@ void Board::increaseOnColorRow(uint16_t x, uint16_t y, char col)
 /// <param name="x"></param>
 /// <param name="y"></param>
 /// <param name="col"></param>
-void Board::increaseOnColorDiagonal(uint16_t x, uint16_t y, char col)
+void Board::increaseOnColorDiagonal(uint16_t x, uint16_t y, Colours col)
 {
 	if (m_reachedMaxSize) {
 		increaseOnColorDiagonalNoResize(x, y, col);
@@ -115,13 +117,13 @@ void Board::increaseOnColorDiagonal(uint16_t x, uint16_t y, char col)
 	for (int i = 0; i < m_max_size; i++)
 	{
 		if (!m_matrix[i][i].empty()) {
-			if (m_matrix[i][i].back().GetColor() == 'R')
+			if (m_matrix[i][i].back().GetColor() == Colours::RED)
 				m_firstDiag.first++;
 			else
 				m_firstDiag.second++;
 		}
 		if (!m_matrix[i][m_max_size - i - 1].empty()) {
-			if (m_matrix[i][m_max_size - i - 1].back().GetColor() == 'R')
+			if (m_matrix[i][m_max_size - i - 1].back().GetColor() == Colours::RED)
 				m_seconDiag.first++;
 			else
 				m_seconDiag.second++;
@@ -129,7 +131,7 @@ void Board::increaseOnColorDiagonal(uint16_t x, uint16_t y, char col)
 	}
 	if (x == y)
 	{
-		if (col == 'R')
+		if (col == Colours::RED)
 		{
 			m_firstDiag.first++;
 		}
@@ -140,7 +142,7 @@ void Board::increaseOnColorDiagonal(uint16_t x, uint16_t y, char col)
 	}
 	if (x + y == m_max_size - 1)
 	{
-		if (col == 'R')
+		if (col == Colours::RED)
 		{
 			m_seconDiag.first++;
 		}
@@ -151,9 +153,9 @@ void Board::increaseOnColorDiagonal(uint16_t x, uint16_t y, char col)
 	}
 }
 
-void Board::increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, char col)
+void Board::increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, Colours col)
 {
-	if (col == 'R') {
+	if (col == Colours::RED) {
 		if (m_matrix[x][y].empty()) {
 			if (x == y) {
 				m_firstDiag.first++;
@@ -163,7 +165,7 @@ void Board::increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, char col)
 			}
 			return;
 		}
-		if (m_matrix[x][y].back().GetColor() == 'B') {
+		if (m_matrix[x][y].back().GetColor() == Colours::BLUE) {
 			if (x == y) {
 				m_firstDiag.first++;
 				m_firstDiag.second--;
@@ -184,7 +186,7 @@ void Board::increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, char col)
 			}
 			return;
 		}
-		if (m_matrix[x][y].back().GetColor() == 'R') {
+		if (m_matrix[x][y].back().GetColor() == Colours::RED) {
 			if (x == y) {
 				m_firstDiag.second++;
 				m_firstDiag.first--;
@@ -253,7 +255,7 @@ int16_t Board::setPos(int16_t x, int16_t y, const MinionCard& card, Player& p) {
 			p.addToRemovedCards(card);
 			if (card.GetColor() != m_matrix[x][y].back().GetColor())
 			{
-				if (card.GetColor() == 'R')
+				if (card.GetColor() == Colours::RED)
 				{
 					updateColChecker(y, BLUE_ADD_RED_DEC);
 					updateRowChecker(x, BLUE_ADD_RED_DEC);
@@ -305,7 +307,7 @@ int16_t Board::removePos(int16_t x, int16_t y) {
 
 	if (x == y)
 	{
-		if (m_matrix[x][y].back().GetColor() == 'R')
+		if (m_matrix[x][y].back().GetColor() == Colours::RED)
 			updateFirstDiagChecker(RED_DEC);
 		else
 			updateFirstDiagChecker(BLUE_DEC);
@@ -313,13 +315,13 @@ int16_t Board::removePos(int16_t x, int16_t y) {
 
 	if (x == m_matrix.size() - y - 1)
 	{
-		if (m_matrix[x][y].back().GetColor() == 'R')
+		if (m_matrix[x][y].back().GetColor() == Colours::RED)
 			updateSeconDiagChecker(RED_DEC);
 		else
 			updateSeconDiagChecker(BLUE_DEC);
 	}
 
-	if (m_matrix[x][y].back().GetColor() == 'R')
+	if (m_matrix[x][y].back().GetColor() == Colours::RED)
 	{
 		updateRowChecker(x, RED_DEC);
 		updateColChecker(y, RED_DEC);
@@ -334,7 +336,7 @@ int16_t Board::removePos(int16_t x, int16_t y) {
 
 	if (!m_matrix[x][y].empty())
 	{
-		if (m_matrix[x][y].back().GetColor() == 'R')
+		if (m_matrix[x][y].back().GetColor() == Colours::RED)
 		{
 			updateRowChecker(x, RED_ADD);
 			updateRowChecker(y, RED_ADD);
@@ -363,19 +365,19 @@ int16_t Board::removeStack(int16_t x, int16_t y)
 }
 
 //0 inseamna ca momentan e egal
-char Board::entityWon(int16_t x, int16_t y, char col)
+Colours Board::entityWon(int16_t x, int16_t y, Colours col)
 {
 	if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
-		return 0;
-	if (col == 'R') {
+		return Colours::INVALID_COL;
+	if (col == Colours::RED) {
 		if (m_rowChecker[x].first == m_max_size || m_colChecker[y].first == m_max_size || m_firstDiag.first == m_max_size || m_seconDiag.first == m_max_size)
-			return 'R';
+			return Colours::RED;
 	}
 	else {
 		if (m_rowChecker[x].second == m_max_size || m_colChecker[y].second == m_max_size || m_firstDiag.second == m_max_size || m_seconDiag.second == m_max_size)
-			return 'B';
+			return Colours::BLUE;
 	}
-	return 0;
+	return Colours::INVALID_COL;
 }
 
 uint16_t Board::getRowCount()
@@ -572,7 +574,7 @@ void Board::shiftLine(uint16_t start, uint16_t end, int16_t ratio, uint16_t line
 		uint16_t currX = quickCheck(lineNo, i);
 		uint16_t currY = quickCheck(i, lineNo);
 
-		if (m_matrix[currX][currY].back().GetColor() == 'R')
+		if (m_matrix[currX][currY].back().GetColor() == Colours::RED)
 		{
 			updateRowChecker(currX, RED_DEC);
 			updateColChecker(currY, RED_DEC);
@@ -586,7 +588,7 @@ void Board::shiftLine(uint16_t start, uint16_t end, int16_t ratio, uint16_t line
 		uint16_t nextX = quickCheck(lineNo, i + ratio);
 		uint16_t nextY = quickCheck(i + ratio, lineNo);
 
-		if (m_matrix[nextX][nextY].back().GetColor() == 'R')
+		if (m_matrix[nextX][nextY].back().GetColor() == Colours::RED)
 		{
 			updateRowChecker(currX, RED_ADD);
 			updateColChecker(currY, RED_ADD);
@@ -598,7 +600,7 @@ void Board::shiftLine(uint16_t start, uint16_t end, int16_t ratio, uint16_t line
 		}
 	}
 
-	if (m_matrix[lastX][lastY].back().GetColor() == 'R')
+	if (m_matrix[lastX][lastY].back().GetColor() == Colours::RED)
 	{
 		updateRowChecker(lastX, RED_DEC);
 		updateColChecker(lastY, RED_DEC);
@@ -807,7 +809,7 @@ bool Board::removeRow(uint16_t x)
 		return 1;
 	for (size_t i = 0; i < getColCount(); ++i)
 	{
-		if (m_matrix[x][i].back().GetColor() == 'R')
+		if (m_matrix[x][i].back().GetColor() == Colours::RED)
 			m_colChecker[i].first -= 1;
 		else
 			m_colChecker[i].second -= 1;
@@ -824,7 +826,7 @@ bool Board::removeColumn(uint16_t y)
 		return 1;
 	for (size_t i = 0; i < getRowCount(); ++i)
 	{
-		if (m_matrix[i][y].back().GetColor() == 'R')
+		if (m_matrix[i][y].back().GetColor() == Colours::RED)
 			m_rowChecker[i].first -= 1;
 		else
 			m_rowChecker[i].second -= 1;

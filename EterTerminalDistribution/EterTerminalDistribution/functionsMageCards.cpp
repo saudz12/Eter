@@ -40,7 +40,7 @@ void funcFireMage2(Board& board,Player& pl)
 		uint16_t column;
 		std::cin >> column;
 		lineChecker& colChecker = board.getColChecker();
-		if (pl.GetPlayerColor() == 'R')
+		if (pl.GetPlayerColor() == Colours::RED)
 		{
 			if (colChecker[column].first == 0)//no visible cards for red
 			{
@@ -71,7 +71,7 @@ void funcFireMage2(Board& board,Player& pl)
 		uint16_t row;
 		std::cin >> row;
 		lineChecker& lineChecker = board.getRowChecker();
-		if (pl.GetPlayerColor() == 'R')
+		if (pl.GetPlayerColor() == Colours::RED)
 		{
 			if (lineChecker[row].first == 0)//no visible cards for red
 			{
@@ -103,7 +103,7 @@ void funcFireMage2(Board& board,Player& pl)
 void funcEarthMage1(Board& board,Player& pl, uint16_t x , uint16_t y)
 {
 	hand& currHand = pl.GetHandCards();
-	char curr_col = pl.GetPlayerColor();
+	Colours curr_col = pl.GetPlayerColor();
 	for (auto& i : currHand) {
 		std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << "Left\n";
 	}
@@ -135,7 +135,7 @@ void funcEarthMage2(Board& board)
 // original position, destination position (player's card)
 void funcAirMage1(Board& board, Player& pl)
 {
-	char currColor = pl.GetPlayerColor();
+	Colours currColor = pl.GetPlayerColor();
 	uint16_t x1, y1, x2, y2;
 	std::cout << "from where\n";
 	std::cin >> x1 >> y1;
@@ -178,7 +178,7 @@ void funcAirMage1(Board& board, Player& pl)
 
 	if (!matrix[x1][y1].empty())
 	{
-		if (currColor == 'R')
+		if (currColor == Colours::RED)
 		{
 			if (x1 != x2)
 			{
@@ -261,7 +261,7 @@ void funcWaterMage1(Board& board,Player& pl)
 }
 
 // move row/column to other side of the board
-void funcWaterMage2(Board& board,char color,Player& pl)//opponent 
+void funcWaterMage2(Board& board, Colours color,Player& pl)//opponent 
 {
 	int option;
 	std::cout << " Select what you would want to move\n";
@@ -275,7 +275,7 @@ void funcWaterMage2(Board& board,char color,Player& pl)//opponent
 	if (option==0)
 	{
 		bool ok = true;
-		if (color == 'R')
+		if (color == Colours::RED)
 		{
 			if (rowChecker[0].first == 0)//no visible cards for red
 			{
@@ -302,7 +302,7 @@ void funcWaterMage2(Board& board,char color,Player& pl)//opponent
 	else if (option == 1)
 	{
 		bool ok = true;
-		if (color == 'R')
+		if (color == Colours::RED)
 		{
 			if (rowChecker[lastLine].first == 0)//no visible cards for red
 			{
@@ -329,7 +329,7 @@ void funcWaterMage2(Board& board,char color,Player& pl)//opponent
 	else if (option == 3)
 	{
 		bool ok = true;
-		if (color == 'R')
+		if (color == Colours::RED)
 		{
 			if (colChecker[lastColumn].first == 0)//no visible cards for red
 			{
@@ -356,7 +356,7 @@ void funcWaterMage2(Board& board,char color,Player& pl)//opponent
 	else if (option == 2)
 	{
 		bool ok = true;
-		if (color == 'R')
+		if (color == Colours::RED)
 		{
 			if (colChecker[0].first == 0)//no visible cards for red
 			{

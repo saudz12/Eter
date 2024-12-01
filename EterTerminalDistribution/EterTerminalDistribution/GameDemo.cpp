@@ -3,10 +3,10 @@
 GameDemo::GameDemo(uint16_t size,uint16_t numberOfRounds)
 {
     m_board = new Board(size);
-    m_p1 = new Player('R');
-    m_p2 = new Player('B');
+    m_p1 = new Player(Colours::RED);
+    m_p2 = new Player(Colours::BLUE);
     m_currPlayer = nullptr;
-    m_currPlayerColor = 'R';
+    m_currPlayerColor = Colours::RED;
     m_wasPlaced = false;
     m_wasElementalCardUsed = false;
     m_rounds = numberOfRounds;
@@ -21,9 +21,9 @@ void GameDemo::runDemo()
         system("cls");
         m_board->printBoard();
         m_wasPlaced = false;
-        m_currPlayer = m_currPlayerColor=='R' ? m_p1 : m_p2;
+        m_currPlayer = m_currPlayerColor== Colours::RED ? m_p1 : m_p2;
         playerTurn(m_currPlayerColor);
-        if (m_currPlayer->GetPlayerColor() == 'R')
+        if (m_currPlayer->GetPlayerColor() == Colours::RED)
             setStructuresForPlayer(m_p1);
         else
             setStructuresForPlayer(m_p2);
@@ -64,7 +64,7 @@ void GameDemo::runDemo()
             if (m_wasPlaced)
             {
                 m_currPlayer->SetLastMinionCardPlayed(&m_board->getCardOnPos(x, y));
-                if (m_currPlayer->GetPlayerColor() == 'R')
+                if (m_currPlayer->GetPlayerColor() == Colours::RED)
                     Player::updateCover(x, y, m_p2->getCovered(), m_board->getMatrix());
                 else
                     Player::updateCover(x, y, m_p1->getCovered(), m_board->getMatrix());
@@ -141,11 +141,11 @@ void GameDemo::runDemo()
             ///Tiebreaker - update it
             if (m_board->isBoardFilled() || m_currHand.empty()) {
                 //The other player has one more move left!
-                if (m_currPlayerColor == 'R')
-                    m_currPlayerColor = 'B';
+                if (m_currPlayerColor == Colours::RED)
+                    m_currPlayerColor = Colours::BLUE;
                 else
-                    m_currPlayerColor = 'R';
-                m_currPlayer = m_currPlayerColor=='R' ? m_p1 : m_p2;
+                    m_currPlayerColor = Colours::RED;
+                m_currPlayer = m_currPlayerColor== Colours::RED ? m_p1 : m_p2;
                 m_currHand = m_currPlayer->GetHandCards();
 
                 system("cls");
@@ -187,7 +187,7 @@ void GameDemo::runDemo()
                     if (m_wasPlaced)
                     {
                         m_currPlayer->SetLastMinionCardPlayed(&m_board->getCardOnPos(x, y));
-                        if (m_currPlayer->GetPlayerColor() == 'R')
+                        if (m_currPlayer->GetPlayerColor() == Colours::RED)
                             Player::updateCover(x, y, m_p2->getCovered(), m_board->getMatrix());
                         else
                             Player::updateCover(x, y, m_p1->getCovered(), m_board->getMatrix());
@@ -249,8 +249,8 @@ void GameDemo::runDemo()
                     break;
                 }
 
-                if (m_board->entityWon(x, y, m_currPlayer->GetPlayerColor())) {
-                    if (m_currPlayer->GetPlayerColor() == 'R')
+                if (m_board->entityWon(x, y, m_currPlayer->GetPlayerColor()) != Colours::INVALID_COL) {
+                    if (m_currPlayer->GetPlayerColor() == Colours::RED)
                         m_score.first++;
                     else
                         m_score.second++;
@@ -261,24 +261,24 @@ void GameDemo::runDemo()
                     delete m_p2;
                     if (m_rounds != 0) {
                         m_board = new Board(3);
-                        m_p1 = new Player('R');
-                        m_p2 = new Player('B');
+                        m_p1 = new Player(Colours::RED);
+                        m_p2 = new Player(Colours::BLUE);
                     }
                     system("pause");
                 }
             }
-            if (m_currPlayerColor == 'R')
-                m_currPlayerColor = 'B';
+            if (m_currPlayerColor == Colours::RED)
+                m_currPlayerColor = Colours::BLUE;
             else
-                m_currPlayerColor = 'R';
-            m_currPlayer = m_currPlayerColor == 'R' ? m_p1 : m_p2;
+                m_currPlayerColor = Colours::RED;
+            m_currPlayer = m_currPlayerColor == Colours::RED ? m_p1 : m_p2;
         }
     }
 }
 
-void GameDemo::playerTurn(char color)
+void GameDemo::playerTurn(Colours color)
 {
-    if (color=='R')
+    if (color== Colours::RED)
         std::cout << "Player 1(Red's) Turn\n";
     else
         std::cout << "Player 2(Blue's) Turn:\n";
@@ -431,7 +431,7 @@ bool GameDemo::useExplosionCard()
 
 void GameDemo::restartRound()
 {
-    if (m_currPlayer->GetPlayerColor() == 'R')
+    if (m_currPlayer->GetPlayerColor() == Colours::RED)
         m_score.first++;
     else
         m_score.second++;
@@ -442,8 +442,8 @@ void GameDemo::restartRound()
     delete m_p2;
     if (m_rounds != 0) {
         m_board = new Board(3);
-        m_p1 = new Player('R');
-        m_p2 = new Player('B');
+        m_p1 = new Player(Colours::RED);
+        m_p2 = new Player(Colours::BLUE);
     }
 
 }
@@ -492,7 +492,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         break;
     }
     case 2: {
-        if (currPlayer->GetPlayerColor() == 'R')
+        if (currPlayer->GetPlayerColor() == Colours::RED)
         {
             if (funcDestruction(b, *p2) == 0)
             {
@@ -634,7 +634,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         if (wasPlaced)
         {
             currPlayer->SetLastMinionCardPlayed(&b.getCardOnPos(x, y));
-            if (currPlayer->GetPlayerColor() == 'R')
+            if (currPlayer->GetPlayerColor() == Colours::RED)
                 Player::updateCover(x, y, p2->getCovered(), b.getMatrix());
             else
                 Player::updateCover(x, y, p1->getCovered(), b.getMatrix());
@@ -689,7 +689,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         }
 
         currPlayer->SetLastMinionCardPlayed(&b.getCardOnPos(x, y));
-        if (currPlayer->GetPlayerColor() == 'R')
+        if (currPlayer->GetPlayerColor() == Colours::RED)
             Player::updateCover(x, y, p2->getCovered(), b.getMatrix());
         else
             Player::updateCover(x, y, p1->getCovered(), b.getMatrix());
@@ -711,7 +711,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         std::cout << "Type the coodonates of your opponent's card: ";
         uint16_t x, y;
         std::cin >> x >> y;
-        if (currPlayer->GetPlayerColor() == 'R')
+        if (currPlayer->GetPlayerColor() == Colours::RED)
         {
             if (funcSquall(b, *p2, x, y) == 0)
             {
@@ -775,7 +775,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         std::cout << "\nChoose a neighboring card of a lower value you want to cover: ";
         std::cin >> x2 >> y2;
 
-        if (b.getCardOnPos(x1, y1).GetColor() == 'R')
+        if (b.getCardOnPos(x1, y1).GetColor() == Colours::RED)
         {
             if (funcGust(b, *p1, x1, y1, x2, y2) == 0)
             {
@@ -785,7 +785,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             else
                 std::cout << "Failed to use Gust\n";
         }
-        else if (b.getCardOnPos(x1, y1).GetColor() == 'B')
+        else if (b.getCardOnPos(x1, y1).GetColor() == Colours::BLUE)
         {
             if (funcGust(b, *p2, x1, y1, x2, y2) == 0)
             {
@@ -813,7 +813,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             currPlayer->SetLastMinionCardPlayed(&b.getCardOnPos(x, y));
             currPlayer->SetIllusionCard(nullptr);
             currPlayer->UpdateCard(toPlace, -1);
-            if (m_currPlayer->GetPlayerColor() == 'R')
+            if (m_currPlayer->GetPlayerColor() == Colours::RED)
                 Player::updateCover(x, y, m_p2->getCovered(), m_board->getMatrix());
             else
                 Player::updateCover(x, y, m_p1->getCovered(), m_board->getMatrix());

@@ -16,7 +16,8 @@ private:
     hand m_currHand;
     hand m_removedCardsHand;
     score m_score;
-    char m_currPlayerColor;
+    //char m_currPlayerColor;
+    Colours m_currPlayerColor;
     uint16_t m_rounds;
     bool m_wasPlaced;
     bool m_wasElementalCardUsed;
@@ -26,7 +27,7 @@ public:
     GameDemo(uint16_t size,uint16_t numberOfRounds);
     void runDemo();
 
-    void playerTurn(char color);
+    void playerTurn(Colours color);
     void setStructuresForPlayer(Player*& player);
     bool placeEterCard(size_t&,size_t&);
     bool placeIllusionCard(size_t&, size_t&);

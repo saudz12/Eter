@@ -17,7 +17,8 @@ class Player
 private:
 	hand m_handCards;
 	coveredSet m_coveredCardSet;
-	char m_playerColor;
+	//char m_playerColor;
+	Colours m_playerColor;
 	hand m_removedCards;
 	//true if illusion has been used, false otherwise
 	bool m_illusionUsage; 
@@ -33,11 +34,13 @@ private:
 public:
 	//constructor
 	Player(char playerColor);
+	Player(Colours playerColor);
 	Player();
 	~Player() = default;
 
 	//getters
-	char GetPlayerColor() const;
+	//char GetPlayerColor() const;
+	Colours GetPlayerColor() const;
 	bool GetIllusionUsage() const;
 	bool GetEterCardUsage() const;
 	const hand& GetHandCards() const;
@@ -49,7 +52,8 @@ public:
 
 	//setters
 	void SetEterCardUsage(bool eterCardUsage);
-	void SetPlayerColor(char playerColor);
+	//void SetPlayerColor(char playerColor);
+	void SetPlayerColor(Colours playerColor);
 	void SetIllusionUsage(bool illusionUsage);
 	void SetHandCards(const hand& handCards);
 

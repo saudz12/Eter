@@ -2,8 +2,6 @@
 #include "Card.h"
 
 using position = std::tuple< uint16_t, uint16_t, uint16_t>;
-constexpr auto COL_RED = 'R';
-constexpr auto COL_BLUE = 'B';
 
 struct hashPosition {
 	size_t operator()(const position& toHash) const {
@@ -19,14 +17,17 @@ class MinionCard : public Card
 {
 private:
 	uint16_t m_value;
-	char m_color;
+	//char m_color;
+	Colours m_color;
 	bool m_isEterCard;
 	bool m_isIllusionCard;
 	bool m_marker;
-	char m_belongsTo;
+	//char m_belongsTo;
+	Colours m_belongsTo;
 	bool m_isHole;
 public:
 	MinionCard(uint16_t value, char color, bool isEter);
+	MinionCard(uint16_t value, Colours color, bool isEter);
 	MinionCard() = default;
 	
 	//overload functions
@@ -37,22 +38,26 @@ public:
 	
 	//getters
 	uint16_t GetValue() const;
-	char GetColor() const;
+	//char GetColor() const;
+	Colours GetColor() const;
 	bool GetIsEterCard() const;
 	bool GetIsIllusionCard() const;
 	bool GetMarker() const;
 	CardType GetCardType() const override;
-	char GetBelongsTo() const;
+	//char GetBelongsTo() const;
+	Colours GetBelongsTo() const;
 	bool GetIsHole() const;
 
 	//setters
 	void SetValue(uint16_t value);
-	void SetColor(char color);
+	//void SetColor(char color);
+	void SetColor(Colours color);
 	void SetIsEterCard(bool isEterCard);
 	void SetIsIllusionCard(bool isIllusionCard);
 	void SetCardType(CardType type) override;
 	void SetMarker(bool isMarked);
-	void SetBelongsTo(char belongsTo);
+	//void SetBelongsTo(char belongsTo);
+	void SetBelongsTo(Colours belongsTo);
 	void SetIsHole(bool isHole);
 };
 

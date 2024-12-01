@@ -37,11 +37,11 @@ private:
 
 
 	//score counter on each line
-	void increaseOnColorSides(uint16_t x, uint16_t y, char col);
-	void increaseOnColorColumn(uint16_t x, uint16_t y, char col);
-	void increaseOnColorRow(uint16_t x, uint16_t y, char col);
-	void increaseOnColorDiagonal(uint16_t x, uint16_t y, char col);
-	void increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, char col);
+	void increaseOnColorSides(uint16_t x, uint16_t y, Colours col);
+	void increaseOnColorColumn(uint16_t x, uint16_t y, Colours col);
+	void increaseOnColorRow(uint16_t x, uint16_t y, Colours col);
+	void increaseOnColorDiagonal(uint16_t x, uint16_t y, Colours col);
+	void increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, Colours col);
 
 	//check position to board bounds
 	int16_t XBoundTest(int16_t x);
@@ -77,7 +77,7 @@ public:
 	int16_t setPosWaterfall(int16_t x, int16_t y, const MinionCard& card);
 	int16_t removePos(int16_t x, int16_t y);
 	int16_t removeStack(int16_t x, int16_t y);
-	char entityWon(int16_t x, int16_t y, char col);
+	Colours entityWon(int16_t x, int16_t y, Colours col);
 
 	uint16_t getRowCount();
 	uint16_t getColCount();

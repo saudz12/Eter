@@ -136,9 +136,7 @@
     <ClCompile Include="EterTerminalDistribution.cpp" />
     <ClCompile Include="ExplosionCard.cpp" />
     <ClCompile Include="functionsElementalCards.cpp" />
-    <ClCompile Include="functionsInputCheck.cpp" />
     <ClCompile Include="functionsMageCards.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameDemo.cpp" />
     <ClCompile Include="HoleCard.cpp" />
     <ClCompile Include="Includes.cpp" />
@@ -160,7 +158,6 @@
     <ClInclude Include="funcAssociationsToCard.h" />
     <ClInclude Include="functionsElementalCards.h" />
     <ClInclude Include="functionsMageCards.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="GameDemo.h" />
     <ClInclude Include="HoleCard.h" />
     <ClInclude Include="Includes.h" />
