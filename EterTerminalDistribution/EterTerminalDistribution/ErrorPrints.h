@@ -17,7 +17,19 @@ constexpr int16_t INVALID_LINE_STRUCTURE = 2;
 constexpr int16_t ADJACENT_OUTSIDE_BOUNDS = 1;
 constexpr int16_t ADJACENT_SPACES_EMPTY = 2;
 
+//Flame
+constexpr int16_t FAILED_FLAME_CARD_PLACEMENT = 1;
+
+//Fire/Ash
+constexpr int16_t INVALID_CARD_VALUE = 1;
+
+//Spark
+constexpr int16_t FAILED_SPARK_CARD_PLACEMENT = 1;
+
+
 void ErrorMesageHuricane(int message);
 void ErrorMessageWhirlpool(int message);
-
-
+void ErrorMessageFlame(int message);
+void ErrorMessageFire(int message);
+void ErrorMessageAsh(int message);
+void ErrorMessageSpark(int message);

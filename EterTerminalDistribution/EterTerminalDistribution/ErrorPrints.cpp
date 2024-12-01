@@ -52,3 +52,56 @@ void ErrorMessageWhirlpool(int message) {
 		break;
 	}
 }
+
+void ErrorMessageFlame(int message)
+{
+	switch (message) {
+	case OUTSIDE_BOUNDS:
+		std::cout << "Invalid slot.. Slot coordinates are out of bounds...\n";
+		return;
+	case FAILED_FLAME_CARD_PLACEMENT:
+		std::cout << "Failed to place minion card with Flame elemental card\n";
+		return;
+	default:
+		break;
+	}
+}
+
+void ErrorMessageFire(int message)
+{
+	switch (message) {
+	case INVALID_CARD_VALUE:
+		std::cout << "Chosen value is invalid... Pick a card between 1 and 4..\n";
+		return;
+	default:
+		break;
+	}
+}
+
+void ErrorMessageAsh(int message)
+{
+	switch (message) {
+	case INVALID_CARD_VALUE:
+		std::cout << "Chosen value is invalid... Pick a card between 1 and 4..\n";
+		return;
+	default:
+		break;
+	}
+}
+
+void ErrorMessageSpark(int message)
+{
+	switch (message) {
+	case OUTSIDE_BOUNDS:
+		std::cout << "Chosen coordinates out of bounds...\n";
+		return;
+	case FAILED_SPARK_CARD_PLACEMENT:
+		std::cout << "Can't use Spark elemental card on eter card\n";
+		return;
+	default:
+		break;
+	}
+}
+
+
+
