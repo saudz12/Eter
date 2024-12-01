@@ -141,6 +141,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameDemo.cpp" />
     <ClCompile Include="HoleCard.cpp" />
+    <ClCompile Include="Includes.cpp" />
     <ClCompile Include="InputChceking.cpp" />
     <ClCompile Include="MageCard.cpp" />
     <ClCompile Include="MinionCard.cpp" />

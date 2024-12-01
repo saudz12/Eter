@@ -33,6 +33,7 @@ private:
 public:
 	//constructor
 	Player(char playerColor);
+	Player();
 	~Player() = default;
 
 	//getters

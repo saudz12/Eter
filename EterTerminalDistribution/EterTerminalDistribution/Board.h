@@ -67,6 +67,7 @@ private:
 public:
 
 	Board(uint16_t size);
+	Board();
 	~Board() = default;
 
 	//Update board

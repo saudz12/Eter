@@ -7,6 +7,12 @@ Player::Player(char playerColor = 'R')
 	generateHand();
 }
 
+Player::Player()
+	: m_playerColor{ 'R' }, m_illusionUsage{ false }, m_eterCardUsage{ false }
+{
+	generateHand();
+}
+
 char Player::GetPlayerColor() const
 {
 	return m_playerColor;

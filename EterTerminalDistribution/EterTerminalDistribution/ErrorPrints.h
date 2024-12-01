@@ -40,6 +40,24 @@ constexpr int16_t INSUFFICIENT_STACK_HEIGHT = 1;
 //Mist
 constexpr int16_t FAILED_MIST_CARD_PLACEMENT = 1;
 
+enum class CommonErrors : int16_t {
+	NO_ERRORS,
+	OUTSIDE_BOUNDS,
+	ETER_PROPERTY_VIOALTION,
+	EMPTY_SPACE,
+	INVALID_LINE_TYPE,
+	INVALID_DIRECTION,
+};
+
+enum class HurricangeErrors : int16_t {
+	INVALID_LINE_STRUCTURE
+};
+
+enum class WhirlpoolErrors : int16_t {
+	ADJACENT_OUTSIDE_BOUNDS,
+	ADJACENT_SPACES_EMPTY
+};
+
 void ErrorMesageHuricane(int message);
 void ErrorMessageWhirlpool(int message);
 void ErrorMessageFlame(int message);

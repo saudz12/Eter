@@ -6,7 +6,7 @@ class Game : Player,Board
 {
 	private:
 		Board m_boardGame;
-		Player m_Player1 = { "R" }, m_Player2 = { "B" }; // we don't have a constructor without params in Player class, resorted to this
+		Player m_Player1, m_Player2; // we don't have a constructor without params in Player class, resorted to this
 		// uint8_t gameType; //could we use this instead of 5 bools?
 		bool m_timed,
 			 m_tournament,
@@ -23,7 +23,7 @@ class Game : Player,Board
 		//~Game();
 
 		//getters
-		Board getBoardGame();
+		//Board getBoardGame();
 		Player getPlayer1();
 		Player getPlayer2();
 

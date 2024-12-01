@@ -11,24 +11,24 @@ Game::Game() {
 	m_training = 0;
 	m_wizardDuel = 0;
 	m_elementalBattle = 0;
-	m_Player1 = getPlayer1();
-	m_Player2 = getPlayer2();
-	m_boardGame = getBoardGame();
+	m_Player1 = Player{ 'R' };
+	m_Player2 = Player{ 'B' };
+	m_boardGame = Board{ 3 };
 }
 
-Board Game::getBoardGame()
-{
-	return Board();
-}
+//Board Game::getBoardGame()
+//{
+//	return Board();
+//}
 
 Player Game::getPlayer1()
 {
-	return Player{ "R" };
+	return Player{ 'R' };
 }
 
 Player Game::getPlayer2()
 {
-	return Player{ "B" };
+	return Player{ 'B' };
 }
 
 void Game::setBoardGame(Board board)
