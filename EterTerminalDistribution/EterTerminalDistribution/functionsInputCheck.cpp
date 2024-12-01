@@ -51,27 +51,19 @@ uint16_t checkFuncSquall(Board& board, uint16_t x1, uint16_t y1) {
 	resizeableMatrix& matrix = board.getMatrix();
 
 	if (x1 < 0 || x1 > lines)
-		return 1;
+		return -1;
 	if (y1 < 0 || y1 > cols)
+		return -1;
+
+	if (matrix[x1][y1].empty())
 		return 1;
-
-
-	if (matrix[x1][y1].empty()) {
-		//std::cout << "Empty Space..\n";
-		return 2;
-	}
 
 	if (matrix[x1][y1].back().GetIsEterCard())
-	{
-		//std::cout << "Can't use Squall elemental card on eter card\n";
-		return 3;
-	}
+		return -2;
 
 	if (matrix[x1][y1].back().GetIsIllusionCard())
-	{
-		//std::cout << "Can't use Squall elemental card on illusion\n";
-		return 4;
-	}
+		return 3;
+	
 	return 0;
 }
 
@@ -88,18 +80,16 @@ uint16_t checkFuncGust(Board&board , uint16_t x1, uint16_t y1, uint16_t x2, uint
 		x2<0 || x2>lines ||
 		y1<0 || y1>cols ||
 		y2<0 || y2>cols) // bound check
-		return 1;
+		return -1;
 
 	if (matrix[x1][y1].back().GetIsEterCard() || matrix[x2][y2].back().GetIsEterCard())
-		return 2;
-		//std::cout << "Can't use Gust elemental card on eter card\n";
+		return -2;
 	
-
 	if (!((x1 == x2 && std::abs(y1 - y2) == 1) || (y1 == y2) && std::abs(x1 - x2)))
-		return 3;
+		return 1;
 
 	if (!(matrix[x1][y1].back().GetValue() > matrix[x2][y2].back().GetValue()))
-		return 4;
+		return 2;
 
 	return 0;
 }
@@ -109,12 +99,10 @@ uint16_t checkFuncMirage(Board& board, uint16_t x1, uint16_t y1, const MinionCar
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 	if (x1 < 0 || x1 > lines || 
 		y1 < 0 || y1 > cols) //bound check
-		return 1;
+		return -1;
 	
 	if (!matrix[x1][y1].back().GetIsIllusionCard())
-		return 2;
-		//std::cout << "Chosen card position is not an illusion\n";
-	
+		return 1;
 	return 0;
 }
 
@@ -125,12 +113,10 @@ uint16_t checkFuncStorm(Board& board,uint16_t x, uint16_t y) {
 
 	if (x < 0 || x > lines ||
 		y < 0 || y > cols) //bound check
-		return 1;
+		return -1;
 	if (matrix[x][y].size() < 2)
-	{
-		//std::cout << "The stack does not have enough cards..\n";
-		return 2;
-	}
+		return 1;
+	
 	return 0;
 }
 

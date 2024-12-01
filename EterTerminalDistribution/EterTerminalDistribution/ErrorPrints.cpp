@@ -95,13 +95,82 @@ void ErrorMessageSpark(int message)
 	case OUTSIDE_BOUNDS:
 		std::cout << "Chosen coordinates out of bounds...\n";
 		return;
-	case FAILED_SPARK_CARD_PLACEMENT:
+	case ETER_PROPERTY_VIOALTION:
 		std::cout << "Can't use Spark elemental card on eter card\n";
 		return;
 	default:
 		break;
 	}
 }
+
+void ErrorMessageSquall(int message)
+{
+	switch (message) {
+	case OUTSIDE_BOUNDS:
+		std::cout << "Chosen coordinates out of bounds...\n";
+		return;
+	case ETER_PROPERTY_VIOALTION:
+		std::cout << "Can't use Squall elemental card on eter card..\n";
+		return;
+	case EMPTY_SPACE:
+		std::cout << "Cannot place on empty space..\n";
+		return;
+	case FAILED_ON_ILLUSION:
+		std::cout << "Can't use Squall elemental card on illusion..\n";
+		return;
+	default:
+		break;
+	}
+}
+
+void ErrorMessageGust(int message)
+{
+	switch (message) {
+	case OUTSIDE_BOUNDS:
+		std::cout << "Choosen coordinates out of bounds..\n";
+		return;
+	case ETER_PROPERTY_VIOALTION:
+		std::cout << "Can't use Gust elemental card on eter card..\n";
+		return;
+	case IDENTICAL_COORDINATES:
+		std::cout << "Chosen coordinates are identical to your current coordinates...\n";
+		return;
+	case VALUE_TOO_GREAT:
+		std::cout << "Can't place on top of card of greater value...\n";
+		return;
+	default:
+		break;
+	}
+}
+
+void ErrorMessageMirage(int message)
+{
+	switch (message) {
+	case OUTSIDE_BOUNDS:
+		std::cout << "Choosen coordinates out of bounds..\n";
+		return;
+	case NOT_ILLUSION:
+		std::cout << "Chosen card position is not an illusion..\n";
+		return;
+	default:
+		break;
+	}
+}
+
+void ErrorMessagestorm(int message)
+{
+	switch (message) {
+	case OUTSIDE_BOUNDS:
+		std::cout << "Choosen coordinates out of bounds..\n";
+		return;
+	case INSUFFICIENT_STACK_HEIGHT:
+		std::cout << "The stack does not have enough cards..\n";
+		return;
+	default:
+		break;
+	}
+}
+
 
 
 
