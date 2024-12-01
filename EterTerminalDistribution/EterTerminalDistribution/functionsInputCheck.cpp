@@ -16,13 +16,13 @@ int16_t checkFuncFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint
 	return 0;
 }
 
-uint16_t checkFuncFire(Board&, uint16_t cardValue) {
+int16_t checkFuncFire(Board&, uint16_t cardValue) {
 	if (cardValue < 1 || cardValue > 4)
 		return 1;
 	return 0;
 }
 
-uint16_t checkFuncAsh(Board& board, const MinionCard& card, uint16_t x, uint16_t y) {
+int16_t checkFuncAsh(Board& board, const MinionCard& card, uint16_t x, uint16_t y) {
 	uint16_t lines = board.getLineCount(), cols = board.getColCount();
 	if (card.GetValue() > 4 || card.GetValue() < 1)
 		return 1;
@@ -31,7 +31,7 @@ uint16_t checkFuncAsh(Board& board, const MinionCard& card, uint16_t x, uint16_t
 	return 0;
 }
 
-uint16_t checkFuncSpark(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+int16_t checkFuncSpark(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 	resizeableMatrix& matrix = board.getMatrix();
@@ -46,7 +46,7 @@ uint16_t checkFuncSpark(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uin
 	return 0;
 }
 
-uint16_t checkFuncSquall(Board& board, uint16_t x1, uint16_t y1) {
+int16_t checkFuncSquall(Board& board, uint16_t x1, uint16_t y1) {
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 	resizeableMatrix& matrix = board.getMatrix();
 
@@ -56,7 +56,7 @@ uint16_t checkFuncSquall(Board& board, uint16_t x1, uint16_t y1) {
 		return -1;
 
 	if (matrix[x1][y1].empty())
-		return 1;
+		return -3;
 
 	if (matrix[x1][y1].back().GetIsEterCard())
 		return -2;
@@ -68,11 +68,11 @@ uint16_t checkFuncSquall(Board& board, uint16_t x1, uint16_t y1) {
 }
 
 
-uint16_t checkFuncHurricane(Board&, hand& p1, hand& p2) {// for saud, don't touch !!!!
+int16_t checkFuncHurricane(Board&, hand& p1, hand& p2) {// for saud, don't touch !!!!
 	return 0;
 }
 
-uint16_t checkFuncGust(Board&board , uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+int16_t checkFuncGust(Board&board , uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
 	resizeableMatrix& matrix = board.getMatrix();
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 
@@ -94,7 +94,7 @@ uint16_t checkFuncGust(Board&board , uint16_t x1, uint16_t y1, uint16_t x2, uint
 	return 0;
 }
 
-uint16_t checkFuncMirage(Board& board, uint16_t x1, uint16_t y1, const MinionCard&) {
+int16_t checkFuncMirage(Board& board, uint16_t x1, uint16_t y1, const MinionCard&) {
 	resizeableMatrix& matrix = board.getMatrix();
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 	if (x1 < 0 || x1 > lines || 
@@ -106,7 +106,7 @@ uint16_t checkFuncMirage(Board& board, uint16_t x1, uint16_t y1, const MinionCar
 	return 0;
 }
 
-uint16_t checkFuncStorm(Board& board,uint16_t x, uint16_t y) {
+int16_t checkFuncStorm(Board& board,uint16_t x, uint16_t y) {
 
 	resizeableMatrix& matrix = board.getMatrix();
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
@@ -120,7 +120,7 @@ uint16_t checkFuncStorm(Board& board,uint16_t x, uint16_t y) {
 	return 0;
 }
 
-uint16_t checkFuncTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+int16_t checkFuncTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
 	
 	cardStack& first = board.getStackOnPos(x1, y1);
 	cardStack& second = board.getStackOnPos(x2, y2);
@@ -130,25 +130,36 @@ uint16_t checkFuncTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint
 		x2<0 || x2>lines ||
 		y1<0 || y1>cols ||
 		y2<0 || y2>cols) // bound check
-		return 1;
+		return -1;
 	
 	if (first.back().GetIsEterCard() || second.back().GetIsEterCard())
-	{
-		//std::cout << "Can't use Tide elemental card on eter card\n";
-		return 2;
-	}
+		return -2;
+	
 	return 0;
 }
 
-uint16_t checkFuncMist(Board&, Player&, uint16_t, uint16_t, MinionCard&) {
+uint16_t checkFuncMist(Board& board, Player& p, uint16_t x, uint16_t y, MinionCard& card) {
+	
+	if (board.setPos(x, y, card, p) == 1)
+		return 1;
 	return 0;
 }
 
-uint16_t checkFuncWave(Board&, uint16_t, uint16_t, MinionCard) {
+int16_t checkFuncWave(Board& board, uint16_t x1, uint16_t y1, MinionCard) {
+	resizeableMatrix matrix = board.getMatrix();
+	if (matrix[x1][y1].back().GetIsEterCard())
+		return -2;
+
 	return 0;
 }
 
-uint16_t checkFuncWhirlpool(Board&, uint16_t, uint16_t) {
+uint16_t checkFuncWhirlpool(Board& board, uint16_t x, uint16_t y) {
+	resizeableMatrix matrix = board.getMatrix();
+	if (!matrix[x][y].empty())
+		return 1;
+
+	if ((x < 0 || x >= board.getRowCount()) || (y < 0 || y >= board.getColCount()))
+		return -1;
 	return 0;
 }
 

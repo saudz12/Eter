@@ -57,10 +57,10 @@ void ErrorMessageFlame(int message)
 {
 	switch (message) {
 	case OUTSIDE_BOUNDS:
-		std::cout << "Invalid slot.. Slot coordinates are out of bounds...\n";
+		std::cout << "ERR:Invalid slot.. Slot coordinates are out of bounds...\n";
 		return;
 	case FAILED_FLAME_CARD_PLACEMENT:
-		std::cout << "Failed to place minion card with Flame elemental card\n";
+		std::cout << "ERR:Failed to place minion card with Flame elemental card\n";
 		return;
 	default:
 		break;
@@ -71,7 +71,7 @@ void ErrorMessageFire(int message)
 {
 	switch (message) {
 	case INVALID_CARD_VALUE:
-		std::cout << "Chosen value is invalid... Pick a card between 1 and 4..\n";
+		std::cout << "ERR:Chosen value is invalid... Pick a card between 1 and 4..\n";
 		return;
 	default:
 		break;
@@ -82,7 +82,7 @@ void ErrorMessageAsh(int message)
 {
 	switch (message) {
 	case INVALID_CARD_VALUE:
-		std::cout << "Chosen value is invalid... Pick a card between 1 and 4..\n";
+		std::cout << "ERR:Chosen value is invalid... Pick a card between 1 and 4..\n";
 		return;
 	default:
 		break;
@@ -127,7 +127,7 @@ void ErrorMessageGust(int message)
 {
 	switch (message) {
 	case OUTSIDE_BOUNDS:
-		std::cout << "Choosen coordinates out of bounds..\n";
+		std::cout << "Chosen coordinates out of bounds..\n";
 		return;
 	case ETER_PROPERTY_VIOALTION:
 		std::cout << "Can't use Gust elemental card on eter card..\n";
@@ -147,7 +147,7 @@ void ErrorMessageMirage(int message)
 {
 	switch (message) {
 	case OUTSIDE_BOUNDS:
-		std::cout << "Choosen coordinates out of bounds..\n";
+		std::cout << "Chosen coordinates out of bounds..\n";
 		return;
 	case NOT_ILLUSION:
 		std::cout << "Chosen card position is not an illusion..\n";
@@ -161,10 +161,45 @@ void ErrorMessagestorm(int message)
 {
 	switch (message) {
 	case OUTSIDE_BOUNDS:
-		std::cout << "Choosen coordinates out of bounds..\n";
+		std::cout << "Chosen coordinates out of bounds..\n";
 		return;
 	case INSUFFICIENT_STACK_HEIGHT:
 		std::cout << "The stack does not have enough cards..\n";
+		return;
+	default:
+		break;
+	}
+}
+
+void ErrorMessageTide(int message)
+{
+	switch (message) {
+	case OUTSIDE_BOUNDS:
+		std::cout << "Chosen coordinates out of bounds..\n";
+		return;
+	case ETER_PROPERTY_VIOALTION:
+		std::cout << "Can't use Tide elemental card on eter card..\n";
+		return;
+	default:
+		break;
+	}
+}
+
+void ErrorMessageMist(int message)
+{
+	switch (message) {
+	case FAILED_MIST_CARD_PLACEMENT:
+		std::cout << "Failed to place card..\n";
+		return;
+	default:
+		break;
+	}
+}
+
+void ErrorMessageWave(int message) {
+	switch (message) {
+	case ETER_PROPERTY_VIOALTION:
+		std::cout << "Can't use Wave elemental power on eter card\n";
 		return;
 	default:
 		break;

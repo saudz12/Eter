@@ -8,27 +8,27 @@ using handCard = std::unordered_map<MinionCard, uint16_t>;
 
 int16_t checkFuncFlame(Board&, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard&, Player&);
 
-uint16_t checkFuncFire(Board&, uint16_t);
+int16_t checkFuncFire(Board&, uint16_t);
 
-uint16_t checkFuncAsh(Board&,const MinionCard&, uint16_t, uint16_t);
+int16_t checkFuncAsh(Board&,const MinionCard&, uint16_t, uint16_t);
 
-uint16_t checkFuncSpark(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
+int16_t checkFuncSpark(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
 
-uint16_t checkFuncSquall(Board&, uint16_t, uint16_t);
+int16_t checkFuncSquall(Board&, uint16_t, uint16_t);
 
-uint16_t checkFuncHurricane(Board&, hand&, hand&);
+int16_t checkFuncHurricane(Board&, hand&, hand&);
 
-uint16_t checkFuncGust(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
+int16_t checkFuncGust(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
 
-uint16_t checkFuncMirage(Board&, uint16_t, uint16_t, const MinionCard&);
+int16_t checkFuncMirage(Board&, uint16_t, uint16_t, const MinionCard&);
 
-uint16_t checkFuncStorm(Board&, uint16_t, uint16_t);
+int16_t checkFuncStorm(Board&, uint16_t, uint16_t);
 
-uint16_t checkFuncTide(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
+int16_t checkFuncTide(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
 
 uint16_t checkFuncMist(Board&, Player&, uint16_t, uint16_t, MinionCard&);
 
-uint16_t checkFuncWave(Board&, uint16_t, uint16_t, MinionCard);
+int16_t checkFuncWave(Board&, uint16_t, uint16_t, MinionCard);
 
 uint16_t checkFuncWhirlpool(Board&, uint16_t, uint16_t);
 

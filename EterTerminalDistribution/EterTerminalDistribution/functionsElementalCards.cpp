@@ -490,14 +490,7 @@ void funcMist(Board& board, Player& p, uint16_t x, uint16_t y, MinionCard& card)
 {
 	if (!p.GetIllusionUsage() || p.GetIllusionCard() == nullptr) {
 		card.SetIsIllusionCard(true);
-		if (board.setPos(x, y, card, p) == 1)
-		{
-			std::cout << "Failed to place card\n";
-			return;
-		}
 		p.SetIllusionUsage(true);
-		//p.SetIllusionCard(&board.getCardOnPos(x, y));
-		return;
 	}
 }
 
@@ -505,11 +498,6 @@ void funcMist(Board& board, Player& p, uint16_t x, uint16_t y, MinionCard& card)
 void funcWave(Board& board, uint16_t x1, uint16_t y1, MinionCard newCard)
 {
 	resizeableMatrix& matrix = board.getMatrix();
-	if (matrix[x1][y1].back().GetIsEterCard())
-	{
-		std::cout << "Can't use Wave elemental power on eter card\n";
-		return;
-	}
 	for(int i = -1; i < 2; i++)
 		for(int j = -1; j < 2; j++)
 		if (!matrix[x1 + i][y1 + j].empty()) 
@@ -527,18 +515,6 @@ void funcWave(Board& board, uint16_t x1, uint16_t y1, MinionCard newCard)
 void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 {
 	resizeableMatrix& matrix = board.getMatrix();
-
-	if (!matrix[x][y].empty())
-	{
-		std::cout << "Chosen space must be empty\n";
-		return;
-	}
-
-	if ((x < 0 || x >= board.getRowCount()) || (y < 0 || y >= board.getColCount()))
-	{
-		std::cout << "Chosen space is out of bounds\n";
-		return;
-	}
 	
 	std::cout << "Type R if you want to whirlpool the row or C if you want to whirlpool the column\n";
 	char lineType;
