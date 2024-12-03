@@ -22,24 +22,25 @@ void GameDemo::runDemo()
         m_board->printBoard();
         m_wasPlaced = false;
         m_currPlayer = m_currPlayerColor== Colours::RED ? m_p1 : m_p2;
-        playerTurn(m_currPlayerColor);
+        showPlayerTurn(m_currPlayerColor);
         if (m_currPlayer->GetPlayerColor() == Colours::RED)
             setStructuresForPlayer(m_p1);
         else
             setStructuresForPlayer(m_p2);
         ///menu
-        printMenu();
         uint16_t options;
+
+        printMenu();
         std::cin >> options;
         size_t x, y;
         switch (options)
         {
         case 1: {
             m_currPlayer->printHandCards();
+            printHand(m_currPlayer->GetHandCards());
             uint16_t placeOption;
-            printOptionsForCards();
-            std::cin >> placeOption;
-            
+            printOptionsForCards(placeOption);
+   
             switch (placeOption)
             {
             case 1:
@@ -110,18 +111,21 @@ void GameDemo::runDemo()
             break;
         }
         case 7: {
-            helpOption();
+            helpMenuOption();
             system("pause");
             break;
         }
         case 8:
+        {
             m_wasPlaced = useExplosionCard();
             system("pause");
             break;
+        }
         case 9:
-
+        {
             system("pause");
             break;
+        }
         default:
             break;
         }
@@ -133,140 +137,139 @@ void GameDemo::runDemo()
                 elementalCardUsedTester = false;
                 continue;
             }*/
-            /*if (m_board->entityWon(x, y, m_currPlayer->GetPlayerColor())) {
+            if (m_board->checkWin() != Colours::INVALID_COL) {
                 restartRound();
                 system("pause");
                 continue;
-            }*/
-            ///Tiebreaker - update it
-            if (m_board->isBoardFilled() || m_currHand.empty()) {
-                //The other player has one more move left!
-                if (m_currPlayerColor == Colours::RED)
-                    m_currPlayerColor = Colours::BLUE;
-                else
-                    m_currPlayerColor = Colours::RED;
-                m_currPlayer = m_currPlayerColor== Colours::RED ? m_p1 : m_p2;
-                m_currHand = m_currPlayer->GetHandCards();
+                ///Tiebreaker - update it
+                if (m_board->isBoardFilled() || m_currHand.empty()) {
+                    //The other player has one more move left!
+                    if (m_currPlayerColor == Colours::RED)
+                        m_currPlayerColor = Colours::BLUE;
+                    else
+                        m_currPlayerColor = Colours::RED;
+                    m_currPlayer = m_currPlayerColor == Colours::RED ? m_p1 : m_p2;
+                    m_currHand = m_currPlayer->GetHandCards();
 
-                system("cls");
-                m_board->printBoard();
-                playerTurn(m_currPlayerColor);
+                    system("cls");
+                    m_board->printBoard();
+                    showPlayerTurn(m_currPlayerColor);
 
-                ///menu
-                printMenu();
-                std::cin >> options;
-                switch (options)
-                {
-                case 1: {
-                    m_currPlayer->printHandCards();
-                    uint16_t placeOption;
-                    printOptionsForCards();
-                    std::cin >> placeOption;
-
-                    switch (placeOption)
+                    ///menu
+                    printMenu();
+                    std::cin >> options;
+                    switch (options)
                     {
-                    case 1:
-                    {
-                        m_wasPlaced = placeEterCard(x, y);
+                    case 1: {
+                        m_currPlayer->printHandCards();
+                        uint16_t placeOption;
+                        printOptionsForCards(placeOption);
+
+                        switch (placeOption)
+                        {
+                        case 1:
+                        {
+                            m_wasPlaced = placeEterCard(x, y);
+                            break;
+                        }
+                        case 2:
+                        {
+                            m_wasPlaced = placeIllusionCard(x, y);
+                            break;
+                        }
+                        case 3:
+                        {
+                            m_wasPlaced = placeMinionCard(x, y);
+                            break;
+                        }
+                        default:
+                            break;
+                        }
+
+                        if (m_wasPlaced)
+                        {
+                            m_currPlayer->SetLastMinionCardPlayed(&m_board->getCardOnPos(x, y));
+                            if (m_currPlayer->GetPlayerColor() == Colours::RED)
+                                Player::updateCover(x, y, m_p2->getCovered(), m_board->getMatrix());
+                            else
+                                Player::updateCover(x, y, m_p1->getCovered(), m_board->getMatrix());
+
+                            std::cout << "Succesfull move!\n";
+                        }
+                        system("pause");
                         break;
                     }
-                    case 2:
-                    {
-                        m_wasPlaced = placeIllusionCard(x, y);
+                    case 2: {
+                        m_currPlayer->printHandCards();
+                        system("pause");
                         break;
                     }
-                    case 3:
-                    {
-                        m_wasPlaced = placeMinionCard(x, y);
+                    case 3: {
+                        checkCoveredCards(m_currPlayer->getCovered());
+                        system("pause");
                         break;
                     }
+                    case 4: {
+                        size_t x, y;
+                        std::cout << "Check stack on position: ";
+                        std::cin >> x >> y;
+                        if (x < 0 || x >= m_board->getRowCount() || y < 0 || y >= m_board->getColCount())
+                        {
+                            std::cout << "\nThat is not a valid position!\n";
+                            system("pause");
+                            break;
+                        }
+                        checkStack(m_board->getMatrix()[x][y]);
+                        system("pause");
+                        break;
+                    }
+                    case 5:
+                    {
+                        checkElementalCardFunction(*m_board, m_p1, m_p2, m_currPlayer, m_currHand, m_removedCardsHand, m_wasPlaced, m_wasElementalCardUsed);
+                        system("pause");
+                        break;
+                    }
+                    case 6: {
+                        TestIsolatedSpacesFunc(*m_board);
+                        system("pause");
+                        break;
+                    }
+                    case 7: {
+                        helpMenuOption();
+                        break;
+                    }
+                    case 8:
+                        m_wasPlaced = useExplosionCard();
+                        system("pause");
+                        break;
+                    case 9:
+
+                        system("pause");
+                        break;
                     default:
                         break;
                     }
 
-                    if (m_wasPlaced)
-                    {
-                        m_currPlayer->SetLastMinionCardPlayed(&m_board->getCardOnPos(x, y));
+                    if (m_board->checkWin() != Colours::INVALID_COL) {
                         if (m_currPlayer->GetPlayerColor() == Colours::RED)
-                            Player::updateCover(x, y, m_p2->getCovered(), m_board->getMatrix());
+                            m_score.first++;
                         else
-                            Player::updateCover(x, y, m_p1->getCovered(), m_board->getMatrix());
-
-                        std::cout << "Succesfull move!\n";
-                    }
-                    system("pause");
-                    break;
-                }
-                case 2: {
-                    m_currPlayer->printHandCards();
-                    system("pause");
-                    break;
-                }
-                case 3: {
-                    checkCoveredCards(m_currPlayer->getCovered());
-                    system("pause");
-                    break;
-                }
-                case 4: {
-                    size_t x, y;
-                    std::cout << "Check stack on position: ";
-                    std::cin >> x >> y;
-                    if (x < 0 || x >= m_board->getRowCount() || y < 0 || y >= m_board->getColCount())
-                    {
-                        std::cout << "\nThat is not a valid position!\n";
+                            m_score.second++;
+                        m_rounds--;
+                        std::cout << "Player1: " << m_score.first << " | Player2: " << m_score.second << "\n";
+                        delete m_board;
+                        delete m_p1;
+                        delete m_p2;
+                        if (m_rounds != 0) {
+                            m_board = new Board(3);
+                            m_p1 = new Player(Colours::RED);
+                            m_p2 = new Player(Colours::BLUE);
+                        }
                         system("pause");
-                        break;
                     }
-                    checkStack(m_board->getMatrix()[x][y]);
-                    system("pause");
-                    break;
-                }
-                case 5:
-                {
-                    checkElementalCardFunction(*m_board, m_p1, m_p2, m_currPlayer, m_currHand, m_removedCardsHand, m_wasPlaced, m_wasElementalCardUsed);
-                    system("pause");
-                    break;
-                }
-                case 6: {
-                    TestIsolatedSpacesFunc(*m_board);
-                    system("pause");
-                    break;
-                }
-                case 7: {
-                    helpOption();
-                    system("pause");
-                    break;
-                }
-                case 8:
-                    m_wasPlaced = useExplosionCard();
-                    system("pause");
-                    break;
-                case 9:
-
-                    system("pause");
-                    break;
-                default:
-                    break;
-                }
-
-                if (m_board->entityWon(x, y, m_currPlayer->GetPlayerColor()) != Colours::INVALID_COL) {
-                    if (m_currPlayer->GetPlayerColor() == Colours::RED)
-                        m_score.first++;
-                    else
-                        m_score.second++;
-                    m_rounds--;
-                    std::cout << "Player1: " << m_score.first << " | Player2: " << m_score.second << "\n";
-                    delete m_board;
-                    delete m_p1;
-                    delete m_p2;
-                    if (m_rounds != 0) {
-                        m_board = new Board(3);
-                        m_p1 = new Player(Colours::RED);
-                        m_p2 = new Player(Colours::BLUE);
-                    }
-                    system("pause");
                 }
             }
+            
             if (m_currPlayerColor == Colours::RED)
                 m_currPlayerColor = Colours::BLUE;
             else
@@ -276,7 +279,7 @@ void GameDemo::runDemo()
     }
 }
 
-void GameDemo::playerTurn(Colours color)
+void GameDemo::showPlayerTurn(Colours color)
 {
     if (color== Colours::RED)
         std::cout << "Player 1(Red's) Turn\n";
@@ -381,7 +384,7 @@ bool GameDemo::useExplosionCard()
     {
         ExplosionCard explCard(m_board->getMaxSize());
 
-        printExplosionOptions();
+        printOptionsForExplostion();
         uint16_t explosionOption;
         bool getOut = false;
         std::cin >> explosionOption;
@@ -448,7 +451,7 @@ void GameDemo::restartRound()
 
 }
 
-void GameDemo::checkCoveredCards(const coveredSet& coveredCardSet) 
+void GameDemo::checkCoveredCards(const CoveredSet& coveredCardSet) 
 {
 
     if (coveredCardSet.size() == 0) 
@@ -462,7 +465,7 @@ void GameDemo::checkCoveredCards(const coveredSet& coveredCardSet)
     
 }
 
-void GameDemo::checkStack(const cardStack& stackToCheck)
+void GameDemo::checkStack(const CardStack& stackToCheck)
 {
     std::cout << "Bottom: (";
     for (auto& i : stackToCheck) {
@@ -471,7 +474,7 @@ void GameDemo::checkStack(const cardStack& stackToCheck)
     std::cout << ")";
 }
 
-void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Player* currPlayer, hand& currHand, hand& removedCardsHand, bool& wasUsed, bool& wasCardUsed) {
+void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Player* currPlayer, Hand& currHand, Hand& removedCardsHand, bool& wasUsed, bool& wasCardUsed) {
     std::cout << "\nELEMENTAL CARDS:\n";
     std::cout << "1. Controlled Explosion\n2. Destruction\n3. Flame\n4. Fire\n5. Ash\n6. Spark\n7. Squall\n8. Gale\n";
     std::cout << "9. Hurricane\n10. Gust\n11. Mirage\n12. Storm\n13. Tide\n14. Mist\n15. Wave\n16. Whirlpool\n";
@@ -822,6 +825,16 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             std::cout << "Failed to use Mirage\n";
     }
     }
+}
+
+void GameDemo::advanceTurn()
+{
+    m_currPlayerColor = (m_currPlayerColor == Colours::RED) ? Colours::BLUE : Colours::RED;
+
+    m_wasPlaced = false;
+    m_currPlayer = (m_currPlayerColor == Colours::RED()) ? m_p1 : m_p2;
+
+
 }
 
 

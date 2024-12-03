@@ -33,7 +33,7 @@ uint16_t checkFuncMist(Board&, Player&, uint16_t, uint16_t, MinionCard&);
 
 int16_t checkFuncWave(Board&, uint16_t, uint16_t, MinionCard);
 
-uint16_t checkFuncBlizzard(line&);
+uint16_t checkFuncBlizzard(Line&);
 
 uint16_t checkFuncWaterfall(Board&, uint16_t);
 

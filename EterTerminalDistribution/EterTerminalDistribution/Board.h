@@ -20,13 +20,13 @@
 class Board
 {
 private:
-	resizeableMatrix m_matrix;
+	ResizeableMatrix m_matrix;
 	
 	//score by color management
-	lineChecker m_rowChecker;
-	lineChecker m_colChecker;
-	score m_firstDiag;
-	score m_seconDiag;
+	LineChecker m_rowChecker;
+	LineChecker m_colChecker;
+	Score m_firstDiag;
+	Score m_seconDiag;
 
 	//for explosions, keep check either here or in game
 	uint16_t m_lineCnt;
@@ -77,21 +77,22 @@ public:
 	int16_t setPosWaterfall(int16_t x, int16_t y, const MinionCard& card);
 	int16_t removePos(int16_t x, int16_t y);
 	int16_t removeStack(int16_t x, int16_t y);
-	Colours entityWon(int16_t x, int16_t y, Colours col);
+	Colours checkWin(int16_t x, int16_t y, Colours col);
+	Colours checkWin();
 
 	uint16_t getRowCount();
 	uint16_t getColCount();
 	uint16_t getMaxSize();
-	lineChecker& getRowChecker();
-	lineChecker& getColChecker();
-	resizeableMatrix& getMatrix();
-	cardStack& getStackOnPos(uint16_t x, uint16_t y);
+	LineChecker& getRowChecker();
+	LineChecker& getColChecker();
+	ResizeableMatrix& getMatrix();
+	CardStack& getStackOnPos(uint16_t x, uint16_t y);
 	uint16_t getLineCount();
 
 	bool removeRow(uint16_t x);
 	bool removeColumn(uint16_t y);
 
-	void setMatrix(const resizeableMatrix& matrix);
+	void setMatrix(const ResizeableMatrix& matrix);
 	
 	void updateFirstDiagChecker(uint16_t option);
 	void updateSeconDiagChecker(uint16_t option);

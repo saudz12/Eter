@@ -130,7 +130,7 @@
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Card.cpp" />
-    <ClCompile Include="ConsolePrints.cpp" />
+    <ClCompile Include="ConsoleView.cpp" />
     <ClCompile Include="ElementalCard.cpp" />
     <ClCompile Include="ErrorPrints.cpp" />
     <ClCompile Include="EterTerminalDistribution.cpp" />
@@ -138,6 +138,7 @@
     <ClCompile Include="functionsElementalCards.cpp" />
     <ClCompile Include="functionsMageCards.cpp" />
     <ClCompile Include="GameDemo.cpp" />
+    <ClCompile Include="GameFinal.cpp" />
     <ClCompile Include="HoleCard.cpp" />
     <ClCompile Include="Includes.cpp" />
     <ClCompile Include="InputChceking.cpp" />
@@ -151,7 +152,7 @@
     <ClInclude Include="Board.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="CardType.h" />
-    <ClInclude Include="ConsolePrints.h" />
+    <ClInclude Include="ConsoleView.h" />
     <ClInclude Include="ElementalCard.h" />
     <ClInclude Include="ErrorPrints.h" />
     <ClInclude Include="ExplosionCard.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="functionsElementalCards.h" />
     <ClInclude Include="functionsMageCards.h" />
     <ClInclude Include="GameDemo.h" />
+    <ClInclude Include="GameFinal.h" />
     <ClInclude Include="HoleCard.h" />
     <ClInclude Include="Includes.h" />
     <ClInclude Include="InputChecking.h" />

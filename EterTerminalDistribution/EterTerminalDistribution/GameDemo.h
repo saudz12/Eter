@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "MoveLaterToGameClass.h"
 #include "InputChecking.h"
-#include "ConsolePrints.h"
+#include "ConsoleView.h"
 #include "ErrorPrints.h"
 #include "functionsElementalCards.h"
 
@@ -13,9 +13,9 @@ private:
     Board* m_board;
     Player* m_p1, * m_p2;
     Player* m_currPlayer;
-    hand m_currHand;
-    hand m_removedCardsHand;
-    score m_score;
+    Hand m_currHand;
+    Hand m_removedCardsHand;
+    Score m_score;
     //char m_currPlayerColor;
     Colours m_currPlayerColor;
     uint16_t m_rounds;
@@ -27,7 +27,7 @@ public:
     GameDemo(uint16_t size,uint16_t numberOfRounds);
     void runDemo();
 
-    void playerTurn(Colours color);
+    void showPlayerTurn(Colours color);
     void setStructuresForPlayer(Player*& player);
     bool placeEterCard(size_t&,size_t&);
     bool placeIllusionCard(size_t&, size_t&);
@@ -36,9 +36,10 @@ public:
 
     void restartRound();
 
-    void checkCoveredCards(const coveredSet& coveredCardSet);
-    void checkStack(const cardStack& stackToCheck);
-    void checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Player* currPlayer, hand& currHand, hand& removedCardsHand, bool& wasUsed, bool& wasCardUsed);
+    void checkCoveredCards(const CoveredSet& coveredCardSet);
+    void checkStack(const CardStack& stackToCheck);
+    void checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Player* currPlayer, Hand& currHand, Hand& removedCardsHand, bool& wasUsed, bool& wasCardUsed);
 
+    void advanceTurn();
 };
 

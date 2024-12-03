@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <deque>
 #include <stack>
+#include <memory>
 
 constexpr auto ID_ROW = "R";
 constexpr auto ID_COLUMN = "C";
@@ -17,7 +18,7 @@ constexpr auto DIR_RIGHT = "R";
 constexpr auto DIR_UP = "U";
 constexpr auto DIR_DOWN = "D";
 
-enum class Colours : char {
+enum class Colours : int16_t {
 	RED,
 	BLUE,
 	INVALID_COL

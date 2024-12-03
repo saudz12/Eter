@@ -25,6 +25,6 @@ void funcWaterMage1(Board&, Player&);
 //move row/column to other side of the board
 void funcWaterMage2(Board& board, Colours color, Player& pl);
 
-bool searchInColumnStacks(resizeableMatrix& matrix, Player& pl, uint16_t column);
+bool searchInColumnStacks(ResizeableMatrix& matrix, Player& pl, uint16_t column);
 
-bool searchInRowStacks(resizeableMatrix& matrix, Player& pl, uint16_t row);
+bool searchInRowStacks(ResizeableMatrix& matrix, Player& pl, uint16_t row);
