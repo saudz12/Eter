@@ -94,6 +94,21 @@
     <ClCompile Include="MoveLaterToGameClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qtCompletePlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qtCompleteMinionCard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qtCompleteBoard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qDraggableLabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qGameBoardWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card.h">
@@ -162,5 +177,22 @@
     <ClInclude Include="MoveLaterToGameClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="qtCompletePlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qtCompleteMinionCard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qtCompleteBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="qGameBoardWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="qDraggableLabel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

@@ -29,8 +29,9 @@ private:
 	MinionCard* m_illusionCard;
 
 	void generateTrainingModeHand(); //hand for training mode
-	void generateHand(); //hand for other modes;
+
 public:
+
 	//constructor
 	Player(char playerColor);
 	~Player() = default;
@@ -77,6 +78,8 @@ public:
 	bool printCoveredCards(resizeableMatrix& matrix);
 
 	void printHandCards();
+
+	void generateHand(); //hand for other modes;
 	
 	Player& operator=(const Player& p);
 };

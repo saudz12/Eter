@@ -30,7 +30,6 @@ void Eter::initializeGameWindow()
     }
 
     this->showMaximized();
-    showMaximized();
 }
 
 void Eter::initializePushButtons()
@@ -63,76 +62,34 @@ void Eter::initializeHandCardLayouts()
     widgetHBoxBlueCards->setLayout(hboxLayoutBlueCards);
 }
 
-void Eter::loadCards(std::vector<QString>& cardPath,std::deque<QPixmap>& horizontalPixmap,char playerColor)
-{
-    hand currPlayerHandCard;
-    if (playerColor == 'R')
-        currPlayerHandCard = m_pRed.GetHandCards();
-    else
-        currPlayerHandCard = m_pBlue.GetHandCards();
-
-    for (auto& currCard :currPlayerHandCard)
-    {
-        auto& [currMinionCard, remainingCards] = currCard;
-        int cardValue = currMinionCard.GetValue();
-        int auxRemainingCards = remainingCards;
-        while (auxRemainingCards != 0)
-        {
-            horizontalPixmap.emplace_back(cardPath[cardValue]);
-            auxRemainingCards--;
-        }
-    }
-}
-
 void Eter::placeHorizontalLayoutRedSide()
 {
-    placeCardInsideLayout(m_pathRedCards, m_pixmapRedCards, hboxLayoutRedCards);
+    placeCardInsideHLayout(plRed.GetPathCards(), plRed.GetPixmapCards(), hboxLayoutRedCards,widgetHBoxRedCards);
     widgetHBoxRedCards->setParent(this);
     widgetHBoxRedCards->setVisible(true);
 }
 
 void Eter::placeHorizontalLayoutBlueSide()
 {
-    placeCardInsideLayout(m_pathBlueCards, m_pixmapBlueCards, hboxLayoutBlueCards);
+    placeCardInsideHLayout(plBlue.GetPathCards(), plBlue.GetPixmapCards(), hboxLayoutBlueCards,widgetHBoxBlueCards);
     widgetHBoxBlueCards->setParent(this);
     widgetHBoxBlueCards->setVisible(true);
 }
 
-void Eter::placeCardInsideLayout(std::vector<QString>& pathCards, std::deque<QPixmap>& pixmapCards, QHBoxLayout*& hboxLayoutCards)
+void Eter::placeCardInsideHLayout(std::vector<QString>& pathCards, std::deque<QPixmap>& pixmapCards,
+    QHBoxLayout*& hboxLayoutCards,QWidget*& widgetHBoxCards)
 {
     int index = 0;
     for (const auto& card : pixmapCards)
     {
-        QLabel* currCardLabel = new QLabel(widgetHBoxBlueCards);
         QPixmap resizedCard = card.scaled(CARD_WIDTH, CARD_HEIGHT, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        currCardLabel->setPixmap(resizedCard);
-        qDebug() << index * (CARD_WIDTH)+REDCARDS_OFFSET_WINDOW_WIDTH << '\n';
+        qDraggableLabel* currCardLabelDraggable = new qDraggableLabel(resizedCard,CARD_WIDTH,CARD_HEIGHT,widgetHBoxCards);
+        
+        hboxLayoutCards->addWidget(currCardLabelDraggable);
 
-        currCardLabel->setAlignment(Qt::AlignCenter);
-        currCardLabel->setFixedSize(CARD_WIDTH, CARD_HEIGHT);
-        hboxLayoutCards->addWidget(currCardLabel);
-
-        m_labelCards.push_back(currCardLabel);
+        labelCards.push_back(currCardLabelDraggable);
         index++;
     }
-}
-
-void Eter::generatePathsForMinionCards()
-{
-    for (size_t i = 0; i < 5; i++)
-    {
-        m_pathBlueCards.emplace_back(QDir::currentPath() + "/textures/blue_" + QString::number(i) + ".jpg");
-        m_pathRedCards.emplace_back(QDir::currentPath() + "/textures/red_" + QString::number(i) + ".jpg");
-    }
-}
-
-void Eter::loadTexturesForMinions()
-{
-    generatePathsForMinionCards();
-
-    loadCards(m_pathRedCards,m_pixmapRedCards, m_pRed.GetPlayerColor());
-    loadCards(m_pathBlueCards, m_pixmapBlueCards, m_pBlue.GetPlayerColor());
-
 }
 
 void Eter::placeHorizontalLayout()
@@ -143,8 +100,17 @@ void Eter::placeHorizontalLayout()
 
 void Eter::onPushButtonStartGameClicked()
 {
-    loadTexturesForMinions();
     placeHorizontalLayout();
+    initializeGridLayoutBoard();
+}
+
+void Eter::initializeGridLayoutBoard()
+{
+    widgetBoard = new qGameBoardWidget(this,BOARD_SIZE,CARD_WIDTH,CARD_HEIGHT,CARDS_SPACING);
+    widgetBoard->setBoardPosition((WINDOW_WIDTH-REDCARDS_OFFSET_WINDOW_WIDTH-CARDS_SPACING)/2,
+                                (WINDOW_HEIGTH-CARDS_SPACING)/2,
+                                BOARD_SIZE*CARD_WIDTH, BOARD_SIZE*CARD_HEIGHT);
+    widgetBoard->show();
 }
 
 
