@@ -2,7 +2,7 @@
 
 /// <summary>
 /// Add here input cheking for each function that requires input from the user.
-/// Error handling by returning integers
+/// Error handling by returning integers --OR ENUMS SO WE KNOW EXACTLY WHAT WE RETURN!!!
 /// </summary>
 #include "functionsElementalCards.h"
 #include "ErrorPrints.h"
@@ -33,7 +33,7 @@ uint16_t checkFuncMist(Board&, Player&, uint16_t, uint16_t, MinionCard&);
 
 int16_t checkFuncWave(Board&, uint16_t, uint16_t, MinionCard);
 
-uint16_t checkFuncBlizzard(line&);
+uint16_t checkFuncBlizzard(Line&);
 
 uint16_t checkFuncWaterfall(Board&, uint16_t);
 

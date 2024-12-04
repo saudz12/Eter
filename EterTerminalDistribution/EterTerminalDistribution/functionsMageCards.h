@@ -8,7 +8,7 @@ void funcFireMage1(Board&, Player&);
 void funcFireMage2(Board&, Player&);
 
 //cover opponent card with lower value card of yours
-void funcEarthMage1(Board&, Player&, uint16_t, uint16_t);
+void funcEarthMage1(Board&, Player&, int16_t, int16_t);
 
 //hole card,position to cover
 void funcEarthMage2(Board&);
@@ -25,6 +25,6 @@ void funcWaterMage1(Board&, Player&);
 //move row/column to other side of the board
 void funcWaterMage2(Board& board, Colours color, Player& pl);
 
-bool searchInColumnStacks(resizeableMatrix& matrix, Player& pl, uint16_t column);
+bool searchInColumnStacks(ResizeableMatrix& matrix, Player& pl, uint16_t column);
 
-bool searchInRowStacks(resizeableMatrix& matrix, Player& pl, uint16_t row);
+bool searchInRowStacks(ResizeableMatrix& matrix, Player& pl, uint16_t row);

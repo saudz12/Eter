@@ -8,12 +8,12 @@ void funcFireMage1(Board& board, Player& pl)
 	std::cout << "select the position where you want to remove the opponent's card:\n";
 	std::cin >> x >> y;
 
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 
 	if (matrix[x][y].empty())
 		return;
 
-	coveredSet& coveredSet = pl.getCovered();
+	CoveredSet& coveredSet = pl.getCovered();
 	if (!coveredSet.empty())
 	{
 		pl.printCoveredCards(matrix);
@@ -26,7 +26,7 @@ void funcFireMage1(Board& board, Player& pl)
 
 void funcFireMage2(Board& board,Player& pl)
 {
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 
 	std::cout << "what to remove : 0.column , 1.row \n";
 	uint16_t option;
@@ -39,7 +39,7 @@ void funcFireMage2(Board& board,Player& pl)
 		std::cout << "which column:\n";
 		uint16_t column;
 		std::cin >> column;
-		lineChecker& colChecker = board.getColChecker();
+		LineChecker& colChecker = board.getColChecker();
 		if (pl.GetPlayerColor() == Colours::RED)
 		{
 			if (colChecker[column].first == 0)//no visible cards for red
@@ -70,7 +70,7 @@ void funcFireMage2(Board& board,Player& pl)
 		std::cout << "which row:\n";
 		uint16_t row;
 		std::cin >> row;
-		lineChecker& lineChecker = board.getRowChecker();
+		LineChecker& lineChecker = board.getRowChecker();
 		if (pl.GetPlayerColor() == Colours::RED)
 		{
 			if (lineChecker[row].first == 0)//no visible cards for red
@@ -100,9 +100,9 @@ void funcFireMage2(Board& board,Player& pl)
 }
 
  //cover opponent card with lower value card of yours
-void funcEarthMage1(Board& board,Player& pl, uint16_t x , uint16_t y)
+void funcEarthMage1(Board& board,Player& pl, int16_t x , int16_t y)
 {
-	hand& currHand = pl.GetHandCards();
+	Hand& currHand = pl.GetHandCards();
 	Colours curr_col = pl.GetPlayerColor();
 	for (auto& i : currHand) {
 		std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << "Left\n";
@@ -120,7 +120,7 @@ void funcEarthMage1(Board& board,Player& pl, uint16_t x , uint16_t y)
 		std::cout << "\nYou can't place that card there!\n";
 		system("pause");
 	}
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 	matrix[x][y].back().SetValue(val);
 	pl.UpdateCard(toSearch, -1);
 }
@@ -152,7 +152,7 @@ void funcAirMage1(Board& board, Player& pl)
 	Board cloneBoard(3);
 	Board::cloneMatrix(board, cloneBoard);
 
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 
 	if (matrix[x1][y1].empty())
 	{
@@ -174,7 +174,7 @@ void funcAirMage1(Board& board, Player& pl)
 	std::cout << "Select what you would want to do with the card\n0. move the card\n1. move the stack of cards\n";
 	uint16_t option;
 	std::cin >> option;
-	lineChecker& colChecker=board.getColChecker(), &rowChecker=board.getRowChecker();
+	LineChecker& colChecker=board.getColChecker(), &rowChecker=board.getRowChecker();
 
 	if (!matrix[x1][y1].empty())
 	{
@@ -267,9 +267,9 @@ void funcWaterMage2(Board& board, Colours color,Player& pl)//opponent
 	std::cout << " Select what you would want to move\n";
 	std::cout << "0. Move top line\n1. Move bottom line\n2. Move left column\n3. Move right column\n";
 	std::cin >> option;
-	resizeableMatrix& matrix = board.getMatrix();
-	lineChecker& rowChecker = board.getRowChecker();
-	lineChecker& colChecker = board.getColChecker();
+	ResizeableMatrix& matrix = board.getMatrix();
+	LineChecker& rowChecker = board.getRowChecker();
+	LineChecker& colChecker = board.getColChecker();
 	uint16_t lastLine = board.getRowCount() - 1;
 	uint16_t lastColumn = board.getColCount() - 1;
 	if (option==0)
@@ -386,14 +386,14 @@ void funcWaterMage2(Board& board, Colours color,Player& pl)//opponent
 	}
 	else if(option==2 || option==3)
 	{
-		for (size_t i = 0; i < board.getRowCount(); ++i)
+		for (int16_t i = 0; i < board.getRowCount(); ++i)
 		{
 			std::swap(matrix[i][0], matrix[i][board.getColCount() - 1]);
 		}
 	}
 }
 
-bool searchInColumnStacks(resizeableMatrix& matrix,Player& pl,uint16_t column)
+bool searchInColumnStacks(ResizeableMatrix& matrix,Player& pl,uint16_t column)
 {
 	for (int x = 0; x < matrix.size(); ++x)
 	{
@@ -406,7 +406,7 @@ bool searchInColumnStacks(resizeableMatrix& matrix,Player& pl,uint16_t column)
 	return false;
 }
 
-bool searchInRowStacks(resizeableMatrix& matrix, Player& pl, uint16_t row)
+bool searchInRowStacks(ResizeableMatrix& matrix, Player& pl, uint16_t row)
 {
 	for (int y = 0; y < matrix[row].size(); ++y)
 	{

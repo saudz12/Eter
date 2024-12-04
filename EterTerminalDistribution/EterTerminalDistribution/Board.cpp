@@ -1,19 +1,19 @@
 #include "Board.h"
 
 Board::Board(uint16_t size)
-	: m_lineCnt{ 0 }, m_max_size{ size }, m_firstDiag{ 0, 0 }, m_seconDiag{ 0, 0 }, m_matrix(resizeableMatrix()), m_rowChecker(lineChecker()), m_colChecker(lineChecker()), m_reachedMaxSize{ false }
+	: m_lineCnt{ 0 }, m_max_size{ size }, m_firstDiag{ 0, 0 }, m_seconDiag{ 0, 0 }, m_matrix(ResizeableMatrix()), m_rowChecker(LineChecker()), m_colChecker(LineChecker()), m_reachedMaxSize{ false }
 {
-	m_matrix.push_back(line());
-	m_matrix[0].push_back(cardStack());
+	m_matrix.push_back(Line());
+	m_matrix[0].push_back(CardStack());
 	m_rowChecker.emplace_back(0, 0);
 	m_colChecker.emplace_back(0, 0);
 }
 
 Board::Board()
-	: m_lineCnt{ 0 }, m_max_size{ 3 }, m_firstDiag{ 0, 0 }, m_seconDiag{ 0, 0 }, m_matrix(resizeableMatrix()), m_rowChecker(lineChecker()), m_colChecker(lineChecker()), m_reachedMaxSize{ false }
+	: m_lineCnt{ 0 }, m_max_size{ 3 }, m_firstDiag{ 0, 0 }, m_seconDiag{ 0, 0 }, m_matrix(ResizeableMatrix()), m_rowChecker(LineChecker()), m_colChecker(LineChecker()), m_reachedMaxSize{ false }
 {
-	m_matrix.push_back(line());
-	m_matrix[0].push_back(cardStack());
+	m_matrix.push_back(Line());
+	m_matrix[0].push_back(CardStack());
 	m_rowChecker.emplace_back(0, 0);
 	m_colChecker.emplace_back(0, 0);
 }
@@ -203,7 +203,7 @@ MinionCard& Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
 	return m_matrix[x][y].back();
 }
 
-int16_t Board::setPos(int16_t x, int16_t y, const MinionCard& card, Player& p) {
+int16_t Board::setPos(int16_t& x, int16_t& y, const MinionCard& card, Player& p) {
 	const int boundCondX = XBoundTest(x);
 	const int boundCondY = YBoundTest(y);
 
@@ -364,8 +364,34 @@ int16_t Board::removeStack(int16_t x, int16_t y)
 	return 1;
 }
 
-//0 inseamna ca momentan e egal
 Colours Board::entityWon(int16_t x, int16_t y, Colours col)
+{
+	return Colours();
+}
+
+Colours Board::checkWin()
+{
+	if (this->isMatMaxSize() == false)
+		return Colours::INVALID_COL;
+	for (const auto& diff : m_colChecker)
+	{
+		if (diff.first == 3)
+			return Colours::RED;
+		if (diff.second == 3)
+			return Colours::BLUE;
+	}
+	for (const auto& diff : m_rowChecker)
+	{
+		if (diff.first == 3)
+			return Colours::RED;
+		if (diff.second == 3)
+			return Colours::BLUE;
+	}
+
+	return Colours::INVALID_COL;
+}
+
+Colours Board::checkWin(int16_t x, int16_t y, Colours col)
 {
 	if (x < 0 || y < 0 || x >= m_max_size || y >= m_max_size)
 		return Colours::INVALID_COL;
@@ -395,23 +421,23 @@ uint16_t Board::getMaxSize()
 	return this->m_max_size;
 }
 
-lineChecker& Board::getRowChecker()
+LineChecker& Board::getRowChecker()
 {
 	return this->m_rowChecker;
 }
 
-lineChecker& Board::getColChecker()
+LineChecker& Board::getColChecker()
 {
 	return this->m_colChecker;
 }
 
-resizeableMatrix& Board::getMatrix()
+ResizeableMatrix& Board::getMatrix()
 {
 	return this->m_matrix;
 }
 
 //do position check outside of function or add new static card stack member and return it to represent nothing then check if == respective
-cardStack& Board::getStackOnPos(uint16_t x, uint16_t y)
+CardStack& Board::getStackOnPos(uint16_t x, uint16_t y)
 {
 	return m_matrix[x][y];
 }
@@ -422,7 +448,7 @@ uint16_t Board::getLineCount()
 }
 
 //MAKE DEEP COPY OR USE CLONE_MATRIX METHOD
-void Board::setMatrix(const resizeableMatrix& matrix)
+void Board::setMatrix(const ResizeableMatrix& matrix)
 {
 	m_matrix = matrix;
 }
@@ -645,8 +671,8 @@ void Board::checkForUpdates()
 	if (m_colChecker.size() + m_rowChecker.size() == 0) {
 		m_colChecker.emplace_back(0, 0);
 		m_rowChecker.emplace_back(0, 0);
-		m_matrix.push_back(line());
-		m_matrix[0].push_back(cardStack());
+		m_matrix.push_back(Line());
+		m_matrix[0].push_back(CardStack());
 	}
 }
 
@@ -752,7 +778,7 @@ bool Board::posPlaceTest(int16_t x, int16_t y, const MinionCard& card)
 void Board::addLineToLeft()
 {
 	for (int i = 0; i < getRowCount(); i++) {
-		m_matrix[i].push_front(cardStack());
+		m_matrix[i].push_front(CardStack());
 	}
 	m_colChecker.emplace_front(0, 0);
 }
@@ -760,20 +786,20 @@ void Board::addLineToLeft()
 void Board::addLineToRight()
 {
 	for (int i = 0; i < getRowCount(); i++) {
-		m_matrix[i].push_back(cardStack());
+		m_matrix[i].push_back(CardStack());
 	}
 	m_colChecker.emplace_back(0, 0);
 }
 
 void Board::addLineOnTop()
 {
-	m_matrix.push_front(line(getColCount()));
+	m_matrix.push_front(Line(getColCount()));
 	m_rowChecker.emplace_front(0, 0);
 }
 
 void Board::addLineOnBottom()
 {
-	m_matrix.push_back(line(getColCount()));
+	m_matrix.push_back(Line(getColCount()));
 	m_rowChecker.emplace_back(0, 0);
 }
 
@@ -807,7 +833,7 @@ bool Board::removeRow(uint16_t x)
 {
 	if (x < 0 || x > getRowCount() - 1 || isBoardEmpty())
 		return 1;
-	for (size_t i = 0; i < getColCount(); ++i)
+	for (int16_t i = 0; i < getColCount(); ++i)
 	{
 		if (m_matrix[x][i].back().GetColor() == Colours::RED)
 			m_colChecker[i].first -= 1;
@@ -824,14 +850,14 @@ bool Board::removeColumn(uint16_t y)
 {
 	if (y < 0 || y > getColCount() - 1 || isBoardEmpty())
 		return 1;
-	for (size_t i = 0; i < getRowCount(); ++i)
+	for (int16_t i = 0; i < getRowCount(); ++i)
 	{
 		if (m_matrix[i][y].back().GetColor() == Colours::RED)
 			m_rowChecker[i].first -= 1;
 		else
 			m_rowChecker[i].second -= 1;
 	}
-	for (size_t i = 0; i < getRowCount(); i++)
+	for (int16_t i = 0; i < getRowCount(); i++)
 		m_matrix[i].erase(m_matrix[i].begin() + y);
 	m_colChecker.erase(m_colChecker.begin() + y);
 	return 0;
@@ -888,7 +914,7 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Pl
 				MinionCard lastCard = m_matrix[positionX][positionY].back();
 				lastCard.SetIsIllusionCard(false);
 				removePos(positionX, positionY);
-				if (lastCard.GetBelongsTo() == pl1.GetPlayerColor())
+				if (lastCard.GetColor() == pl1.GetPlayerColor())
 					pl1.returnMinionCardToHand(lastCard);
 				else
 					pl2.returnMinionCardToHand(lastCard);

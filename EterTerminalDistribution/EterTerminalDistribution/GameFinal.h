@@ -1,0 +1,43 @@
+#pragma once
+#include "Board.h"
+#include "InputChecking.h"
+#include "ConsoleView.h"
+
+class GameFinal{
+private:
+	std::unique_ptr<Board> m_board;
+	std::unique_ptr<Player> m_player1;
+	std::unique_ptr<Player> m_player2;
+
+	//weak pointer(and change to shared) to current player? - usefull in some places
+	Hand& m_activePlayingHand;
+	Hand& m_activeRemovedHand;
+	CoveredSet& m_activeCoveredSet;
+
+	Score m_gameScore;
+	int16_t m_rounds;
+	Colours m_activeColor;
+
+	GameOptions m_enabledEter;
+	GameOptions m_enabledIllusion;
+	GameOptions m_enabledMage;
+	GameOptions m_enabledElemental;
+	GameOptions m_enabledTimed;
+	GameOptions m_enabledTournament;
+
+	bool m_wasPlaced;
+	bool m_powerUsed;
+
+	void GenerateElementalCards();
+	void GenerateMageCards();
+	
+	void AdvanceAction();
+	void PlayRound();
+	//void resetRound(int16_t maxBoardSize, GameOptions enabledEter, GameOptions enabledIllusion, GameOptions enabledMage, GameOptions enabledElemental, GameOptions enabledTimed);
+	void ResetRound();
+
+public:
+	GameFinal(int16_t nrOfRounds, int16_t maxBoardSize, GameOptions enabledEter, GameOptions enabledIllusion, GameOptions enabledMage, GameOptions enabledElemental, GameOptions enabledTimed, GameOptions enabledTournament);
+
+	void GameLoop();
+};

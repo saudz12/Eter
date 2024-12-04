@@ -39,17 +39,17 @@ bool Player::GetEterCardUsage() const
 	return m_eterCardUsage;
 }
 
-const hand& Player::GetHandCards() const
+const Hand& Player::GetHandCards() const
 {
 	return m_handCards;
 }
 
-hand& Player::GetHandCards()
+Hand& Player::GetHandCards()
 {
 	return m_handCards;
 }
 
-const hand& Player::GetRemovedCards() const
+Hand& Player::GetRemovedCards()
 {
 	return m_removedCards;
 }
@@ -74,7 +74,7 @@ void Player::SetIllusionUsage(bool illusionUsage)
 	m_illusionUsage = illusionUsage;
 }
 
-void Player::SetHandCards(const hand& handCards)
+void Player::SetHandCards(const Hand& handCards)
 {
 	m_handCards = handCards;
 }
@@ -94,7 +94,7 @@ int Player::UpdateCard(const MinionCard& card, int cnt)
 	return 0;
 }
 
-void Player::updateCover(uint16_t x, uint16_t y, coveredSet& coveredCardSet, resizeableMatrix& board)
+void Player::updateCover(uint16_t x, uint16_t y, CoveredSet& coveredCardSet, ResizeableMatrix& board)
 {
 	if (board[x][y].size() == 1)
 		return;
@@ -106,13 +106,13 @@ void Player::updateCover(uint16_t x, uint16_t y, coveredSet& coveredCardSet, res
 		coveredCardSet.emplace(x, y, pos);
 }
 
-void Player::applyTansformToCovered(Player& p1, Player& p2, cardStack& stack, uint16_t oldX, uint16_t oldY, uint16_t newX, uint16_t newY)
+void Player::applyTansformToCovered(Player& p1, Player& p2, CardStack& stack, uint16_t oldX, uint16_t oldY, uint16_t newX, uint16_t newY)
 {
 	auto& p1Covered = p1.getCovered();
 	auto& p2Covered = p2.getCovered();
 
-	coveredSet p1Moved;
-	coveredSet p2Moved;
+	CoveredSet p1Moved;
+	CoveredSet p2Moved;
 
 	for (int i = 0; i < stack.size() - 1; i++) {
 		position toFind{ oldX, oldY, i };
@@ -134,9 +134,9 @@ void Player::applyTansformToCovered(Player& p1, Player& p2, cardStack& stack, ui
 	}
 }
 
-void Player::returnStackToHand(hand& h1, hand& h2, cardStack& stack)
+void Player::returnStackToHand(Hand& h1, Hand& h2, CardStack& stack)
 {
-	hand& currHand = h1;
+	Hand& currHand = h1;
 	for (auto& card : stack) {
 		if (card.GetColor() == Colours::RED)
 			currHand = h1;
@@ -187,7 +187,7 @@ MinionCard* Player::GetIllusionCard() const
 	return m_illusionCard;
 }
 
-coveredSet& Player::getCovered()
+CoveredSet& Player::getCovered()
 {
 	return this->m_coveredCardSet;
 }
@@ -253,7 +253,7 @@ bool Player::placeMinionCardFromRemovedCard(const MinionCard& card)
 	return placed;
 }
 
-bool Player::printCoveredCards(resizeableMatrix& matrix)
+bool Player::printCoveredCards(ResizeableMatrix& matrix)
 {
 	if (m_coveredCardSet.size() == 0) {
 		std::cout << "You have no covered cards..\n";
@@ -281,24 +281,6 @@ void Player::printHandCards()
 		else 
 			std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << " Left\n";
 	}
-}
-
-Player& Player::operator=(const Player& p)
-{
-	if (this == &p)
-	{
-		return *this;
-	}
-
-	m_handCards = p.m_handCards;
-	m_coveredCardSet = p.m_coveredCardSet;
-	m_playerColor = p.m_playerColor;
-	m_illusionUsage = p.m_illusionUsage;
-	m_eterCardUsage = p.m_eterCardUsage;
-	m_lastMinionCardPlayed = p.m_lastMinionCardPlayed;
-	m_illusionCard = p.m_illusionCard;
-
-	return *this;
 }
 
 std::ostream& operator<<(std::ostream& os, const position& posTuple)

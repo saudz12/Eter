@@ -42,7 +42,7 @@ uint16_t funcDestruction(Board& board, Player& player)
 		return 1;
 	}
 
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 	for (int i = 0; i < board.getRowCount(); i++)
 		for (int j = 0; j < board.getColCount(); j++)
 			if (!matrix[i][j].empty() && &board.getCardOnPos(i, j) == &*toberemoved) {
@@ -75,7 +75,7 @@ uint16_t funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t
 {
 	/*if (checkFuncFlame(board, x1, y1, x2, y2, CardToBePlaced, p) != 0)
 		return 1;*/
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 	matrix[x1][y1].back().SetIsIllusionCard(false);
 	return 0;
 }
@@ -95,10 +95,10 @@ uint16_t funcFire(Board& board, Player& player1, Player& player2, uint16_t value
 	uint16_t cardCount = 0;
 	//minion card on top, x and y coordonates
 	std::vector<std::tuple<MinionCard, int, int>> returningCards;
-	resizeableMatrix& matrix = board.getMatrix();
-	for (size_t i = 0; i < board.getRowCount(); i++)
+	ResizeableMatrix& matrix = board.getMatrix();
+	for (int16_t i = 0; i < board.getRowCount(); i++)
 	{
-		for (size_t j = 0; j < board.getColCount(); j++)
+		for (int16_t j = 0; j < board.getColCount(); j++)
 		{
 			if (!matrix[i][j].empty())
 			{
@@ -118,7 +118,7 @@ uint16_t funcFire(Board& board, Player& player1, Player& player2, uint16_t value
 		return 1;
 	}
 
-	for (size_t i = 0; i < returningCards.size(); i++)
+	for (int16_t i = 0; i < returningCards.size(); i++)
 	{
 		MinionCard card = std::get<0>(returningCards[i]);
 		int xCoordonate = std::get<1>(returningCards[i]);
@@ -152,7 +152,7 @@ uint16_t funcFire(Board& board, Player& player1, Player& player2, uint16_t value
 }
 
 //play a card which was removed
-uint16_t funcAsh(Board& board, Player& player, const MinionCard& card, uint16_t x, uint16_t y)
+uint16_t funcAsh(Board& board, Player& player, const MinionCard& card, int16_t x, int16_t y)
 {
 	/*if (checkFuncAsh(board, card, x, y) != 0)
 		return 1;*/
@@ -192,7 +192,7 @@ uint16_t funcSpark(Board& board, Player& player, uint16_t x1, uint16_t y1, uint1
 uint16_t funcSpark(Board& board, Player& p)  //this function needs to be reworked
 {
 
-	int x1, y1, x2, y2;
+	int16_t x1, y1, x2, y2;
 
 	std::cout << "choose where from to remove one of your cards:\n";
 	std::cin >> x1 >> y1;
@@ -203,7 +203,7 @@ uint16_t funcSpark(Board& board, Player& p)  //this function needs to be reworke
 	/*if (checkFuncSpark(board, x1, y1, x2, y2) != 0)
 		return 1;*/
 	
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 	std::vector<std::pair<MinionCard,uint16_t>> plCards;
 
 	
@@ -211,7 +211,7 @@ uint16_t funcSpark(Board& board, Player& p)  //this function needs to be reworke
 	{
 		std::cout << "here are the cards that you can replace\n";
 		int index = 0;
-		for (size_t k = 0; k < matrix[x1][y1].size(); ++k)
+		for (int16_t k = 0; k < matrix[x1][y1].size(); ++k)
 		{
 			if (matrix[x1][y1][k].GetColor() == p.GetPlayerColor())
 			{
@@ -253,7 +253,7 @@ uint16_t funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 	Board oldModel(3);
 	Board::cloneMatrix(board, oldModel);
 
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 
 	MinionCard toReturn = matrix[x][y].back();
 
@@ -279,16 +279,16 @@ uint16_t funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 //remove all cards which are covered by other cards
 uint16_t funcGale(Board& board, Player& p1, Player& p2)
 {
-	resizeableMatrix& matrix = board.getMatrix();
-	for (size_t i = 0; i < board.getRowCount(); ++i)
+	ResizeableMatrix& matrix = board.getMatrix();
+	for (int16_t i = 0; i < board.getRowCount(); ++i)
 	{
-		for (size_t j = 0; j < board.getColCount(); ++j)
+		for (int16_t j = 0; j < board.getColCount(); ++j)
 		{
 			while (matrix[i][j].size() >= 2)
 			{
 				MinionCard& bottomCard = matrix[i][j].front();
 				matrix[i][j].pop_front();
-				if (bottomCard.GetBelongsTo() == p1.GetPlayerColor())
+				if (bottomCard.GetColor() == p1.GetPlayerColor())
 					p1.addToRemovedCards(bottomCard);
 				else
 					p2.addToRemovedCards(bottomCard);
@@ -300,12 +300,12 @@ uint16_t funcGale(Board& board, Player& p1, Player& p2)
 }
 
 // modify board, handcard if modified
-uint16_t funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::string_view type, std::string_view direction)
+uint16_t funcHurricane(Board& board, Hand& h1, Hand& h2, uint16_t lineCnt, std::string_view type, std::string_view direction)
 {
 	Board oldModel(3);
 	Board::cloneMatrix(board, oldModel);
 
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 
 	int start, end, ratio, orientation;
 	
@@ -367,7 +367,7 @@ uint16_t funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::
 		return 1;
 	}
 
-	cardStack& firstStack = matrix[firstX][firstY];
+	CardStack& firstStack = matrix[firstX][firstY];
 	Player::returnStackToHand(h1, h2, firstStack);
 
 	board.checkForUpdates();
@@ -376,7 +376,7 @@ uint16_t funcHurricane(Board& board, hand& h1, hand& h2, uint16_t lineCnt, std::
 }
 
 // move a card onto a neighboring card of a lower value
-uint16_t funcGust(Board& board, Player& pl, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+uint16_t funcGust(Board& board, Player& pl, int16_t x1, int16_t y1, int16_t x2, int16_t y2)
 {
 	/*if (checkFuncGust(board, x1, y1, x2, y2) != 0)
 		return 1;*/
@@ -385,7 +385,7 @@ uint16_t funcGust(Board& board, Player& pl, uint16_t x1, uint16_t y1, uint16_t x
 	Board::cloneMatrix(board, oldModel);
 	Player copyPl = pl;
 
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 
 	MinionCard& movedCard = matrix[x1][y1].back();
 	if (board.removePos(x1, y1) == 1)
@@ -408,12 +408,12 @@ uint16_t funcGust(Board& board, Player& pl, uint16_t x1, uint16_t y1, uint16_t x
 }
 
 // exchange illusion card with other card
-uint16_t funcMirage(Board& board, Player& p, uint16_t x1, uint16_t y1, const MinionCard& chosenCard)
+uint16_t funcMirage(Board& board, Player& p, int16_t x1, int16_t y1, const MinionCard& chosenCard)
 {
 	/*if (checkFuncMirage(board, x1, y1, chosenCard) != 0)
 		return 1;*/
 
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 	MinionCard returningCard = board.getCardOnPos(x1, y1);
 	returningCard.SetIsIllusionCard(false);
 
@@ -431,7 +431,7 @@ uint16_t funcMirage(Board& board, Player& p, uint16_t x1, uint16_t y1, const Min
 // remove stack of cards
 void funcStorm(Board& board, Player& p1, Player& p2, uint16_t x, uint16_t y)
 {
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 
 	if (matrix[x][y].back().GetIsIllusionCard())
 		matrix[x][y].back().SetIsIllusionCard(false);
@@ -449,8 +449,8 @@ void funcStorm(Board& board, Player& p1, Player& p2, uint16_t x, uint16_t y)
 // swap cards or stack of cards
 void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
-	cardStack& first = board.getStackOnPos(x1, y1);
-	cardStack& second = board.getStackOnPos(x2, y2);
+	CardStack& first = board.getStackOnPos(x1, y1);
+	CardStack& second = board.getStackOnPos(x2, y2);
 
 	if (first.back().GetColor() == Colours::RED) {
 		board.updateRowChecker(x1, RED_DEC);
@@ -477,7 +477,7 @@ void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 		board.updateColChecker(y2, BLUE_DEC);
 	}
 
-	cardStack aux = std::move(first);
+	CardStack aux = std::move(first);
 	first = std::move(second);
 	second = std::move(aux);
 
@@ -496,7 +496,7 @@ void funcMist(Board& board, Player& p, uint16_t x, uint16_t y, MinionCard& card)
 // move a card/stack to an empty adjacent space and place new card in the empty space created
 void funcWave(Board& board, uint16_t x1, uint16_t y1, MinionCard newCard)
 {
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 	for(int i = -1; i < 2; i++)
 		for(int j = -1; j < 2; j++)
 		if (!matrix[x1 + i][y1 + j].empty()) 
@@ -513,7 +513,7 @@ void funcWave(Board& board, uint16_t x1, uint16_t y1, MinionCard newCard)
 // move 2 cards separated by empty space into the empty space and place them as stacks
 void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 {
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 	
 	std::cout << "Type R if you want to whirlpool the row or C if you want to whirlpool the column\n";
 	char lineType;
@@ -668,7 +668,7 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 }
 
 // make the line unplayable for the next round
-void funcBlizzard(line& line)
+void funcBlizzard(Line& line)
 {
 }
 
@@ -681,13 +681,13 @@ void funcWaterfall(Board& board, uint16_t columnIndex)
 		return;
 	}
 
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 	//the final stack of cards must have at least 3 cards
-	uint16_t condition = 0;
+	int16_t condition = 0;
 
 	std::stack<MinionCard> cards;
 
-	for (size_t i = 0; i < board.getRowCount(); i++)
+	for (int16_t i = 0; i < board.getRowCount(); i++)
 	{
 		if (!matrix[i][columnIndex].empty())
 		{
@@ -711,7 +711,7 @@ void funcWaterfall(Board& board, uint16_t columnIndex)
 	}
 	else
 	{
-		for (size_t i = 0; i < board.getRowCount(); i++)
+		for (int16_t i = 0; i < board.getRowCount(); i++)
 		{
 				board.removeStack(i, columnIndex);
 		}
@@ -734,7 +734,7 @@ void funcWaterfall(Board& board, uint16_t columnIndex)
 // increase value of a card by one, marker also placed on the card (tournament mode)
 void funcSupport(Board& board, uint16_t x, uint16_t y)
 {
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 
 	if (matrix[x][y].back().GetIsEterCard())
 	{
@@ -767,7 +767,7 @@ void funcSupport(Board& board, uint16_t x, uint16_t y)
 // remove all visible 1-value cards
 void funcEarthquake(Board& board)
 {
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 
 	for (int i = 0;i < board.getRowCount();i++)
 		for (int j = 0;j < board.getColCount();j++)
@@ -778,7 +778,7 @@ void funcEarthquake(Board& board)
 // value of a card decreased by 1, marker placed on card
 void funcCrumble(Board& board,uint16_t x, uint16_t y)
 {
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 
 	if (matrix[x][y].back().GetIsEterCard())
 	{
@@ -838,7 +838,7 @@ void funcAvalanche(Board& board, uint16_t x1 , uint16_t y1, uint16_t x2, uint16_
 			}
 			destinationStack = std::move(leftStack);
 			leftStack = std::move(rightStack);
-			rightStack = std::move(cardStack());
+			rightStack = std::move(CardStack());
 
 			return;
 		}
@@ -855,7 +855,7 @@ void funcAvalanche(Board& board, uint16_t x1 , uint16_t y1, uint16_t x2, uint16_
 		}
 		destinationStack = std::move(rightStack);
 		rightStack = std::move(rightStack);
-		leftStack = std::move(cardStack());
+		leftStack = std::move(CardStack());
 		return;
 	}
 	else if (std::abs(x1 - x2) != 1 && y1 == y2) {//vertical - side to side in the same column
@@ -879,7 +879,7 @@ void funcAvalanche(Board& board, uint16_t x1 , uint16_t y1, uint16_t x2, uint16_
 			}
 			destinationStack = std::move(upperStack);
 			upperStack = std::move(lowerStack);
-			lowerStack = std::move(cardStack());
+			lowerStack = std::move(CardStack());
 
 			return;
 		}
@@ -896,7 +896,7 @@ void funcAvalanche(Board& board, uint16_t x1 , uint16_t y1, uint16_t x2, uint16_
 		}
 		destinationStack = std::move(lowerStack);
 		lowerStack = std::move(upperStack);
-		upperStack = std::move(cardStack());
+		upperStack = std::move(CardStack());
 
 		return;
 	}
@@ -907,7 +907,7 @@ void funcAvalanche(Board& board, uint16_t x1 , uint16_t y1, uint16_t x2, uint16_
 //cover a illusion with a card
 void funcRock(Board& board, uint16_t x, uint16_t y, MinionCard& Card)
 {
-	resizeableMatrix matrix = board.getMatrix();
+	ResizeableMatrix matrix = board.getMatrix();
 	if (!matrix[x][y].back().GetIsIllusionCard())
 	{
 		std::cout << "Chosen card is not an illusion, choose an illusion card. \n.";
