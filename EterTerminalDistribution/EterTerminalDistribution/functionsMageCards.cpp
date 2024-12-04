@@ -100,7 +100,7 @@ void funcFireMage2(Board& board,Player& pl)
 }
 
  //cover opponent card with lower value card of yours
-void funcEarthMage1(Board& board,Player& pl, uint16_t x , uint16_t y)
+void funcEarthMage1(Board& board,Player& pl, int16_t x , int16_t y)
 {
 	Hand& currHand = pl.GetHandCards();
 	Colours curr_col = pl.GetPlayerColor();
@@ -386,7 +386,7 @@ void funcWaterMage2(Board& board, Colours color,Player& pl)//opponent
 	}
 	else if(option==2 || option==3)
 	{
-		for (size_t i = 0; i < board.getRowCount(); ++i)
+		for (int16_t i = 0; i < board.getRowCount(); ++i)
 		{
 			std::swap(matrix[i][0], matrix[i][board.getColCount() - 1]);
 		}

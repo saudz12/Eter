@@ -18,7 +18,7 @@ uint16_t funcFlame(Board&, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, c
 uint16_t funcFire(Board&, Player&, Player&, uint16_t);
 
 //maybe also keep all the removed cards in unordered set
-uint16_t funcAsh(Board&, Player&, const MinionCard&, uint16_t, uint16_t);
+uint16_t funcAsh(Board&, Player&, const MinionCard&, int16_t, int16_t);
 
 uint16_t funcSpark(Board&, Player& p);
 
@@ -30,10 +30,10 @@ uint16_t funcGale(Board& board, Player&, Player&);
 uint16_t funcHurricane(Board& board, Hand& h1, Hand& h2, uint16_t lineCnt, std::string_view type, std::string_view direction);
 
 //move card one position to antoher
-uint16_t funcGust(Board&, Player&, uint16_t, uint16_t, uint16_t, uint16_t);
+uint16_t funcGust(Board&, Player&, int16_t, int16_t, int16_t, int16_t);
 
 //exchange illusion card with other card
-uint16_t funcMirage(Board&, Player&, uint16_t, uint16_t, const MinionCard&);
+uint16_t funcMirage(Board&, Player&, int16_t, int16_t, const MinionCard&);
 
 //remove stack of cards
 void funcStorm(Board&, Player&, Player&, uint16_t, uint16_t);

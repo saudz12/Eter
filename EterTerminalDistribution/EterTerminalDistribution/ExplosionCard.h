@@ -30,5 +30,5 @@ public:
 	CardType GetCardType() const override;
 		
 	void RotateToRight(uint16_t);
-	void showExpl(size_t);
+	void showExpl(int16_t);
 };

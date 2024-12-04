@@ -29,11 +29,6 @@ uint16_t MinionCard::GetValue() const
     return m_value;
 }
 
-//char MinionCard::GetColor() const
-//{
-//    return m_color;
-//}
-
 Colours MinionCard::GetColor() const
 {
     return m_color;
@@ -59,16 +54,6 @@ CardType MinionCard::GetCardType() const
     return m_cardType;
 }
 
-//char MinionCard::GetBelongsTo() const
-//{
-//    return m_belongsTo;
-//}
-
-Colours MinionCard::GetBelongsTo() const
-{
-    return m_belongsTo;
-}
-
 bool MinionCard::GetIsHole() const
 {
     return m_isHole;
@@ -78,11 +63,6 @@ void MinionCard::SetValue(uint16_t value)
 {
     m_value = value;
 }
-
-//void MinionCard::SetColor(char color)
-//{
-//    m_color = color;
-//}
 
 void MinionCard::SetColor(Colours color)
 {

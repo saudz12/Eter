@@ -98,7 +98,7 @@ const int CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view 
 	return NO_ERRORS;
 }
 
-int16_t checkFuncFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard& CardToBePlaced, Player& p)
+int16_t checkFuncFlame(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2, const MinionCard& CardToBePlaced, Player& p)
 {
 	uint16_t lines = board.getLineCount(), cols = board.getColCount();
 	if (x1 < 0 || x1 > lines || y1 < 0 || y1 > cols)/// bound check
@@ -232,7 +232,7 @@ int16_t checkFuncTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint1
 	return 0;
 }
 
-uint16_t checkFuncMist(Board& board, Player& p, uint16_t x, uint16_t y, MinionCard& card) {
+uint16_t checkFuncMist(Board& board, Player& p, int16_t x, int16_t y, MinionCard& card) {
 
 	if (board.setPos(x, y, card, p) == 1)
 		return 1;

@@ -73,12 +73,13 @@ public:
 	//Update board
 	//only checks it. to modify it it needs to return a reference. do the check somewhere beforehand to get modifyable card
 	MinionCard& getCardOnPos(int16_t x, int16_t y);
-	int16_t setPos(int16_t x, int16_t y, const MinionCard& card, Player& p);
+	int16_t setPos(int16_t& x, int16_t& y, const MinionCard& card, Player& p);
 	int16_t setPosWaterfall(int16_t x, int16_t y, const MinionCard& card);
 	int16_t removePos(int16_t x, int16_t y);
 	int16_t removeStack(int16_t x, int16_t y);
-	Colours checkWin(int16_t x, int16_t y, Colours col);
+	Colours entityWon(int16_t x, int16_t y, Colours col);
 	Colours checkWin();
+	Colours checkWin(int16_t x, int16_t y, Colours col);
 
 	uint16_t getRowCount();
 	uint16_t getColCount();

@@ -24,6 +24,7 @@ private:
 
 	Hand& m_activePlayingHand;
 	Hand& m_activeRemovedHand;
+	CoveredSet& m_activeCoveredSet;
 
 	Score m_gameScore;
 	int16_t m_rounds;
@@ -38,7 +39,8 @@ private:
 	Options m_enabledElemental;
 	Options m_enabledTimed;
 
-	void advanceRound();
+	void advanceAction();
+	void resetRound(int16_t maxBoardSize, Options enabledEter, Options enabledIllusion, Options enabledMage, Options enabledElemental, Options enabledTimed);
 
 public:
 	GameFinal(int16_t nrOfRounds, int16_t maxBoardSize, Options enabledEter, Options enabledIllusion, Options enabledMage, Options enabledElemental, Options enabledTimed);

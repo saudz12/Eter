@@ -8,7 +8,7 @@ void funcFireMage1(Board&, Player&);
 void funcFireMage2(Board&, Player&);
 
 //cover opponent card with lower value card of yours
-void funcEarthMage1(Board&, Player&, uint16_t, uint16_t);
+void funcEarthMage1(Board&, Player&, int16_t, int16_t);
 
 //hole card,position to cover
 void funcEarthMage2(Board&);

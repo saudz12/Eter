@@ -10,6 +10,7 @@
 #include <deque>
 #include <stack>
 #include <memory>
+#include <random>
 
 constexpr auto ID_ROW = "R";
 constexpr auto ID_COLUMN = "C";
@@ -40,7 +41,7 @@ enum class ColorActions : int16_t {
 enum class LineType : int16_t {
 	TYPE_COLUMN,
 	TYPE_ROW,
-	TYPE_INVALID_LINE
+	INVALID_LINE_TYPE
 };
 
 LineType GetLineType(char t);

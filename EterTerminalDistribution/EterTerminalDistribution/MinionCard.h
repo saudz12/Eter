@@ -38,25 +38,24 @@ public:
 	
 	//getters
 	uint16_t GetValue() const;
-	//char GetColor() const;
+
 	Colours GetColor() const;
 	bool GetIsEterCard() const;
 	bool GetIsIllusionCard() const;
 	bool GetMarker() const;
 	CardType GetCardType() const override;
-	//char GetBelongsTo() const;
-	Colours GetBelongsTo() const;
+
 	bool GetIsHole() const;
 
 	//setters
 	void SetValue(uint16_t value);
-	//void SetColor(char color);
+
 	void SetColor(Colours color);
 	void SetIsEterCard(bool isEterCard);
 	void SetIsIllusionCard(bool isIllusionCard);
 	void SetCardType(CardType type) override;
 	void SetMarker(bool isMarked);
-	//void SetBelongsTo(char belongsTo);
+
 	void SetBelongsTo(Colours belongsTo);
 	void SetIsHole(bool isHole);
 };
@@ -68,12 +67,6 @@ namespace std
 	{
 		size_t operator()(const MinionCard& card) const
 		{
-			/*size_t h1 = std::hash<uint16_t>()(card.GetValue());
-			size_t h2 = std::hash<char>()(card.GetColor());
-			size_t h3 = std::hash<bool>()(card.GetIsEterCard());
-
-			return h1 ^ (h2 < 1) ^ (h3 < 2);*/
-
 			return std::hash<uint16_t>()(card.GetValue());
 		}
 	};

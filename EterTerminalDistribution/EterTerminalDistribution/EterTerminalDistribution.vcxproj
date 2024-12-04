@@ -151,7 +151,6 @@
     <ClInclude Include="ActionType.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="Card.h" />
-    <ClInclude Include="CardType.h" />
     <ClInclude Include="ConsoleView.h" />
     <ClInclude Include="ElementalCard.h" />
     <ClInclude Include="ErrorPrints.h" />

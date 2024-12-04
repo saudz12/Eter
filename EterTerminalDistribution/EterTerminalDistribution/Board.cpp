@@ -203,7 +203,7 @@ MinionCard& Board::getCardOnPos(int16_t x, int16_t y) {//-1 esec
 	return m_matrix[x][y].back();
 }
 
-int16_t Board::setPos(int16_t x, int16_t y, const MinionCard& card, Player& p) {
+int16_t Board::setPos(int16_t& x, int16_t& y, const MinionCard& card, Player& p) {
 	const int boundCondX = XBoundTest(x);
 	const int boundCondY = YBoundTest(y);
 
@@ -362,6 +362,11 @@ int16_t Board::removeStack(int16_t x, int16_t y)
 		return 0;
 	}
 	return 1;
+}
+
+Colours Board::entityWon(int16_t x, int16_t y, Colours col)
+{
+	return Colours();
 }
 
 Colours Board::checkWin()
@@ -828,7 +833,7 @@ bool Board::removeRow(uint16_t x)
 {
 	if (x < 0 || x > getRowCount() - 1 || isBoardEmpty())
 		return 1;
-	for (size_t i = 0; i < getColCount(); ++i)
+	for (int16_t i = 0; i < getColCount(); ++i)
 	{
 		if (m_matrix[x][i].back().GetColor() == Colours::RED)
 			m_colChecker[i].first -= 1;
@@ -845,14 +850,14 @@ bool Board::removeColumn(uint16_t y)
 {
 	if (y < 0 || y > getColCount() - 1 || isBoardEmpty())
 		return 1;
-	for (size_t i = 0; i < getRowCount(); ++i)
+	for (int16_t i = 0; i < getRowCount(); ++i)
 	{
 		if (m_matrix[i][y].back().GetColor() == Colours::RED)
 			m_rowChecker[i].first -= 1;
 		else
 			m_rowChecker[i].second -= 1;
 	}
-	for (size_t i = 0; i < getRowCount(); i++)
+	for (int16_t i = 0; i < getRowCount(); i++)
 		m_matrix[i].erase(m_matrix[i].begin() + y);
 	m_colChecker.erase(m_colChecker.begin() + y);
 	return 0;
@@ -909,7 +914,7 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Pl
 				MinionCard lastCard = m_matrix[positionX][positionY].back();
 				lastCard.SetIsIllusionCard(false);
 				removePos(positionX, positionY);
-				if (lastCard.GetBelongsTo() == pl1.GetPlayerColor())
+				if (lastCard.GetColor() == pl1.GetPlayerColor())
 					pl1.returnMinionCardToHand(lastCard);
 				else
 					pl2.returnMinionCardToHand(lastCard);

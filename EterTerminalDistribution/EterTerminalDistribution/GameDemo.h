@@ -29,9 +29,9 @@ public:
 
     void showPlayerTurn(Colours color);
     void setStructuresForPlayer(Player*& player);
-    bool placeEterCard(size_t&,size_t&);
-    bool placeIllusionCard(size_t&, size_t&);
-    bool placeMinionCard(size_t&, size_t&);
+    bool placeEterCard(int16_t&, int16_t&);
+    bool placeIllusionCard(int16_t&, int16_t&);
+    bool placeMinionCard(int16_t&, int16_t&);
     bool useExplosionCard();
 
     void restartRound();
@@ -41,5 +41,6 @@ public:
     void checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Player* currPlayer, Hand& currHand, Hand& removedCardsHand, bool& wasUsed, bool& wasCardUsed);
 
     void advanceTurn();
+    void resetRound();
 };
 

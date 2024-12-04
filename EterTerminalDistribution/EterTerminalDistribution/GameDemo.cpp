@@ -32,7 +32,7 @@ void GameDemo::runDemo()
 
         printMenu();
         std::cin >> options;
-        size_t x, y;
+        int16_t x, y;
         switch (options)
         {
         case 1: {
@@ -86,7 +86,7 @@ void GameDemo::runDemo()
             break;
         }
         case 4: {
-            size_t x, y;
+            int16_t x, y;
             std::cout << "Check stack on position: ";
             std::cin >> x >> y;
             if (x < 0 || x >= m_board->getRowCount() || y < 0 || y >= m_board->getColCount())
@@ -210,7 +210,7 @@ void GameDemo::runDemo()
                         break;
                     }
                     case 4: {
-                        size_t x, y;
+                        int16_t x, y;
                         std::cout << "Check stack on position: ";
                         std::cin >> x >> y;
                         if (x < 0 || x >= m_board->getRowCount() || y < 0 || y >= m_board->getColCount())
@@ -295,7 +295,7 @@ void GameDemo::setStructuresForPlayer(Player*& player)
     m_illusionUsage = player->GetIllusionUsage();
 }
 
-bool GameDemo::placeEterCard(size_t& x, size_t& y)
+bool GameDemo::placeEterCard(int16_t& x, int16_t& y)
 {
     if (m_currPlayer->GetEterCardUsage())
     {
@@ -323,7 +323,7 @@ bool GameDemo::placeEterCard(size_t& x, size_t& y)
     return true;
 }
 
-bool GameDemo::placeIllusionCard(size_t& x, size_t& y)
+bool GameDemo::placeIllusionCard(int16_t& x, int16_t& y)
 {
     if (m_currPlayer->GetIllusionUsage())
     {
@@ -356,7 +356,7 @@ bool GameDemo::placeIllusionCard(size_t& x, size_t& y)
     return true;
 }
 
-bool GameDemo::placeMinionCard(size_t& x, size_t& y)
+bool GameDemo::placeMinionCard(int16_t& x, int16_t& y)
 {
     int val;
     std::cout << "\nChoose a card and the position: ";
@@ -833,8 +833,7 @@ void GameDemo::advanceTurn()
 
     m_wasPlaced = false;
     m_currPlayer = (m_currPlayerColor == Colours::RED()) ? m_p1 : m_p2;
-
-
 }
+
 
 

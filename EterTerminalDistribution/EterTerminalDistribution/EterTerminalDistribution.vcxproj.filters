@@ -77,9 +77,6 @@
     <ClInclude Include="Card.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CardType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ElementalCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
