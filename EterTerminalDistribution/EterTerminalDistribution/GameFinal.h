@@ -1,20 +1,7 @@
 #pragma once
 #include "Board.h"
 #include "InputChecking.h"
-
-enum class Options : int16_t
-{
-	EnabledEter,
-	DisabledEter,
-	EnabledIllusion,
-	DisabledIllusion,
-	EnabledMage,
-	DisabledMage,
-	EnabledElemental,
-	DisabledElemental,
-	EnabledTimed,
-	DisabledTimed
-};
+#include "ConsoleView.h"
 
 class GameFinal{
 private:
@@ -22,6 +9,7 @@ private:
 	std::unique_ptr<Player> m_player1;
 	std::unique_ptr<Player> m_player2;
 
+	//weak pointer(and change to shared) to current player? - usefull in some places
 	Hand& m_activePlayingHand;
 	Hand& m_activeRemovedHand;
 	CoveredSet& m_activeCoveredSet;
@@ -30,23 +18,26 @@ private:
 	int16_t m_rounds;
 	Colours m_activeColor;
 
+	GameOptions m_enabledEter;
+	GameOptions m_enabledIllusion;
+	GameOptions m_enabledMage;
+	GameOptions m_enabledElemental;
+	GameOptions m_enabledTimed;
+	GameOptions m_enabledTournament;
+
 	bool m_wasPlaced;
 	bool m_powerUsed;
 
-	Options m_enabledEter;
-	Options m_enabledIllusion;
-	Options m_enabledMage;
-	Options m_enabledElemental;
-	Options m_enabledTimed;
-
-	void advanceAction();
-	void resetRound(int16_t maxBoardSize, Options enabledEter, Options enabledIllusion, Options enabledMage, Options enabledElemental, Options enabledTimed);
+	void GenerateElementalCards();
+	void GenerateMageCards();
+	
+	void AdvanceAction();
+	void PlayRound();
+	//void resetRound(int16_t maxBoardSize, GameOptions enabledEter, GameOptions enabledIllusion, GameOptions enabledMage, GameOptions enabledElemental, GameOptions enabledTimed);
+	void ResetRound();
 
 public:
-	GameFinal(int16_t nrOfRounds, int16_t maxBoardSize, Options enabledEter, Options enabledIllusion, Options enabledMage, Options enabledElemental, Options enabledTimed);
+	GameFinal(int16_t nrOfRounds, int16_t maxBoardSize, GameOptions enabledEter, GameOptions enabledIllusion, GameOptions enabledMage, GameOptions enabledElemental, GameOptions enabledTimed, GameOptions enabledTournament);
 
-	void generateElementalCards();
-	void generateMageCards();
-
-	void gameLoop();
+	void GameLoop();
 };

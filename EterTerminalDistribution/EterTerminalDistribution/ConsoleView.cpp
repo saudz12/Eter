@@ -55,6 +55,22 @@ void printOptionsForExplostion()
 {
 	std::cout << "0. Don't use the explosion\n1. Use the explosion\n2. Rotate the explosion\n";
 }
+//----------------------------------------------
+
+void PrintStandardMenu(int16_t& option, GameOptions enabledElemental, bool usedElemental, GameOptions enabledMages, bool usedMage)
+{
+	std::cout << "Options:\n1. Place A Card\n2. View Your Hand\n3. View s Stack on Board\n4. Check Your Covered Cards\n5. Check Your Removed Cards\n";
+	if (enabledElemental == GameOptions::EnabledElemental && !usedElemental && (enabledMages == GameOptions::DisabledMage || usedMage))
+		std::cout << "6. Use An Elemental Card\n";
+	else if (enabledMages == GameOptions::EnabledMage && !usedMage && (enabledElemental == GameOptions::DisabledElemental || usedElemental))
+		std::cout << "6. Use Your Mage Card\n";
+	else if (enabledElemental == GameOptions::EnabledElemental && !usedElemental && enabledMages == GameOptions::EnabledMage && !usedMage) {
+		std::cout << "6. Use An Elemental Card\n";
+		std::cout << "7. Use Your Mage Card\n";
+	}
+
+	std::cin >> option;
+}
 
 ///---------------------------------------------
 void printHand(const Hand& currHand)

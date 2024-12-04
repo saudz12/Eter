@@ -19,6 +19,22 @@ constexpr auto DIR_RIGHT = "R";
 constexpr auto DIR_UP = "U";
 constexpr auto DIR_DOWN = "D";
 
+enum class GameOptions : int16_t
+{
+	EnabledEter,
+	DisabledEter,
+	EnabledIllusion,
+	DisabledIllusion,
+	EnabledMage,
+	DisabledMage,
+	EnabledElemental,
+	DisabledElemental,
+	EnabledTimed,
+	DisabledTimed,
+	EnabledTournament,
+	DisabledTournament
+};
+
 enum class Colours : int16_t {
 	RED,
 	BLUE,

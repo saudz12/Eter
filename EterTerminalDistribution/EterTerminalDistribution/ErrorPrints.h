@@ -44,22 +44,17 @@ enum class CommonErrors : int16_t {
 	NO_ERRORS,
 	OUTSIDE_BOUNDS,
 	ETER_PROPERTY_VIOALTION,
-	EMPTY_SPACE,
+	ILLUSION_PROPERTY_VIOILATION,
+	NEEDS_EMPTY_SPACE,
 	INVALID_LINE_TYPE,
 	INVALID_DIRECTION,
-};
 
-enum class HurricangeErrors : int16_t {
-	INVALID_LINE_STRUCTURE
-};
+	INCORRECT_CARD_TYPE,
 
-enum class WhirlpoolErrors : int16_t {
+	INCOMPLETE_LINE_STRUCTURE,
+
 	ADJACENT_OUTSIDE_BOUNDS,
 	ADJACENT_SPACES_EMPTY
-};
-
-enum class ElementalErrors : int16_t {
-
 };
 
 void ErrorMesageHuricane(int message);

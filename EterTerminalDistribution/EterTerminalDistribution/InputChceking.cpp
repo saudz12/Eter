@@ -48,6 +48,7 @@ const int CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_view t
 	return NO_ERRORS;
 }
 
+//incomplete. needs preference cehck - ask about it
 const int CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view linetype, std::string_view preference)
 {
 	ResizeableMatrix& matrix = board.getMatrix();

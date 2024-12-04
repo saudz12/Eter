@@ -2,7 +2,7 @@
 
 /// <summary>
 /// Add here input cheking for each function that requires input from the user.
-/// Error handling by returning integers
+/// Error handling by returning integers --OR ENUMS SO WE KNOW EXACTLY WHAT WE RETURN!!!
 /// </summary>
 #include "functionsElementalCards.h"
 #include "ErrorPrints.h"
