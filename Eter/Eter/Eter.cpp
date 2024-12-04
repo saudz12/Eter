@@ -109,7 +109,7 @@ void Eter::initializeGridLayoutBoard()
     widgetBoard = new qGameBoardWidget(this,BOARD_SIZE,CARD_WIDTH,CARD_HEIGHT,CARDS_SPACING);
     widgetBoard->setBoardPosition((WINDOW_WIDTH-REDCARDS_OFFSET_WINDOW_WIDTH-CARDS_SPACING)/2,
                                 (WINDOW_HEIGTH-CARDS_SPACING)/2,
-                                BOARD_SIZE*CARD_WIDTH, BOARD_SIZE*CARD_HEIGHT);
+                                CARD_WIDTH,CARD_HEIGHT);
     widgetBoard->show();
 }
 

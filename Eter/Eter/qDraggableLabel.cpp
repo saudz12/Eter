@@ -6,7 +6,6 @@ qDraggableLabel::qDraggableLabel(QPixmap cardPixmap, int CARD_WIDTH, int CARD_HE
     setPixmap(m_cardPixmap);  // Set the card image on the label
     setAlignment(Qt::AlignCenter);
     setFixedSize(CARD_WIDTH,CARD_HEIGHT); // Card size
-
 }
 
 void qDraggableLabel::mousePressEvent(QMouseEvent* event)
