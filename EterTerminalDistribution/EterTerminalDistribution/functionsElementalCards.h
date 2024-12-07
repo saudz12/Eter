@@ -42,10 +42,10 @@ uint16_t funcStorm(Board&, Player&, Player&, uint16_t, uint16_t);
 uint16_t funcTide(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
 
 //play again a illusion(cannot have 2 illsuion at the same time)
-void funcMist(Board&, Player&, uint16_t, uint16_t, MinionCard&);
+uint16_t funcMist(Board&, Player&, int16_t, int16_t, MinionCard&);
 
 //move a card/stack to empty adj space and place new card to the empty space created
-void funcWave(Board&, uint16_t, uint16_t, MinionCard);
+uint16_t funcWave(Board&, Player&, int16_t, int16_t, MinionCard);
 
 //move 2 card separated by empty space into the empty space and place them as stacks 
 void funcWhirlpool(Board&, uint16_t, uint16_t);

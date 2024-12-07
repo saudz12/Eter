@@ -76,6 +76,8 @@ uint16_t funcFlame(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2,
 {
 	/*if (checkFuncFlame(board, x1, y1, x2, y2, CardToBePlaced, p) != 0)
 		return 1;*/
+	if (board.setPos(x2, y2, CardToBePlaced, p) == 1)
+		return 1;
 	ResizeableMatrix& matrix = board.getMatrix();
 	matrix[x1][y1].back().SetIsIllusionCard(false);
 	return 0;
@@ -596,29 +598,81 @@ uint16_t funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t 
 }
 
 // play again an illusion (cannot have 2 illusions at the same time)
-void funcMist(Board& board, Player& p, uint16_t x, uint16_t y, MinionCard& card)
+uint16_t funcMist(Board& board, Player& p, int16_t x, int16_t y, MinionCard& card)
 {
 	if (!p.GetIllusionUsage() || p.GetIllusionCard() == nullptr) {
 		card.SetIsIllusionCard(true);
-		p.SetIllusionUsage(true);
+		if (board.setPos(x, y, card, p) == 1)
+		{
+			return 1;
+			card.SetIsIllusionCard(false);
+		}
 	}
+	else
+		return 1;
+	return  0;
 }
 
 // move a card/stack to an empty adjacent space and place new card in the empty space created
-void funcWave(Board& board, uint16_t x1, uint16_t y1, MinionCard newCard)
+uint16_t funcWave(Board& board, Player& p, int16_t x1, int16_t y1, MinionCard newCard)
 {
 	ResizeableMatrix& matrix = board.getMatrix();
-	for(int i = -1; i < 2; i++)
-		for(int j = -1; j < 2; j++)
-		if (!matrix[x1 + i][y1 + j].empty()) 
+	for(int16_t i = -1; i < 2; i++)
+	{
+		for (int16_t j = -1; j < 2; j++)
 		{
-			while (!matrix[x1][y1].empty())
+			if (!matrix[x1][y1].empty())
 			{
-				matrix[x1 + i][y1 + j].push_back(matrix[x1][y1].front());
+				int16_t newX = x1 + i;
+				int16_t newY = y1 + j;
+
+				if (newX < 0 || newX >= board.getColCount())
+					continue;
+
+				if (newY < 0 || newY >= board.getRowCount())
+					continue;
+
+				if (matrix[newX][newY].empty())
+				{
+					if (board.getCardOnPos(x1, y1).GetColor() == Colours::RED)
+					{
+						if (x1 == y1)
+							board.updateFirstDiagChecker(RED_DEC);
+
+						if (x1 == matrix.size() - y1 - 1)
+							board.updateSeconDiagChecker(RED_DEC);
+
+						board.updateRowChecker(x1, RED_DEC);
+						board.updateColChecker(y1, RED_DEC);
+					}
+					else
+					{
+						if (x1 == y1)
+							board.updateFirstDiagChecker(BLUE_DEC);
+
+						if (x1 == matrix.size() - y1 - 1)
+							board.updateSeconDiagChecker(BLUE_DEC);
+
+						board.updateRowChecker(x1, BLUE_DEC);
+						board.updateColChecker(y1, BLUE_DEC);
+					}
+
+					while (!matrix[x1][y1].empty())
+					{
+						MinionCard card = matrix[x1][y1].front();
+						//doesn't matter which player
+						board.setPos(newX, newY, card, p);
+						matrix[x1][y1].pop_front();
+					}
+
+					if (board.setPos(x1, y1, newCard, p) == 1)
+						return 1;
+
+					return 0;
+				}
 			}
-			matrix[x1][y1].push_front(newCard);
-			break;
 		}
+	}
 }
 
 // move 2 cards separated by empty space into the empty space and place them as stacks

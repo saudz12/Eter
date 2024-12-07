@@ -707,6 +707,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         }
         else
         {
+            currPlayer->returnMinionCardToHand(card);
             std::cout << "Failed to use Ash\n";
             break;
         }
@@ -883,9 +884,83 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         }
         else
         {
-            std::cout << "Failed to use Tide\n";
+            std::cout << "\nFailed to use Tide";
         }
 
+        break;
+    }
+    //mist
+    case 14: {
+        currPlayer->printHandCards();
+
+        int16_t val, x, y;
+        std::cout << "\nChoose a card you want to place as an illusion and the position: ";
+        std::cin >> val >> x >> y;
+        MinionCard card(val, currPlayer->GetPlayerColor(), false);
+
+        if (currHand.find(card) == currHand.end()) {
+            std::cout << "\nYou don't own any cards of that type!\n";
+            system("pause");
+            break;
+        }
+
+        m_currPlayer->UpdateCard(card, -1);
+        if (funcMist(b, *currPlayer, x, y, card) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            m_currPlayer->UpdateCard(card, 1);
+            std::cout << "Failed to use Mist\n";
+            break;
+        }
+
+        currPlayer->SetLastMinionCardPlayed(&b.getCardOnPos(x, y));
+        if (currPlayer->GetPlayerColor() == Colours::RED)
+            Player::updateCover(x, y, p2->getCovered(), b.getMatrix());
+        else
+            Player::updateCover(x, y, p1->getCovered(), b.getMatrix());
+    }
+    //wave
+    case 15: {
+        uint16_t x, y;
+        std::cout << "\nChoose a stack of cards which you want to move to a nearby empty space: ";
+        std::cin >> x >> y;
+
+        currPlayer->printHandCards();
+        int16_t val;
+        std::cout << "\nChoose a card you want to place in that same position: ";
+        std::cin >> val;
+
+        MinionCard card(val, currPlayer->GetPlayerColor(), false);
+
+        if (currHand.find(card) == currHand.end()) {
+            std::cout << "\nYou don't own any cards of that type!\n";
+            system("pause");
+            break;
+        }
+
+        std::cout << b.getLineCount() << " " << b.getRowCount();
+
+        if (funcWave(b, *currPlayer, x, y, card) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            std::cout << "Failed to use Wave\n";
+            break;
+        }
+
+        m_currPlayer->UpdateCard(card, -1);
+        currPlayer->SetLastMinionCardPlayed(&b.getCardOnPos(x, y));
+        if (currPlayer->GetPlayerColor() == Colours::RED)
+            Player::updateCover(x, y, p2->getCovered(), b.getMatrix());
+        else
+            Player::updateCover(x, y, p1->getCovered(), b.getMatrix());
         break;
     }
     }

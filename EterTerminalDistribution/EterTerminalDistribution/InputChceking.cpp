@@ -104,8 +104,8 @@ int16_t checkFuncFlame(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t
 	int16_t lines = board.getLineCount(), cols = board.getColCount();
 	if (x1 < 0 || x1 > lines || y1 < 0 || y1 > cols)
 		return OUTSIDE_BOUNDS;
-	if (board.setPos(x2, y2, CardToBePlaced, p) == 1)
-		return FAILED_FLAME_CARD_PLACEMENT;
+	/*if (board.setPos(x2, y2, CardToBePlaced, p) == 1)
+		return FAILED_FLAME_CARD_PLACEMENT;*/
 	return NO_ERRORS;
 }
 
@@ -228,15 +228,15 @@ int16_t checkFuncTide(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t 
 
 int16_t checkFuncMist(Board& board, Player& p, int16_t x, int16_t y, MinionCard& card) {
 
-	if (board.setPos(x, y, card, p) == 1)
-		return 1;
+	/*if (board.setPos(x, y, card, p) == 1)
+		return 1;*/
 	return 0;
 }
 
 int16_t checkFuncWave(Board& board, int16_t x1, int16_t y1, MinionCard) {
-	ResizeableMatrix matrix = board.getMatrix();
+	/*ResizeableMatrix matrix = board.getMatrix();
 	if (matrix[x1][y1].back().GetIsEterCard())
-		return -2;
+		return -2;*/
 
 	return 0;
 }
