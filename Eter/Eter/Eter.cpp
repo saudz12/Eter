@@ -28,7 +28,6 @@ void Eter::initializeGameWindow()
 
         this->resize(WINDOW_WIDTH, WINDOW_HEIGTH);
     }
-
     this->showMaximized();
 }
 
@@ -107,10 +106,19 @@ void Eter::onPushButtonStartGameClicked()
 void Eter::initializeGridLayoutBoard()
 {
     widgetBoard = new qGameBoardWidget(this,BOARD_SIZE,CARD_WIDTH,CARD_HEIGHT,CARDS_SPACING);
+    connect(widgetBoard, &qGameBoardWidget::boardResized, this, &Eter::onBoardResized);
     widgetBoard->setBoardPosition((WINDOW_WIDTH-REDCARDS_OFFSET_WINDOW_WIDTH-CARDS_SPACING)/2,
                                 (WINDOW_HEIGTH-CARDS_SPACING)/2,
                                 CARD_WIDTH,CARD_HEIGHT);
     widgetBoard->show();
+}
+
+void Eter::onBoardResized()
+{
+    int newX = (this->width() - widgetBoard->width()-REDCARDS_OFFSET_WINDOW_WIDTH) / 2;
+    int newY = (this->height() - widgetBoard->height()) / 2;
+    if(widgetBoard)
+        widgetBoard->move(newX, newY);
 }
 
 

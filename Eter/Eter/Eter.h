@@ -79,5 +79,5 @@ public:
 
 private slots:
     void onPushButtonStartGameClicked();
-
+    void onBoardResized();
 };

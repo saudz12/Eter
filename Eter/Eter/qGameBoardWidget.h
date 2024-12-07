@@ -34,7 +34,7 @@ private:
 	int rowsWithEmptySpaces, columnsWithEmptySpaces;
 	std::unordered_set<std::pair<int, int>,PairHash1> m_emptyPositions;
 	std::unordered_map<std::pair<int, int>, QLabel*,PairHash1> m_cardPosition;
-	std::unordered_map<std::pair<int, int>,QPixmap, PairHash1> m_pixmapPosition;
+	std::unordered_map<std::pair<int, int>, QPixmap, PairHash1> m_pixmapPosition;
 	int xMax, yMax;
 	QPixmap currCardPixmap;
 	bool existsOnLeftCol;
@@ -47,7 +47,8 @@ public:
 private:
 	void dragEnterEvent(QDragEnterEvent* event) override;
 	void dropEvent(QDropEvent* event) override;
-	void expandBoard(int& row,int& column);
+	void resizeEvent(QResizeEvent* event) override;
+	bool expandBoard(int& row,int& column);
 	std::unordered_set<std::pair<int,int>,PairHash1> checkPositionsForWhiteSpaces(QGridLayout*& gridLayout,int row,int column,
 		bool& existsOnLeftCol,bool& existsOnRightCol ,bool& existsOnTopRow, bool& existsOnBottomRow);
 	bool checkPosition( QGridLayout*& board, int i, int j);
@@ -60,11 +61,15 @@ private:
 	void placeFirstCard(QGridLayout*& gridLayout,int& row,int& column);
 	QLabel* createNewMinionCard();
 	void addNewMinionCardToGrid(QLabel*& newCard,QGridLayout*& gridLayout, int& row, int& column);
+	void removeWidgetFromGrid(QGridLayout*& gridLayout, int row, int column);
 	std::vector<std::pair<std::function<void(QGridLayout*&, int&, int&)>, bool>> createFunctionCallsVector();
+	void stretchGridLayout(QGridLayout*& gridLayout);
 public:
 	void setBoardPosition(const int x,const int y,const int card_width,const int card_height);
 	void addWidgetOnBoard(qDraggableLabel* card,int row,int column);
 	void setupEmptyBoard();
 	QLabel* createWhiteSpace();
+signals:
+	void boardResized();
 };
 
