@@ -1,4 +1,5 @@
 #include "functionsElementalCards.h"
+#include "ErrorPrints.h"
 
 //to note it may be more efficient to make m_board member public in Board class to not copy the contents of the matrix every time we modify it 
 
@@ -71,7 +72,7 @@ uint16_t funcDestruction(Board& board, Player& player)
 //first 2 uint16_t for revealing Illusion and the next for placing Card
 //returns 1 if it failed to place card, 0 if it succeeded
 //moved the if to checkInput
-uint16_t funcFlame(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard& CardToBePlaced, Player& p)
+uint16_t funcFlame(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2, const MinionCard& CardToBePlaced, Player& p)
 {
 	/*if (checkFuncFlame(board, x1, y1, x2, y2, CardToBePlaced, p) != 0)
 		return 1;*/
@@ -428,13 +429,26 @@ uint16_t funcMirage(Board& board, Player& p, int16_t x1, int16_t y1, const Minio
 	return 0;
 }
 
-// remove stack of cards
-void funcStorm(Board& board, Player& p1, Player& p2, uint16_t x, uint16_t y)
+//remove stack of at least 2 cards
+uint16_t funcStorm(Board& board, Player& p1, Player& p2, uint16_t x, uint16_t y)
 {
+	/*if (checkFuncStorm(board, x, y) != 0)
+		return 1;*/
+
+	Board oldModel(3);
+	Board::cloneMatrix(board, oldModel);
+
 	ResizeableMatrix& matrix = board.getMatrix();
 
 	if (matrix[x][y].back().GetIsIllusionCard())
+	{
 		matrix[x][y].back().SetIsIllusionCard(false);
+		if (matrix[x][y].back().GetColor() == Colours::RED)
+			p1.SetIllusionCard(nullptr);
+		else
+			p2.SetIllusionCard(nullptr);
+
+	}
 
 	while (!matrix[x][y].empty())
 	{
@@ -442,35 +456,130 @@ void funcStorm(Board& board, Player& p1, Player& p2, uint16_t x, uint16_t y)
 			p1.addToRemovedCards(matrix[x][y].back());
 		else
 			p2.addToRemovedCards(matrix[x][y].back());
-		matrix[x][y].pop_back();
+		if (board.removePos(x, y) == 1)
+			return 1;
 	}
+
+	if (isolatedSpaces(board))
+	{
+		Board::cloneMatrix(oldModel, board);
+		std::cout << "Can't have isolated stacks/cards..\n";
+		return 1;
+	}
+
+	board.checkForUpdates();
+
+	return 0;
 }
 
-// swap cards or stack of cards
-void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+//swap cards or stack of cards
+uint16_t funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
+	ResizeableMatrix& matrix = board.getMatrix();
+
 	CardStack& first = board.getStackOnPos(x1, y1);
 	CardStack& second = board.getStackOnPos(x2, y2);
 
 	if (first.back().GetColor() == Colours::RED) {
+		if (x1 == y1)
+		{
+			board.updateFirstDiagChecker(RED_DEC);
+		}
+
+		if (x2 == y2)
+		{
+			board.updateFirstDiagChecker(RED_ADD);
+		}
+
+		if (x1 == matrix.size() - y1 - 1)
+		{
+			board.updateSeconDiagChecker(RED_DEC);
+		}
+
+		if (x2 == matrix.size() - y2 - 1)
+		{
+			board.updateSeconDiagChecker(RED_ADD);
+		}
+
 		board.updateRowChecker(x1, RED_DEC);
 		board.updateColChecker(y1, RED_DEC);
 		board.updateRowChecker(x2, RED_ADD);
 		board.updateColChecker(y2, RED_ADD);
 	}
 	else {
+		if (x1 == y1)
+		{
+			board.updateFirstDiagChecker(BLUE_DEC);
+		}
+
+		if (x2 == y2)
+		{
+			board.updateFirstDiagChecker(BLUE_ADD);
+		}
+
+		if (x1 == matrix.size() - y1 - 1)
+		{
+			board.updateSeconDiagChecker(BLUE_DEC);
+		}
+
+		if (x2 == matrix.size() - y2 - 1)
+		{
+			board.updateSeconDiagChecker(BLUE_ADD);
+		}
+
 		board.updateRowChecker(x1, BLUE_DEC);
 		board.updateColChecker(y1, BLUE_DEC);
 		board.updateRowChecker(x2, BLUE_ADD);
 		board.updateColChecker(y2, BLUE_ADD);
 	}
+
 	if (second.back().GetColor() == Colours::RED) {
+		if (x2 == y2)
+		{
+			board.updateFirstDiagChecker(RED_DEC);
+		}
+
+		if (x1 == y1)
+		{
+			board.updateFirstDiagChecker(RED_ADD);
+		}
+
+		if (x2 == matrix.size() - y2 - 1)
+		{
+			board.updateSeconDiagChecker(RED_DEC);
+		}
+
+		if (x1 == matrix.size() - y1 - 1)
+		{
+			board.updateSeconDiagChecker(RED_ADD);
+		}
+
 		board.updateRowChecker(x1, RED_ADD);
 		board.updateColChecker(y1, RED_ADD);
 		board.updateRowChecker(x2, RED_DEC);
 		board.updateColChecker(y2, RED_DEC);
 	}
 	else {
+		if (x2 == y2)
+		{
+			board.updateFirstDiagChecker(BLUE_DEC);
+		}
+
+		if (x1 == y1)
+		{
+			board.updateFirstDiagChecker(BLUE_ADD);
+		}
+
+		if (x2 == matrix.size() - y2 - 1)
+		{
+			board.updateSeconDiagChecker(BLUE_DEC);
+		}
+
+		if (x1 == matrix.size() - y1 - 1)
+		{
+			board.updateSeconDiagChecker(BLUE_ADD);
+		}
+
 		board.updateRowChecker(x1, BLUE_ADD);
 		board.updateColChecker(y1, BLUE_ADD);
 		board.updateRowChecker(x2, BLUE_DEC);
@@ -482,6 +591,8 @@ void funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 	second = std::move(aux);
 
 	//std::swap(first, second);
+
+	return  0;
 }
 
 // play again an illusion (cannot have 2 illusions at the same time)

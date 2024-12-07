@@ -338,13 +338,33 @@ int16_t Board::removePos(int16_t x, int16_t y) {
 	{
 		if (m_matrix[x][y].back().GetColor() == Colours::RED)
 		{
+			if (x == y)
+			{
+				updateFirstDiagChecker(RED_ADD);
+			}
+
+			if (x == m_matrix.size() - y - 1)
+			{
+				updateSeconDiagChecker(RED_ADD);
+			}
+
 			updateRowChecker(x, RED_ADD);
-			updateRowChecker(y, RED_ADD);
+			updateColChecker(y, RED_ADD);
 		}
 		else
 		{
+			if (x == y)
+			{
+				updateFirstDiagChecker(BLUE_ADD);
+			}
+
+			if (x == m_matrix.size() - y - 1)
+			{
+				updateSeconDiagChecker(BLUE_ADD);
+			}
+
 			updateRowChecker(x, BLUE_ADD);
-			updateRowChecker(y, BLUE_ADD);
+			updateColChecker(y, BLUE_ADD);
 		}
 	}
 

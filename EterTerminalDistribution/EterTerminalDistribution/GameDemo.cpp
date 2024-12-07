@@ -484,6 +484,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
     std::cin >> card;
     switch (card)
     {
+    //controlled explosion
     case 1: {
         if (funcControlledExplosion(b, *p1, *p2) == 0)
         {
@@ -494,6 +495,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             std::cout << "Failed to use Controlled Explosion\n";
         break;
     }
+    //destruction
     case 2: {
         if (currPlayer->GetPlayerColor() == Colours::RED)
         {
@@ -517,8 +519,9 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         }
         break;
     }
+    //flame
     case 3: {
-        uint16_t illusionX, illusionY, x, y, val;
+        int16_t illusionX, illusionY, x, y, val;
         std::cout << "Type the coordonates of the illusion card you want to reveal\n";
         std::cin >> illusionX >> illusionY;
 
@@ -526,6 +529,8 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         uint16_t placeOption;
         std::cout << "Options:\n1. Place eter card\n2. Play a minion card as an illusion\n3. Play a minion card\n";
         std::cin >> placeOption;
+
+        int condition;
 
         bool wasPlaced = false;
 
@@ -551,6 +556,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             if (funcFlame(b, illusionX, illusionY, x, y, cardToPlace, *currPlayer) == 0)
             {
                 wasUsed = true;
+                wasCardUsed = true;
             }
             else
             {
@@ -583,6 +589,12 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
 
             cardToPlace.SetIsIllusionCard(true);
 
+            if (currHand.find(cardToPlace) == currHand.end()) {
+                std::cout << "\nYou don't own any cards of that type!\n";
+                system("pause");
+                break;
+            }
+
             if (funcFlame(b, illusionX, illusionY, x, y, cardToPlace, *currPlayer) == 0)
             {
                 wasUsed = true;
@@ -607,6 +619,12 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             std::cout << "\nChoose a card and the position: ";
             std::cin >> val >> x >> y;
             MinionCard cardToPlace(val, currPlayer->GetPlayerColor(), false);
+
+            if (currHand.find(cardToPlace) == currHand.end()) {
+                std::cout << "\nYou don't own any cards of that type!\n";
+                system("pause");
+                break;
+            }
 
             if (currHand.find(cardToPlace) == currHand.end()) {
                 std::cout << "\nYou don't own any cards of that type!\n";
@@ -647,6 +665,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
 
         break;
     }
+    //fire
     case 4: {
         uint16_t value;
         std::cout << "Type a value for the card you want to return\n";
@@ -662,6 +681,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         }
         break;
     }
+    //ash
     case 5: {
         std::cout << "Removed card:\n";
         for (auto& i : removedCardsHand)
@@ -700,6 +720,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         std::cout << "Succesfull move!\n";
         break;
     }
+    //spark
     case 6: {
         if (funcSpark(b, *currPlayer) == 0)
         {
@@ -710,6 +731,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             std::cout << "Failed to use Spark\n";
         break;
     }
+    //squall
     case 7: {
         std::cout << "Type the coodonates of your opponent's card: ";
         uint16_t x, y;
@@ -736,6 +758,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         }
         break;
     }
+    //gale
     case 8: {
         if (funcGale(b, *p1, *p2) == 0)
         {
@@ -746,6 +769,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             std::cout << "Failed to use Gale\n";
         break;
     }
+    //hurricane
     case 9: {
         std::string type;
         std::cout << "\nMove Row(R) or Column(C): ";
@@ -771,6 +795,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         }
         break;
     }
+    //gust
     case 10: {
         uint16_t x1, y1, x2, y2;
         std::cout << "\nChoose a card you want to move: ";
@@ -798,7 +823,9 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             else
                 std::cout << "Failed to use Gust\n";
         }
+        break;
     }
+    //mirage
     case 11: {
         uint16_t x, y;
         std::cout << "\nType the position of your illusion: ";
@@ -823,6 +850,43 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         }
         else
             std::cout << "Failed to use Mirage\n";
+        break;
+    }
+    //storm
+    case 12: {
+        uint16_t x, y;
+        std::cout << "\nChoose a position from which you want to remove the stack of cards: ";
+        std::cin >> x >> y;
+
+        if (funcStorm(b, *p1, *p2, x, y) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            std::cout << "Failed to use Storm\n";
+        }
+
+        break;
+    }
+    //tide
+    case 13: {
+        uint16_t x1, y1, x2, y2;
+        std::cout << "\nChoose the positions for the spaces you want to switch: ";
+        std::cin >> x1 >> y1 >> x2 >> y2;
+
+        if (funcTide(b, x1, y1, x2, y2) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            std::cout << "Failed to use Tide\n";
+        }
+
+        break;
     }
     }
 }

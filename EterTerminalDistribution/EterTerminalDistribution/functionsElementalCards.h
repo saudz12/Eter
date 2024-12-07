@@ -12,7 +12,7 @@ uint16_t funcControlledExplosion(Board&, Player&, Player&);
 uint16_t funcDestruction(Board&, Player&);
 
 //first 2 uint16_t for revealing Illusion and the next for placing Card
-uint16_t funcFlame(Board&, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const MinionCard&, Player& );
+uint16_t funcFlame(Board&, int16_t x1, int16_t y1, int16_t x2, int16_t y2, const MinionCard&, Player&);
 
 //player Red,player Blue
 uint16_t funcFire(Board&, Player&, Player&, uint16_t);
@@ -36,10 +36,10 @@ uint16_t funcGust(Board&, Player&, int16_t, int16_t, int16_t, int16_t);
 uint16_t funcMirage(Board&, Player&, int16_t, int16_t, const MinionCard&);
 
 //remove stack of cards
-void funcStorm(Board&, Player&, Player&, uint16_t, uint16_t);
+uint16_t funcStorm(Board&, Player&, Player&, uint16_t, uint16_t);
 
 //tide(board, first set of coordonates, second set of coordonates) -- exchange 2 stacks
-void funcTide(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
+uint16_t funcTide(Board&, uint16_t, uint16_t, uint16_t, uint16_t);
 
 //play again a illusion(cannot have 2 illsuion at the same time)
 void funcMist(Board&, Player&, uint16_t, uint16_t, MinionCard&);
