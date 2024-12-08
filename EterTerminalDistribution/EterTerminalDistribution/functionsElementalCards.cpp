@@ -833,33 +833,36 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 }
 
 // make the line unplayable for the next round
-void funcBlizzard(Line& line)
+uint16_t funcBlizzard(Line& line)
 {
+	return 0;
 }
 
-//still needs validation 
-void funcWaterfall(Board& board, uint16_t columnIndex)
+//move all cards from a column at the bottom of that column
+uint16_t funcWaterfall(Board& board, uint16_t x, uint16_t y)
 {
-	if (columnIndex > board.getColCount() || columnIndex < 0)
-	{
-		std::cout << "Chosen column doesn't exit\n";
-		return;
-	}
+	Board backupBoard;
+	Board::cloneMatrix(board, backupBoard);
 
 	ResizeableMatrix& matrix = board.getMatrix();
+
+	//the card which will stay on top of the new stack
+	MinionCard topCard = board.getCardOnPos(x, y);
+	board.removePos(x, y);
+
 	//the final stack of cards must have at least 3 cards
-	int16_t condition = 0;
+	int16_t condition = 1;
 
 	std::stack<MinionCard> cards;
 
-	for (int16_t i = 0; i < board.getRowCount(); i++)
+	for (size_t i = 0; i < board.getRowCount(); i++)
 	{
-		if (!matrix[i][columnIndex].empty())
+		if (!matrix[i][y].empty())
 		{
-			if (!matrix[i][columnIndex].back().GetIsEterCard())
+			if (!matrix[i][y].back().GetIsEterCard())
 			{
-				condition += matrix[i][columnIndex].size();
-				std::deque<MinionCard> cardsCopy = matrix[i][columnIndex];
+				condition += matrix[i][y].size();
+				std::deque<MinionCard> cardsCopy = matrix[i][y];
 				while (!cardsCopy.empty())
 				{
 					cards.push(cardsCopy.back());
@@ -872,52 +875,93 @@ void funcWaterfall(Board& board, uint16_t columnIndex)
 	if (condition < 3)
 	{
 		std::cout << "There must be at least 3 cards in this column for this elemental power card to work\n";
-		return;
+		return 1;
 	}
 	else
 	{
-		for (int16_t i = 0; i < board.getRowCount(); i++)
+		for (size_t i = 0; i < board.getRowCount(); i++)
 		{
-				board.removeStack(i, columnIndex);
+				board.removeStack(i, y);
 		}
+
+		uint16_t newX = board.getRowCount() - 1;
+
 		while (!cards.empty())
 		{
-			if (board.setPosWaterfall(board.getRowCount() - 1, columnIndex, cards.top()) == 0)
-			{
-				std::cout << "card placed successfully on " << board.getRowCount() - 1 << " " << columnIndex << '\n';
-			}
-			else
-			{
-				std::cout << "failed to place card on " << board.getRowCount() - 1 << " " << columnIndex << '\n';
-			}
+			if (board.setPosWaterfall(newX, y, cards.top()) == 1)
+				return 1;
 			cards.pop();
 		}
-		std::cout << "Waterfall used successfully on column " << columnIndex << "\n";
+
+		if (board.setPosWaterfall(newX, y, topCard) == 1)
+			return 1;
+
+		if (topCard.GetColor() == Colours::RED)
+		{
+			if (newX == y)
+			{
+				board.updateFirstDiagChecker(RED_ADD);
+			}
+
+			if (newX == matrix.size() - y - 1)
+			{
+				board.updateSeconDiagChecker(RED_ADD);
+			}
+
+			board.updateColChecker(y, RED_ADD);
+			board.updateRowChecker(newX, RED_ADD);
+		}
+		else if (topCard.GetColor() == Colours::BLUE)
+		{
+			if (newX == y)
+			{
+				board.updateFirstDiagChecker(BLUE_ADD);
+			}
+
+			if (newX == matrix.size() - y - 1)
+			{
+				board.updateSeconDiagChecker(BLUE_ADD);
+			}
+
+			board.updateColChecker(y, BLUE_ADD);
+			board.updateRowChecker(newX, BLUE_ADD);
+		}
 	}
+
+	if (isolatedSpaces(board))
+	{
+		Board::cloneMatrix(backupBoard, board);
+		std::cout << "Can't have isolated stacks/cards..\n";
+		return 1;
+	}
+
+	board.checkForUpdates();
+
+	return  0;
 }
 
 // increase value of a card by one, marker also placed on the card (tournament mode)
-void funcSupport(Board& board, uint16_t x, uint16_t y)
+uint16_t funcSupport(Board& board, uint16_t x, uint16_t y)
 {
 	ResizeableMatrix& matrix = board.getMatrix();
 
 	if (matrix[x][y].back().GetIsEterCard())
 	{
 		std::cout << "Can't use Support elemental card on eter card\n";
-		return;
+		return 1;
 	}
 
 	if (matrix[x][y].back().GetIsIllusionCard())
 	{
 		std::cout << "Can't use Support elemental card on illusion card\n";
-		return;
+		return 1;
 	}
 
 	int CardValue = matrix[x][y].back().GetValue();
 	if (CardValue > 3)	//check according to game rules
 	{
 		std::cout << "Card value is too great, choose a lower value card. \n";
-		return;
+		return 1;
 	}
 
 	if (matrix[x][y].back().GetIsIllusionCard())
@@ -927,17 +971,73 @@ void funcSupport(Board& board, uint16_t x, uint16_t y)
 
 	matrix[x][y].back().SetValue(CardValue + 1);
 	matrix[x][y].back().SetMarker(true);
+
+	return 0;
 }
 
 // remove all visible 1-value cards
-void funcEarthquake(Board& board)
+uint16_t funcEarthquake(Board& board, Player& p1, Player& p2)
 {
+	Board backupBoard;
+	Board::cloneMatrix(board, backupBoard);
+
 	ResizeableMatrix& matrix = board.getMatrix();
 
-	for (int i = 0;i < board.getRowCount();i++)
-		for (int j = 0;j < board.getColCount();j++)
-			if (matrix[i][j].back().GetValue() == 1 && !matrix[i][j].back().GetIsEterCard() && !matrix[i][j].back().GetIsIllusionCard())
-				matrix[i][j].pop_back();
+	int16_t p1Cards{ 0 };
+	int16_t p2Cards{ 0 };
+
+	for (size_t i = 0; i < board.getRowCount(); i++)
+	{
+		for (size_t j = 0; j < board.getColCount(); j++)
+		{
+			if (!matrix[i][j].empty())
+			{
+				MinionCard card = board.getCardOnPos(i, j);
+				if (card.GetValue() == 1)
+				{
+					if (card.GetColor() == p1.GetPlayerColor())
+					{
+						p1.addToRemovedCards(card);
+						p1Cards++;
+					}
+					else
+					{
+						p2.addToRemovedCards(card);
+						p2Cards++;
+					}
+
+					if (board.removePos(i, j) == 1)
+						return 1;
+				}
+			}
+		}
+	}
+
+	if (isolatedSpaces(board))
+	{
+		//Removing the cards from the removed cards pool
+		while (p1Cards)
+		{
+			MinionCard card(1, p1.GetPlayerColor(), false);
+			p1.placeMinionCardFromRemovedCard(card);
+			p1Cards--;
+		}
+
+		while (p2Cards)
+		{
+			MinionCard card(1, p2.GetPlayerColor(), false);
+			p2.placeMinionCardFromRemovedCard(card);
+			p2Cards--;
+		}
+
+		Board::cloneMatrix(backupBoard, board);
+		std::cout << "Can't have isolated stacks/cards..\n";
+		return 1;
+	}
+
+	board.checkForUpdates();
+
+	return 0;
 }
 
 // value of a card decreased by 1, marker placed on card

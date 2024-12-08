@@ -922,6 +922,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             Player::updateCover(x, y, p2->getCovered(), b.getMatrix());
         else
             Player::updateCover(x, y, p1->getCovered(), b.getMatrix());
+        break;
     }
     //wave
     case 15: {
@@ -931,7 +932,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
 
         currPlayer->printHandCards();
         int16_t val;
-        std::cout << "\nChoose a card you want to place in that same position: ";
+        std::cout << "\nChoose a card you want to place into the now empty space: ";
         std::cin >> val;
 
         MinionCard card(val, currPlayer->GetPlayerColor(), false);
@@ -941,8 +942,6 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             system("pause");
             break;
         }
-
-        std::cout << b.getLineCount() << " " << b.getRowCount();
 
         if (funcWave(b, *currPlayer, x, y, card) == 0)
         {
@@ -961,6 +960,64 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             Player::updateCover(x, y, p2->getCovered(), b.getMatrix());
         else
             Player::updateCover(x, y, p1->getCovered(), b.getMatrix());
+        break;
+    }
+    //whirlpool, for saud
+    case 16: {
+
+    }
+    //blizzard, not yet implemented
+    case 17: {
+
+    }
+    //waterfall
+    case 18: {
+        uint16_t x, y;
+        std::cout << "\nChoose a card for which column you want to collapse to the bottom, which your chosen card on top: ";
+        std::cin >> x >> y;
+
+        if (funcWaterfall(b, x, y) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            std::cout << "\nFailed to use Waterfall";
+        }
+
+        break;
+    }
+    //support
+    case 19: {
+        uint16_t x, y;
+        std::cout << "\n Choose a card which you want to increased its value by 1, cannot be used on a value 4 card: ";
+        std::cin >> x >> y;
+
+        if (funcSupport(b, x, y) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            std::cout << "\nFailed to use Support";
+        }
+
+        break;
+    }
+    //earthquake
+    case 20: {
+        if (funcEarthquake(b, *p1, *p2) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            std::cout << "\nFailed to use Earthquake";
+        }
+
         break;
     }
     }

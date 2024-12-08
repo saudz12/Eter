@@ -376,9 +376,37 @@ int16_t Board::removeStack(int16_t x, int16_t y)
 {
 	if (!m_matrix[x][y].empty())
 	{
+		if (m_matrix[x][y].back().GetColor() == Colours::RED)
+		{
+			if (x == y)
+			{
+				updateFirstDiagChecker(RED_DEC);
+			}
+
+			if (x == m_matrix.size() - y - 1)
+			{
+				updateSeconDiagChecker(RED_DEC);
+			}
+
+			updateColChecker(y, RED_DEC);
+			updateRowChecker(x, RED_DEC);
+		}
+		else if (m_matrix[x][y].back().GetColor() == Colours::BLUE)
+		{
+			if (x == y)
+			{
+				updateFirstDiagChecker(BLUE_DEC);
+			}
+
+			if (x == m_matrix.size() - y - 1)
+			{
+				updateSeconDiagChecker(BLUE_DEC);
+			}
+
+			updateColChecker(y, BLUE_DEC);
+			updateRowChecker(x, BLUE_DEC);
+		}
 		m_matrix[x][y].clear();
-		updateColChecker(y, ZERO);
-		updateRowChecker(x, ZERO);
 		return 0;
 	}
 	return 1;

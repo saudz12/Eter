@@ -51,16 +51,16 @@ uint16_t funcWave(Board&, Player&, int16_t, int16_t, MinionCard);
 void funcWhirlpool(Board&, uint16_t, uint16_t);
 
 //make the line unplayable for the next round
-void funcBlizzard(Line&);
+uint16_t funcBlizzard(Line&);
 
 //stack the cards of the row/column on thop of each other
-void funcWaterfall(Board&, uint16_t);
+uint16_t funcWaterfall(Board&, uint16_t, uint16_t);
 
 //increase value of a card by one, marker also place on the card(tournament mode)
-void funcSupport(Board&, uint16_t, uint16_t);
+uint16_t funcSupport(Board&, uint16_t, uint16_t);
 
 //remove all visible 1 value cards
-void funcEarthquake(Board&);
+uint16_t funcEarthquake(Board&, Player&, Player&);
 
 //value of a card decreased by 1,marked placed on card
 void funcCrumble(Board&, uint16_t, uint16_t);
