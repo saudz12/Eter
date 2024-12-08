@@ -26,6 +26,7 @@ constexpr int16_t INVALID_CARD_VALUE = 1;
 
 //Squall
 constexpr int16_t FAILED_ON_ILLUSION = 3;
+constexpr int16_t NOT_ENEMY_CARD = 1;
 
 //Gust
 constexpr int16_t IDENTICAL_COORDINATES = 1;

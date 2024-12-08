@@ -118,6 +118,9 @@ void ErrorMessageSquall(int message)
 	case FAILED_ON_ILLUSION:
 		std::cout << "ERR: Can't use Squall elemental card on illusion..\n";
 		return;
+	case NOT_ENEMY_CARD:
+		std::cout << "ERR: Not an opponent card..\n";
+		return;
 	default:
 		break;
 	}
@@ -188,8 +191,8 @@ void ErrorMessageTide(int message)
 void ErrorMessageMist(int message)
 {
 	switch (message) {
-	case FAILED_MIST_CARD_PLACEMENT:
-		std::cout << "ERR: Failed to place card..\n";
+	case FAILED_ON_ILLUSION:
+		std::cout << "ERR: There is another active illusion..\n";
 		return;
 	default:
 		break;

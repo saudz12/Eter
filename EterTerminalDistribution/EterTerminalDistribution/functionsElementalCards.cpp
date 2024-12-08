@@ -260,10 +260,6 @@ uint16_t funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 
 	MinionCard toReturn = matrix[x][y].back();
 
-	if (toReturn.GetColor() != player.GetPlayerColor()) {
-		std::cout << "Not oponent card..\n";
-		return 1;
-	}
 
 	board.removePos(x, y);
 	

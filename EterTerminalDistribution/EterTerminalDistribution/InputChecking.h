@@ -19,7 +19,7 @@ int16_t checkFuncAsh(Board&, const MinionCard&, int16_t, int16_t);
 
 int16_t checkFuncSpark(Board&, int16_t, int16_t, int16_t, int16_t);
 
-int16_t checkFuncSquall(Board&, int16_t, int16_t);
+int16_t checkFuncSquall(Board&, int16_t, int16_t, Player);
 
 int16_t checkFuncGust(Board&, int16_t, int16_t, int16_t, int16_t);
 
@@ -53,7 +53,7 @@ int16_t checkFuncFireMage1(Board&, Player&);
 
 int16_t checkFuncFireMage2(Board&, Player&);
 
-int16_t checkFuncEarthMage1(Board&, Player&, int16_t, int16_t);
+CommonErrors checkFuncEarthMage1(Board&, Player&, int16_t, int16_t);
 
 int16_t checkFuncEarthMage2(Board&);
 
@@ -63,4 +63,4 @@ int16_t checkFuncAirMage2(Board&, int16_t, int16_t);
 
 int16_t checkFuncWaterMage1(Board&, Player&);
 
-int16_t checkFuncWaterMage2(Board& board, Colours color, Player& pl);
+CommonErrors checkFuncWaterMage2(Board& board, Colours color, Player& pl);
