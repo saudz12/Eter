@@ -7,9 +7,9 @@
 #include "functionsElementalCards.h"
 #include "ErrorPrints.h"
 
-int CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_view type, std::string_view direction);
+CommonErrors CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_view type, std::string_view direction);
 
-int CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view linetype, std::string_view preference);
+CommonErrors CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view linetype, std::string_view preference);
 
 CommonErrors checkFuncFlame(Board&, int16_t x1, int16_t y1, int16_t x2, int16_t y2, const MinionCard&, Player&);
 
