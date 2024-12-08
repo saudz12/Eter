@@ -25,8 +25,10 @@ void printOptionsForExplostion();
 //--------------------------------------------- Remake
 
 void PrintStandardMenu(int16_t& option, GameOptions enabledElemental, bool usedElemental, GameOptions enabledMages, bool usedMage);
+void PlayerTurn(Colours currCol);
 
 ///Player Interction
 void printHand(const Hand& currHand);
+void printHand(const CardCounter& currHand);
 void printCovered(const CoveredSet& covered, const ResizeableMatrix& matrix);
 

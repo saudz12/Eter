@@ -41,6 +41,5 @@ public:
     void checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Player* currPlayer, Hand& currHand, Hand& removedCardsHand, bool& wasUsed, bool& wasCardUsed);
 
     void advanceTurn();
-    void resetRound();
 };
 

@@ -128,7 +128,7 @@ void funcEarthMage1(Board& board,Player& pl, int16_t x , int16_t y)
 // hole card, position to cover
 void funcEarthMage2(Board& board)
 {
-	MinionCard holeCard(0,'N', false);
+	MinionCard holeCard(0, Colours::INVALID_COL, false);
 	holeCard.SetIsHole(true);
 }
 

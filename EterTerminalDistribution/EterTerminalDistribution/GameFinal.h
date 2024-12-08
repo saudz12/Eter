@@ -5,14 +5,15 @@
 
 class GameFinal{
 private:
+	std::shared_ptr<Player> m_player1;
+	std::shared_ptr<Player> m_player2;
 	std::unique_ptr<Board> m_board;
-	std::unique_ptr<Player> m_player1;
-	std::unique_ptr<Player> m_player2;
 
 	//weak pointer(and change to shared) to current player? - usefull in some places
-	Hand& m_activePlayingHand;
-	Hand& m_activeRemovedHand;
-	CoveredSet& m_activeCoveredSet;
+	CoveredSet* m_activeCoveredSet;
+	Hand* m_activePlayingHand;
+	Hand* m_activeRemovedHand;
+	Player* m_activePlayer;
 
 	Score m_gameScore;
 	int16_t m_rounds;
@@ -27,17 +28,21 @@ private:
 
 	bool m_wasPlaced;
 	bool m_powerUsed;
+	bool m_tieBraker;
 
 	void GenerateElementalCards();
 	void GenerateMageCards();
 	
-	void AdvanceAction();
 	void PlayRound();
+	void AdvanceAction();
+	void EndTurn(bool& tieBraker);
 	//void resetRound(int16_t maxBoardSize, GameOptions enabledEter, GameOptions enabledIllusion, GameOptions enabledMage, GameOptions enabledElemental, GameOptions enabledTimed);
 	void ResetRound();
 
 public:
-	GameFinal(int16_t nrOfRounds, int16_t maxBoardSize, GameOptions enabledEter, GameOptions enabledIllusion, GameOptions enabledMage, GameOptions enabledElemental, GameOptions enabledTimed, GameOptions enabledTournament);
+	GameFinal(int16_t nrOfRounds, int16_t maxBoardSize, GameOptions enabledEter,	GameOptions enabledIllusion,
+														GameOptions enabledMage,	GameOptions enabledElemental,
+														GameOptions enabledTimed,	GameOptions enabledTournament);
 
 	void GameLoop();
 };

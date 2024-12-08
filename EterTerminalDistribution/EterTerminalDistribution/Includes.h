@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <deque>
 #include <stack>
+#include <vector>
 #include <memory>
 #include <random>
 

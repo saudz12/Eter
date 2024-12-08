@@ -1,6 +1,6 @@
 #include "InputChecking.h"
 
-const int CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_view type, std::string_view direction)
+int CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_view type, std::string_view direction)
 {
 	const ResizeableMatrix& matrix = board.getMatrix();
 
@@ -49,7 +49,7 @@ const int CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_view t
 }
 
 //incomplete. needs preference cehck - ask about it
-const int CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view linetype, std::string_view preference)
+int CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view linetype, std::string_view preference)
 {
 	ResizeableMatrix& matrix = board.getMatrix();
 
@@ -301,6 +301,30 @@ int16_t checkFuncWaterMage1(Board&, Player&) {
 	return 0;
 }
 
-int16_t checkFuncWaterMage2(Board& board, char color, Player& pl) {
+int16_t checkFuncWaterMage2(Board& board, Colours color, Player& pl) {
 	return 0;
+}
+
+CommonErrors CheckEarthMage1(Board& board, Player& caster, int16_t x, int16_t y, int16_t val)
+{
+	if (val < 0 || val > 3)
+		return CommonErrors::INVALID_CARD_VALUE;
+
+	if (x < 0 || y < 0 || x >= board.getRowCount() || y >= board.getColCount())
+		return CommonErrors::OUTSIDE_BOUNDS;
+
+	if (!caster.HasCardOfValue((uint16_t)val))    
+		return CommonErrors::NO_CARDS_OF_VALUE;    
+
+	const auto& selected = board.getStackOnPos(x, y);
+	if (selected.empty())
+		return CommonErrors::EMPTY_STACK;
+
+	const MinionCard& top = selected.back();
+	if (top.GetColor() != caster.GetPlayerColor())
+		return CommonErrors::NOT_ENEMY_CARD;
+	if (top.GetValue() >= val)
+		return CommonErrors::INVALID_CARD_TYPE;
+	
+	return CommonErrors::NO_ERRORS;
 }

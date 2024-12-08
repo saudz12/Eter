@@ -17,6 +17,29 @@
 #include "Player.h"
 #include "ExplosionCard.h"
 
+enum class BoardErrors : int16_t {
+	_OUTSIDE_BOUND_,
+	_INSIDE_BOUND_,
+	
+	_INVALID_VAL,
+	_NONE_LEFT_OF_VAL, 
+	
+	_NO_ERRORS
+};
+
+enum class BoardChanges : int16_t {
+	_TOP_BOUND,
+	_BOT_BOUND,
+	_LEFT_BOUND,
+	_RIGHT_BOUND,
+	_TOP_LEFT_BOUND,
+	_TOP_RIGHT_BOUND,
+	_BOT_LEFT_BOUND,
+	_BOT_RIGHT_BOUND,
+	_EMPTY_BOARD,
+	_NO_CHANGES
+};
+
 class Board
 {
 private:
@@ -34,7 +57,6 @@ private:
 	//matrix size management
 	uint16_t m_max_size;
 	bool m_reachedMaxSize;
-
 
 	//score counter on each line
 	void increaseOnColorSides(uint16_t x, uint16_t y, Colours col);
@@ -62,6 +84,7 @@ private:
 	void removeRightMargin();
 	void removeTopMargin();
 	void removeBottomMargin();
+
 	//other interactions
 
 public:
@@ -75,6 +98,12 @@ public:
 	MinionCard& getCardOnPos(int16_t x, int16_t y);
 	int16_t setPos(int16_t& x, int16_t& y, const MinionCard& card, Player& p);
 	int16_t setPosWaterfall(int16_t x, int16_t y, const MinionCard& card);
+
+	BoardChanges GetChanges(int16_t _x, int16_t _y); //new
+	BoardErrors CheckPos(int16_t _x, int16_t _y); //new
+	void ExtendBoard(BoardChanges _flag); //new
+	void PlaceCard(int16_t _x, int16_t _y, int16_t _val, Player& _active, BoardChanges _flag); //new
+
 	int16_t removePos(int16_t x, int16_t y);
 	int16_t removeStack(int16_t x, int16_t y);
 	Colours entityWon(int16_t x, int16_t y, Colours col);

@@ -188,12 +188,12 @@ void Board::increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, Colours col)
 		}
 		if (m_matrix[x][y].back().GetColor() == Colours::RED) {
 			if (x == y) {
-				m_firstDiag.second++;
 				m_firstDiag.first--;
+				m_firstDiag.second++;
 			}
 			if (x + y == m_max_size - 1) {
-				m_seconDiag.second++;
 				m_seconDiag.first--;
+				m_seconDiag.second++;
 			}
 		}
 	}
@@ -291,10 +291,103 @@ int16_t Board::setPos(int16_t& x, int16_t& y, const MinionCard& card, Player& p)
 	return 0;
 }
 
+//updating set pos...
+
+//
+
 int16_t Board::setPosWaterfall(int16_t x, int16_t y, const MinionCard& card)
 {
 	m_matrix[x][y].push_back(card);
 	return 0;
+}
+
+BoardErrors Board::CheckPos(int16_t _x, int16_t _y)
+{
+	if (_x == -1 && m_max_size == getRowCount() || _x < -1)
+		return BoardErrors::_OUTSIDE_BOUND_;
+	if (_x == getRowCount() && getRowCount() == m_max_size || _x > getRowCount())
+		return BoardErrors::_OUTSIDE_BOUND_;
+	if (_y == -1 && m_max_size == getColCount() || _y < -1)
+		return BoardErrors::_OUTSIDE_BOUND_;
+	if (_y == getColCount() && getColCount() == m_max_size || _y > getColCount())
+		return BoardErrors::_OUTSIDE_BOUND_;
+
+	return BoardErrors::_NO_ERRORS;
+}
+
+BoardChanges Board::GetChanges(int16_t _x, int16_t _y)
+{
+	if (isBoardEmpty())
+		return BoardChanges::_EMPTY_BOARD;
+
+	if (_x == -1 && _y == -1)
+		return BoardChanges::_TOP_LEFT_BOUND;
+	if (_x == -1 && _y == m_max_size)
+		return BoardChanges::_TOP_RIGHT_BOUND;
+	if (_x == m_max_size && _y == -1)
+		return BoardChanges::_BOT_LEFT_BOUND;
+	if (_x == -1 && _y == m_max_size)
+		return BoardChanges::_BOT_RIGHT_BOUND;
+
+	if (_x == -1)
+		return BoardChanges::_TOP_BOUND;
+	if (_x == m_max_size)
+		return BoardChanges::_BOT_BOUND;
+	if (_y == -1)
+		return BoardChanges::_LEFT_BOUND;
+	if (_y == m_max_size)
+		return BoardChanges::_RIGHT_BOUND;
+
+	return BoardChanges::_NO_CHANGES;
+}
+
+void Board::ExtendBoard(BoardChanges _flag)
+{
+	switch (_flag)
+	{
+	case BoardChanges::_EMPTY_BOARD:
+		addLineOnTop(); //anything really -- rewrite the board in such way that the board will be initialised FULLY empty so it will not need coordonates for the first palcement when fully empty.
+		break;
+	case BoardChanges::_TOP_BOUND:
+		addLineOnTop();
+		break;
+	case BoardChanges::_BOT_BOUND:
+		addLineOnBottom();
+		break;
+	case BoardChanges::_LEFT_BOUND:
+		addLineToLeft();
+		break;
+	case BoardChanges::_RIGHT_BOUND:
+		addLineToRight();
+		break;
+	case BoardChanges::_TOP_LEFT_BOUND:
+		addLineOnTop();
+		addLineToLeft();
+		break;
+	case BoardChanges::_TOP_RIGHT_BOUND:
+		addLineOnTop();
+		addLineToRight();
+		break;
+	case BoardChanges::_BOT_LEFT_BOUND:
+		addLineOnBottom();
+		addLineToLeft();
+		break;
+	case BoardChanges::_BOT_RIGHT_BOUND:
+		addLineOnBottom();
+		addLineToRight();
+		break;
+	default:
+		break;
+	}
+}
+
+void Board::PlaceCard(int16_t _x, int16_t _y, int16_t _val, Player& _active, BoardChanges _flag)
+{
+	ExtendBoard(_flag);
+
+	m_matrix[_x][_y].push_back(_active.MoveCard(_val));
+
+	//update col, row and diagonal -- rewrite them accordingly
 }
 
 //1 esec, 0 succes
@@ -484,7 +577,6 @@ ResizeableMatrix& Board::getMatrix()
 	return this->m_matrix;
 }
 
-//do position check outside of function or add new static card stack member and return it to represent nothing then check if == respective
 CardStack& Board::getStackOnPos(uint16_t x, uint16_t y)
 {
 	return m_matrix[x][y];
@@ -495,7 +587,6 @@ uint16_t Board::getLineCount()
 	return m_lineCnt;
 }
 
-//MAKE DEEP COPY OR USE CLONE_MATRIX METHOD
 void Board::setMatrix(const ResizeableMatrix& matrix)
 {
 	m_matrix = matrix;
@@ -696,7 +787,6 @@ void Board::shiftLine(uint16_t start, uint16_t end, int16_t ratio, uint16_t line
 		m_matrix[currX][currY] = std::move(m_matrix[nextX][nextY]);
 	}
 }
-
 
 void Board::checkForUpdates()
 {
@@ -911,7 +1001,6 @@ bool Board::removeColumn(uint16_t y)
 	return 0;
 }
 
-
 void Board::cloneMatrix(const Board& from, Board& to)
 {
 	uint16_t nCols = from.m_colChecker.size();
@@ -973,7 +1062,7 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Pl
 			{
 				removeStack(positionX, positionY);
 
-				MinionCard holeCard(0, 'N', false);
+				MinionCard holeCard(0, Colours::INVALID_COL, false);
 				holeCard.SetCardType(CardType::HoleCard);
 
 				m_matrix[positionX][positionY].push_back(holeCard);

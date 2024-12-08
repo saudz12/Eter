@@ -1,17 +1,5 @@
 #include "MinionCard.h"
 
-MinionCard::MinionCard(uint16_t value, char color, bool isEter) 
-    : Card{ CardType::MinionCard }, 
-    m_value{ value }, 
-    m_color{ color }, 
-    m_isEterCard{ isEter }, 
-    m_isIllusionCard{ false }, 
-    m_marker{ false }, 
-    //m_belongsTo(color), 
-    m_isHole{false}
-{
-}
-
 MinionCard::MinionCard(uint16_t value, Colours color, bool isEter)
     : Card{ CardType::MinionCard },
     m_value{ value },
@@ -20,6 +8,18 @@ MinionCard::MinionCard(uint16_t value, Colours color, bool isEter)
     m_isIllusionCard{ false },
     m_marker{ false },
     m_belongsTo(color), 
+    m_isHole{ false }
+{
+}
+
+MinionCard::MinionCard()
+    : Card {CardType::MinionCard},
+    m_value{ 0 }, 
+    m_color{ Colours::RED }, 
+    m_isEterCard{ false }, 
+    m_isIllusionCard{ false }, 
+    m_marker{ false }, 
+    m_belongsTo{ Colours::RED }, 
     m_isHole{ false }
 {
 }

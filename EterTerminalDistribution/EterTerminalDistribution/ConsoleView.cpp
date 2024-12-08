@@ -55,9 +55,9 @@ void printOptionsForExplostion()
 {
 	std::cout << "0. Don't use the explosion\n1. Use the explosion\n2. Rotate the explosion\n";
 }
-//----------------------------------------------
+//---------------------------------------------- MVC?
 
-void PrintStandardMenu(int16_t& option, GameOptions enabledElemental, bool usedElemental, GameOptions enabledMages, bool usedMage)
+void PrintStandardMenu(int16_t& option, GameOptions enabledElemental, bool usedElemental, GameOptions enabledMages, bool usedMage) //do this inside or outside the func
 {
 	std::cout << "Options:\n1. Place A Card\n2. View Your Hand\n3. View s Stack on Board\n4. Check Your Covered Cards\n5. Check Your Removed Cards\n";
 	if (enabledElemental == GameOptions::EnabledElemental && !usedElemental && (enabledMages == GameOptions::DisabledMage || usedMage))
@@ -72,12 +72,27 @@ void PrintStandardMenu(int16_t& option, GameOptions enabledElemental, bool usedE
 	std::cin >> option;
 }
 
+void PlayerTurn(Colours currCol)
+{
+	if(currCol == Colours::RED)
+		std::cout << "Player 1(Red's) Turn\n";
+	else
+		std::cout << "Player 2(Blue's) Turn\n";
+}
+
 ///---------------------------------------------
 void printHand(const Hand& currHand)
 {
 	std::cout << '\n';
 	for (auto& i : currHand)
 		std::cout << i.first.GetValue() << ": " << i.second << "\n";
+}
+
+void printHand(const CardCounter& currHand)
+{
+	for (auto& i : currHand) {
+		std::cout << "Card value " << i.first << ": Remaining " << i.second;
+	}
 }
 
 void printCovered(const CoveredSet& covered, const ResizeableMatrix& matrix)

@@ -1,28 +1,33 @@
 #include "Player.h"
 
-Player::Player(char playerColor = 'R')
-	: m_playerColor{ playerColor }, m_illusionUsage{ false }, m_eterCardUsage{ false }
+Player::Player(Colours playerColor)
+	:	m_playerColor{ playerColor }, m_illusionUsage{ false }, m_eterCardUsage{ false }/*, m_remainingCounter{}, m_remainingCards{5}*/
+		
 {
-	//generateTrainingModeHand();
-	generateHand();
+	/*if (training)
+		generateTrainingModeHand();
+	else*/
+		generateHand();
+
+	//new
 }
 
-Player::Player(Colours playerColor = Colours::RED)
-	: m_playerColor{ playerColor }, m_illusionUsage{ false }, m_eterCardUsage{ false }
+Player::Player(Colours _playerColor, bool _training)
+	:	m_playerColor{ _playerColor },
+		m_illusionUsage{ false },
+		m_eterCardUsage{ false },
+		m_illusionCard{ nullptr },
+		m_lastMinionCardPlayed{ nullptr },
+		m_remainingCards{5}
 {
-	generateHand();
+	GenerateHand(_training);
 }
 
 Player::Player()
-	: m_playerColor{ 'R' }, m_illusionUsage{ false }, m_eterCardUsage{ false }
+	: m_playerColor{ Colours::RED }, m_illusionUsage{ false }, m_eterCardUsage{ false }
 {
-	generateHand();
+	generateTrainingModeHand();
 }
-
-//char Player::GetPlayerColor() const
-//{
-//	return m_playerColor;
-//}
 
 Colours Player::GetPlayerColor() const
 {
@@ -58,11 +63,6 @@ void Player::SetEterCardUsage(bool eterCardUsage)
 {
 	m_eterCardUsage = eterCardUsage;
 }
-
-//void Player::SetPlayerColor(char playerColor)
-//{
-//	m_playerColor = playerColor;
-//}
 
 void Player::SetPlayerColor(Colours playerColor)
 {
@@ -177,6 +177,32 @@ void Player::generateHand()
 	m_handCards.emplace(MinionCard{ 1, m_playerColor, true }, 1); //eter card has the value 1 
 }
 
+void Player::GenerateHand(bool training)
+{
+	int offset = int16_t(!training);
+
+
+	m_remainingCounter.emplace(0, offset);
+	m_remainingCounter.emplace(1, 2);
+	m_remainingCounter.emplace(2, 2 + offset);
+	m_remainingCounter.emplace(3, 2 + offset);
+	m_remainingCounter.emplace(4, 1);
+
+	m_remainingCards[0].resize(offset);
+	m_remainingCards[1].resize(2);
+	m_remainingCards[2].resize(2 + offset);
+	m_remainingCards[3].resize(2 + offset);
+	m_remainingCards[4].resize(1);
+
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < m_remainingCards[i].size(); j++)
+		{
+			m_remainingCards[i][j] = std::move(MinionCard((i == 0) ? 1 : i, m_playerColor, i == 0));
+			continue;
+		}
+	}
+}
+
 MinionCard* Player::GetLastMinionCardPlayed() const
 {
 	return m_lastMinionCardPlayed;
@@ -190,6 +216,24 @@ MinionCard* Player::GetIllusionCard() const
 CoveredSet& Player::getCovered()
 {
 	return this->m_coveredCardSet;
+}
+
+MinionCard&& Player::MoveCard(int16_t val) {
+	MinionCard&& toMove = std::move(m_remainingCards[val].back());
+
+	m_remainingCards.pop_back();
+	m_remainingCounter[val]--;
+
+	return std::move(toMove);
+}
+
+bool Player::HasCardOfValue(uint16_t value)
+{
+	for (auto& card : m_handCards) {
+		if (card.first.GetValue() == value)
+			return true;
+	}
+	return false;
 }
 
 void Player::SetIllusionCard(MinionCard* illusionCard)
