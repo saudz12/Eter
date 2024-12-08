@@ -596,16 +596,7 @@ uint16_t funcTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t 
 // play again an illusion (cannot have 2 illusions at the same time)
 uint16_t funcMist(Board& board, Player& p, int16_t x, int16_t y, MinionCard& card)
 {
-	if (!p.GetIllusionUsage() || p.GetIllusionCard() == nullptr) {
-		card.SetIsIllusionCard(true);
-		if (board.setPos(x, y, card, p) == 1)
-		{
-			return 1;
-			card.SetIsIllusionCard(false);
-		}
-	}
-	else
-		return 1;
+		card.SetIsIllusionCard(true);	
 	return  0;
 }
 

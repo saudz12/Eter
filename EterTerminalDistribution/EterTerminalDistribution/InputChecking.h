@@ -11,56 +11,56 @@ int CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_view type, s
 
 int CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view linetype, std::string_view preference);
 
-int16_t checkFuncFlame(Board&, int16_t x1, int16_t y1, int16_t x2, int16_t y2, const MinionCard&, Player&);
+CommonErrors checkFuncFlame(Board&, int16_t x1, int16_t y1, int16_t x2, int16_t y2, const MinionCard&, Player&);
 
-int16_t checkFuncFire(Board&, int16_t);
+CommonErrors checkFuncFire(Board&, int16_t);
 
-int16_t checkFuncAsh(Board&, const MinionCard&, int16_t, int16_t);
+CommonErrors checkFuncAsh(Board&, const MinionCard&, int16_t, int16_t);
 
-int16_t checkFuncSpark(Board&, int16_t, int16_t, int16_t, int16_t);
+CommonErrors checkFuncSpark(Board&, int16_t, int16_t, int16_t, int16_t);
 
-int16_t checkFuncSquall(Board&, int16_t, int16_t, Player);
+CommonErrors checkFuncSquall(Board&, int16_t, int16_t, Player);
 
-int16_t checkFuncGust(Board&, int16_t, int16_t, int16_t, int16_t);
+CommonErrors checkFuncGust(Board&, int16_t, int16_t, int16_t, int16_t);
 
-int16_t checkFuncMirage(Board&, int16_t, int16_t, const MinionCard&);
+CommonErrors checkFuncMirage(Board&, int16_t, int16_t, const MinionCard&);
 
-int16_t checkFuncStorm(Board&, int16_t, int16_t);
+CommonErrors checkFuncStorm(Board&, int16_t, int16_t);
 
-int16_t checkFuncTide(Board&, int16_t, int16_t, int16_t, int16_t);
+CommonErrors checkFuncTide(Board&, int16_t, int16_t, int16_t, int16_t);
 
-int16_t checkFuncMist(Board&, Player&, int16_t, int16_t, MinionCard&);
+CommonErrors checkFuncMist(Board&, Player&, int16_t, int16_t, MinionCard&);
 
-int16_t checkFuncWave(Board&, int16_t, int16_t, MinionCard);
+CommonErrors checkFuncWave(Board&, int16_t, int16_t, MinionCard);
 
-int16_t checkFuncBlizzard(Line&);
+CommonErrors checkFuncBlizzard(Line&);
 
-int16_t checkFuncWaterfall(Board&, int16_t);
+CommonErrors checkFuncWaterfall(Board&, int16_t);
 
-int16_t checkFuncSupport(Board&, int16_t, int16_t);
+CommonErrors checkFuncSupport(Board&, int16_t, int16_t);
 
-int16_t checkFuncEarthquake(Board&);
+CommonErrors checkFuncEarthquake(Board&);
 
-int16_t checkFuncCrumble(Board&, int16_t, int16_t);
+CommonErrors checkFuncCrumble(Board&, int16_t, int16_t);
 
-int16_t checkFuncBorder(Board&, int16_t, int16_t);
+CommonErrors checkFuncBorder(Board&, int16_t, int16_t);
 
-int16_t checkFuncAvalanche(Board&, int16_t, int16_t, int16_t, int16_t, char);
+CommonErrors checkFuncAvalanche(Board&, int16_t, int16_t, int16_t, int16_t, char);
 
-int16_t checkFuncRock(Board&, int16_t, int16_t, MinionCard&);
+CommonErrors checkFuncRock(Board&, int16_t, int16_t, MinionCard&);
 
-int16_t checkFuncFireMage1(Board&, Player&);
+CommonErrors checkFuncFireMage1(Board&, Player&);
 
-int16_t checkFuncFireMage2(Board&, Player&);
+CommonErrors checkFuncFireMage2(Board&, Player&);
 
 CommonErrors checkFuncEarthMage1(Board&, Player&, int16_t, int16_t);
 
-int16_t checkFuncEarthMage2(Board&);
+CommonErrors checkFuncEarthMage2(Board&);
 
-int16_t checkFuncAirMage1(Board&, Player& pl);
+CommonErrors checkFuncAirMage1(Board&, Player& pl);
 
-int16_t checkFuncAirMage2(Board&, int16_t, int16_t);
+CommonErrors checkFuncAirMage2(Board&, int16_t, int16_t);
 
-int16_t checkFuncWaterMage1(Board&, Player&);
+CommonErrors checkFuncWaterMage1(Board&, Player&);
 
 CommonErrors checkFuncWaterMage2(Board& board, Colours color, Player& pl);

@@ -174,13 +174,13 @@ void ErrorMessagestorm(int message)
 	}
 }
 
-void ErrorMessageTide(int message)
+void ErrorMessageTide(CommonErrors message)
 {
 	switch (message) {
-	case OUTSIDE_BOUNDS:
+	case CommonErrors::OUTSIDE_BOUNDS:
 		std::cout << "ERR: Chosen coordinates out of bounds..\n";
 		return;
-	case ETER_PROPERTY_VIOALTION:
+	case CommonErrors::ETER_PROPERTY_VIOALTION:
 		std::cout << "ERR: Can't use Tide elemental card on eter card..\n";
 		return;
 	default:
@@ -188,10 +188,10 @@ void ErrorMessageTide(int message)
 	}
 }
 
-void ErrorMessageMist(int message)
+void ErrorMessageMist(CommonErrors message)
 {
 	switch (message) {
-	case FAILED_ON_ILLUSION:
+	case CommonErrors::ILLUSION_PROPERTY_VIOLATION:
 		std::cout << "ERR: There is another active illusion..\n";
 		return;
 	default:
