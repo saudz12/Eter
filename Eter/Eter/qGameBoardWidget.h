@@ -35,12 +35,14 @@ private:
 	std::unordered_set<std::pair<int, int>,PairHash1> m_emptyPositions;
 	std::unordered_map<std::pair<int, int>, QLabel*,PairHash1> m_cardPosition;
 	std::unordered_map<std::pair<int, int>, QPixmap, PairHash1> m_pixmapPosition;
-	int xMax, yMax;
+	int maxRow, maxColumn;
+	int minRow, minCol;
 	QPixmap currCardPixmap;
 	bool existsOnLeftCol;
 	bool existsOnRightCol;
 	bool existsOnTopRow;
 	bool existsOnBottomRow;
+	bool wasFixedBoardCreated;
 public:
 	qGameBoardWidget(QWidget* parent = nullptr,int board_max_size=0,int card_width=0,int card_heigth=0,int spacing=0);
 	
@@ -64,6 +66,10 @@ private:
 	void removeWidgetFromGrid(QGridLayout*& gridLayout, int row, int column);
 	std::vector<std::pair<std::function<void(QGridLayout*&, int&, int&)>, bool>> createFunctionCallsVector();
 	void stretchGridLayout(QGridLayout*& gridLayout);
+	void createFixedSizeBoard(QGridLayout*& gridLayout);
+	void rearrangeCards(QGridLayout*& gridLayout);
+	void alignCardsToTopLeft();
+	void updateMaxRowCol();
 public:
 	void setBoardPosition(const int x,const int y,const int card_width,const int card_height);
 	void addWidgetOnBoard(qDraggableLabel* card,int row,int column);
