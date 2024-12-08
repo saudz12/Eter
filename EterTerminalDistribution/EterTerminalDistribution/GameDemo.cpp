@@ -950,7 +950,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         }
         else
         {
-            std::cout << "Failed to use Wave\n";
+            std::cout << "\nFailed to use Wave\n";
             break;
         }
 
@@ -1020,8 +1020,93 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
 
         break;
     }
+    //crumble
+    case 21: {
+        uint16_t x, y;
+        std::cout << "\nChoose a card which you want to lower its value by 1, cannot be used on a value 1 card: ";
+        std::cin >> x >> y;
+
+        if (funcCrumble(b, x, y) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            std::cout << "\nFailed to use Crumble\n";
+        }
+
+        break;
+    }   
+    //border, not yet implemented
+    case 22: {
+
+    }
+    //Avalanche
+    case 23: {
+        int16_t x1, y1, x2, y2;
+        char dir;
+        std::cout << "\nChoose 2 neighboring cards, if they are vertical choose to move them up or down (U/D), ";
+        std::cout << "if they are horizontal choose to move them left or right (L/R): ";
+        std::cin >> x1 >> y1 >> x2 >> y2 >> dir;
+
+        if (funcAvalanche(b, x1, y1, x2, y2, dir) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            std::cout << "\nFailed to use Avalanche\n";
+        }
+
+        break;
+    }
+    //Rock
+    case 24: {
+        uint16_t x, y;
+        std::cout << "\nChoose an illusion card you want to cover with one of your cards: ";
+        std::cin >> x >> y;
+
+        currPlayer->printHandCards();
+        std::cout << "\nChoose a card you want to  play: ";
+        uint16_t val;
+        std::cin >> val;
+
+        MinionCard card(val, currPlayer->GetPlayerColor(), false);
+
+        if (currHand.find(card) == currHand.end()) {
+            std::cout << "\nYou don't own any cards of that type!\n";
+            system("pause");
+            break;
+        }
+
+        if (funcRock(b, x, y, card) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            std::cout << "\nFailed to use Rock\n";
+            break;
+        }
+
+        m_currPlayer->UpdateCard(card, -1);
+        currPlayer->SetLastMinionCardPlayed(&b.getCardOnPos(x, y));
+        if (currPlayer->GetPlayerColor() == Colours::RED)
+            Player::updateCover(x, y, p2->getCovered(), b.getMatrix());
+        else
+            Player::updateCover(x, y, p1->getCovered(), b.getMatrix());
+        break;
+    }
+    //go back
+    case 25: {
+        break;
+    }
     }
 }
+
 
 void GameDemo::advanceTurn()
 {

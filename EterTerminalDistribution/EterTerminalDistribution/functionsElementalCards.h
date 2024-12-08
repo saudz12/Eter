@@ -63,16 +63,16 @@ uint16_t funcSupport(Board&, uint16_t, uint16_t);
 uint16_t funcEarthquake(Board&, Player&, Player&);
 
 //value of a card decreased by 1,marked placed on card
-void funcCrumble(Board&, uint16_t, uint16_t);
+uint16_t funcCrumble(Board&, uint16_t, uint16_t);
 
 //defines a border in a position
-void funcBorder(Board&, uint16_t, uint16_t);
+uint16_t funcBorder(Board&, uint16_t, uint16_t);
 
 //move 2 neighboring cards/stacks vertically/horizontally
-void funcAvalanche(Board&, uint16_t, uint16_t, uint16_t, uint16_t, char);
+uint16_t funcAvalanche(Board&, int16_t, int16_t, int16_t, int16_t, char);
 
 //cover a illusion with a card
-void funcRock(Board&, uint16_t, uint16_t, MinionCard&);
+uint16_t funcRock(Board&, int16_t, int16_t, MinionCard&);
 
 void funcDefault();
 

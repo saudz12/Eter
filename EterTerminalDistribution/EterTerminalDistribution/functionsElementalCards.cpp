@@ -1041,45 +1041,54 @@ uint16_t funcEarthquake(Board& board, Player& p1, Player& p2)
 }
 
 // value of a card decreased by 1, marker placed on card
-void funcCrumble(Board& board,uint16_t x, uint16_t y)
+uint16_t funcCrumble(Board& board,uint16_t x, uint16_t y)
 {
 	ResizeableMatrix& matrix = board.getMatrix();
 
 	if (matrix[x][y].back().GetIsEterCard())
 	{
 		std::cout << "Can't use Crumble elemental card on eter card\n";
-		return;
+		return 1;
 	}
 
 	if (matrix[x][y].back().GetIsIllusionCard())
 	{
 		std::cout << "Can't use Crumble elemental card on illusion card\n";
-		return;
+		return 1;
 	}
 
 	int CardValue = matrix[x][y].back().GetValue();
+
 	if (CardValue < 2)	//check according to game rules
 	{
 		std::cout << "Card value is too low, choose a higher value card. \n";
-		return;
+		return 1;
 	}
+
 	matrix[x][y].back().SetValue(CardValue - 1);
 	matrix[x][y].back().SetMarker(true);
+
+	return 0;
 }
 
 // defines a border in a position
-void funcBorder(Board& board, uint16_t x, uint16_t y)
+uint16_t funcBorder(Board& board, uint16_t x, uint16_t y)
 {
+	return 0;
 }
 
-//will clean it later
 //Moves 2 stacks on the same lane by 1 square to a empty place ( - x x - ) --> can have ( - - x x ) or ( x x - - ).
-void funcAvalanche(Board& board, uint16_t x1 , uint16_t y1, uint16_t x2, uint16_t y2, char direction)
+uint16_t funcAvalanche(Board& board, int16_t x1 , int16_t y1, int16_t x2, int16_t y2, char direction)
 {
-	if (std::abs(y1 - y2) != 1 && x1 == x2) { //horizontal - side to side in the sime row
+	Board backupBoard;
+	Board::cloneMatrix(board, backupBoard);
+
+	ResizeableMatrix& matrix = board.getMatrix();
+
+	if (std::abs(y1 - y2) == 1 && x1 == x2) { //horizontal - side to side in the sime row
 		if (direction != 'L' && direction != 'R') {
 			std::cout << "Invalid direction.\n";
-			return;
+			return 1;
 		}
 		auto& leftStack = board.getStackOnPos(x1, std::min(y1, y2));
 		auto& rightStack = board.getStackOnPos(x2, std::max(y1, y2));
@@ -1087,46 +1096,247 @@ void funcAvalanche(Board& board, uint16_t x1 , uint16_t y1, uint16_t x2, uint16_
 		if (leftStack.back().GetIsEterCard() || rightStack.back().GetIsEterCard())
 		{
 			std::cout << "Can't use Avalanche elemental card on eter card\n";
-			return;
+			return 1;
 		}
 		
 		//check left
-		if (direction == 'L'){
+		if (direction == 'L') {
 			if (std::min(y1, y2) == 0) {
 				std::cout << "Invalid direction.\n";
-				return;
+				return 1;
 			}
 			auto& destinationStack = board.getStackOnPos(x1, std::min(y1, y2) - 1);
 			if (!destinationStack.empty()) {
 				std::cout << "Not an empty space!.\n";
-				return;
+				return 1;
 			}
+
+			if (rightStack.back().GetColor() == Colours::RED)
+			{
+				board.updateColChecker(std::max(y1, y2), RED_DEC);
+				if (x1 == std::max(y1, y2))
+				{
+					board.updateFirstDiagChecker(RED_DEC);
+				}
+				if (x1 == matrix.size() - std::max(y1, y2) - 1)
+				{
+					board.updateSeconDiagChecker(RED_DEC);
+				}
+
+				board.updateColChecker(std::min(y1, y2), RED_ADD);
+				if (x1 == std::min(y1, y2))
+				{
+					board.updateFirstDiagChecker(RED_ADD);
+				}
+				if (x1 == matrix.size() - std::min(y1, y2) - 1)
+				{
+					board.updateSeconDiagChecker(RED_ADD);
+				}
+			}
+			else if (rightStack.back().GetColor() == Colours::BLUE)
+			{
+				board.updateColChecker(std::max(y1, y2), BLUE_DEC);
+				if (x1 == std::max(y1, y2))
+				{
+					board.updateFirstDiagChecker(BLUE_DEC);
+				}
+				if (x1 == matrix.size() - std::max(y1, y2) - 1)
+				{
+					board.updateSeconDiagChecker(BLUE_DEC);
+				}
+
+				board.updateColChecker(std::min(y1, y2), BLUE_ADD);
+				if (x1 == std::min(y1, y2))
+				{
+					board.updateFirstDiagChecker(BLUE_ADD);
+				}
+				if (x1 == matrix.size() - std::min(y1, y2) - 1)
+				{
+					board.updateSeconDiagChecker(BLUE_ADD);
+				}
+			}
+
+			if (leftStack.back().GetColor() == Colours::RED)
+			{
+				board.updateColChecker(std::min(y1, y2), RED_DEC);
+				if (x1 == std::min(y1, y2))
+				{
+					board.updateFirstDiagChecker(RED_DEC);
+				}
+				if (x1 == matrix.size() - std::min(y1, y2) - 1)
+				{
+					board.updateSeconDiagChecker(RED_DEC);
+				}
+
+				board.updateColChecker(std::min(y1, y2) - 1, RED_ADD);
+				if (x1 == std::min(y1, y2) - 1)
+				{
+					board.updateFirstDiagChecker(RED_ADD);
+				}
+				if (x1 == matrix.size() - std::min(y1, y2) - 2)
+				{
+					board.updateSeconDiagChecker(RED_ADD);
+				}
+			}
+			else if (leftStack.back().GetColor() == Colours::BLUE)
+			{
+				board.updateColChecker(std::min(y1, y2), BLUE_DEC);
+				if (x1 == std::min(y1, y2))
+				{
+					board.updateFirstDiagChecker(BLUE_DEC);
+				}
+				if (x1 == matrix.size() - std::min(y1, y2) - 1)
+				{
+					board.updateSeconDiagChecker(BLUE_DEC);
+				}
+
+				board.updateColChecker(std::min(y1, y2) - 1, BLUE_ADD);
+				if (x1 == std::min(y1, y2) - 1)
+				{
+					board.updateFirstDiagChecker(BLUE_ADD);
+				}
+				if (x1 == matrix.size() - std::min(y1, y2) - 2)
+				{
+					board.updateSeconDiagChecker(BLUE_ADD);
+				}
+			}
+
 			destinationStack = std::move(leftStack);
 			leftStack = std::move(rightStack);
-			rightStack = std::move(CardStack());
+			rightStack.clear();
 
-			return;
+			if (isolatedSpaces(board))
+			{
+				Board::cloneMatrix(backupBoard, board);
+				std::cout << "Can't have isolated stacks/cards..\n";
+				return 1;
+			}
+
+			board.checkForUpdates();
+
+			return 0;
 		}
 
 		//now we only have right available
 		if (std::max(y1, y2) == board.getColCount() - 1) {
 			std::cout << "Invalid direction.\n";
-			return;
+			return 1;
 		}
 		auto& destinationStack = board.getStackOnPos(x1, std::max(y1, y2) + 1);
 		if (!destinationStack.empty()) {
 			std::cout << "Not an empty space!.\n";
-			return;
+			return 1;
 		}
+
+		if (rightStack.back().GetColor() == Colours::RED)
+		{
+			board.updateColChecker(std::max(y1, y2), RED_DEC);
+			if (x1 == std::max(y1, y2))
+			{
+				board.updateFirstDiagChecker(RED_DEC);
+			}
+			if (x1 == matrix.size() - std::max(y1, y2) - 1)
+			{
+				board.updateSeconDiagChecker(RED_DEC);
+			}
+
+			board.updateColChecker(std::max(y1, y2) + 1, RED_ADD);
+			if (x1 == std::max(y1, y2) + 1)
+			{
+				board.updateFirstDiagChecker(RED_ADD);
+			}
+			if (x1 == matrix.size() - std::max(y1, y2))
+			{
+				board.updateSeconDiagChecker(RED_ADD);
+			}
+		}
+		else if (rightStack.back().GetColor() == Colours::BLUE)
+		{
+			board.updateColChecker(std::max(y1, y2), BLUE_DEC);
+			if (x1 == std::max(y1, y2))
+			{
+				board.updateFirstDiagChecker(BLUE_DEC);
+			}
+			if (x1 == matrix.size() - std::max(y1, y2) - 1)
+			{
+				board.updateSeconDiagChecker(BLUE_DEC);
+			}
+
+			board.updateColChecker(std::max(y1, y2) + 1, BLUE_ADD);
+			if (x1 == std::max(y1, y2) + 1)
+			{
+				board.updateFirstDiagChecker(BLUE_ADD);
+			}
+			if (x1 == matrix.size() - std::max(y1, y2))
+			{
+				board.updateSeconDiagChecker(BLUE_ADD);
+			}
+		}
+
+		if (leftStack.back().GetColor() == Colours::RED)
+		{
+			board.updateColChecker(std::min(y1, y2), RED_DEC);
+			if (x1 == std::min(y1, y2))
+			{
+				board.updateFirstDiagChecker(RED_DEC);
+			}
+			if (x1 == matrix.size() - std::min(y1, y2) - 1)
+			{
+				board.updateSeconDiagChecker(RED_DEC);
+			}
+
+			board.updateColChecker(std::max(y1, y2), RED_ADD);
+			if (x1 == std::max(y1, y2))
+			{
+				board.updateFirstDiagChecker(RED_ADD);
+			}
+			if (x1 == matrix.size() - std::max(y1, y2) - 1)
+			{
+				board.updateSeconDiagChecker(RED_ADD);
+			}
+		}
+		else if (leftStack.back().GetColor() == Colours::BLUE)
+		{
+			board.updateColChecker(std::min(y1, y2), BLUE_DEC);
+			if (x1 == std::min(y1, y2))
+			{
+				board.updateFirstDiagChecker(BLUE_DEC);
+			}
+			if (x1 == matrix.size() - std::min(y1, y2) - 1)
+			{
+				board.updateSeconDiagChecker(BLUE_DEC);
+			}
+
+			board.updateColChecker(std::max(y1, y2), BLUE_ADD);
+			if (x1 == std::max(y1, y2))
+			{
+				board.updateFirstDiagChecker(BLUE_ADD);
+			}
+			if (x1 == matrix.size() - std::max(y1, y2) - 1)
+			{
+				board.updateSeconDiagChecker(BLUE_ADD);
+			}
+		}
+
 		destinationStack = std::move(rightStack);
-		rightStack = std::move(rightStack);
-		leftStack = std::move(CardStack());
-		return;
+		rightStack = std::move(leftStack);
+		leftStack.clear();
+
+		if (isolatedSpaces(board))
+		{
+			Board::cloneMatrix(backupBoard, board);
+			std::cout << "Can't have isolated stacks/cards..\n";
+			return 1;
+		}
+
+		board.checkForUpdates();
+
+		return 0;
 	}
-	else if (std::abs(x1 - x2) != 1 && y1 == y2) {//vertical - side to side in the same column
+	else if (std::abs(x1 - x2) == 1 && y1 == y2) {//vertical - side to side in the same column
 		if (direction != 'U' && direction != 'D') {
 			std::cout << "Invalid direction.\n";
-			return;
+			return 1;
 		}
 		auto& upperStack = board.getStackOnPos(std::min(x1, x2), y1);
 		auto& lowerStack = board.getStackOnPos(std::max(x1, x2), y2);
@@ -1135,50 +1345,312 @@ void funcAvalanche(Board& board, uint16_t x1 , uint16_t y1, uint16_t x2, uint16_
 		if (direction == 'U') {
 			if (std::min(x1, x2) == 0) {
 				std::cout << "Invalid direction.\n";
-				return;
+				return 1;
 			}
 			auto& destinationStack = board.getStackOnPos(std::min(x1, x2) - 1, y1);
 			if (!destinationStack.empty()) {
 				std::cout << "Not an empty space!.\n";
-				return;
+				return 1;
 			}
+
+			if (upperStack.back().GetColor() == Colours::RED)
+			{
+				board.updateRowChecker(std::min(x1, x2), RED_DEC);
+				if (y1 == std::min(x1, x2))
+				{
+					board.updateFirstDiagChecker(RED_DEC);
+				}
+				if (y1 == matrix.size() - std::min(x1, x2) - 1)
+				{
+					board.updateSeconDiagChecker(RED_DEC);
+				}
+
+				board.updateRowChecker(std::min(x1, x2) - 1, RED_ADD);
+				if (y1 == std::min(x1, x2) - 1)
+				{
+					board.updateFirstDiagChecker(RED_ADD);
+				}
+				if (y1 == matrix.size() - std::min(x1, x2) - 2)
+				{
+					board.updateSeconDiagChecker(RED_ADD);
+				}
+			}
+			else if (upperStack.back().GetColor() == Colours::BLUE)
+			{
+				board.updateRowChecker(std::min(x1, x2), BLUE_DEC);
+				if (y1 == std::min(x1, x2))
+				{
+					board.updateFirstDiagChecker(BLUE_DEC);
+				}
+				if (y1 == matrix.size() - std::min(x1, x2) - 1)
+				{
+					board.updateSeconDiagChecker(BLUE_DEC);
+				}
+
+				board.updateRowChecker(std::min(x1, x2) - 1, BLUE_ADD);
+				if (y1 == std::min(x1, x2) - 1)
+				{
+					board.updateFirstDiagChecker(BLUE_ADD);
+				}
+				if (y1 == matrix.size() - std::min(x1, x2) - 2)
+				{
+					board.updateSeconDiagChecker(BLUE_ADD);
+				}
+			}
+
+			if (lowerStack.back().GetColor() == Colours::RED)
+			{
+				board.updateRowChecker(std::max(x1, x2), RED_DEC);
+				if (y1 == std::max(x1, x2))
+				{
+					board.updateFirstDiagChecker(RED_DEC);
+				}
+				if (y1 == matrix.size() - std::max(x1, x2) - 1)
+				{
+					board.updateSeconDiagChecker(RED_DEC);
+				}
+
+				board.updateRowChecker(std::min(x1, x2), RED_ADD);
+				if (y1 == std::min(x1, x2))
+				{
+					board.updateFirstDiagChecker(RED_ADD);
+				}
+				if (y1 == matrix.size() - std::min(x1, x2) - 1)
+				{
+					board.updateSeconDiagChecker(RED_ADD);
+				}
+			}
+			else if (lowerStack.back().GetColor() == Colours::BLUE)
+			{
+				board.updateRowChecker(std::max(x1, x2), BLUE_DEC);
+				if (y1 == std::max(x1, x2))
+				{
+					board.updateFirstDiagChecker(BLUE_DEC);
+				}
+				if (y1 == matrix.size() - std::max(x1, x2) - 1)
+				{
+					board.updateSeconDiagChecker(BLUE_DEC);
+				}
+
+				board.updateRowChecker(std::min(x1, x2), BLUE_ADD);
+				if (y1 == std::min(x1, x2))
+				{
+					board.updateFirstDiagChecker(BLUE_ADD);
+				}
+				if (y1 == matrix.size() - std::min(x1, x2) - 1)
+				{
+					board.updateSeconDiagChecker(BLUE_ADD);
+				}
+			}
+
 			destinationStack = std::move(upperStack);
 			upperStack = std::move(lowerStack);
-			lowerStack = std::move(CardStack());
+			lowerStack.clear();
 
-			return;
+			if (isolatedSpaces(board))
+			{
+				Board::cloneMatrix(backupBoard, board);
+				std::cout << "Can't have isolated stacks/cards..\n";
+				return 1;
+			}
+
+			board.checkForUpdates();
+
+			return 0;
 		}
 
-		//now we only have right available
-		if (std::min(x1, x2) == board.getRowCount() - 1) {
+		//now we only have down available
+		if (std::max(x1, x2) == board.getRowCount() - 1) {
 			std::cout << "Invalid direction.\n";
-			return;
+			return 1;
 		}
+
 		auto& destinationStack = board.getStackOnPos(std::max(x1, x2) + 1, y1);
 		if (!destinationStack.empty()) {
 			std::cout << "Not an empty space!.\n";
-			return;
+			return 1;
 		}
+
+		if (upperStack.back().GetColor() == Colours::RED)
+		{
+			board.updateRowChecker(std::min(x1, x2), RED_DEC);
+			if (y1 == std::min(x1, x2))
+			{
+				board.updateFirstDiagChecker(RED_DEC);
+			}
+			if (y1 == matrix.size() - std::min(x1, x2) - 1)
+			{
+				board.updateSeconDiagChecker(RED_DEC);
+			}
+
+			board.updateRowChecker(std::max(x1, x2), RED_ADD);
+			if (y1 == std::max(x1, x2))
+			{
+				board.updateFirstDiagChecker(RED_ADD);
+			}
+			if (y1 == matrix.size() - std::max(x1, x2) - 1)
+			{
+				board.updateSeconDiagChecker(RED_ADD);
+			}
+		}
+		else if (upperStack.back().GetColor() == Colours::BLUE)
+		{
+			board.updateRowChecker(std::min(x1, x2), BLUE_DEC);
+			if (y1 == std::min(x1, x2))
+			{
+				board.updateFirstDiagChecker(BLUE_DEC);
+			}
+			if (y1 == matrix.size() - std::min(x1, x2) - 1)
+			{
+				board.updateSeconDiagChecker(BLUE_DEC);
+			}
+
+			board.updateRowChecker(std::max(x1, x2), BLUE_ADD);
+			if (y1 == std::max(x1, x2))
+			{
+				board.updateFirstDiagChecker(BLUE_ADD);
+			}
+			if (y1 == matrix.size() - std::max(x1, x2) - 1)
+			{
+				board.updateSeconDiagChecker(BLUE_ADD);
+			}
+		}
+
+		if (lowerStack.back().GetColor() == Colours::RED)
+		{
+			board.updateRowChecker(std::max(x1, x2), RED_DEC);
+			if (y1 == std::max(x1, x2))
+			{
+				board.updateFirstDiagChecker(RED_DEC);
+			}
+			if (y1 == matrix.size() - std::max(x1, x2) - 1)
+			{
+				board.updateSeconDiagChecker(RED_DEC);
+			}
+
+			board.updateRowChecker(std::max(x1, x2) + 1, RED_ADD);
+			if (y1 == std::max(x1, x2) + 1)
+			{
+				board.updateFirstDiagChecker(RED_ADD);
+			}
+			if (y1 == matrix.size() - std::max(x1, x2))
+			{
+				board.updateSeconDiagChecker(RED_ADD);
+			}
+		}
+		else if (lowerStack.back().GetColor() == Colours::BLUE)
+		{
+			board.updateRowChecker(std::max(x1, x2), BLUE_DEC);
+			if (y1 == std::max(x1, x2))
+			{
+				board.updateFirstDiagChecker(BLUE_DEC);
+			}
+			if (y1 == matrix.size() - std::max(x1, x2) - 1)
+			{
+				board.updateSeconDiagChecker(BLUE_DEC);
+			}
+
+			board.updateRowChecker(std::max(x1, x2) + 1, BLUE_ADD);
+			if (y1 == std::max(x1, x2) + 1)
+			{
+				board.updateFirstDiagChecker(BLUE_ADD);
+			}
+			if (y1 == matrix.size() - std::max(x1, x2))
+			{
+				board.updateSeconDiagChecker(BLUE_ADD);
+			}
+		}
+
 		destinationStack = std::move(lowerStack);
 		lowerStack = std::move(upperStack);
-		upperStack = std::move(CardStack());
+		upperStack.clear();
 
-		return;
+		if (isolatedSpaces(board))
+		{
+			Board::cloneMatrix(backupBoard, board);
+			std::cout << "Can't have isolated stacks/cards..\n";
+			return 1;
+		}
+
+		board.checkForUpdates();
+
+		return 0;
 	}
 	std::cout << "Stacks MUST be Adjacent.\n";
-	return;
+	return 1;
 }
 
 //cover a illusion with a card
-void funcRock(Board& board, uint16_t x, uint16_t y, MinionCard& Card)
+uint16_t funcRock(Board& board, int16_t x, int16_t y, MinionCard& Card)
 {
-	ResizeableMatrix matrix = board.getMatrix();
-	if (!matrix[x][y].back().GetIsIllusionCard())
+	MinionCard illusionCard = board.getCardOnPos(x, y);
+
+	ResizeableMatrix& matrix = board.getMatrix();
+
+	if (!illusionCard.GetIsIllusionCard())
 	{
 		std::cout << "Chosen card is not an illusion, choose an illusion card. \n.";
-		return;
+		return 1;
 	}
-	matrix[x][y].push_back(Card);
+
+	if (illusionCard.GetColor() == Colours::RED)
+	{
+		board.updateColChecker(y, RED_DEC);
+		board.updateRowChecker(x, RED_DEC);
+		if (x == y)
+		{
+			board.updateFirstDiagChecker(RED_DEC);
+		}
+		if (x == matrix.size() - 1)
+		{
+			board.updateSeconDiagChecker(RED_DEC);
+		}
+	}
+	else if (illusionCard.GetColor() == Colours::BLUE)
+	{
+		board.updateColChecker(y, BLUE_DEC);
+		board.updateRowChecker(x, BLUE_DEC);
+		if (x == y)
+		{
+			board.updateFirstDiagChecker(BLUE_DEC);
+		}
+		if (x == matrix.size() - 1)
+		{
+			board.updateSeconDiagChecker(BLUE_DEC);
+		}
+	}
+
+	//using setPosWaterfall because it doesn't mess up the illusion
+	board.setPosWaterfall(x, y, Card);
+
+	if (Card.GetColor() == Colours::RED)
+	{
+		board.updateColChecker(y, RED_ADD);
+		board.updateRowChecker(x, RED_ADD);
+		if (x == y)
+		{
+			board.updateFirstDiagChecker(RED_ADD);
+		}
+		if (x == matrix.size() - 1)
+		{
+			board.updateSeconDiagChecker(RED_ADD);
+		}
+	}
+	else if (Card.GetColor() == Colours::BLUE)
+	{
+		board.updateColChecker(y, BLUE_ADD);
+		board.updateRowChecker(x, BLUE_ADD);
+		if (x == y)
+		{
+			board.updateFirstDiagChecker(BLUE_ADD);
+		}
+		if (x == matrix.size() - 1)
+		{
+			board.updateSeconDiagChecker(BLUE_ADD);
+		}
+	}
+
+	return 0;
 }
 
 void funcDefault()
