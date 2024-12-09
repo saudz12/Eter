@@ -6,17 +6,17 @@ CommonErrors CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_vie
 
 	//valid typing
 	if (type != ID_ROW && type != ID_COLUMN) {
-		return CommonErrors::INCOMPLETE_LINE_STRUCTURE;
+		return CommonErrors::_INCOMPLETE_LINE_STRUCTURE;
 	}
 
 	//insine bounds
 	if (lineCnt < 0 || type == ID_ROW && lineCnt > board.getLineCount() - 1 || type == ID_COLUMN && lineCnt > board.getColCount() - 1) {
-		return CommonErrors::OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUNDS;
 	}
 
 	//valid direction
 	if (type == ID_ROW && direction != DIR_LEFT && direction != DIR_RIGHT || type == ID_COLUMN && direction != DIR_UP && direction != DIR_DOWN) {
-		return CommonErrors::INVALID_DIRECTION;
+		return CommonErrors::_INVALID_DIRECTION;
 	}
 
 	//full line and no eters
@@ -24,11 +24,11 @@ CommonErrors CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_vie
 		for (auto& stack : matrix[lineCnt])
 		{
 			if (stack.empty()) {
-				return CommonErrors::INVALID_LINE_TYPE;
+				return CommonErrors::_INVALID_LINE_TYPE;
 			}
 			if (stack.back().GetIsEterCard())
 			{
-				return CommonErrors::ETER_PROPERTY_VIOLATION;
+				return CommonErrors::_ETER_PROPERTY_VIOLATION;
 			}
 		}
 	}
@@ -36,16 +36,16 @@ CommonErrors CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_vie
 		for (auto& row : matrix)
 		{
 			if (row[lineCnt].empty()) {
-				return CommonErrors::INCOMPLETE_LINE_STRUCTURE;
+				return CommonErrors::_INCOMPLETE_LINE_STRUCTURE;
 			}
 			if (row[lineCnt].back().GetIsEterCard())
 			{
-				return CommonErrors::ETER_PROPERTY_VIOLATION;
+				return CommonErrors::_ETER_PROPERTY_VIOLATION;
 			}
 		}
 	}
 
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 //incomplete. needs preference cehck - ask about it
@@ -57,71 +57,71 @@ CommonErrors CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_vi
 	int ratioY = (linetype == ID_ROW) ? 1 : 0;
 
 	if (linetype != ID_ROW && linetype != ID_COLUMN) {
-		return CommonErrors::INVALID_LINE_TYPE;
+		return CommonErrors::_INVALID_LINE_TYPE;
 	}
 
 	if (linetype == ID_ROW && (preference != DIR_LEFT || preference != DIR_RIGHT) || linetype == ID_COLUMN && (preference != DIR_UP || preference != DIR_DOWN)) {
-		return CommonErrors::INVALID_DIRECTION;
+		return CommonErrors::_INVALID_DIRECTION;
 	}
 	if (!matrix[x][y].empty()) {
-		return CommonErrors::EMPTY_STACK;
+		return CommonErrors::_EMPTY_STACK;
 	}
 
 	if ((x < 0 || x >= board.getRowCount()) || (y < 0 || y >= board.getColCount())) {
-		return CommonErrors::OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUNDS;
 	}
 
 	//check if the adjacent spaces are out of bounds
 	if (linetype == ID_ROW) {
 		if (y - 1 < 0 || y + 1 >= board.getColCount())
 		{
-			return CommonErrors::ADJACENT_OUTSIDE_BOUNDS;
+			return CommonErrors::_ADJACENT_OUTSIDE_BOUNDS;
 		}
 	}
 	else {
 		if (x - 1 < 0 || x + 1 >= board.getRowCount())
 		{
-			return CommonErrors::ADJACENT_OUTSIDE_BOUNDS;
+			return CommonErrors::_ADJACENT_OUTSIDE_BOUNDS;
 		}
 	}
 
 	//check if the adjancent spaces are empty
 	if (matrix[x - ratioX][y - ratioY].empty() || matrix[x + ratioX][y + ratioY].empty())
 	{
-		return CommonErrors::ADJACENT_SPACES_EMPTY;
+		return CommonErrors::_ADJACENT_SPACES_EMPTY;
 	}
 	//check if one of the adjancent spaces is an eter card
 	if (matrix[x - ratioX][y - ratioY].back().GetIsEterCard() || matrix[x + ratioX][y + ratioY].back().GetIsEterCard())
 	{
-		return CommonErrors::ETER_PROPERTY_VIOLATION;
+		return CommonErrors::_ETER_PROPERTY_VIOLATION;
 	}
 
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncFlame(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2, const MinionCard& CardToBePlaced, Player& p)
 {
 	int16_t lines = board.getLineCount(), cols = board.getColCount();
 	if (x1 < 0 || x1 > lines || y1 < 0 || y1 > cols)
-		return CommonErrors::OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUNDS;
 	/*if (board.setPos(x2, y2, CardToBePlaced, p) == 1)
 		return FAILED_FLAME_CARD_PLACEMENT;*/
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncFire(Board&, int16_t cardValue) {
 	if (cardValue < 1 || cardValue > 4)
-		return CommonErrors::INVALID_CARD_VALUE;
-	return CommonErrors::NO_ERRORS;
+		return CommonErrors::_INVALID_CARD_VALUE;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncAsh(Board& board, const MinionCard& card, int16_t x, int16_t y) {
 	int16_t lines = board.getLineCount(), cols = board.getColCount();
 	if (card.GetValue() > 4 || card.GetValue() < 1)
-		return CommonErrors::INVALID_CARD_VALUE;
+		return CommonErrors::_INVALID_CARD_VALUE;
 	if (x < 0 || x > lines || y < 0 || y > cols)/// bound check
-		return CommonErrors::OUTSIDE_BOUNDS;
-	return CommonErrors::NO_ERRORS;
+		return CommonErrors::_OUTSIDE_BOUNDS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncSpark(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2)
@@ -132,11 +132,11 @@ CommonErrors checkFuncSpark(Board& board, int16_t x1, int16_t y1, int16_t x2, in
 		x2<0 || x2>lines ||
 		y1<0 || y1>cols ||
 		y2<0 || y2>cols)
-		return CommonErrors::OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUNDS;
 	if (matrix[x1][y1].back().GetIsEterCard())
-		return CommonErrors::ETER_PROPERTY_VIOLATION;
+		return CommonErrors::_ETER_PROPERTY_VIOLATION;
 
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncSquall(Board& board, int16_t x1, int16_t y1,Player p) {
@@ -144,22 +144,22 @@ CommonErrors checkFuncSquall(Board& board, int16_t x1, int16_t y1,Player p) {
 	ResizeableMatrix& matrix = board.getMatrix();
 
 	if (x1 < 0 || x1 > lines)
-		return CommonErrors::OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUNDS;
 	if (y1 < 0 || y1 > cols)
-		return CommonErrors::OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUNDS;
 
 	if (matrix[x1][y1].empty())
-		return CommonErrors::EMPTY_STACK;
+		return CommonErrors::_EMPTY_STACK;
 
 	if (matrix[x1][y1].back().GetIsEterCard())
-		return CommonErrors::ETER_PROPERTY_VIOLATION;
+		return CommonErrors::_ETER_PROPERTY_VIOLATION;
 
 	if (matrix[x1][y1].back().GetIsIllusionCard())
-		return CommonErrors::NOT_ILLUSION;
+		return CommonErrors::_NOT_ILLUSION;
 	if (matrix[x1][y1].back().GetColor() != p.GetPlayerColor())
-		return CommonErrors::NOT_ENEMY_CARD;
+		return CommonErrors::_NOT_ENEMY_CARD;
 
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncGust(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
@@ -170,18 +170,18 @@ CommonErrors checkFuncGust(Board& board, int16_t x1, int16_t y1, int16_t x2, int
 		x2<0 || x2>lines ||
 		y1<0 || y1>cols ||
 		y2<0 || y2>cols) // bound check
-		return CommonErrors::OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUNDS;
 
 	if (matrix[x1][y1].back().GetIsEterCard() || matrix[x2][y2].back().GetIsEterCard())
-		return CommonErrors::ETER_PROPERTY_VIOLATION;
+		return CommonErrors::_ETER_PROPERTY_VIOLATION;
 
 	if (!((x1 == x2 && std::abs(y1 - y2) == 1) || (y1 == y2) && std::abs(x1 - x2)))
-		return CommonErrors::IDENTICAL_COORDINATES;
+		return CommonErrors::_IDENTICAL_COORDINATES;
 
 	if (!(matrix[x1][y1].back().GetValue() > matrix[x2][y2].back().GetValue()))
-		return CommonErrors::INVALID_CARD_VALUE;
+		return CommonErrors::_INVALID_CARD_VALUE;
 
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncMirage(Board& board, int16_t x1, int16_t y1, const MinionCard&) {
@@ -189,11 +189,11 @@ CommonErrors checkFuncMirage(Board& board, int16_t x1, int16_t y1, const MinionC
 	int16_t lines = board.getRowCount(), cols = board.getColCount();
 	if (x1 < 0 || x1 > lines ||
 		y1 < 0 || y1 > cols) //bound check
-		return CommonErrors::OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUNDS;
 
 	if (!matrix[x1][y1].back().GetIsIllusionCard())
-		return CommonErrors::NOT_ILLUSION;
-	return CommonErrors::NO_ERRORS;
+		return CommonErrors::_NOT_ILLUSION;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncStorm(Board& board, int16_t x, int16_t y) {
@@ -203,11 +203,11 @@ CommonErrors checkFuncStorm(Board& board, int16_t x, int16_t y) {
 
 	if (x < 0 || x > lines ||
 		y < 0 || y > cols) //bound check
-		return CommonErrors::OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUNDS;
 	if (matrix[x][y].size() < 2)
-		return CommonErrors::STACK_HEIGHT_TOO_SMALL;
+		return CommonErrors::_STACK_HEIGHT_TOO_SMALL;
 
-	return CommonErrors::OUTSIDE_BOUNDS;
+	return CommonErrors::_OUTSIDE_BOUNDS;
 }
 
 CommonErrors checkFuncTide(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
@@ -220,12 +220,12 @@ CommonErrors checkFuncTide(Board& board, int16_t x1, int16_t y1, int16_t x2, int
 		x2<0 || x2>lines ||
 		y1<0 || y1>cols ||
 		y2<0 || y2>cols) // bound check
-		return CommonErrors::OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUNDS;
 
 	if (first.back().GetIsEterCard() || second.back().GetIsEterCard())
-		return CommonErrors::ETER_PROPERTY_VIOLATION;
+		return CommonErrors::_ETER_PROPERTY_VIOLATION;
 
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncMist(Board& board, Player& p, int16_t x, int16_t y, MinionCard& card) {
@@ -233,8 +233,8 @@ CommonErrors checkFuncMist(Board& board, Player& p, int16_t x, int16_t y, Minion
 	/*if (board.setPos(x, y, card, p) == 1)
 		return 1;*/
 	if (!p.GetIllusionUsage() || p.GetIllusionCard() == nullptr)
-		return CommonErrors::ILLUSION_PROPERTY_VIOLATION;
-	return CommonErrors::NO_ERRORS;
+		return CommonErrors::_ILLUSION_PROPERTY_VIOLATION;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncWave(Board& board, int16_t x1, int16_t y1, MinionCard) {
@@ -242,89 +242,112 @@ CommonErrors checkFuncWave(Board& board, int16_t x1, int16_t y1, MinionCard) {
 	if (matrix[x1][y1].back().GetIsEterCard())
 		return -2;*/
 
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncBlizzard(Line&) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncWaterfall(Board&, int16_t) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncSupport(Board&, int16_t, int16_t) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncEarthquake(Board&) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncCrumble(Board&, int16_t, int16_t) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncBorder(Board&, int16_t, int16_t) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncAvalanche(Board&, int16_t, int16_t, int16_t, int16_t, char) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncRock(Board&, int16_t, int16_t, MinionCard&) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncFireMage1(Board&, Player&) {
-	return CommonErrors::NO_ERRORS;
+CommonErrors checkFuncFireMage1(Board& _board, Player& _player, int16_t _x, int16_t _y, int16_t _pos) {
+
+	if (_x < 0 || _y < 0 || _x >= _board.getRowCount() || _y >= _board.getColCount())
+		return CommonErrors::_OUTSIDE_BOUNDS;
+	if (_board.CheckStackCondition(_x, _y) == false)
+		return CommonErrors::_HOLE_PROPERTY_VIOLATION;
+	if (_board.CheckStackPopulation(_x, _y) == false)
+		return CommonErrors::_EMPTY_STACK;
+	if (_player.CheckCoveredPopulation())
+		return CommonErrors::_NO_COVERED_CARDS;
+	if (_player.CheckCoveredProperty(_x, _y, _pos) == false)
+		return CommonErrors::_INVALID_CARD_TYPE;
+
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncFireMage2(Board&, Player&) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncEarthMage2(Board&) {
-	return CommonErrors::NO_ERRORS;
+CommonErrors checkFuncEarthMage1(Board& _board, Player& _caster, int16_t _x, int16_t _y, int16_t _val)
+{
+	if (_val < 0 || _val > 3)
+		return CommonErrors::_INVALID_CARD_VALUE;
+
+	if (_x < 0 || _y < 0 || _x >= _board.getRowCount() || _y >= _board.getColCount())
+		return CommonErrors::_OUTSIDE_BOUNDS;
+
+	if (!_caster.HasCardOfValue((uint16_t)_val))
+		return CommonErrors::_NO_CARDS_OF_VALUE;
+
+	const auto& selected = _board.getStackOnPos(_x, _y);
+	if (selected.empty())
+		return CommonErrors::_EMPTY_STACK;
+
+	const MinionCard& top = selected.back();
+	if (top.GetColor() == _caster.GetPlayerColor())
+		return CommonErrors::_NOT_ENEMY_CARD;
+	if (top.CheckIsHole())
+		return CommonErrors::_HOLE_PROPERTY_VIOLATION;
+	if (top.GetIsEterCard())
+		return CommonErrors::_ETER_PROPERTY_VIOLATION;
+	if (top.GetIsIllusionCard())
+		return CommonErrors::_ILLUSION_PROPERTY_VIOLATION;
+	if (top.GetValue() <= _val)
+		return CommonErrors::_INVALID_CARD_TYPE;
+
+	return CommonErrors::_NO_ERRORS;
+}
+
+CommonErrors checkFuncEarthMage2(Board& _board, int16_t _x, int16_t _y) {
+	if (_x < 0 || _y < 0 || _x >= _board.getRowCount() || _y >= _board.getColCount())
+		return CommonErrors::_OUTSIDE_BOUNDS;
+	if (!_board.getStackOnPos(_x, _y).empty())
+		return CommonErrors::_POPULATED_STACK;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncAirMage1(Board&, Player& pl) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncAirMage2(Board&, int16_t, int16_t) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncWaterMage1(Board&, Player&) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncWaterMage2(Board& board, Colours color, Player& pl) {
-	return CommonErrors::NO_ERRORS;
+	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkfuncEarthMage1(Board& board, Player& caster, int16_t x, int16_t y, int16_t val)
-{
-	if (val < 0 || val > 3)
-		return CommonErrors::INVALID_CARD_VALUE;
-
-	if (x < 0 || y < 0 || x >= board.getRowCount() || y >= board.getColCount())
-		return CommonErrors::OUTSIDE_BOUNDS;
-
-	if (!caster.HasCardOfValue((uint16_t)val))    
-		return CommonErrors::NO_CARDS_OF_VALUE;    
-
-	const auto& selected = board.getStackOnPos(x, y);
-	if (selected.empty())
-		return CommonErrors::EMPTY_STACK;
-
-	const MinionCard& top = selected.back();
-	if (top.GetColor() != caster.GetPlayerColor())
-		return CommonErrors::NOT_ENEMY_CARD;
-	if (top.GetValue() >= val)
-		return CommonErrors::INVALID_CARD_TYPE;
-	
-	return CommonErrors::NO_ERRORS;
-}

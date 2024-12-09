@@ -3,10 +3,10 @@
 
 int main()
 {
-	Player testPlayer(Colours::RED, false);
-	//printHand(testPlayer);
+	/*Player testPlayer(Colours::RED, false);
+	//PrintHand(testPlayer);
 
-	return 0;
+	return 0;*/
 
 	GameDemo test(3,3);
 	test.runDemo();

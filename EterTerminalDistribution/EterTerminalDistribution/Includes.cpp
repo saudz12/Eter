@@ -34,7 +34,7 @@ LineType GetLineType(char t)
 	case 'C':
 		return LineType::TYPE_COLUMN;
 	default:
-		return LineType::INVALID_LINE_TYPE;
+		return LineType::_INVALID_LINE_TYPE;
 	}
 }
 

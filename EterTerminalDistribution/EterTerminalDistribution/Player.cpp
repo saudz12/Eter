@@ -181,7 +181,6 @@ void Player::GenerateHand(bool training)
 {
 	int offset = int16_t(!training);
 
-
 	m_remainingCounter.emplace(0, offset);
 	m_remainingCounter.emplace(1, 2);
 	m_remainingCounter.emplace(2, 2 + offset);
@@ -218,11 +217,21 @@ CoveredSet& Player::getCovered()
 	return this->m_coveredCardSet;
 }
 
-MinionCard&& Player::MoveCard(int16_t val) {
-	MinionCard&& toMove = std::move(m_remainingCards[val].back());
+bool Player::CheckCoveredPopulation()
+{
+	return m_coveredCardSet.empty();
+}
+
+bool Player::CheckCoveredProperty(int16_t _x, int16_t _y, int16_t _pos)
+{
+	return m_coveredCardSet.find({ _x, _y, _pos }) != m_coveredCardSet.end();
+}
+
+MinionCard&& Player::MoveCard(int16_t _val) {
+	MinionCard&& toMove = std::move(m_remainingCards[_val].back());
 
 	m_remainingCards.pop_back();
-	m_remainingCounter[val]--;
+	m_remainingCounter[_val]--;
 
 	return std::move(toMove);
 }
@@ -234,6 +243,9 @@ bool Player::HasCardOfValue(uint16_t value)
 			return true;
 	}
 	return false;
+
+	//DO NOT REMOVE
+	//return m_remainingCounter[value] > 0;
 }
 
 void Player::SetIllusionCard(MinionCard* illusionCard)

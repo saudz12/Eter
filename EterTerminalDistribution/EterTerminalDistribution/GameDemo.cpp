@@ -781,8 +781,8 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         std::string dir;
         std::cout << "\nWhich direction (left(L)/right(R) for Row, up(U)/down(D) for Column): ";
         std::cin >> dir;
-        int condition;
-        if (condition = CheckHurricaneInput(b, lineCnt, type, dir) == NO_ERRORS) {
+        CommonErrors condition = CheckHurricaneInput(b, lineCnt, type, dir);
+        if (condition == CommonErrors::_NO_ERRORS) {
             if (funcHurricane(b, p1->GetHandCards(), p2->GetHandCards(), lineCnt, type, dir) == 0)
             {
                 wasUsed = true;

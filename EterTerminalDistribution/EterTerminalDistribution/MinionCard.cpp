@@ -54,7 +54,7 @@ CardType MinionCard::GetCardType() const
     return m_cardType;
 }
 
-bool MinionCard::GetIsHole() const
+bool MinionCard::CheckIsHole() const
 {
     return m_isHole;
 }

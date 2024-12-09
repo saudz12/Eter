@@ -49,13 +49,13 @@ CommonErrors checkFuncAvalanche(Board&, int16_t, int16_t, int16_t, int16_t, char
 
 CommonErrors checkFuncRock(Board&, int16_t, int16_t, MinionCard&);
 
-CommonErrors checkFuncFireMage1(Board&, Player&);
+CommonErrors checkFuncFireMage1(Board& _board, Player& _player, int16_t _x, int16_t _y, int16_t _pos);
 
 CommonErrors checkFuncFireMage2(Board&, Player&);
 
-CommonErrors checkFuncEarthMage1(Board&, Player&, int16_t, int16_t);
+CommonErrors checkFuncEarthMage1(Board& _board, Player& _user, int16_t _x, int16_t _y, int16_t _val);
 
-CommonErrors checkFuncEarthMage2(Board&);
+CommonErrors checkFuncEarthMage2(Board& _board, int16_t _x, int16_t _y);
 
 CommonErrors checkFuncAirMage1(Board&, Player& pl);
 

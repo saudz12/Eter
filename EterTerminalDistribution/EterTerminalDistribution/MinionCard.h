@@ -44,7 +44,7 @@ public:
 	bool GetMarker() const;
 	CardType GetCardType() const override;
 
-	bool GetIsHole() const;
+	bool CheckIsHole() const;
 
 	//setters
 	void SetValue(uint16_t value);

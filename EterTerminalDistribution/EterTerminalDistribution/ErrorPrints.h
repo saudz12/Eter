@@ -4,42 +4,50 @@
 
 
 enum class CommonErrors : int16_t {
-	NO_ERRORS,
-	OUTSIDE_BOUNDS,
-	ETER_PROPERTY_VIOLATION,
-	ILLUSION_PROPERTY_VIOLATION,
-	NEEDS_EMPTY_SPACE,
-	INVALID_LINE_TYPE,
-	INVALID_DIRECTION,
-	INCOMPLETE_LINE_STRUCTURE,
-	IDENTICAL_COORDINATES,
+	_NO_ERRORS,
+	_OUTSIDE_BOUNDS,
+	_ETER_PROPERTY_VIOLATION,
+	_ILLUSION_PROPERTY_VIOLATION,
+	_HOLE_PROPERTY_VIOLATION,
+	_NEEDS_EMPTY_SPACE,
+	_INVALID_LINE_TYPE,
+	_INVALID_DIRECTION,
+	_INCOMPLETE_LINE_STRUCTURE,
+	_IDENTICAL_COORDINATES,
 
-	EMPTY_STACK,
-	STACK_HEIGHT_TOO_SMALL,
-	NEGATIVE_CARD_VALUE,
+	_EMPTY_STACK,
+	_POPULATED_STACK,
+	_STACK_HEIGHT_TOO_SMALL,
+	_NEGATIVE_CARD_VALUE,
 
-	INVALID_CARD_TYPE,
-	INVALID_CARD_VALUE,
-	NOT_ENEMY_CARD,
-	NOT_ACTIVE_CARD,
-	NOT_ILLUSION,
-	NO_CARDS_OF_VALUE,
+	_INVALID_CARD_TYPE,
+	_INVALID_CARD_VALUE,
+	_NOT_ENEMY_CARD,
+	_NOT_ACTIVE_CARD,
+	_NOT_ILLUSION,
+	_NO_CARDS_OF_VALUE,
 
-	ADJACENT_OUTSIDE_BOUNDS,
-	ADJACENT_SPACES_EMPTY
+	_NO_COVERED_CARDS,
+
+	_ADJACENT_OUTSIDE_BOUNDS,
+	_ADJACENT_SPACES_EMPTY
 
 };
 
-void ErrorMesageHuricane(CommonErrors message);
-void ErrorMessageWhirlpool(CommonErrors message);
-void ErrorMessageFlame(CommonErrors message);
-void ErrorMessageFire(CommonErrors message);
-void ErrorMessageAsh(CommonErrors message);
-void ErrorMessageSpark(CommonErrors message);
-void ErrorMessageSquall(CommonErrors message);
-void ErrorMessageGust(CommonErrors message);
-void ErrorMessageMirage(CommonErrors message);
-void ErrorMessagestorm(CommonErrors message);
-void ErrorMessageTide(CommonErrors message);
-void ErrorMessageMist(CommonErrors message);
-void ErrorMessageWave(CommonErrors message);
+void ErrorMesageHuricane(CommonErrors _message);
+void ErrorMessageWhirlpool(CommonErrors _message);
+void ErrorMessageFlame(CommonErrors _message);
+void ErrorMessageFire(CommonErrors _message);
+void ErrorMessageAsh(CommonErrors _message);
+void ErrorMessageSpark(CommonErrors _message);
+void ErrorMessageSquall(CommonErrors _message);
+void ErrorMessageGust(CommonErrors _message);
+void ErrorMessageMirage(CommonErrors _message);
+void ErrorMessagestorm(CommonErrors _message);
+void ErrorMessageTide(CommonErrors _message);
+void ErrorMessageMist(CommonErrors _message);
+void ErrorMessageWave(CommonErrors _message);
+
+void ErrorMessageFireMage1(CommonErrors _message);
+void ErrorMessageEarthMage1(CommonErrors _message);
+void ErrorMessageEarthMage2(CommonErrors _message);

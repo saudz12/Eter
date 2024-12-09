@@ -99,10 +99,15 @@ public:
 	int16_t setPos(int16_t& x, int16_t& y, const MinionCard& card, Player& p);
 	int16_t setPosWaterfall(int16_t x, int16_t y, const MinionCard& card);
 
+
+	bool CheckStackCondition(int16_t _x, int16_t _y); //new
+	bool CheckStackPopulation(int16_t _x, int16_t _y); //new
 	BoardChanges GetChanges(int16_t _x, int16_t _y); //new
 	BoardErrors CheckPos(int16_t _x, int16_t _y); //new
 	void ExtendBoard(BoardChanges _flag); //new
-	void PlaceCard(int16_t _x, int16_t _y, int16_t _val, Player& _active, BoardChanges _flag); //new
+	void PlaceCard(Player& _active, int16_t _x, int16_t _y, int16_t _val, BoardChanges _flag); //new
+	void RemoveCard(int16_t _x, int16_t _y, int16_t _pos); //new
+	void CreateHole(int16_t _x, int16_t _y); //new
 
 	int16_t removePos(int16_t x, int16_t y);
 	int16_t removeStack(int16_t x, int16_t y);

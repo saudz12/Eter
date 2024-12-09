@@ -291,15 +291,13 @@ int16_t Board::setPos(int16_t& x, int16_t& y, const MinionCard& card, Player& p)
 	return 0;
 }
 
-//updating set pos...
-
-//
-
 int16_t Board::setPosWaterfall(int16_t x, int16_t y, const MinionCard& card)
 {
 	m_matrix[x][y].push_back(card);
 	return 0;
 }
+
+
 
 BoardErrors Board::CheckPos(int16_t _x, int16_t _y)
 {
@@ -313,6 +311,18 @@ BoardErrors Board::CheckPos(int16_t _x, int16_t _y)
 		return BoardErrors::_OUTSIDE_BOUND_;
 
 	return BoardErrors::_NO_ERRORS;
+}
+
+bool Board::CheckStackCondition(int16_t _x, int16_t _y)
+{
+	if (m_matrix[_x][_y].empty())
+		return true;
+	return m_matrix[_x][_y].back().CheckIsHole();
+}
+
+bool Board::CheckStackPopulation(int16_t _x, int16_t _y)
+{
+	return m_matrix[_x][_y].empty();
 }
 
 BoardChanges Board::GetChanges(int16_t _x, int16_t _y)
@@ -381,13 +391,26 @@ void Board::ExtendBoard(BoardChanges _flag)
 	}
 }
 
-void Board::PlaceCard(int16_t _x, int16_t _y, int16_t _val, Player& _active, BoardChanges _flag)
+void Board::PlaceCard(Player& _active, int16_t _x, int16_t _y, int16_t _val, BoardChanges _flag)
 {
 	ExtendBoard(_flag);
 
 	m_matrix[_x][_y].push_back(_active.MoveCard(_val));
 
 	//update col, row and diagonal -- rewrite them accordingly
+}
+
+void Board::RemoveCard(int16_t _x, int16_t _y, int16_t _pos)
+{
+	for (int i = _pos; i < m_matrix[_x][_y].size() - 1; i++)
+		m_matrix[_x][_y][i] = std::move(m_matrix[_x][_y][i + 1]);
+}
+
+void Board::CreateHole(int16_t _x, int16_t _y)
+{
+	m_matrix[_x][_y].clear();
+	m_matrix[_x][_y].emplace_back(0, Colours::INVALID_COL, false);
+	m_matrix[_x][_y].back().SetIsHole(true);
 }
 
 //1 esec, 0 succes

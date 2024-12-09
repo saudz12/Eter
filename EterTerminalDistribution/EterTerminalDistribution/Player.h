@@ -25,7 +25,7 @@ private:
 	CardCounter m_remainingCounter; //new
 	CardList m_remainingCards; //new
 
-	CoveredSet m_coveredCardSet;
+	CoveredSet m_coveredCardSet; //change to pointers and positions?
 
 	Colours m_playerColor;
 	Hand m_removedCards;
@@ -58,7 +58,9 @@ public:
 	MinionCard* GetIllusionCard() const;
 	CoveredSet& getCovered();
 
-	MinionCard&& MoveCard(int16_t val); //new
+	bool CheckCoveredPopulation(); //new
+	bool CheckCoveredProperty(int16_t _x, int16_t _y, int16_t _pos); //new
+	MinionCard&& MoveCard(int16_t _val); //new
 
 	bool HasCardOfValue(uint16_t value);
 
@@ -74,7 +76,7 @@ public:
 	//primeste coveredul la celelalt player
 	static void updateCover(uint16_t x, uint16_t y, CoveredSet& coveredCards, ResizeableMatrix& board);
 
-	//T(a, b) + T(c, d) = T(a + c, b + d) <-- aplicam asemenea transofmrari pe un coveredSet cand miscam un stack de marime > 1 -- cam consuming dar tabla e pera mica ca sa se simta
+	//T(a, b) + T(c, d) = T(a + c, b + d) <-- aplicam asemenea transofmrari pe un coveredSet cand miscam un stack de marime > 1 
 	static void applyTansformToCovered(Player& p1, Player& p2, CardStack& stack, uint16_t oldX, uint16_t oldY, uint16_t newX, uint16_t newY);
 
 	static void returnStackToHand(Hand& h1, Hand& h2, CardStack& stack);

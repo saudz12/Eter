@@ -3,15 +3,15 @@
 #include "HoleCard.h"
 
 //remove opponent's card that covers one of player's cards
-void funcFireMage1(Board&, Player&);
+void funcFireMage1(Board& _board, Player& _user, int16_t _x, int16_t _y, int16_t _pos);
 
 void funcFireMage2(Board&, Player&);
 
 //cover opponent card with lower value card of yours
-void funcEarthMage1(Board&, Player&, int16_t, int16_t);
+void funcEarthMage1(Board& _board, Player& _user, int16_t _x, int16_t _y, int16_t _val);
 
 //hole card,position to cover
-void funcEarthMage2(Board&);
+void funcEarthMage2(Board& _board, int16_t _x, int16_t _y);
 
 //original position, destination position(player's card)
 void funcAirMage1(Board&, Player& pl);

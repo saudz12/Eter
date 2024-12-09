@@ -58,7 +58,7 @@ enum class ColorActions : int16_t {
 enum class LineType : int16_t {
 	TYPE_COLUMN,
 	TYPE_ROW,
-	INVALID_LINE_TYPE
+	_INVALID_LINE_TYPE
 };
 
 LineType GetLineType(char t);

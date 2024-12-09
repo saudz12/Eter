@@ -1,27 +1,9 @@
 #include "functionsMageCards.h"
 #include "MoveLaterToGameClass.h"
 
-// remove opponent's card that covers one of player's cards
-void funcFireMage1(Board& board, Player& pl)
+void funcFireMage1(Board& _board, Player& _user, int16_t _x, int16_t _y, int16_t _pos)
 {
-	uint16_t x, y;
-	std::cout << "select the position where you want to remove the opponent's card:\n";
-	std::cin >> x >> y;
-
-	ResizeableMatrix& matrix = board.getMatrix();
-
-	if (matrix[x][y].empty())
-		return;
-
-	CoveredSet& coveredSet = pl.getCovered();
-	if (!coveredSet.empty())
-	{
-		pl.printCoveredCards(matrix);
-		std::cout << "choose one of the cards to remove it\n";
-		int chosenPositionToRemove;
-		std::cin >> chosenPositionToRemove;
-		matrix[x][y].erase(matrix[x][y].begin() + chosenPositionToRemove);
-	}
+	_board.RemoveCard(_x, _y, _pos);
 }
 
 void funcFireMage2(Board& board,Player& pl)
@@ -99,37 +81,28 @@ void funcFireMage2(Board& board,Player& pl)
 	board.checkForUpdates();
 }
 
- //cover opponent card with lower value card of yours
-void funcEarthMage1(Board& board,Player& pl, int16_t x , int16_t y)
+void funcEarthMage1(Board& _board,Player& _user, int16_t _x , int16_t _y, int16_t _val)
 {
-	Hand& currHand = pl.GetHandCards();
-	Colours curr_col = pl.GetPlayerColor();
-	for (auto& i : currHand) {
-		std::cout << "Minion Card " << i.first.GetValue() << ": " << i.second << "Left\n";
-	}
-	std::cout << "Choose a card from the hand and where to place it in the board\n";
-	uint16_t val;
-	std::cin >> val >> x >> y;
-	MinionCard toSearch(val, curr_col, false);
-	//check if card in hand. reduce and remove only if can place.
-	if (currHand.find(toSearch) == currHand.end()) {
-		std::cout << "\nYou don't own any cards of that type!\n";
-		system("pause");
-	}
-	if (board.setPos(x, y, toSearch, pl) == 1) {
-		std::cout << "\nYou can't place that card there!\n";
-		system("pause");
-	}
-	ResizeableMatrix& matrix = board.getMatrix();
-	matrix[x][y].back().SetValue(val);
-	pl.UpdateCard(toSearch, -1);
+	Hand& currHand = _user.GetHandCards();
+	Colours curr_col = _user.GetPlayerColor();
+	
+	ResizeableMatrix& matrix = _board.getMatrix();
+
+	MinionCard toSearch{ uint16_t(_val), _user.GetPlayerColor(), false };
+
+	matrix[_x][_y].emplace_back();
+	matrix[_x][_y].back().SetValue(_val);
+	_user.UpdateCard(toSearch, -1);
 }
 
-// hole card, position to cover
-void funcEarthMage2(Board& board)
+void funcEarthMage2(Board& _board, int16_t _x, int16_t _y)
 {
 	MinionCard holeCard(0, Colours::INVALID_COL, false);
 	holeCard.SetIsHole(true);
+
+	ResizeableMatrix& matrix = _board.getMatrix();
+
+	matrix[_x][_y].push_back(holeCard);
 }
 
 // original position, destination position (player's card)
