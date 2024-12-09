@@ -413,6 +413,73 @@ void Board::CreateHole(int16_t _x, int16_t _y)
 	m_matrix[_x][_y].back().SetIsHole(true);
 }
 
+void Board::RemoveLine(int16_t _line, LineType _type)
+{
+	switch (_type)
+	{
+	case LineType::TYPE_COLUMN:
+		
+		break;
+	case LineType::TYPE_ROW:
+		break;
+	case LineType::_INVALID_LINE_TYPE:
+		break;
+	default:
+		break;
+	}
+}
+
+void Board::RemoveRow(int16_t _line)
+{
+	if (_line == 0)
+		removeTopMargin();
+	else if (_line == getRowCount() - 1)
+		removeBottomMargin();
+	else{
+		for (int i = 0; i < getColCount(); i++)
+			m_matrix[_line][i].clear();
+		m_rowChecker[_line] = {0, 0};
+	}
+	
+}
+
+void Board::RemoveColumn(int16_t _line)
+{
+	if (_line == 0)
+		removeLeftMargin();
+	else if (_line == getColCount() - 1)
+		removeRightMargin();
+	else {
+		for (int i = 0; i < getRowCount(); i++)
+			m_matrix[i][_line].clear();
+		m_colChecker[_line] = { 0, 0 };
+	}
+}
+
+bool Board::LineContainsColour(int16_t _line, LineType _type, Colours _col)
+{
+	LineChecker& checker = m_rowChecker;
+	if (_type == LineType::TYPE_COLUMN)
+		checker = m_colChecker;
+
+	if (_col == Colours::RED)
+		return checker[_line].first != 0;
+	return checker[_line].second != 0;
+}
+
+int16_t Board::GetNrOfCardsOnLine(int16_t _line, LineType _type)
+{
+	switch (_type)
+	{
+	case LineType::TYPE_ROW:
+		return m_rowChecker[_line].first + m_rowChecker[_line].second;
+	case LineType::TYPE_COLUMN:
+		return m_colChecker[_line].first + m_colChecker[_line].second;
+	default:
+		return 0;
+	}
+}
+
 //1 esec, 0 succes
 int16_t Board::removePos(int16_t x, int16_t y) {
 	if (XBoundTest(x) != INSIDE_BOUND || YBoundTest(y) != INSIDE_BOUND)

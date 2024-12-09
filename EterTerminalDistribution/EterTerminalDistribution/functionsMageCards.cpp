@@ -6,79 +6,9 @@ void funcFireMage1(Board& _board, Player& _user, int16_t _x, int16_t _y, int16_t
 	_board.RemoveCard(_x, _y, _pos);
 }
 
-void funcFireMage2(Board& board,Player& pl)
+void funcFireMage2(Board& _board, Player& _player, int16_t _line, char _type)
 {
-	ResizeableMatrix& matrix = board.getMatrix();
-
-	std::cout << "what to remove : 0.column , 1.row \n";
-	uint16_t option;
-	std::cin >> option;
-	
-	bool ok = true;
-
-	if (option == 0)
-	{
-		std::cout << "which column:\n";
-		uint16_t column;
-		std::cin >> column;
-		LineChecker& colChecker = board.getColChecker();
-		if (pl.GetPlayerColor() == Colours::RED)
-		{
-			if (colChecker[column].first == 0)//no visible cards for red
-			{
-				ok = false;
-				return;
-			}
-		}
-		else if (colChecker[column].second == 0)//no visible cards for blue
-		{
-			ok = false;
-			return;
-		}
-		if (ok == false || searchInColumnStacks(matrix,pl,column) == false)
-		{
-			std::cout << "no cards belong to you in this column";
-			return;
-		}
-		if (colChecker[column].first + colChecker[column].second < 3)
-		{
-			std::cout << "less than 3 cards on this column";
-			return;
-		}
-		board.removeColumn(column);
-	}
-	else if (option == 1)
-	{
-		std::cout << "which row:\n";
-		uint16_t row;
-		std::cin >> row;
-		LineChecker& lineChecker = board.getRowChecker();
-		if (pl.GetPlayerColor() == Colours::RED)
-		{
-			if (lineChecker[row].first == 0)//no visible cards for red
-			{
-				ok = false;
-				return;
-			}
-		}
-		else if (lineChecker[row].second == 0)//no visible cards for blue
-		{
-			ok = false;
-			return;
-		}
-		if (ok == false || searchInRowStacks(matrix, pl, row) == false)
-		{
-			std::cout << "no cards belong to you in this row";
-			return;
-		}
-		if (lineChecker[row].first + lineChecker[row].second < 3)
-		{
-			std::cout << "less than 3 cards on this row";
-			return;
-		}
-		board.removeRow(row);
-	}
-	board.checkForUpdates();
+	_board.RemoveLine(_line, GetLineType(_type));
 }
 
 void funcEarthMage1(Board& _board,Player& _user, int16_t _x , int16_t _y, int16_t _val)

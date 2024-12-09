@@ -277,23 +277,33 @@ CommonErrors checkFuncRock(Board&, int16_t, int16_t, MinionCard&) {
 	return CommonErrors::_NO_ERRORS;
 }
 
+//i think it's bad practice to select by coordonates --> change covered set to list of pointers which will be printed like a list - select then which 
 CommonErrors checkFuncFireMage1(Board& _board, Player& _player, int16_t _x, int16_t _y, int16_t _pos) {
-
 	if (_x < 0 || _y < 0 || _x >= _board.getRowCount() || _y >= _board.getColCount())
 		return CommonErrors::_OUTSIDE_BOUNDS;
 	if (_board.CheckStackCondition(_x, _y) == false)
 		return CommonErrors::_HOLE_PROPERTY_VIOLATION;
-	if (_board.CheckStackPopulation(_x, _y) == false)
+	if (_board.CheckStackPopulation(_x, _y) == false || _pos == 0)
 		return CommonErrors::_EMPTY_STACK;
 	if (_player.CheckCoveredPopulation())
 		return CommonErrors::_NO_COVERED_CARDS;
-	if (_player.CheckCoveredProperty(_x, _y, _pos) == false)
+	if (_player.CheckCoveredProperty(_x, _y, _pos-1) == false)
 		return CommonErrors::_INVALID_CARD_TYPE;
 
 	return CommonErrors::_NO_ERRORS;
-}
+}	
 
-CommonErrors checkFuncFireMage2(Board&, Player&) {
+CommonErrors checkFuncFireMage2(Board& _board, Player& _player, int16_t _line, char _type) {
+	LineType type = GetLineType(_type);
+	if (type != LineType::TYPE_ROW && type != LineType::TYPE_COLUMN)
+		return CommonErrors::_INVALID_LINE_TYPE;
+	if (_line < 0 || (type == LineType::TYPE_ROW && _line >= _board.getRowCount()) || (type == LineType::TYPE_COLUMN && _line >= _board.getColCount()))
+		return CommonErrors::_OUTSIDE_BOUNDS;
+	if (_board.GetNrOfCardsOnLine(_line, type) < 3)
+		return CommonErrors::_INCOMPLETE_LINE_STRUCTURE;
+	if (_board.LineContainsColour(_line, GetLineType(_type), _player.GetPlayerColor()) == false)
+		return CommonErrors::_LINE_DOES_NOT_CONTAIN_COLOR;
+
 	return CommonErrors::_NO_ERRORS;
 }
 

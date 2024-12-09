@@ -56,8 +56,8 @@ enum class ColorActions : int16_t {
 };
 
 enum class LineType : int16_t {
-	TYPE_COLUMN,
 	TYPE_ROW,
+	TYPE_COLUMN,
 	_INVALID_LINE_TYPE
 };
 

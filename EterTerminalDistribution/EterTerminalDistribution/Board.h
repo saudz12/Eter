@@ -99,6 +99,7 @@ public:
 	int16_t setPos(int16_t& x, int16_t& y, const MinionCard& card, Player& p);
 	int16_t setPosWaterfall(int16_t x, int16_t y, const MinionCard& card);
 
+#pragma region new code
 
 	bool CheckStackCondition(int16_t _x, int16_t _y); //new
 	bool CheckStackPopulation(int16_t _x, int16_t _y); //new
@@ -108,6 +109,13 @@ public:
 	void PlaceCard(Player& _active, int16_t _x, int16_t _y, int16_t _val, BoardChanges _flag); //new
 	void RemoveCard(int16_t _x, int16_t _y, int16_t _pos); //new
 	void CreateHole(int16_t _x, int16_t _y); //new
+	void RemoveLine(int16_t _line, LineType _type); //new
+	void RemoveRow(int16_t _line); //new
+	void RemoveColumn(int16_t _line); //new
+	bool LineContainsColour(int16_t _line, LineType _type, Colours _col); //new
+	int16_t GetNrOfCardsOnLine(int16_t _line, LineType _type); //new
+	
+#pragma endregion
 
 	int16_t removePos(int16_t x, int16_t y);
 	int16_t removeStack(int16_t x, int16_t y);

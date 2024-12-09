@@ -5,7 +5,7 @@
 //remove opponent's card that covers one of player's cards
 void funcFireMage1(Board& _board, Player& _user, int16_t _x, int16_t _y, int16_t _pos);
 
-void funcFireMage2(Board&, Player&);
+void funcFireMage2(Board& _board, Player& _player, int16_t _line, char _type);
 
 //cover opponent card with lower value card of yours
 void funcEarthMage1(Board& _board, Player& _user, int16_t _x, int16_t _y, int16_t _val);

@@ -213,6 +213,39 @@ void ErrorMessageFireMage1(CommonErrors _message)
 	case CommonErrors::_OUTSIDE_BOUNDS:
 		std::cout << "ERR: Chosen coordinates out of bounds..\n";
 		break;
+	case CommonErrors::_HOLE_PROPERTY_VIOLATION:
+		std::cout << "ERR: Can't search in a hole..\n";
+		break;
+	case CommonErrors::_EMPTY_STACK:
+		std::cout << "ERR: The chosen stack must contain at least 2 cards..\n";
+		break;
+	case CommonErrors::_NO_COVERED_CARDS:
+		std::cout << "ERR: You have no covered cards..\n";
+		break;
+	case CommonErrors::_INVALID_CARD_TYPE:
+		std::cout << "ERR: Selected card is not covered by an enemy card ..\n";
+		break;
+	default:
+		break;
+	}
+}
+
+void ErrorMessageFireMage2(CommonErrors _message)
+{
+	switch (_message)
+	{
+	case CommonErrors::_INVALID_LINE_TYPE:
+		std::cout << "ERR: Only accepting C/c and L/l as line type..\n";
+		break;
+	case CommonErrors::_OUTSIDE_BOUNDS:
+		std::cout << "ERR: Chosen coordinates out of bounds..\n";
+		break;
+	case CommonErrors::_INCOMPLETE_LINE_STRUCTURE:
+		std::cout << "ERR: Selected line must have at least 3 visible cards..\n";
+		break;
+	case CommonErrors::_LINE_DOES_NOT_CONTAIN_COLOR:
+		std::cout << "ERR: Selected line does not conatin a bisible card of your colour..\n";
+		break;
 	default:
 		break;
 	}

@@ -13,6 +13,7 @@ enum class CommonErrors : int16_t {
 	_INVALID_LINE_TYPE,
 	_INVALID_DIRECTION,
 	_INCOMPLETE_LINE_STRUCTURE,
+	_LINE_DOES_NOT_CONTAIN_COLOR,
 	_IDENTICAL_COORDINATES,
 
 	_EMPTY_STACK,
@@ -49,5 +50,6 @@ void ErrorMessageMist(CommonErrors _message);
 void ErrorMessageWave(CommonErrors _message);
 
 void ErrorMessageFireMage1(CommonErrors _message);
+void ErrorMessageFireMage2(CommonErrors _message);
 void ErrorMessageEarthMage1(CommonErrors _message);
 void ErrorMessageEarthMage2(CommonErrors _message);
