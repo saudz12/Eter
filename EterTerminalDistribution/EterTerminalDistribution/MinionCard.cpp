@@ -1,6 +1,11 @@
 #include "MinionCard.h"
 
-MinionCard::MinionCard(uint16_t value, Colours color, bool isEter)
+MinionCard&& MinionCard::CreateHoleCard()
+{
+    return { 0, Colours::INVALID_COL, false, true };
+}
+
+MinionCard::MinionCard(uint16_t value, Colours color, bool isEter, bool isHole)
     : Card{ CardType::MinionCard },
     m_value{ value },
     m_color{ color },
@@ -8,7 +13,7 @@ MinionCard::MinionCard(uint16_t value, Colours color, bool isEter)
     m_isIllusionCard{ false },
     m_marker{ false },
     m_belongsTo(color), 
-    m_isHole{ false }
+    m_isHole{ isHole }
 {
 }
 

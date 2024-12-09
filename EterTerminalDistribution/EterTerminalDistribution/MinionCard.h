@@ -26,7 +26,9 @@ private:
 	Colours m_belongsTo;
 	bool m_isHole;
 public:
-	MinionCard(uint16_t value, Colours color, bool isEter);
+	static MinionCard&& CreateHoleCard();
+
+	MinionCard(uint16_t value, Colours color, bool isEter, bool isHole = false);
 	MinionCard();
 
 	//overload functions
@@ -34,7 +36,7 @@ public:
 	bool operator>(const MinionCard& card);
 	bool operator==(const MinionCard& card) const;
 	MinionCard& operator=(const MinionCard& card);
-	
+
 	//getters
 	uint16_t GetValue() const;
 

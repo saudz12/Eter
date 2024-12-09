@@ -1,152 +1,52 @@
 #include "functionsMageCards.h"
 #include "MoveLaterToGameClass.h"
 
-void funcFireMage1(Board& _board, Player& _user, int16_t _x, int16_t _y, int16_t _pos)
+void funcFireMage1(Board& _board, Player& _user, int16_t _x, int16_t _y, int16_t _pos) //does not update players covered and removed :/
 {
 	_board.RemoveCard(_x, _y, _pos);
 }
 
-void funcFireMage2(Board& _board, Player& _player, int16_t _line, char _type)
+void funcFireMage2(Board& _board, Player& _player, int16_t _line, char _type) //does not update players covered and removed :/
 {
 	_board.RemoveLine(_line, GetLineType(_type));
 }
 
-void funcEarthMage1(Board& _board,Player& _user, int16_t _x , int16_t _y, int16_t _val)
+void funcEarthMage1(Board& _board,Player& _user, Player& _affected, int16_t _x , int16_t _y, int16_t _val) //don;t know if it works.
 {
-	Hand& currHand = _user.GetHandCards();
-	Colours curr_col = _user.GetPlayerColor();
-	
+	//_board.PlaceCard(_user, _x, _y, _val, BoardChanges::_NO_CHANGES); //<-- uncomment when the code is moved to move semantics
+
 	ResizeableMatrix& matrix = _board.getMatrix();
 
-	MinionCard toSearch{ uint16_t(_val), _user.GetPlayerColor(), false };
+	_affected.getCovered().insert({ _x, _y, matrix[_x][_y].size() - 1 }); //<-- covered s
 
-	matrix[_x][_y].emplace_back();
-	matrix[_x][_y].back().SetValue(_val);
-	_user.UpdateCard(toSearch, -1);
+	matrix[_x][_y].emplace_back(_val, _user.GetPlayerColor(), false, false);
+
+	LineChecker& colChecker = _board.getColChecker(), & rowChecker = _board.getRowChecker();
+
+	_user.UpdateCard(matrix[_x][_y].back(), -1);
+
+	if (_user.GetPlayerColor() == Colours::RED) {
+		rowChecker[_x].first++;
+		rowChecker[_x].second--;
+		colChecker[_y].first++;
+		colChecker[_x].second--;
+	}
+	else {
+		rowChecker[_x].first--;
+		rowChecker[_x].second++;
+		colChecker[_y].first--;
+		colChecker[_x].second++;
+	}
 }
 
 void funcEarthMage2(Board& _board, int16_t _x, int16_t _y)
 {
-	MinionCard holeCard(0, Colours::INVALID_COL, false);
-	holeCard.SetIsHole(true);
-
-	ResizeableMatrix& matrix = _board.getMatrix();
-
-	matrix[_x][_y].push_back(holeCard);
+	_board.CreateHole(_x, _y);
 }
 
-// original position, destination position (player's card)
-void funcAirMage1(Board& board, Player& pl)
+void funcAirMage1(Board& _board, Colours _colour, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD) //does not update players covered :/
 {
-	Colours currColor = pl.GetPlayerColor();
-	uint16_t x1, y1, x2, y2;
-	std::cout << "from where\n";
-	std::cin >> x1 >> y1;
-
-	std::cout << "to where\n";
-	std::cin >> x2 >> y2;
-
-	if (x1 < 0 || x2 < 0 || y2 >= board.getColCount() || y1 >= board.getColCount())
-	{
-		std::cout << "invalid positions\n";
-		return;
-	}
-
-	Board cloneBoard(3);
-	Board::cloneMatrix(board, cloneBoard);
-
-	ResizeableMatrix& matrix = board.getMatrix();
-
-	if (matrix[x1][y1].empty())
-	{
-		std::cout << "no cards here\n";
-		return;
-	}
-
-	if (matrix[x1][y1].back().GetIsEterCard())
-	{
-		std::cout << "Can't use Air Mage on eter card\n";
-		return;
-	}
-
-	if (matrix[x1][y1].back().GetColor() != pl.GetPlayerColor())
-	{
-		std::cout << "on this position there are no cards of your color\n";
-		return;
-	}
-	std::cout << "Select what you would want to do with the card\n0. move the card\n1. move the stack of cards\n";
-	uint16_t option;
-	std::cin >> option;
-	LineChecker& colChecker=board.getColChecker(), &rowChecker=board.getRowChecker();
-
-	if (!matrix[x1][y1].empty())
-	{
-		if (currColor == Colours::RED)
-		{
-			if (x1 != x2)
-			{
-				rowChecker[x1].first--;
-				rowChecker[x2].first++;
-			}
-			
-			if (y1 != y2)
-			{
-				colChecker[y1].first --;
-				colChecker[y2].first++;
-			}
-		}
-		else
-		{
-			if (x1 != x2)
-			{
-				rowChecker[x2].second ++;
-				rowChecker[x1].second --;
-			}
-			if (y1 != y2)
-			{
-				colChecker[y1].second --;
-				colChecker[y2].second++;
-			}
-		}
-	}
-
-	if (option == 0)
-	{
-		MinionCard& lastCard = matrix[x1][y1].back();
-		matrix[x1][y1].pop_back();
-		if (!matrix[x2][y2].empty())
-		{
-			std::cout << "second position is not empty\n";
-			return;
-		}
-		matrix[x2][y2].emplace_back(lastCard);
-		if (isolatedSpaces(board))
-		{
-			std::cout << "this card cannot be placed because creates isolated spaces\n";
-			Board::cloneMatrix(cloneBoard, board);
-			return;
-		}
-	}
-	else
-	{
-		std::deque<MinionCard>& stackCardOnPosition = matrix[x1][y1];
-		
-		matrix[x1][y1].clear();
-		if (!matrix[x2][y2].empty())
-		{
-			std::cout << "second position is not empty\n";
-			return;
-		}
-		matrix[x2].insert(matrix[x2].begin() + y2, stackCardOnPosition);
-		if (isolatedSpaces(board))
-		{
-			std::cout << "this card cannot be placed because creates isolated spaces\n";
-			Board::cloneMatrix(cloneBoard, board);
-			return;
-		}
-	}
-
-	//board.checkForUpdates();
+	_board.SwitchStacks(_xS, _yS, _xD, _yD, _colour);
 }
 
 // position for additional Eter card
@@ -160,7 +60,7 @@ void funcAirMage2(Board& board, uint16_t x, uint16_t y)
 void funcWaterMage1(Board& board,Player& pl)
 {
 	//call this function for pl1 with pl2
-	funcAirMage1(board, pl);
+	//funcAirMage1(board, pl);
 }
 
 // move row/column to other side of the board

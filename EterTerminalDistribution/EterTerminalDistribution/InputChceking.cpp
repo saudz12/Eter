@@ -11,7 +11,7 @@ CommonErrors CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_vie
 
 	//insine bounds
 	if (lineCnt < 0 || type == ID_ROW && lineCnt > board.getLineCount() - 1 || type == ID_COLUMN && lineCnt > board.getColCount() - 1) {
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 	}
 
 	//valid direction
@@ -68,7 +68,7 @@ CommonErrors CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_vi
 	}
 
 	if ((x < 0 || x >= board.getRowCount()) || (y < 0 || y >= board.getColCount())) {
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 	}
 
 	//check if the adjacent spaces are out of bounds
@@ -103,7 +103,7 @@ CommonErrors checkFuncFlame(Board& board, int16_t x1, int16_t y1, int16_t x2, in
 {
 	int16_t lines = board.getLineCount(), cols = board.getColCount();
 	if (x1 < 0 || x1 > lines || y1 < 0 || y1 > cols)
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 	/*if (board.setPos(x2, y2, CardToBePlaced, p) == 1)
 		return FAILED_FLAME_CARD_PLACEMENT;*/
 	return CommonErrors::_NO_ERRORS;
@@ -120,7 +120,7 @@ CommonErrors checkFuncAsh(Board& board, const MinionCard& card, int16_t x, int16
 	if (card.GetValue() > 4 || card.GetValue() < 1)
 		return CommonErrors::_INVALID_CARD_VALUE;
 	if (x < 0 || x > lines || y < 0 || y > cols)/// bound check
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 	return CommonErrors::_NO_ERRORS;
 }
 
@@ -132,7 +132,7 @@ CommonErrors checkFuncSpark(Board& board, int16_t x1, int16_t y1, int16_t x2, in
 		x2<0 || x2>lines ||
 		y1<0 || y1>cols ||
 		y2<0 || y2>cols)
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 	if (matrix[x1][y1].back().GetIsEterCard())
 		return CommonErrors::_ETER_PROPERTY_VIOLATION;
 
@@ -144,9 +144,9 @@ CommonErrors checkFuncSquall(Board& board, int16_t x1, int16_t y1,Player p) {
 	ResizeableMatrix& matrix = board.getMatrix();
 
 	if (x1 < 0 || x1 > lines)
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 	if (y1 < 0 || y1 > cols)
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 
 	if (matrix[x1][y1].empty())
 		return CommonErrors::_EMPTY_STACK;
@@ -170,7 +170,7 @@ CommonErrors checkFuncGust(Board& board, int16_t x1, int16_t y1, int16_t x2, int
 		x2<0 || x2>lines ||
 		y1<0 || y1>cols ||
 		y2<0 || y2>cols) // bound check
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 
 	if (matrix[x1][y1].back().GetIsEterCard() || matrix[x2][y2].back().GetIsEterCard())
 		return CommonErrors::_ETER_PROPERTY_VIOLATION;
@@ -189,7 +189,7 @@ CommonErrors checkFuncMirage(Board& board, int16_t x1, int16_t y1, const MinionC
 	int16_t lines = board.getRowCount(), cols = board.getColCount();
 	if (x1 < 0 || x1 > lines ||
 		y1 < 0 || y1 > cols) //bound check
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 
 	if (!matrix[x1][y1].back().GetIsIllusionCard())
 		return CommonErrors::_NOT_ILLUSION;
@@ -203,11 +203,11 @@ CommonErrors checkFuncStorm(Board& board, int16_t x, int16_t y) {
 
 	if (x < 0 || x > lines ||
 		y < 0 || y > cols) //bound check
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 	if (matrix[x][y].size() < 2)
 		return CommonErrors::_STACK_HEIGHT_TOO_SMALL;
 
-	return CommonErrors::_OUTSIDE_BOUNDS;
+	return CommonErrors::_OUTSIDE_BOUND;
 }
 
 CommonErrors checkFuncTide(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
@@ -220,7 +220,7 @@ CommonErrors checkFuncTide(Board& board, int16_t x1, int16_t y1, int16_t x2, int
 		x2<0 || x2>lines ||
 		y1<0 || y1>cols ||
 		y2<0 || y2>cols) // bound check
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 
 	if (first.back().GetIsEterCard() || second.back().GetIsEterCard())
 		return CommonErrors::_ETER_PROPERTY_VIOLATION;
@@ -280,10 +280,10 @@ CommonErrors checkFuncRock(Board&, int16_t, int16_t, MinionCard&) {
 //i think it's bad practice to select by coordonates --> change covered set to list of pointers which will be printed like a list - select then which 
 CommonErrors checkFuncFireMage1(Board& _board, Player& _player, int16_t _x, int16_t _y, int16_t _pos) {
 	if (_x < 0 || _y < 0 || _x >= _board.getRowCount() || _y >= _board.getColCount())
-		return CommonErrors::_OUTSIDE_BOUNDS;
-	if (_board.CheckStackCondition(_x, _y) == false)
+		return CommonErrors::_OUTSIDE_BOUND;
+	if (_board.CheckStackCondition(_x, _y) == StackConditions::_HOLE)
 		return CommonErrors::_HOLE_PROPERTY_VIOLATION;
-	if (_board.CheckStackPopulation(_x, _y) == false || _pos == 0)
+	if (_board.CheckStackCondition(_x, _y) == StackConditions::_EMPTY || _pos == 0)
 		return CommonErrors::_EMPTY_STACK;
 	if (_player.CheckCoveredPopulation())
 		return CommonErrors::_NO_COVERED_CARDS;
@@ -298,7 +298,7 @@ CommonErrors checkFuncFireMage2(Board& _board, Player& _player, int16_t _line, c
 	if (type != LineType::TYPE_ROW && type != LineType::TYPE_COLUMN)
 		return CommonErrors::_INVALID_LINE_TYPE;
 	if (_line < 0 || (type == LineType::TYPE_ROW && _line >= _board.getRowCount()) || (type == LineType::TYPE_COLUMN && _line >= _board.getColCount()))
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 	if (_board.GetNrOfCardsOnLine(_line, type) < 3)
 		return CommonErrors::_INCOMPLETE_LINE_STRUCTURE;
 	if (_board.LineContainsColour(_line, GetLineType(_type), _player.GetPlayerColor()) == false)
@@ -313,7 +313,7 @@ CommonErrors checkFuncEarthMage1(Board& _board, Player& _caster, int16_t _x, int
 		return CommonErrors::_INVALID_CARD_VALUE;
 
 	if (_x < 0 || _y < 0 || _x >= _board.getRowCount() || _y >= _board.getColCount())
-		return CommonErrors::_OUTSIDE_BOUNDS;
+		return CommonErrors::_OUTSIDE_BOUND;
 
 	if (!_caster.HasCardOfValue((uint16_t)_val))
 		return CommonErrors::_NO_CARDS_OF_VALUE;
@@ -339,13 +339,21 @@ CommonErrors checkFuncEarthMage1(Board& _board, Player& _caster, int16_t _x, int
 
 CommonErrors checkFuncEarthMage2(Board& _board, int16_t _x, int16_t _y) {
 	if (_x < 0 || _y < 0 || _x >= _board.getRowCount() || _y >= _board.getColCount())
-		return CommonErrors::_OUTSIDE_BOUNDS;
-	if (!_board.getStackOnPos(_x, _y).empty())
+		return CommonErrors::_OUTSIDE_BOUND;
+	if (_board.CheckStackCondition(_x, _y) == StackConditions::_POPULATED)
 		return CommonErrors::_POPULATED_STACK;
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncAirMage1(Board&, Player& pl) {
+CommonErrors checkFuncAirMage1(Board& _board, Colours _color, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD) {
+	if (_board.CheckPos(_xS, _yS) == BoardErrors::_OUTSIDE_BOUND || _board.CheckPos(_xD, _yD) == BoardErrors::_OUTSIDE_BOUND)
+		return CommonErrors::_OUTSIDE_BOUND;
+	if (_board.CheckStackCondition(_xS, _yS) != StackConditions::_POPULATED)
+		return CommonErrors::_EMPTY_STACK;
+	if (_board.CheckStackCondition(_xD, _yD) != StackConditions::_EMPTY)
+		return CommonErrors::_POPULATED_STACK;
+	if (_board.ViewTop(_xS, _yS).GetColor() == _color)
+		return CommonErrors::_INVALID_CARD_TYPE;
 	return CommonErrors::_NO_ERRORS;
 }
 

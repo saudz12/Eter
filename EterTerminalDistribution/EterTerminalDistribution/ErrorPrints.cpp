@@ -4,7 +4,7 @@ void ErrorMesageHuricane(CommonErrors _message)
 {
 	switch (_message)
 	{
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Invalid Line.. Chosen line is out of bounds\n";
 		return;
 	case CommonErrors::_INVALID_LINE_TYPE:
@@ -36,7 +36,7 @@ void ErrorMessageWhirlpool(CommonErrors _message) {
 	case CommonErrors::_EMPTY_STACK:
 		std::cout << "ERR: Invalid space.. Chosen space must be empty..\n";
 		return;
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Invalid Space.. Chosen space is out of bounds..\n";
 		return;
 	case CommonErrors::_ADJACENT_OUTSIDE_BOUNDS:
@@ -56,7 +56,7 @@ void ErrorMessageWhirlpool(CommonErrors _message) {
 void ErrorMessageFlame(CommonErrors _message)
 {
 	switch (_message) {
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Invalid slot.. Slot coordinates are out of bounds...\n";
 		return;
 	default:
@@ -89,7 +89,7 @@ void ErrorMessageAsh(CommonErrors _message)
 void ErrorMessageSpark(CommonErrors _message)
 {
 	switch (_message) {
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Chosen coordinates out of bounds...\n";
 		return;
 	case CommonErrors::_ETER_PROPERTY_VIOLATION:
@@ -103,7 +103,7 @@ void ErrorMessageSpark(CommonErrors _message)
 void ErrorMessageSquall(CommonErrors _message)
 {
 	switch (_message) {
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Chosen coordinates out of bounds...\n";
 		return;
 	case CommonErrors::_ETER_PROPERTY_VIOLATION:
@@ -126,7 +126,7 @@ void ErrorMessageSquall(CommonErrors _message)
 void ErrorMessageGust(CommonErrors _message)
 {
 	switch (_message) {
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Chosen coordinates out of bounds..\n";
 		return;
 	case CommonErrors::_ETER_PROPERTY_VIOLATION:
@@ -146,7 +146,7 @@ void ErrorMessageGust(CommonErrors _message)
 void ErrorMessageMirage(CommonErrors _message)
 {
 	switch (_message) {
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Chosen coordinates out of bounds..\n";
 		return;
 	case CommonErrors::_NOT_ILLUSION:
@@ -160,7 +160,7 @@ void ErrorMessageMirage(CommonErrors _message)
 void ErrorMessagestorm(CommonErrors _message)
 {
 	switch (_message) {
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Chosen coordinates out of bounds..\n";
 		return;
 	case CommonErrors::_STACK_HEIGHT_TOO_SMALL:
@@ -174,7 +174,7 @@ void ErrorMessagestorm(CommonErrors _message)
 void ErrorMessageTide(CommonErrors _message)
 {
 	switch (_message) {
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Chosen coordinates out of bounds..\n";
 		return;
 	case CommonErrors::_ETER_PROPERTY_VIOLATION:
@@ -210,7 +210,7 @@ void ErrorMessageFireMage1(CommonErrors _message)
 {
 	switch (_message)
 	{
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Chosen coordinates out of bounds..\n";
 		break;
 	case CommonErrors::_HOLE_PROPERTY_VIOLATION:
@@ -237,7 +237,7 @@ void ErrorMessageFireMage2(CommonErrors _message)
 	case CommonErrors::_INVALID_LINE_TYPE:
 		std::cout << "ERR: Only accepting C/c and L/l as line type..\n";
 		break;
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Chosen coordinates out of bounds..\n";
 		break;
 	case CommonErrors::_INCOMPLETE_LINE_STRUCTURE:
@@ -257,7 +257,7 @@ void ErrorMessageEarthMage1(CommonErrors _message)
 	{
 	case CommonErrors::_INVALID_CARD_VALUE:
 		break;
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Chosen coordinates out of bounds..\n";
 		break;
 	case CommonErrors::_NO_CARDS_OF_VALUE:
@@ -290,11 +290,32 @@ void ErrorMessageEarthMage2(CommonErrors _message)
 {
 	switch (_message)
 	{
-	case CommonErrors::_OUTSIDE_BOUNDS:
+	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Chosen coordinates out of bounds..\n";
 		break;
 	case CommonErrors::_POPULATED_STACK:
 		std::cout << "ERR: Chosen stack is not empty..\n";
+		break;
+	default:
+		break;
+	}
+}
+
+void ErrorMessageAirMage2(CommonErrors _message)
+{
+	switch (_message)
+	{
+	case CommonErrors::_OUTSIDE_BOUND:
+		std::cout << "ERR: Chosen coordinates out of bounds..\n";
+		break;
+	case CommonErrors::_EMPTY_STACK:
+		std::cout << "ERR: Destination stack is not empty..\n";
+		break;
+	case CommonErrors::_POPULATED_STACK:
+		std::cout << "ERR: Source stack is empty..\n";
+		break;
+	case CommonErrors::_INVALID_CARD_TYPE:
+		std::cout << "ERR: Source's visible card is not of opposite colour..\n";
 		break;
 	default:
 		break;

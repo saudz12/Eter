@@ -302,27 +302,24 @@ int16_t Board::setPosWaterfall(int16_t x, int16_t y, const MinionCard& card)
 BoardErrors Board::CheckPos(int16_t _x, int16_t _y)
 {
 	if (_x == -1 && m_max_size == getRowCount() || _x < -1)
-		return BoardErrors::_OUTSIDE_BOUND_;
+		return BoardErrors::_OUTSIDE_BOUND;
 	if (_x == getRowCount() && getRowCount() == m_max_size || _x > getRowCount())
-		return BoardErrors::_OUTSIDE_BOUND_;
+		return BoardErrors::_OUTSIDE_BOUND;
 	if (_y == -1 && m_max_size == getColCount() || _y < -1)
-		return BoardErrors::_OUTSIDE_BOUND_;
+		return BoardErrors::_OUTSIDE_BOUND;
 	if (_y == getColCount() && getColCount() == m_max_size || _y > getColCount())
-		return BoardErrors::_OUTSIDE_BOUND_;
+		return BoardErrors::_OUTSIDE_BOUND;
 
-	return BoardErrors::_NO_ERRORS;
+	return BoardErrors::_INSIDE_BOUND;
 }
 
-bool Board::CheckStackCondition(int16_t _x, int16_t _y)
+StackConditions Board::CheckStackCondition(int16_t _x, int16_t _y)
 {
 	if (m_matrix[_x][_y].empty())
-		return true;
-	return m_matrix[_x][_y].back().CheckIsHole();
-}
-
-bool Board::CheckStackPopulation(int16_t _x, int16_t _y)
-{
-	return m_matrix[_x][_y].empty();
+		return StackConditions::_EMPTY;
+	if (m_matrix[_x][_y].back().CheckIsHole())
+		return StackConditions::_HOLE;
+	return StackConditions::_POPULATED;
 }
 
 BoardChanges Board::GetChanges(int16_t _x, int16_t _y)
@@ -409,8 +406,7 @@ void Board::RemoveCard(int16_t _x, int16_t _y, int16_t _pos)
 void Board::CreateHole(int16_t _x, int16_t _y)
 {
 	m_matrix[_x][_y].clear();
-	m_matrix[_x][_y].emplace_back(0, Colours::INVALID_COL, false);
-	m_matrix[_x][_y].back().SetIsHole(true);
+	m_matrix[_x][_y].push_back(MinionCard::CreateHoleCard());
 }
 
 void Board::RemoveLine(int16_t _line, LineType _type)
@@ -478,6 +474,46 @@ int16_t Board::GetNrOfCardsOnLine(int16_t _line, LineType _type)
 	default:
 		return 0;
 	}
+}
+
+void Board::SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD, Colours _colour)
+{
+	if (_colour == Colours::RED)
+	{
+		if (_xS != _xD)
+		{
+			m_rowChecker[_xS].first--;
+			m_rowChecker[_xD].first++;
+		}
+
+		if (_yS != _yD)
+		{
+			m_colChecker[_yS].first--;
+			m_colChecker[_yD].first++;
+		}
+	}
+	else
+	{
+		if (_xS != _xD)
+		{
+			m_rowChecker[_xS].second--;
+			m_rowChecker[_xD].second++;
+		}
+		if (_yS != _yD)
+		{
+			m_colChecker[_yS].second--;
+			m_colChecker[_yD].second++;
+		}
+	}
+
+	m_matrix[_xD][_yD] = std::move(m_matrix[_xS][_yS]);
+}
+
+MinionCard Board::ViewTop(int16_t _x, int16_t _y)
+{
+	if (m_matrix[_x][_y].empty())
+		return MinionCard();
+	return m_matrix[_x][_y].back();
 }
 
 //1 esec, 0 succes

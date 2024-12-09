@@ -22,8 +22,12 @@ class Player
 private:
 	Hand m_handCards;
 	
+#pragma region new members
+
 	CardCounter m_remainingCounter; //new
 	CardList m_remainingCards; //new
+
+#pragma endregion
 
 	CoveredSet m_coveredCardSet; //change to pointers and positions?
 
@@ -41,6 +45,7 @@ private:
 	void generateTrainingModeHand(); 
 	void generateHand(); 
 	void GenerateHand(bool training); //new
+
 public:
 	//constructor
 	Player(Colours playerColor);
@@ -58,9 +63,13 @@ public:
 	MinionCard* GetIllusionCard() const;
 	CoveredSet& getCovered();
 
+#pragma region new code
+
 	bool CheckCoveredPopulation(); //new
 	bool CheckCoveredProperty(int16_t _x, int16_t _y, int16_t _pos); //new
 	MinionCard&& MoveCard(int16_t _val); //new
+
+#pragma endregion
 
 	bool HasCardOfValue(uint16_t value);
 

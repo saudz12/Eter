@@ -5,7 +5,7 @@
 
 enum class CommonErrors : int16_t {
 	_NO_ERRORS,
-	_OUTSIDE_BOUNDS,
+	_OUTSIDE_BOUND,
 	_ETER_PROPERTY_VIOLATION,
 	_ILLUSION_PROPERTY_VIOLATION,
 	_HOLE_PROPERTY_VIOLATION,
@@ -53,3 +53,4 @@ void ErrorMessageFireMage1(CommonErrors _message);
 void ErrorMessageFireMage2(CommonErrors _message);
 void ErrorMessageEarthMage1(CommonErrors _message);
 void ErrorMessageEarthMage2(CommonErrors _message);
+void ErrorMessageAirMage2(CommonErrors _message);

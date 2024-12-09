@@ -18,8 +18,8 @@
 #include "ExplosionCard.h"
 
 enum class BoardErrors : int16_t {
-	_OUTSIDE_BOUND_,
-	_INSIDE_BOUND_,
+	_OUTSIDE_BOUND,
+	_INSIDE_BOUND,
 	
 	_INVALID_VAL,
 	_NONE_LEFT_OF_VAL, 
@@ -38,6 +38,12 @@ enum class BoardChanges : int16_t {
 	_BOT_RIGHT_BOUND,
 	_EMPTY_BOARD,
 	_NO_CHANGES
+};
+
+enum class StackConditions : int16_t {
+	_POPULATED,
+	_EMPTY,
+	_HOLE
 };
 
 class Board
@@ -101,8 +107,7 @@ public:
 
 #pragma region new code
 
-	bool CheckStackCondition(int16_t _x, int16_t _y); //new
-	bool CheckStackPopulation(int16_t _x, int16_t _y); //new
+	StackConditions CheckStackCondition(int16_t _x, int16_t _y); //new
 	BoardChanges GetChanges(int16_t _x, int16_t _y); //new
 	BoardErrors CheckPos(int16_t _x, int16_t _y); //new
 	void ExtendBoard(BoardChanges _flag); //new
@@ -114,6 +119,8 @@ public:
 	void RemoveColumn(int16_t _line); //new
 	bool LineContainsColour(int16_t _line, LineType _type, Colours _col); //new
 	int16_t GetNrOfCardsOnLine(int16_t _line, LineType _type); //new
+	void SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD, Colours _colour); //new
+	MinionCard ViewTop(int16_t _x, int16_t _y); //new
 	
 #pragma endregion
 
