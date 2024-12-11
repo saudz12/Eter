@@ -14,13 +14,13 @@ void funcEarthMage1(Board& _board, Player& _user, Player& _affected, int16_t _x,
 void funcEarthMage2(Board& _board, int16_t _x, int16_t _y);
 
 //original position, destination position(player's card)
-void funcAirMage1(Board& _board, Colours _colour, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
+void funcAirMage1(Board& _board, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 
 //position for additional Eter card
-void funcAirMage2(Board&, uint16_t, uint16_t);
+void funcAirMage2(Board& _board, Colours _colour, uint16_t _x, uint16_t _y);
 
 //original position, destination position(opponent's card)
-void funcWaterMage1(Board&, Player&);
+void funcWaterMage1(Board& _board, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 
 //move row/column to other side of the board
 void funcWaterMage2(Board& board, Colours color, Player& pl);

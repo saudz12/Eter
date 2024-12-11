@@ -27,8 +27,9 @@ private:
 	bool m_isHole;
 public:
 	static MinionCard&& CreateHoleCard();
+	static MinionCard&& CreateEterCard(Colours _colour);
 
-	MinionCard(uint16_t value, Colours color, bool isEter, bool isHole = false);
+	MinionCard(uint16_t value, Colours colour, bool isEter, bool isHole = false);
 	MinionCard();
 
 	//overload functions

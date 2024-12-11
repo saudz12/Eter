@@ -361,7 +361,15 @@ CommonErrors checkFuncAirMage2(Board&, int16_t, int16_t) {
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncWaterMage1(Board&, Player&) {
+CommonErrors checkFuncWaterMage1(Board& _board, Colours _color, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD) {
+	if (_board.CheckPos(_xS, _yS) == BoardErrors::_OUTSIDE_BOUND || _board.CheckPos(_xD, _yD) == BoardErrors::_OUTSIDE_BOUND)
+		return CommonErrors::_OUTSIDE_BOUND;
+	if (_board.CheckStackCondition(_xS, _yS) != StackConditions::_POPULATED)
+		return CommonErrors::_EMPTY_STACK;
+	if (_board.CheckStackCondition(_xD, _yD) != StackConditions::_EMPTY)
+		return CommonErrors::_POPULATED_STACK;
+	if (_board.ViewTop(_xS, _yS).GetColor() != _color)
+		return CommonErrors::_INVALID_CARD_TYPE;
 	return CommonErrors::_NO_ERRORS;
 }
 

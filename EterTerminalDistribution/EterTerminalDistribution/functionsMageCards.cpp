@@ -9,18 +9,21 @@ void funcFireMage1(Board& _board, Player& _user, int16_t _x, int16_t _y, int16_t
 void funcFireMage2(Board& _board, Player& _player, int16_t _line, char _type) //does not update players covered and removed :/
 {
 	_board.RemoveLine(_line, GetLineType(_type));
+	//do sum like returnStackToHand or returnLineToHand care se foloseste de ala sa fie mai modular codu yhu feel me????
 }
 
 void funcEarthMage1(Board& _board,Player& _user, Player& _affected, int16_t _x , int16_t _y, int16_t _val) //don;t know if it works.
 {
-	//_board.PlaceCard(_user, _x, _y, _val, BoardChanges::_NO_CHANGES); //<-- uncomment when the code is moved to move semantics
+	//_board.PlaceCard(_user, _x, _y, _val, BoardChanges::_NO_CHANGES); //<-- uncomment and remove below when the code is moved to move semantics
 
 	ResizeableMatrix& matrix = _board.getMatrix();
 
-	_affected.getCovered().insert({ _x, _y, matrix[_x][_y].size() - 1 }); //<-- covered s
+	_affected.getCovered().insert({ _x, _y, matrix[_x][_y].size() - 1 }); //<-- covered set? - depricated..
 
 	matrix[_x][_y].emplace_back(_val, _user.GetPlayerColor(), false, false);
 
+	//upon moving to move semantics remove until here and transform the below code in a fucntion in board if id does not exsist (function that are not in to be removed).
+	
 	LineChecker& colChecker = _board.getColChecker(), & rowChecker = _board.getRowChecker();
 
 	_user.UpdateCard(matrix[_x][_y].back(), -1);
@@ -39,28 +42,26 @@ void funcEarthMage1(Board& _board,Player& _user, Player& _affected, int16_t _x ,
 	}
 }
 
-void funcEarthMage2(Board& _board, int16_t _x, int16_t _y)
+void funcEarthMage2(Board& _board, int16_t _x, int16_t _y) //:)
 {
 	_board.CreateHole(_x, _y);
 }
 
-void funcAirMage1(Board& _board, Colours _colour, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD) //does not update players covered :/
+void funcAirMage1(Board& _board, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD) //does not update players covered cards :/
 {
-	_board.SwitchStacks(_xS, _yS, _xD, _yD, _colour);
+	_board.SwitchStacks(_xS, _yS, _xD, _yD);
 }
 
 // position for additional Eter card
-void funcAirMage2(Board& board, uint16_t x, uint16_t y)
+void funcAirMage2(Board& _board, Colours _colour, uint16_t _x, uint16_t _y)
 {
-	//MinionCard eterCard;
-	//eterCard.SetIsEterCard(true);
+	_board.PlaceCard(MinionCard::CreateEterCard(_colour), _x, _y, _board.GetChangeFlag(_x, _y));
 }
 
 // original position, destination position (opponent's card)
-void funcWaterMage1(Board& board,Player& pl)
+void funcWaterMage1(Board& _board, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD) //INPUT CHECKING DIFERIT PRIN == CU COLOUR ASTA CRAPA DACA E DIFERIT CELALALT DACA E LA FEl
 {
-	//call this function for pl1 with pl2
-	//funcAirMage1(board, pl);
+	_board.SwitchStacks(_xS, _yS, _xD, _yD);
 }
 
 // move row/column to other side of the board
@@ -159,6 +160,7 @@ void funcWaterMage2(Board& board, Colours color,Player& pl)//opponent
 	else if (option == 2)
 	{
 		bool ok = true;
+
 		if (color == Colours::RED)
 		{
 			if (colChecker[0].first == 0)//no visible cards for red

@@ -322,7 +322,7 @@ StackConditions Board::CheckStackCondition(int16_t _x, int16_t _y)
 	return StackConditions::_POPULATED;
 }
 
-BoardChanges Board::GetChanges(int16_t _x, int16_t _y)
+BoardChanges Board::GetChangeFlag(int16_t _x, int16_t _y)
 {
 	if (isBoardEmpty())
 		return BoardChanges::_EMPTY_BOARD;
@@ -388,13 +388,11 @@ void Board::ExtendBoard(BoardChanges _flag)
 	}
 }
 
-void Board::PlaceCard(Player& _active, int16_t _x, int16_t _y, int16_t _val, BoardChanges _flag)
+void Board::PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y, BoardChanges _flag)
 {
 	ExtendBoard(_flag);
 
-	m_matrix[_x][_y].push_back(_active.MoveCard(_val));
-
-	//update col, row and diagonal -- rewrite them accordingly
+	m_matrix[_x][_y].emplace_back(_toPlace);
 }
 
 void Board::RemoveCard(int16_t _x, int16_t _y, int16_t _pos)
@@ -476,37 +474,45 @@ int16_t Board::GetNrOfCardsOnLine(int16_t _line, LineType _type)
 	}
 }
 
-void Board::SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD, Colours _colour)
+void Board::SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
 {
-	if (_colour == Colours::RED)
-	{
-		if (_xS != _xD)
-		{
+	CardStack& source = m_matrix[_xS][_yS];
+	CardStack& destination = m_matrix[_xD][_yD];
+
+	if (source.empty() && destination.empty())
+		return;
+	if (!source.empty()) {
+		if (source.back().GetColor() == Colours::RED) {
 			m_rowChecker[_xS].first--;
 			m_rowChecker[_xD].first++;
-		}
-
-		if (_yS != _yD)
-		{
 			m_colChecker[_yS].first--;
-			m_colChecker[_yD].first++;
+			m_colChecker[_yS].first++;
 		}
-	}
-	else
-	{
-		if (_xS != _xD)
-		{
+		else {
 			m_rowChecker[_xS].second--;
 			m_rowChecker[_xD].second++;
-		}
-		if (_yS != _yD)
-		{
 			m_colChecker[_yS].second--;
-			m_colChecker[_yD].second++;
+			m_colChecker[_yS].second++;
+		}
+	}
+	if (!destination.empty()) {
+		if (destination.back().GetColor() == Colours::RED) {
+			m_rowChecker[_xS].first++;
+			m_rowChecker[_xD].first--;
+			m_colChecker[_yS].first++;
+			m_colChecker[_yS].first--;
+		}
+		else {
+			m_rowChecker[_xS].second++;
+			m_rowChecker[_xD].second--;
+			m_colChecker[_yS].second++;
+			m_colChecker[_yS].second--;
 		}
 	}
 
-	m_matrix[_xD][_yD] = std::move(m_matrix[_xS][_yS]);
+	CardStack aux = std::move(destination);
+	destination = std::move(source);
+	source = std::move(aux);
 }
 
 MinionCard Board::ViewTop(int16_t _x, int16_t _y)
@@ -629,11 +635,6 @@ int16_t Board::removeStack(int16_t x, int16_t y)
 		return 0;
 	}
 	return 1;
-}
-
-Colours Board::entityWon(int16_t x, int16_t y, Colours col)
-{
-	return Colours();
 }
 
 Colours Board::checkWin()

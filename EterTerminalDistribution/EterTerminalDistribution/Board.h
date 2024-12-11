@@ -101,46 +101,56 @@ public:
 
 	//Update board
 	//only checks it. to modify it it needs to return a reference. do the check somewhere beforehand to get modifyable card
-	MinionCard& getCardOnPos(int16_t x, int16_t y);
-	int16_t setPos(int16_t& x, int16_t& y, const MinionCard& card, Player& p);
-	int16_t setPosWaterfall(int16_t x, int16_t y, const MinionCard& card);
 
-#pragma region new code
+#pragma region new_code
 
-	StackConditions CheckStackCondition(int16_t _x, int16_t _y); //new
-	BoardChanges GetChanges(int16_t _x, int16_t _y); //new
-	BoardErrors CheckPos(int16_t _x, int16_t _y); //new
-	void ExtendBoard(BoardChanges _flag); //new
-	void PlaceCard(Player& _active, int16_t _x, int16_t _y, int16_t _val, BoardChanges _flag); //new
-	void RemoveCard(int16_t _x, int16_t _y, int16_t _pos); //new
-	void CreateHole(int16_t _x, int16_t _y); //new
-	void RemoveLine(int16_t _line, LineType _type); //new
-	void RemoveRow(int16_t _line); //new
-	void RemoveColumn(int16_t _line); //new
-	bool LineContainsColour(int16_t _line, LineType _type, Colours _col); //new
-	int16_t GetNrOfCardsOnLine(int16_t _line, LineType _type); //new
-	void SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD, Colours _colour); //new
-	MinionCard ViewTop(int16_t _x, int16_t _y); //new
+	StackConditions CheckStackCondition(int16_t _x, int16_t _y); 
+	BoardErrors CheckPos(int16_t _x, int16_t _y); 
+	BoardChanges GetChangeFlag(int16_t _x, int16_t _y); 
+	void ExtendBoard(BoardChanges _flag); 
+	void PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y, BoardChanges _flag); 
+	void RemoveCard(int16_t _x, int16_t _y, int16_t _pos); 
+	void CreateHole(int16_t _x, int16_t _y); 
+	void RemoveLine(int16_t _line, LineType _type); 
+	void RemoveRow(int16_t _line); 
+	void RemoveColumn(int16_t _line); 
+	bool LineContainsColour(int16_t _line, LineType _type, Colours _col); 
+	int16_t GetNrOfCardsOnLine(int16_t _line, LineType _type); 
+	void SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD); 
+	MinionCard ViewTop(int16_t _x, int16_t _y); //wierd
 	
 #pragma endregion
 
-	int16_t removePos(int16_t x, int16_t y);
-	int16_t removeStack(int16_t x, int16_t y);
-	Colours entityWon(int16_t x, int16_t y, Colours col);
 	Colours checkWin();
 	Colours checkWin(int16_t x, int16_t y, Colours col);
 
 	uint16_t getRowCount();
 	uint16_t getColCount();
 	uint16_t getMaxSize();
+
+#pragma region remove_later
+
+	MinionCard& getCardOnPos(int16_t x, int16_t y);
+	int16_t setPos(int16_t& x, int16_t& y, const MinionCard& card, Player& p);
+	int16_t setPosWaterfall(int16_t x, int16_t y, const MinionCard& card);
+	int16_t removePos(int16_t x, int16_t y);
+	int16_t removeStack(int16_t x, int16_t y);
+
 	LineChecker& getRowChecker();
 	LineChecker& getColChecker();
 	ResizeableMatrix& getMatrix();
 	CardStack& getStackOnPos(uint16_t x, uint16_t y);
 	uint16_t getLineCount();
+	//false = valid, true = not good - sorry --change them later
+	bool checkPosition(uint16_t x, uint16_t y);
+	//false = valid, true = not good - sorry
+	bool checkPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+	void printBoard();
 
 	bool removeRow(uint16_t x);
 	bool removeColumn(uint16_t y);
+
+#pragma endregion
 
 	void setMatrix(const ResizeableMatrix& matrix);
 	
@@ -150,16 +160,11 @@ public:
 	void updateRowChecker(uint16_t x, uint16_t option);
 
 	void shiftLine(uint16_t start, uint16_t end, int16_t ratio, uint16_t lineNo, uint16_t orientation);
-	void checkForUpdates();
 
 	bool isBoardFilled();
 	bool isBoardEmpty();
-	//false = valid, true = not good - sorry --change them later
-	bool checkPosition(uint16_t x, uint16_t y);
-	//false = valid, true = not good - sorry
-	bool checkPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
-	void printBoard();
+	void checkForUpdates();
 
 	static void cloneMatrix(const Board& from, Board& to);
 
