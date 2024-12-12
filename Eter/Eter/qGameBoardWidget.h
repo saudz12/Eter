@@ -53,6 +53,8 @@ private:
 		bool& existsOnLeftCol,bool& existsOnRightCol ,bool& existsOnTopRow, bool& existsOnBottomRow);
 	int16_t verifyTopCardsExist(QGridLayout*& gridLayout, const int& row, const int& column);
 	int16_t verifyLeftCardsExist(QGridLayout*& gridLayout, const int& row, const int& column);
+	int16_t verifyBottomCardsExist(QGridLayout*& gridLayout, const int& row, const int& column);
+	int16_t verifyRightCardsExist(QGridLayout*& gridLayout, const int& row, const int& column);
 	void updateCardsForTopRow(QGridLayout*& gridLayout,const int& row,const int& column,const int& addRow);
 	void updateCardsForLeftCol(QGridLayout*& gridLayout,const int& row,const int& column,const int& addColumn);
 	bool checkPosition( QGridLayout*& board, int i, int j);

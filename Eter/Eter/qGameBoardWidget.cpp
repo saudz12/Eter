@@ -83,6 +83,7 @@ void qGameBoardWidget::dropEvent(QDropEvent* event)
                 }
                 else if (label->property("type") == QString("minion"))
                 {
+                    currCardPixmap = newCardLabel->pixmap();
                     label = createNewMinionCard();
                     removeWidgetFromGrid(gridLayout, row, col);
                     addNewMinionCardToGrid(label, gridLayout, row, col);
@@ -193,6 +194,67 @@ int16_t qGameBoardWidget::verifyLeftCardsExist(QGridLayout*& gridLayout, const i
     for (int j = row - 1; j <= row + 1; j++)
     {
         QLayoutItem* item = gridLayout->itemAtPosition(j, column - 1);
+        if (item) {
+            QWidget* widget = item->widget();
+            QLabel* label = qobject_cast<QLabel*>(widget);
+            if (label) {
+                if (label->property("type") == "minion")
+                {
+                    isColEmpty = false;
+                    existsCards = true;
+                    break;
+                }
+                else if (label->property("type") == "empty")
+                {
+                    isColEmpty = true;
+                }
+            }
+        }
+    }
+    if (existsCards == false && isColEmpty == true)
+        addColumn = 0;
+    return addColumn;
+}
+
+int16_t qGameBoardWidget::verifyBottomCardsExist(QGridLayout*& gridLayout, const int& row, const int& column)
+{
+    bool existsCards = false;
+    bool isRowEmpty = false;
+    int addRow = 1;
+    for (int i = column - 1; i <= column + 1; i++)
+    {
+        QLayoutItem* item = gridLayout->itemAtPosition(row + 1, i);
+        if (item) {
+
+            QWidget* widget = item->widget();
+            QLabel* label = qobject_cast<QLabel*>(widget);
+            if (label) {
+                if (label->property("type") == "minion")
+                {
+                    isRowEmpty = false;
+                    existsCards = true;
+                    break;
+                }
+                else if (label->property("type") == "empty")
+                {
+                    isRowEmpty = true;
+                }
+            }
+        }
+    }
+    if (existsCards == false && isRowEmpty == true)
+        addRow = 0;
+    return addRow;
+}
+
+int16_t qGameBoardWidget::verifyRightCardsExist(QGridLayout*& gridLayout, const int& row, const int& column)
+{
+    bool existsCards = false;
+    bool isColEmpty = false;
+    int addColumn = 1;
+    for (int j = row - 1; j <= row + 1; j++)
+    {
+        QLayoutItem* item = gridLayout->itemAtPosition(j, column + 1);
         if (item) {
             QWidget* widget = item->widget();
             QLabel* label = qobject_cast<QLabel*>(widget);
@@ -447,9 +509,10 @@ void qGameBoardWidget::removeWidgetFromGrid(QGridLayout*& gridLayout, int row, i
     if (item) {
         QWidget* widget = item->widget(); 
         if (widget) {
-            gridLayout->removeWidget(widget);
+
             //widget->deleteLater(); // Optionally delete the widget
             widget->hide();
+            gridLayout->removeWidget(widget);
             m_cardPosition.erase({ row, column });
             m_pixmapPosition.erase({ row, column });
         }
@@ -462,25 +525,24 @@ std::vector<std::function<void(QGridLayout*&, int&, int&)>> qGameBoardWidget::cr
     std::vector<std::function<void(QGridLayout*&, int&, int&)>> functionCalls;
     QLayoutItem* item;
     item = gridLayout->itemAtPosition(row - 1, column);
-    if (item == nullptr || item!=nullptr && qobject_cast<QLabel*>(item->widget())->property("type")==QString("empty")) {
+    if (item == nullptr || item!=nullptr && verifyTopCardsExist(gridLayout,row,column)==0) {
         functionCalls.push_back([this](QGridLayout*& gridLayout, int& row, int& column) {
             addRowTop(gridLayout, row, column);
             });
     };
     item = gridLayout->itemAtPosition(row, column - 1);
-    if (item == nullptr || item != nullptr && qobject_cast<QLabel*>(item->widget())->property("type") == QString("empty")) {
+    if (item == nullptr || item != nullptr && verifyLeftCardsExist(gridLayout, row, column) == 0) {
         functionCalls.push_back([this](QGridLayout*& gridLayout, int& row, int& column) {
             addColumnLeft(gridLayout, row, column);
             });
     }
     item =gridLayout->itemAtPosition(row, column + 1);
-    if(item == nullptr || item!=nullptr && qobject_cast<QLabel*>(item->widget())->property("type")==QString("empty"))
+    if(item == nullptr || item!=nullptr && verifyRightCardsExist(gridLayout,row,column)==0)
         functionCalls.push_back([this](QGridLayout*& gridLayout, int& row, int& column) {
             addColumnRight(gridLayout, row, column);
             });
     item = gridLayout->itemAtPosition(row + 1, column);
-    if (item == nullptr || item != nullptr && qobject_cast<QLabel*>(item->widget())->property("type") == QString("empty"))
-    if (item == nullptr || item != nullptr && qobject_cast<QLabel*>(item->widget())->property("type") == QString("empty"))
+    if (item == nullptr || item != nullptr && verifyBottomCardsExist(gridLayout, row, column) == 0)
         functionCalls.push_back([this](QGridLayout*& gridLayout, int& row, int& column) {
             addRowBelow(gridLayout, row, column);
             });
