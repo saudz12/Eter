@@ -515,11 +515,56 @@ void Board::SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
 	source = std::move(aux);
 }
 
-MinionCard Board::ViewTop(int16_t _x, int16_t _y)
+void Board::MirrorEdge(BoardChanges _margin)
+{
+	switch (_margin)
+	{
+	case BoardChanges::_TOP_BOUND:
+		m_matrix.push_back(std::move(m_matrix[0]));
+		m_matrix.pop_front();
+		break;
+	case BoardChanges::_BOT_BOUND:
+		m_matrix.push_front(std::move(m_matrix[getRowCount() - 1]));
+		m_matrix.pop_back();
+		
+		break;
+	case BoardChanges::_LEFT_BOUND:
+		for (int i = 0; i < getRowCount(); i++) {
+			m_matrix[i].push_back(std::move(m_matrix[i][0]));
+			m_matrix[i].pop_front();
+			
+		}
+		
+		m_colChecker.emplace_back(m_colChecker.back().first, m_colChecker.back().second);
+		m_colChecker.pop_front();
+		break;
+	case BoardChanges::_RIGHT_BOUND:
+		for (int i = 0; i < getRowCount(); i++) {
+			m_matrix[i].push_front(std::move(m_matrix[i][getColCount() - 1]));
+			m_matrix[i].pop_back();
+		}
+
+		m_colChecker.emplace_front(0, 0);
+		m_colChecker.pop_back();
+		break;
+	default:
+		break;
+	}
+}
+
+bool Board::CheckTopIsEter(int16_t _x, int16_t _y)
+{
+	if (m_matrix[_x][_y].empty())
+		return false;
+	return m_matrix[_x][_y].back().GetIsEterCard();
+}
+
+//sper ca merge
+MinionCard&& Board::ViewTop(int16_t _x, int16_t _y)
 {
 	if (m_matrix[_x][_y].empty())
 		return MinionCard();
-	return m_matrix[_x][_y].back();
+	return std::forward<MinionCard>(m_matrix[_x][_y].back());
 }
 
 //1 esec, 0 succes
@@ -1202,4 +1247,21 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Pl
 		}	
 	}
 	checkForUpdates();
+}
+
+MarginType GetMargin(char _type)
+{
+	switch (_type)
+	{
+	case 'U':
+		return MarginType::MARGIN_TOP;
+	case 'B':
+		return MarginType::MARGIN_BOT;
+	case 'L':
+		return MarginType::MARGIN_LEFT;
+	case 'R':
+		return MarginType::MARGIN_RIGHT;
+	default:
+		return MarginType::INVALID_MARGIN;
+	}
 }

@@ -23,8 +23,4 @@ void funcAirMage2(Board& _board, Colours _colour, uint16_t _x, uint16_t _y);
 void funcWaterMage1(Board& _board, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 
 //move row/column to other side of the board
-void funcWaterMage2(Board& board, Colours color, Player& pl);
-
-bool searchInColumnStacks(ResizeableMatrix& matrix, Player& pl, uint16_t column);
-
-bool searchInRowStacks(ResizeableMatrix& matrix, Player& pl, uint16_t row);
+void funcWaterMage2(Board& _board, BoardChanges _margin);

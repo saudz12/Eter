@@ -373,6 +373,66 @@ CommonErrors checkFuncWaterMage1(Board& _board, Colours _color, int16_t _xS, int
 	return CommonErrors::_NO_ERRORS;
 }
 
+CommonErrors checkFuncWaterMage2(Board& _board, char _margin)
+{
+	int16_t finish;
+	int16_t count = 0;
+
+	MarginType marginType = GetMargin(_margin);
+
+	if (marginType == MarginType::INVALID_MARGIN)
+		return CommonErrors::_INVALID_LINE_TYPE;
+
+	if (marginType == MarginType::MARGIN_TOP || marginType == MarginType::MARGIN_BOT) {
+		finish = _board.getColCount();
+	}
+	else {
+		finish = _board.getRowCount();
+	}
+
+	auto quickCheck = [&](int16_t& x, int16_t& y, int16_t i) {
+		if (marginType == MarginType::MARGIN_TOP) {
+			x = 0;
+			y = i;
+		}
+		else if (marginType == MarginType::MARGIN_BOT) {
+			x = _board.getRowCount() - 1;
+			y = i;
+		}
+		else if (marginType == MarginType::MARGIN_LEFT) {
+			x = i;
+			y = 0;
+		}
+		else {
+			x = i;
+			y = _board.getColCount() - 1;
+		}
+	};
+
+	int16_t x;
+	int16_t y;
+
+	for (int16_t i = 0; i < finish; i++) {
+		quickCheck(x, y, i);
+
+		StackConditions stackCondition = _board.CheckStackCondition(x, y);
+		
+		/*if (stackCondition == StackConditions::_HOLE) {
+			return CommonErrors::_HOLE_PROPERTY_VIOLATION;
+		}*/
+		
+		if (stackCondition == StackConditions::_POPULATED) {
+			count++;
+			if (_board.CheckTopIsEter(x, y))
+				return CommonErrors::_ETER_PROPERTY_VIOLATION;
+		}
+	}
+
+	if (count < 3)
+		return CommonErrors::_INVALID_LINE_TYPE;
+	return CommonErrors::_NO_ERRORS;
+}
+
 CommonErrors checkFuncWaterMage2(Board& board, Colours color, Player& pl) {
 	return CommonErrors::_NO_ERRORS;
 }

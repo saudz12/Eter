@@ -27,6 +27,17 @@ enum class BoardErrors : int16_t {
 	_NO_ERRORS
 };
 
+enum class MarginType : int16_t {
+	MARGIN_TOP,
+	MARGIN_BOT,
+	MARGIN_LEFT,
+	MARGIN_RIGHT,
+
+	INVALID_MARGIN
+};
+
+MarginType GetMargin(char _type);
+
 enum class BoardChanges : int16_t {
 	_TOP_BOUND,
 	_BOT_BOUND,
@@ -116,8 +127,10 @@ public:
 	void RemoveColumn(int16_t _line); 
 	bool LineContainsColour(int16_t _line, LineType _type, Colours _col); 
 	int16_t GetNrOfCardsOnLine(int16_t _line, LineType _type); 
-	void SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD); 
-	MinionCard ViewTop(int16_t _x, int16_t _y); //wierd
+	void SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
+	void MirrorEdge(BoardChanges _margin);
+	bool CheckTopIsEter(int16_t _x, int16_t _y);
+	MinionCard&& ViewTop(int16_t _x, int16_t _y); //wierd??
 	
 #pragma endregion
 

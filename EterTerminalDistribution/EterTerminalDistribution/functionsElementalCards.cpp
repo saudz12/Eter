@@ -367,7 +367,7 @@ uint16_t funcHurricane(Board& board, Hand& h1, Hand& h2, uint16_t lineCnt, std::
 	}
 
 	CardStack& firstStack = matrix[firstX][firstY];
-	Player::returnStackToHand(h1, h2, firstStack);
+	Player::ReturnStackToHand(h1, h2, firstStack);
 
 	board.checkForUpdates();
 

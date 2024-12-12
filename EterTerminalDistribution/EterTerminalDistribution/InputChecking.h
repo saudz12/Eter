@@ -63,4 +63,4 @@ CommonErrors checkFuncAirMage2(Board&, int16_t, int16_t);
 
 CommonErrors checkFuncWaterMage1(Board& _board, Colours _color, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 
-CommonErrors checkFuncWaterMage2(Board& board, Colours color, Player& pl);
+CommonErrors checkFuncWaterMage2(Board& _board, char _margin);

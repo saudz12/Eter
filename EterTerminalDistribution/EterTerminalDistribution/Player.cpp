@@ -134,7 +134,7 @@ void Player::applyTansformToCovered(Player& p1, Player& p2, CardStack& stack, ui
 	}
 }
 
-void Player::returnStackToHand(Hand& h1, Hand& h2, CardStack& stack)
+void Player::ReturnStackToHand(Hand& h1, Hand& h2, CardStack& stack)
 {
 	Hand& currHand = h1;
 	for (auto& card : stack) {
@@ -234,6 +234,14 @@ MinionCard&& Player::MoveCard(int16_t _val) {
 	m_remainingCounter[_val]--;
 
 	return std::move(toMove);
+}
+
+void Player::UpdateCard(int16_t val, CardAction action)
+{
+	if (action == CardAction::RETURN)
+		m_remainingCounter[val]++;
+	else
+		m_remainingCounter[val]--;
 }
 
 bool Player::HasCardOfValue(uint16_t value)
