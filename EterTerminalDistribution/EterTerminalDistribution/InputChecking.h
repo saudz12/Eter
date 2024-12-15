@@ -59,7 +59,7 @@ CommonErrors checkFuncEarthMage2(Board& _board, int16_t _x, int16_t _y);
 
 CommonErrors checkFuncAirMage1(Board& _board, Colours _color, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 
-CommonErrors checkFuncAirMage2(Board&, int16_t, int16_t);
+CommonErrors checkFuncAirMage2(Board&, int16_t, int16_t,Colours _color);
 
 CommonErrors checkFuncWaterMage1(Board& _board, Colours _color, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 

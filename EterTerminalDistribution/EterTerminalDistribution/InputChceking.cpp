@@ -294,7 +294,10 @@ CommonErrors checkFuncAvalanche(Board&, int16_t, int16_t, int16_t, int16_t, char
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncRock(Board&, int16_t, int16_t, MinionCard&) {
+CommonErrors checkFuncRock(Board& _board, int16_t _x, int16_t _y, MinionCard&) {
+	MinionCard illusionCard =_board.getCardOnPos(_x, _y);
+	if (!illusionCard.GetIsIllusionCard())
+		return CommonErrors::_NOT_ILLUSION;	
 	return CommonErrors::_NO_ERRORS;
 }
 
@@ -378,7 +381,11 @@ CommonErrors checkFuncAirMage1(Board& _board, Colours _color, int16_t _xS, int16
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncAirMage2(Board&, int16_t, int16_t) {
+CommonErrors checkFuncAirMage2(Board& _board, int16_t _x, int16_t _y,Colours _color) {
+	if (_board.CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
+		return CommonErrors::_OUTSIDE_BOUND;
+	if (_board.CheckStackCondition(_x, _y) != StackConditions::_EMPTY)
+		return CommonErrors::_POPULATED_STACK;
 	return CommonErrors::_NO_ERRORS;
 }
 
@@ -454,7 +461,4 @@ CommonErrors checkFuncWaterMage2(Board& _board, char _margin)
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncWaterMage2(Board& board, Colours color, Player& pl) {
-	return CommonErrors::_NO_ERRORS;
-}
 

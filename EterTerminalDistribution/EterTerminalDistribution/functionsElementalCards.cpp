@@ -1537,11 +1537,6 @@ uint16_t funcRock(Board& board, int16_t x, int16_t y, MinionCard& Card)
 
 	ResizeableMatrix& matrix = board.getMatrix();
 
-	if (!illusionCard.GetIsIllusionCard())
-	{
-		std::cout << "Chosen card is not an illusion, choose an illusion card. \n.";
-		return 1;
-	}
 
 	if (illusionCard.GetColor() == Colours::RED)
 	{

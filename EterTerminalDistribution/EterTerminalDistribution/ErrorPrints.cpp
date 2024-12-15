@@ -213,7 +213,7 @@ void ErrorMessageSupport(CommonErrors _message)
 		std::cout << "ERR: Can't use Support elemental power on eter card\n";
 		return;
 	case CommonErrors:: _INVALID_CARD_VALUE:
-		std::cout << "Card value is too great, choose a lower value card. \n";
+		std::cout << "ERR:Card value is too great, choose a lower value card. \n";
 		return;
 
 	default:
@@ -232,6 +232,17 @@ void ErrorMessageCrumble(CommonErrors _message)
 		return;
 	case CommonErrors::_ILLUSION_PROPERTY_VIOLATION:
 		std::cout << "ERR: Can't use Crumble elemental power on illusion card\n";
+		return;
+	default:
+		break;
+	}
+}
+
+void ErrorMessageRock(CommonErrors _message)
+{
+	switch (_message) {
+	case CommonErrors::_NOT_ILLUSION:
+		std::cout << "ERR::Chosen card is not an illusion, choose an illusion card. \n";
 		return;
 	default:
 		break;
@@ -333,6 +344,27 @@ void ErrorMessageEarthMage2(CommonErrors _message)
 	}
 }
 
+void ErrorMessageAirMage1(CommonErrors _message)
+{
+	switch (_message)
+	{
+	case CommonErrors::_OUTSIDE_BOUND:
+		std::cout << "ERR:Card coordinates out of bounds...\n";
+		return;
+	case CommonErrors::_EMPTY_STACK:
+		std::cout << "ERR:Chosen stack to move cannot be empty...\n";
+		return;
+	case CommonErrors::_POPULATED_STACK:
+		std::cout << "ERR:Final position must be empty...\n";
+		return;
+	case CommonErrors::_INVALID_CARD_TYPE:
+		std::cout << "ERR::Card must be of opposing colour...\n";
+		return;
+	default:
+		break;
+	}
+}
+
 void ErrorMessageAirMage2(CommonErrors _message)
 {
 	switch (_message)
@@ -341,18 +373,51 @@ void ErrorMessageAirMage2(CommonErrors _message)
 		std::cout << "ERR: Chosen coordinates out of bounds..\n";
 		break;
 	case CommonErrors::_EMPTY_STACK:
-		std::cout << "ERR: Destination stack is not empty..\n";
-		break;
-	case CommonErrors::_POPULATED_STACK:
 		std::cout << "ERR: Source stack is empty..\n";
 		break;
-	case CommonErrors::_INVALID_CARD_TYPE:
-		std::cout << "ERR: Source's visible card is not of opposite colour..\n";
+	case CommonErrors::_POPULATED_STACK:
+		std::cout << "ERR: Destination stack is not empty..\n";
 		break;
 	default:
 		break;
 	}
 }
+
+void ErrorMessageWaterMage1(CommonErrors _message)
+{
+	switch (_message) {
+	case CommonErrors::_OUTSIDE_BOUND:
+		std::cout << "ERR::Chosen coordinates out of bounds..\n";
+		return;
+	case CommonErrors::_EMPTY_STACK:
+		std::cout << "ERR::Source card stack to move is empty...\n";
+		return;
+	case CommonErrors::_POPULATED_STACK:
+		std::cout << "ERR:: Destination card stack must be empty..\n";
+		return;
+	case CommonErrors::_INVALID_CARD_TYPE:
+		std::cout << "ERR:: Source card stack must contain an opposing colour card...\n";
+		return;
+	default:
+		break;
+	}
+}
+
+void ErrorMessageWaterMage2(CommonErrors _message)
+{
+	switch (_message) {
+	case CommonErrors::_INVALID_LINE_TYPE:
+		std::cout << "Chosen line must be paralel with source line...\n";
+		return;
+	case CommonErrors::_ETER_PROPERTY_VIOLATION:
+		std::cout << "Cannot mirror row/column with eter card?..\n";
+		return;
+	default:
+		break;
+	}
+}
+
+
 
 
 
