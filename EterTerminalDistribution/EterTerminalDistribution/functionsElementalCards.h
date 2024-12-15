@@ -51,7 +51,7 @@ uint16_t funcWave(Board&, Player&, int16_t, int16_t, MinionCard);
 void funcWhirlpool(Board&, uint16_t, uint16_t);
 
 //make the line unplayable for the next round
-uint16_t funcBlizzard(Line&);
+uint16_t funcBlizzard(Board&, uint16_t, char);
 
 //stack the cards of the row/column on thop of each other
 uint16_t funcWaterfall(Board&, uint16_t, uint16_t);

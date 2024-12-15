@@ -23,6 +23,7 @@ private:
     bool m_wasElementalCardUsed;
     bool m_eterCardUsage;
     bool m_illusionUsage;
+    Colours m_blizzardCardRound;
 public:
     GameDemo(uint16_t size,uint16_t numberOfRounds);
     void runDemo();

@@ -820,8 +820,45 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 }
 
 // make the line unplayable for the next round
-uint16_t funcBlizzard(Line& line)
+uint16_t funcBlizzard(Board& board, uint16_t index, char type)
 {
+	Board oldModel(3);
+	Board::cloneMatrix(board, oldModel);
+
+	MinionCard blizzard(0, Colours::INVALID_COL, false);
+	blizzard.SetCardType(CardType::BlizzardCard);
+
+	ResizeableMatrix& matrix = board.getMatrix();
+
+	if (type == 'R')
+	{
+		for (size_t col = 0; col < board.getColCount(); col++)
+			matrix[index][col].push_back(blizzard);
+	}
+	else if (type == 'C')
+	{
+		for (size_t row = 0; row < board.getRowCount(); row++)
+			matrix[row][index].push_back(blizzard);
+	}
+
+	uint16_t emptySpaces = 0;
+
+	for (size_t row = 0; row < board.getRowCount(); row++)
+	{
+		for (size_t col = 0; col < board.getColCount(); col++)
+		{
+			if (matrix[row][col].empty())
+				emptySpaces++;
+		}
+	}
+
+	if (!emptySpaces && board.isMatMaxSize())
+	{
+		Board::cloneMatrix(oldModel, board);
+		std::cout << "\nNo empty spaces remaining for the opponent to place a card onto\n";
+		return 1;
+	}
+
 	return 0;
 }
 

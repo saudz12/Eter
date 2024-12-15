@@ -10,6 +10,7 @@ GameDemo::GameDemo(uint16_t size,uint16_t numberOfRounds)
     m_wasPlaced = false;
     m_wasElementalCardUsed = false;
     m_rounds = numberOfRounds;
+    m_blizzardCardRound = Colours::INVALID_COL;
     m_score = { 0,0 };
 }
 
@@ -132,6 +133,19 @@ void GameDemo::runDemo()
 
         if (m_wasPlaced) {
             m_wasPlaced = false;
+
+            if (m_blizzardCardRound == m_currPlayer->GetPlayerColor())
+            {
+                m_blizzardCardRound = Colours::INVALID_COL;
+                ResizeableMatrix& matrix = m_board->getMatrix();
+
+                for (size_t row = 0; row < matrix.size(); row++)
+                {
+                    for (size_t col = 0; col < matrix[row].size(); col++)
+                        if (!matrix[row][col].empty() && matrix[row][col].back().GetCardType() == CardType::BlizzardCard)
+                            matrix[row][col].pop_back();
+                }
+            }
             //check win condition
             /*if (elementalCardUsedTester == true) { ///big error  - elemental cards need different check ;-;
                 elementalCardUsedTester = false;
@@ -968,7 +982,29 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
     }
     //blizzard, not yet implemented
     case 17: {
+        std::cout << "\nChoose if you want to affect a row or a column (R/C)\n";
+        char type;
+        std::cin >> type;
+        std::cout << "\nChoose an index\n";
+        uint16_t index;
+        std::cin >> index;
 
+        if (funcBlizzard(b, index, type) == 0)
+        {
+            if (m_currPlayerColor == Colours::RED)
+                m_blizzardCardRound = Colours::BLUE;
+            else
+                m_blizzardCardRound = Colours::RED;
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            std::cout << "\nFailed to use Wave\n";
+            break;
+        }
+
+        break;
     }
     //waterfall
     case 18: {

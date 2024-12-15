@@ -1025,16 +1025,19 @@ void Board::printBoard()
 	for (int i = 0; i < getRowCount(); i++) {
 		std::cout << "\n" << m_rowChecker[i].first << "|" << m_rowChecker[i].second << " ";
 		for (int j = 0; j < getColCount(); j++)
+		{
 			if (!m_matrix[i][j].empty())
 			{
-				/*if (m_board[i][j].back().GetColor() == 'R')
-					std::cout << "\033[33m";
+				if (m_matrix[i][j].back().GetCardType() == CardType::HoleCard)
+					std::cout << "Hol ";
+				else if (m_matrix[i][j].back().GetCardType() == CardType::BlizzardCard)
+					std::cout << "Bli ";
 				else
-					std::cout << "\033[34m";*/
-				std::cout << m_matrix[i][j].back() << " ";
+					std::cout << m_matrix[i][j].back() << " ";
 			}
 			else
 				std::cout << "--- ";
+		}
 	}
 
 	if (isMatMaxSize()) {
@@ -1078,6 +1081,10 @@ bool Board::posPlaceTest(int16_t x, int16_t y, const MinionCard& card)
 		if (card.GetIsEterCard() || card.GetIsIllusionCard())
 			return false;
 		if (m_matrix[x][y].back().GetIsEterCard())
+			return false;
+		if (m_matrix[x][y].back().GetCardType() == CardType::BlizzardCard)
+			return false;
+		if (m_matrix[x][y].back().GetCardType() == CardType::HoleCard)
 			return false;
 		if (card.GetValue() <= m_matrix[x][y].back().GetValue() && !m_matrix[x][y].back().GetIsIllusionCard())
 			return false;

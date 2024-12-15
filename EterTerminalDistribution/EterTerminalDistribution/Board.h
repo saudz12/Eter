@@ -88,7 +88,6 @@ private:
 
 	//other check
 	bool posPlaceTest(int16_t x, int16_t y, const MinionCard& card);
-	bool isMatMaxSize();
 
 	//add lines to border
 	void addLineToLeft();
@@ -140,6 +139,7 @@ public:
 	uint16_t getRowCount();
 	uint16_t getColCount();
 	uint16_t getMaxSize();
+	bool isMatMaxSize();
 
 #pragma region remove_later
 
