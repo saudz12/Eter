@@ -48,6 +48,8 @@ void ErrorMessagestorm(CommonErrors _message);
 void ErrorMessageTide(CommonErrors _message);
 void ErrorMessageMist(CommonErrors _message);
 void ErrorMessageWave(CommonErrors _message);
+void ErrorMessageSupport(CommonErrors _message);
+void ErrorMessageCrumble(CommonErrors _message);
 
 void ErrorMessageFireMage1(CommonErrors _message);
 void ErrorMessageFireMage2(CommonErrors _message);

@@ -206,6 +206,38 @@ void ErrorMessageWave(CommonErrors _message) {
 	}
 }
 
+void ErrorMessageSupport(CommonErrors _message)
+{
+	switch (_message) {
+	case CommonErrors::_ETER_PROPERTY_VIOLATION:
+		std::cout << "ERR: Can't use Support elemental power on eter card\n";
+		return;
+	case CommonErrors:: _INVALID_CARD_VALUE:
+		std::cout << "Card value is too great, choose a lower value card. \n";
+		return;
+
+	default:
+		break;
+	}
+}
+
+void ErrorMessageCrumble(CommonErrors _message)
+{
+	switch (_message) {
+	case CommonErrors::_ETER_PROPERTY_VIOLATION:
+		std::cout << "ERR: Can't use Crumble elemental power on eter card\n";
+		return;
+	case CommonErrors::_INVALID_CARD_VALUE:
+		std::cout << "ERR: Card value is less than 2, please choose a higher value card\n";
+		return;
+	case CommonErrors::_ILLUSION_PROPERTY_VIOLATION:
+		std::cout << "ERR: Can't use Crumble elemental power on illusion card\n";
+		return;
+	default:
+		break;
+	}
+}
+
 void ErrorMessageFireMage1(CommonErrors _message)
 {
 	switch (_message)

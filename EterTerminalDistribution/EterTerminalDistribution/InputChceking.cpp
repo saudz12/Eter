@@ -9,7 +9,7 @@ CommonErrors CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_vie
 		return CommonErrors::_INCOMPLETE_LINE_STRUCTURE;
 	}
 
-	//insine bounds
+	//inside bounds
 	if (lineCnt < 0 || type == ID_ROW && lineCnt > board.getLineCount() - 1 || type == ID_COLUMN && lineCnt > board.getColCount() - 1) {
 		return CommonErrors::_OUTSIDE_BOUND;
 	}
@@ -228,20 +228,20 @@ CommonErrors checkFuncTide(Board& board, int16_t x1, int16_t y1, int16_t x2, int
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncMist(Board& board, Player& p, int16_t x, int16_t y, MinionCard& card) {
+CommonErrors checkFuncMist(Board& _board, Player& _p, int16_t _x, int16_t _y, MinionCard& _card) {
 
 	/*if (board.setPos(x, y, card, p) == 1)
 		return 1;*/
-	if (!p.GetIllusionUsage() || p.GetIllusionCard() == nullptr)
+	if (!_p.GetIllusionUsage() || _p.GetIllusionCard() == nullptr)
 		return CommonErrors::_ILLUSION_PROPERTY_VIOLATION;
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncWave(Board& board, int16_t x1, int16_t y1, MinionCard) {
+CommonErrors checkFuncWave(Board& _board, int16_t _x1, int16_t _y1, MinionCard) {
 	/*ResizeableMatrix matrix = board.getMatrix();
 	if (matrix[x1][y1].back().GetIsEterCard())
 		return -2;*/
-
+	//nothing else to add
 	return CommonErrors::_NO_ERRORS;
 }
 
@@ -250,18 +250,39 @@ CommonErrors checkFuncBlizzard(Line&) {
 }
 
 CommonErrors checkFuncWaterfall(Board&, int16_t) {
+	//nothing to add
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncSupport(Board&, int16_t, int16_t) {
+CommonErrors checkFuncSupport(Board& board, int16_t x, int16_t y) {
+	ResizeableMatrix& matrix = board.getMatrix();
+	int CardValue = matrix[x][y].back().GetValue();
+
+	if (matrix[x][y].back().GetIsEterCard()) 
+	{
+		return CommonErrors::_ETER_PROPERTY_VIOLATION;
+	}
+	if (CardValue > 3)	//check according to game rules
+	{
+		return CommonErrors::_INVALID_CARD_VALUE;
+	}
 	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncEarthquake(Board&) {
+	//nothing to add
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncCrumble(Board&, int16_t, int16_t) {
+CommonErrors checkFuncCrumble(Board& _board, int16_t _x, int16_t _y) {
+	ResizeableMatrix& matrix = _board.getMatrix();
+	int CardValue = matrix[_x][_y].back().GetValue();
+	if (matrix[_x][_y].back().GetIsEterCard())
+		return CommonErrors::_ETER_PROPERTY_VIOLATION;
+	if (matrix[_x][_y].back().GetIsIllusionCard())
+		return CommonErrors::_ILLUSION_PROPERTY_VIOLATION;
+	if (CardValue < 2)	//check according to game rules
+		return CommonErrors::_INVALID_CARD_VALUE;
 	return CommonErrors::_NO_ERRORS;
 }
 

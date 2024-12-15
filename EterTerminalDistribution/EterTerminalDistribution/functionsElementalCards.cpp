@@ -931,30 +931,11 @@ uint16_t funcWaterfall(Board& board, uint16_t x, uint16_t y)
 uint16_t funcSupport(Board& board, uint16_t x, uint16_t y)
 {
 	ResizeableMatrix& matrix = board.getMatrix();
-
-	if (matrix[x][y].back().GetIsEterCard())
-	{
-		std::cout << "Can't use Support elemental card on eter card\n";
-		return 1;
-	}
-
-	if (matrix[x][y].back().GetIsIllusionCard())
-	{
-		std::cout << "Can't use Support elemental card on illusion card\n";
-		return 1;
-	}
-
 	int CardValue = matrix[x][y].back().GetValue();
-	if (CardValue > 3)	//check according to game rules
-	{
-		std::cout << "Card value is too great, choose a lower value card. \n";
-		return 1;
-	}
 
 	if (matrix[x][y].back().GetIsIllusionCard())
-	{
 		matrix[x][y].back().SetIsIllusionCard(false);
-	}
+	
 
 	matrix[x][y].back().SetValue(CardValue + 1);
 	matrix[x][y].back().SetMarker(true);
@@ -1028,32 +1009,13 @@ uint16_t funcEarthquake(Board& board, Player& p1, Player& p2)
 }
 
 // value of a card decreased by 1, marker placed on card
-uint16_t funcCrumble(Board& board,uint16_t x, uint16_t y)
+uint16_t funcCrumble(Board& _board,uint16_t _x, uint16_t _y)
 {
-	ResizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = _board.getMatrix();
+	int CardValue = matrix[_x][_y].back().GetValue();
 
-	if (matrix[x][y].back().GetIsEterCard())
-	{
-		std::cout << "Can't use Crumble elemental card on eter card\n";
-		return 1;
-	}
-
-	if (matrix[x][y].back().GetIsIllusionCard())
-	{
-		std::cout << "Can't use Crumble elemental card on illusion card\n";
-		return 1;
-	}
-
-	int CardValue = matrix[x][y].back().GetValue();
-
-	if (CardValue < 2)	//check according to game rules
-	{
-		std::cout << "Card value is too low, choose a higher value card. \n";
-		return 1;
-	}
-
-	matrix[x][y].back().SetValue(CardValue - 1);
-	matrix[x][y].back().SetMarker(true);
+	matrix[_x][_y].back().SetValue(CardValue - 1);
+	matrix[_x][_y].back().SetMarker(true);
 
 	return 0;
 }
@@ -1072,7 +1034,8 @@ uint16_t funcAvalanche(Board& board, int16_t x1 , int16_t y1, int16_t x2, int16_
 
 	ResizeableMatrix& matrix = board.getMatrix();
 
-	if (std::abs(y1 - y2) == 1 && x1 == x2) { //horizontal - side to side in the sime row
+	if (std::abs(y1 - y2) == 1 && x1 == x2) 
+	{ //horizontal - side to side in the same row
 		if (direction != 'L' && direction != 'R') {
 			std::cout << "Invalid direction.\n";
 			return 1;
