@@ -976,11 +976,25 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
             Player::updateCover(x, y, p1->getCovered(), b.getMatrix());
         break;
     }
-    //whirlpool, for saud
+    //whirlpool
     case 16: {
+        std::cout << "\nChoose an empty space you want to whirlpool\n";
+        int16_t x, y;
+        std::cin >> x >> y;
+        if (funcWhirlpool(b, x, y) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            std::cout << "\nFailed to use Whirlpool\n";
+            break;
+        }
 
+        break;
     }
-    //blizzard, not yet implemented
+    //blizzard
     case 17: {
         std::cout << "\nChoose if you want to affect a row or a column (R/C)\n";
         char type;
@@ -1000,7 +1014,7 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         }
         else
         {
-            std::cout << "\nFailed to use Wave\n";
+            std::cout << "\nFailed to use Blizzard\n";
             break;
         }
 
@@ -1074,9 +1088,23 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
 
         break;
     }   
-    //border, not yet implemented
+    //border
     case 22: {
+        int16_t x, y;
+        std::cout << "\nChoose the coordonates for where to place the border\n";
+        std::cin >> x >> y;
 
+        if (funcBorder(b, x, y) == 0)
+        {
+            wasUsed = true;
+            wasCardUsed = true;
+        }
+        else
+        {
+            std::cout << "\nFailed to use Border\n";
+        }
+
+        break;
     }
     //Avalanche
     case 23: {

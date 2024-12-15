@@ -89,12 +89,6 @@ private:
 	//other check
 	bool posPlaceTest(int16_t x, int16_t y, const MinionCard& card);
 
-	//add lines to border
-	void addLineToLeft();
-	void addLineToRight();
-	void addLineOnTop();
-	void addLineOnBottom();
-
 	//will be changed if you can remove from middle
 	void removeLeftMargin();
 	void removeRightMargin();
@@ -130,6 +124,12 @@ public:
 	void MirrorEdge(BoardChanges _margin);
 	bool CheckTopIsEter(int16_t _x, int16_t _y);
 	MinionCard&& ViewTop(int16_t _x, int16_t _y); //wierd??
+
+	//add lines to border
+	void addLineToLeft();
+	void addLineToRight();
+	void addLineOnTop();
+	void addLineOnBottom();
 	
 #pragma endregion
 

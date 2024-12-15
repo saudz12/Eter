@@ -663,7 +663,7 @@ uint16_t funcWave(Board& board, Player& p, int16_t x1, int16_t y1, MinionCard ne
 }
 
 // move 2 cards separated by empty space into the empty space and place them as stacks
-void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
+uint16_t funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 {
 	ResizeableMatrix& matrix = board.getMatrix();
 	
@@ -727,6 +727,7 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 			else
 			{
 				"You didn't type L or R";
+				return 1;
 			}
 		}
 		if (matrix[x][y].back().GetColor() == Colours::RED)
@@ -796,7 +797,7 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 			else
 			{
 				"You didn't type U or D";
-				return;
+				return 1;
 			}
 		}
 		if (matrix[x][y].back().GetColor() == Colours::RED)
@@ -813,9 +814,11 @@ void funcWhirlpool(Board& board, uint16_t x, uint16_t y)
 	else
 	{
 		std::cout << "You didn't type R or C\n";
-		return;
+		return 1;
 	}
 	board.checkForUpdates();
+
+	return 0;
 	std::cout << "Whirlpool used successfully on " << x << " " << y << '\n';
 }
 
@@ -1058,8 +1061,51 @@ uint16_t funcCrumble(Board& _board,uint16_t _x, uint16_t _y)
 }
 
 // defines a border in a position
-uint16_t funcBorder(Board& board, uint16_t x, uint16_t y)
+uint16_t funcBorder(Board& board, int16_t x, int16_t y)
 {
+	ResizeableMatrix& matrix = board.getMatrix();
+	
+	/*if (!matrix[x][y].empty())
+		return 1;*/
+
+	if (board.isMatMaxSize())
+		return 1;
+
+	if (abs(x) > board.getMaxSize())
+		return 1;
+
+	if (abs(y) > board.getMaxSize())
+		return 1;
+
+
+	if (x < 0)
+	{
+		x += board.getRowCount();
+		for (int16_t i = 0; i >= x; i--)
+			board.addLineOnTop();
+	}
+
+	if (y < 0)
+	{
+		y += board.getColCount();
+		for (int16_t i = 0; i >= y; i--)
+			board.addLineToLeft();
+	}
+
+	if (x > 0)
+	{
+		x -= board.getRowCount();
+		for (int16_t i = 0; i <= x; i++)
+			board.addLineOnBottom();
+	}
+
+	if (y > 0)
+	{
+		y -= board.getColCount();
+		for (int16_t i = 0; i <= y; i++)
+			board.addLineToRight();
+	}
+
 	return 0;
 }
 
