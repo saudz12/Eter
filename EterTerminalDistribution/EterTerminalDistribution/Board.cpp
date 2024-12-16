@@ -219,20 +219,20 @@ int16_t Board::setPos(int16_t& x, int16_t& y, const MinionCard& card, Player& p)
 	}
 	if (boundCondX == TOP_BOUND) {
 		x = 0;
-		addLineOnTop();
+		AddLineOnTop();
 	}
 
 	if (boundCondY == LEFT_BOUND) {
 		y = 0;
-		addLineToLeft();
+		AddLineToLeft();
 	}
 
 	if (boundCondX == BOTTOM_BOUND) {
-		addLineOnBottom();
+		AddLineOnBottom();
 	}
 
 	if (boundCondY == RIGHT_BOUND) {
-		addLineToRight();
+		AddLineToRight();
 	}
 
 	increaseOnColorRow(x, y, card.GetColor());
@@ -353,35 +353,35 @@ void Board::ExtendBoard(BoardChanges _flag)
 	switch (_flag)
 	{
 	case BoardChanges::_EMPTY_BOARD:
-		addLineOnTop(); //anything really -- rewrite the board in such way that the board will be initialised FULLY empty so it will not need coordonates for the first palcement when fully empty.
+		AddLineOnTop(); //anything really -- rewrite the board in such way that the board will be initialised FULLY empty so it will not need coordonates for the first palcement when fully empty.
 		break;
 	case BoardChanges::_TOP_BOUND:
-		addLineOnTop();
+		AddLineOnTop();
 		break;
 	case BoardChanges::_BOT_BOUND:
-		addLineOnBottom();
+		AddLineOnBottom();
 		break;
 	case BoardChanges::_LEFT_BOUND:
-		addLineToLeft();
+		AddLineToLeft();
 		break;
 	case BoardChanges::_RIGHT_BOUND:
-		addLineToRight();
+		AddLineToRight();
 		break;
 	case BoardChanges::_TOP_LEFT_BOUND:
-		addLineOnTop();
-		addLineToLeft();
+		AddLineOnTop();
+		AddLineToLeft();
 		break;
 	case BoardChanges::_TOP_RIGHT_BOUND:
-		addLineOnTop();
-		addLineToRight();
+		AddLineOnTop();
+		AddLineToRight();
 		break;
 	case BoardChanges::_BOT_LEFT_BOUND:
-		addLineOnBottom();
-		addLineToLeft();
+		AddLineOnBottom();
+		AddLineToLeft();
 		break;
 	case BoardChanges::_BOT_RIGHT_BOUND:
-		addLineOnBottom();
-		addLineToRight();
+		AddLineOnBottom();
+		AddLineToRight();
 		break;
 	default:
 		break;
@@ -450,6 +450,107 @@ void Board::RemoveColumn(int16_t _line)
 	}
 }
 
+bool Board::ShiftLine(int16_t _line, LineType _type, Directions _direction)
+{
+	//some necesarry checks just so
+	if (_type == LineType::_INVALID_LINE_TYPE)
+		return false;
+	if (_direction == Directions::INVALID_DIR)
+		return false;
+
+	if (_line < 0 || _line >= std::max(getColCount(), getLineCount()))
+		return false;
+
+	if (_type == LineType::TYPE_ROW && _direction != Directions::DIR_LEFT && _direction != Directions::DIR_RIGHT)
+		return false;
+	if (_type == LineType::TYPE_COLUMN && _direction != Directions::DIR_UP && _direction != Directions::DIR_DOWN)
+		return false;
+
+	bool orientation; //true = left/right; false = down/up
+
+	int16_t fistX = 0;
+	int16_t fistY = 0;
+	int16_t lastX = 0;
+	int16_t lastY = 0;
+	
+	int16_t start = 0;
+	int16_t end = 0;
+	int16_t ratio = 0;
+
+	orientation = _type == LineType::TYPE_ROW;
+
+	switch (_direction)
+	{
+	case Directions::DIR_LEFT:
+		start = 0;
+		end = getColCount() - 1;
+		ratio = +1;
+		orientation = true;
+		break;
+	case Directions::DIR_RIGHT:
+		start = getColCount() - 1;
+		end = 0;
+		ratio = -1;
+		orientation = true;
+		break;
+	case Directions::DIR_UP:
+		start = 0;
+		end = getRowCount() - 1;
+		ratio = +1;
+		orientation = false;
+		break;
+	case Directions::DIR_DOWN:
+		start = getRowCount() - 1;
+		end = 0;
+		ratio = -1;
+		orientation = false;
+		break;
+	}
+
+	auto quickCheck = [&orientation](uint16_t a, uint16_t b) {return orientation ? a : b; };
+	
+	for (int16_t i = start; i != end; i += ratio) {
+		int16_t currX = quickCheck(_line, i);
+		int16_t currY = quickCheck(i, _line);
+
+		if (m_matrix[currX][currY].back().GetColor() == Colours::RED)
+		{
+			updateRowChecker(currX, RED_DEC);
+			updateColChecker(currY, RED_DEC);
+		}
+		else
+		{
+			updateRowChecker(currX, BLUE_DEC);
+			updateColChecker(currY, BLUE_DEC);
+		}
+
+		uint16_t nextX = quickCheck(_line, i + ratio);
+		uint16_t nextY = quickCheck(i + ratio, _line);
+
+		if (m_matrix[nextX][nextY].back().GetColor() == Colours::RED)
+		{
+			updateRowChecker(currX, RED_ADD);
+			updateColChecker(currY, RED_ADD);
+		}
+		else
+		{
+			updateRowChecker(currX, BLUE_ADD);
+			updateColChecker(currY, BLUE_ADD);
+		}
+	}
+
+	for (int i = start; i != end; i += ratio)
+	{
+		uint16_t currX = quickCheck(_line, i);
+		uint16_t currY = quickCheck(i, _line);
+
+		uint16_t nextX = quickCheck(_line, i + ratio);
+		uint16_t nextY = quickCheck(i + ratio, _line);
+
+		m_matrix[currX][currY] = std::move(m_matrix[nextX][nextY]);
+	}
+}
+
 bool Board::LineContainsColour(int16_t _line, LineType _type, Colours _col)
 {
 	LineChecker& checker = m_rowChecker;
@@ -474,6 +575,42 @@ int16_t Board::GetNrOfCardsOnLine(int16_t _line, LineType _type)
 	}
 }
 
+void Board::MoveStack(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
+{
+	if (m_matrix[_xS][_yS].empty() && m_matrix[_xD][_yD].empty())
+		return;
+	if (!m_matrix[_xS][_yS].empty()) {
+		if (m_matrix[_xS][_yS].back().GetColor() == Colours::RED) { //can simplify this..
+			m_rowChecker[_xS].first--;
+			m_rowChecker[_xD].first++;
+			m_colChecker[_yS].first--;
+			m_colChecker[_yS].first++;
+		}
+		else {
+			m_rowChecker[_xS].second--;
+			m_rowChecker[_xD].second++;
+			m_colChecker[_yS].second--;
+			m_colChecker[_yS].second++;
+		}
+	}
+	if (!m_matrix[_xD][_yD].empty()) {
+		if (m_matrix[_xD][_yD].back().GetColor() == Colours::RED) {
+			m_rowChecker[_xS].first++;
+			m_rowChecker[_xD].first--;
+			m_colChecker[_yS].first++;
+			m_colChecker[_yS].first--;
+		}
+		else {
+			m_rowChecker[_xS].second++;
+			m_rowChecker[_xD].second--;
+			m_colChecker[_yS].second++;
+			m_colChecker[_yS].second--;
+		}
+	}
+
+	m_matrix[_xD][_yD] = std::move(m_matrix[_xS][_yS]);
+}
+
 void Board::SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
 {
 	CardStack& source = m_matrix[_xS][_yS];
@@ -482,7 +619,7 @@ void Board::SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
 	if (source.empty() && destination.empty())
 		return;
 	if (!source.empty()) {
-		if (source.back().GetColor() == Colours::RED) {
+		if (source.back().GetColor() == Colours::RED) { //can simplify this..
 			m_rowChecker[_xS].first--;
 			m_rowChecker[_xD].first++;
 			m_colChecker[_yS].first--;
@@ -907,70 +1044,6 @@ void Board::updateRowChecker(uint16_t x, uint16_t option)
 	}
 }
 
-void Board::shiftLine(uint16_t start, uint16_t end, int16_t ratio, uint16_t lineNo, uint16_t orientation)
-{
-	auto quickCheck = [&orientation](uint16_t a, uint16_t b) {return orientation ? a : b; };
-
-	uint16_t lastX = quickCheck(lineNo, end);
-	uint16_t lastY = quickCheck(end, lineNo);
-
-	uint16_t firstX = quickCheck(lineNo, start);
-	uint16_t firstY = quickCheck(start, lineNo);
-
-	for (int i = start; i != end; i += ratio)
-	{
-		uint16_t currX = quickCheck(lineNo, i);
-		uint16_t currY = quickCheck(i, lineNo);
-
-		if (m_matrix[currX][currY].back().GetColor() == Colours::RED)
-		{
-			updateRowChecker(currX, RED_DEC);
-			updateColChecker(currY, RED_DEC);
-		}
-		else
-		{
-			updateRowChecker(currX, BLUE_DEC);
-			updateColChecker(currY, BLUE_DEC);
-		}
-
-		uint16_t nextX = quickCheck(lineNo, i + ratio);
-		uint16_t nextY = quickCheck(i + ratio, lineNo);
-
-		if (m_matrix[nextX][nextY].back().GetColor() == Colours::RED)
-		{
-			updateRowChecker(currX, RED_ADD);
-			updateColChecker(currY, RED_ADD);
-		}
-		else
-		{
-			updateRowChecker(currX, BLUE_ADD);
-			updateColChecker(currY, BLUE_ADD);
-		}
-	}
-
-	if (m_matrix[lastX][lastY].back().GetColor() == Colours::RED)
-	{
-		updateRowChecker(lastX, RED_DEC);
-		updateColChecker(lastY, RED_DEC);
-	}
-	else
-	{
-		updateRowChecker(lastX, BLUE_DEC);
-		updateColChecker(lastY, BLUE_DEC);
-	}
-
-	for (int i = start; i != end; i += ratio)
-	{
-		uint16_t currX = quickCheck(lineNo, i);
-		uint16_t currY = quickCheck(i, lineNo);
-
-		uint16_t nextX = quickCheck(lineNo, i + ratio);
-		uint16_t nextY = quickCheck(i + ratio, lineNo);
-
-		m_matrix[currX][currY] = std::move(m_matrix[nextX][nextY]);
-	}
-}
-
 void Board::checkForUpdates()
 {
 	while (!m_colChecker.empty() && m_colChecker.front().first == 0 && m_colChecker.front().second == 0) {
@@ -1103,7 +1176,7 @@ bool Board::posPlaceTest(int16_t x, int16_t y, const MinionCard& card)
 	return true;
 }
 
-void Board::addLineToLeft()
+void Board::AddLineToLeft()
 {
 	for (int i = 0; i < getRowCount(); i++) {
 		m_matrix[i].push_front(CardStack());
@@ -1111,7 +1184,7 @@ void Board::addLineToLeft()
 	m_colChecker.emplace_front(0, 0);
 }
 
-void Board::addLineToRight()
+void Board::AddLineToRight()
 {
 	for (int i = 0; i < getRowCount(); i++) {
 		m_matrix[i].push_back(CardStack());
@@ -1119,13 +1192,13 @@ void Board::addLineToRight()
 	m_colChecker.emplace_back(0, 0);
 }
 
-void Board::addLineOnTop()
+void Board::AddLineOnTop()
 {
 	m_matrix.push_front(Line(getColCount()));
 	m_rowChecker.emplace_front(0, 0);
 }
 
-void Board::addLineOnBottom()
+void Board::AddLineOnBottom()
 {
 	m_matrix.push_back(Line(getColCount()));
 	m_rowChecker.emplace_back(0, 0);

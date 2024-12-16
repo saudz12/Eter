@@ -301,35 +301,23 @@ uint16_t funcGale(Board& board, Player& p1, Player& p2)
 // modify board, handcard if modified
 void funcHurricane(Board& _board, Hand& _h1, Hand& _h2, uint16_t _lineCnt, LineType _type, Directions _direction)
 {
-	int start, end, ratio, orientation;
+	int start, orientation;
 	
-	if (_type == LineType::TYPE_ROW) {
-		if (_direction == Directions::DIR_LEFT) {
-			start = 0;
-			end = _board.getColCount() - 1;
-			ratio = +1;
-		}
-		else {
-			start = _board.getColCount() - 1;
-			end = 0;
-			ratio = -1;
-		}
-		orientation = 1;
+	orientation = int16_t (_type == LineType::TYPE_ROW);
+
+	if (_direction == Directions::DIR_LEFT || _direction == Directions::DIR_UP) {
+		start = 0;
+	}
+	else if(_direction == Directions::DIR_RIGHT){
+		start = _board.getColCount() - 1;
 	}
 	else {
-		if (_direction == Directions::DIR_UP) {
-			start = 0;
-			end = _board.getRowCount() - 1;
-			ratio = +1;
-		}
-		else {
-			start = _board.getRowCount() - 1;
-			end = 0;
-			ratio = -1;
-		}
-		orientation = 0;
+		start = _board.getRowCount() - 1;
 	}
-	
+
+	int firstX = orientation ? _lineCnt : start;
+	int firstY = orientation ? start : _lineCnt;
+
 	/*
 	int firstX;
 	int firstY;
@@ -347,14 +335,9 @@ void funcHurricane(Board& _board, Hand& _h1, Hand& _h2, uint16_t _lineCnt, LineT
 
 	setup(start, lineCnt, orientation);
 	*/
+	Player::ReturnStackToHand(_h1, _h2, _board.getStackOnPos(firstX, firstY)); //nu avem ce face :/
 
-	int firstX = orientation ? _lineCnt : start;
-	int firstY = orientation ? start : _lineCnt;
-
-	Player::ReturnStackToHand(_h1, _h2, _board.getStackOnPos(firstX, firstY));
-
-
-	_board.shiftLine(start, end, ratio, _lineCnt, orientation);
+	_board.ShiftLine(_lineCnt, _type, _direction);
 
 	_board.checkForUpdates(); //?move it outside? and check only once for all elementals/mages togehter with empty spaces???
 }
@@ -1067,28 +1050,28 @@ uint16_t funcBorder(Board& board, int16_t x, int16_t y)
 	{
 		x += board.getRowCount();
 		for (int16_t i = 0; i >= x; i--)
-			board.addLineOnTop();
+			board.AddLineOnTop();
 	}
 
 	if (y < 0)
 	{
 		y += board.getColCount();
 		for (int16_t i = 0; i >= y; i--)
-			board.addLineToLeft();
+			board.AddLineToLeft();
 	}
 
 	if (x > 0)
 	{
 		x -= board.getRowCount();
 		for (int16_t i = 0; i <= x; i++)
-			board.addLineOnBottom();
+			board.AddLineOnBottom();
 	}
 
 	if (y > 0)
 	{
 		y -= board.getColCount();
 		for (int16_t i = 0; i <= y; i++)
-			board.addLineToRight();
+			board.AddLineToRight();
 	}
 
 	return 0;

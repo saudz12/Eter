@@ -57,6 +57,11 @@ enum class StackConditions : int16_t {
 	HOLE
 };
 
+enum class OrientationType : int16_t {
+	HORIZONTAL,
+	VERTICAL
+};
+
 enum class AdjacentType : int16_t {
 	NEIGHBOURING,
 	CORNERING,
@@ -125,8 +130,10 @@ public:
 	void RemoveLine(int16_t _line, LineType _type); 
 	void RemoveRow(int16_t _line); 
 	void RemoveColumn(int16_t _line); 
+	bool ShiftLine(int16_t _line, LineType _type, Directions _direction);
 	bool LineContainsColour(int16_t _line, LineType _type, Colours _col); 
 	int16_t GetNrOfCardsOnLine(int16_t _line, LineType _type); 
+	void MoveStack(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD); //replaces the stack on destination
 	void SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 	void MirrorEdge(BoardChanges _margin);
 	bool CheckTopIsEter(int16_t _x, int16_t _y);
@@ -136,11 +143,11 @@ public:
 	static AdjacentType CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 	
 
-	//add lines to border
-	void addLineToLeft();
-	void addLineToRight();
-	void addLineOnTop();
-	void addLineOnBottom();
+	//add lines to border ///vezi ca ai ExtendBoard. foloseste-l in loc de astea :). Board changes impune ce cum vrei sa adaugi inii.
+	void AddLineToLeft();
+	void AddLineToRight();
+	void AddLineOnTop();
+	void AddLineOnBottom();
 	
 #pragma endregion
 
@@ -182,8 +189,6 @@ public:
 	void updateSeconDiagChecker(uint16_t option);
 	void updateColChecker(uint16_t y, uint16_t option);
 	void updateRowChecker(uint16_t x, uint16_t option);
-
-	void shiftLine(uint16_t start, uint16_t end, int16_t ratio, uint16_t lineNo, uint16_t orientation);
 
 	bool isBoardFilled();
 	bool isBoardEmpty();
