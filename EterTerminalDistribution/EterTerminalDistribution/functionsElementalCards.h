@@ -69,7 +69,7 @@ uint16_t funcCrumble(Board&, uint16_t, uint16_t);
 uint16_t funcBorder(Board&, int16_t, int16_t);
 
 //move 2 neighboring cards/stacks vertically/horizontally
-uint16_t funcAvalanche(Board&, int16_t, int16_t, int16_t, int16_t, char);
+void funcAvalanche(Board& _board, int16_t _x1, int16_t _y1, int16_t _x2, int16_t _y2, Directions _direction);
 
 //cover a illusion with a card
 uint16_t funcRock(Board&, int16_t, int16_t, MinionCard&);

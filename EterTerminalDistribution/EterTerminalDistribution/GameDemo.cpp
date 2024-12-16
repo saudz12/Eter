@@ -1110,14 +1110,11 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
         std::cout << "if they are horizontal choose to move them left or right (L/R): ";
         std::cin >> x1 >> y1 >> x2 >> y2 >> dir;
 
-        if (funcAvalanche(b, x1, y1, x2, y2, dir) == 0)
-        {
+        if (checkFuncAvalanche(b, x1, x2, y1, y2, GetDirection(dir)) == CommonErrors::_NO_ERRORS) {
+            funcAvalanche(b, x1, y1, x2, y2, GetDirection(dir));
+
             wasUsed = true;
             wasCardUsed = true;
-        }
-        else
-        {
-            std::cout << "\nFailed to use Avalanche\n";
         }
 
         break;
