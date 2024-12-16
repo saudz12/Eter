@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-enum class CommonErrors : int16_t {
+static enum class CommonErrors : int16_t {
 	_NO_ERRORS,
 	_OUTSIDE_BOUND,
 	_ETER_PROPERTY_VIOLATION,
@@ -31,7 +31,8 @@ enum class CommonErrors : int16_t {
 	_NO_COVERED_CARDS,
 
 	_ADJACENT_OUTSIDE_BOUNDS,
-	_ADJACENT_SPACES_EMPTY
+	_ADJACENT_SPACES_EMPTY,
+	NOT_ADJACENT
 
 };
 

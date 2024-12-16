@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Card.cpp" />
+    <ClCompile Include="ConsolePlayableGUI.cpp" />
     <ClCompile Include="ConsoleView.cpp" />
     <ClCompile Include="ElementalCard.cpp" />
     <ClCompile Include="ErrorPrints.cpp" />
@@ -146,11 +147,13 @@
     <ClCompile Include="MinionCard.cpp" />
     <ClCompile Include="MoveLaterToGameClass.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="__for_rewriting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ActionType.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="Card.h" />
+    <ClInclude Include="ConsolePlayableGUI.h" />
     <ClInclude Include="ConsoleView.h" />
     <ClInclude Include="ElementalCard.h" />
     <ClInclude Include="ErrorPrints.h" />

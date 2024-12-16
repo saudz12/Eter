@@ -16,7 +16,6 @@ private:
 	Player* m_activePlayer;
 
 	Score m_gameScore;
-	int16_t m_rounds;
 	Colours m_activeColor;
 
 	GameOptions m_enabledEter;
@@ -33,16 +32,15 @@ private:
 	void GenerateElementalCards();
 	void GenerateMageCards();
 	
-	void PlayRound();
 	void AdvanceAction();
 	void EndTurn(bool& tieBraker);
 	//void resetRound(int16_t maxBoardSize, GameOptions enabledEter, GameOptions enabledIllusion, GameOptions enabledMage, GameOptions enabledElemental, GameOptions enabledTimed);
 	void ResetRound();
 
 public:
-	GameFinal(int16_t nrOfRounds, int16_t maxBoardSize, GameOptions enabledEter,	GameOptions enabledIllusion,
-														GameOptions enabledMage,	GameOptions enabledElemental,
-														GameOptions enabledTimed,	GameOptions enabledTournament);
-
-	void GameLoop();
+	GameFinal();
+	GameFinal(	int16_t _maxBoardSize,	
+				GameOptions _enabledEter,		GameOptions _enabledIllusion,
+				GameOptions _enabledMage,		GameOptions _enabledElemental,
+				GameOptions _enabledTournament,	GameOptions _enabledTimed);
 };

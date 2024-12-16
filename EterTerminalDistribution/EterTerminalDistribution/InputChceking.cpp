@@ -1,27 +1,31 @@
 #include "InputChecking.h"
 
-CommonErrors CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_view type, std::string_view direction)
+CommonErrors CheckHurricaneInput(Board& _board, uint16_t _lineCnt, LineType _type, Directions _direction)
 {
-	const ResizeableMatrix& matrix = board.getMatrix();
+	const ResizeableMatrix& matrix = _board.getMatrix();
 
 	//valid typing
-	if (type != ID_ROW && type != ID_COLUMN) {
+	if (_type == LineType::_INVALID_LINE_TYPE) {
 		return CommonErrors::_INCOMPLETE_LINE_STRUCTURE;
 	}
 
 	//inside bounds
-	if (lineCnt < 0 || type == ID_ROW && lineCnt > board.getLineCount() - 1 || type == ID_COLUMN && lineCnt > board.getColCount() - 1) {
+	if (_lineCnt < 0 || _type == LineType::TYPE_ROW && _lineCnt > _board.getLineCount() - 1 || _type == LineType::TYPE_COLUMN && _lineCnt > _board.getColCount() - 1) {
 		return CommonErrors::_OUTSIDE_BOUND;
 	}
 
 	//valid direction
-	if (type == ID_ROW && direction != DIR_LEFT && direction != DIR_RIGHT || type == ID_COLUMN && direction != DIR_UP && direction != DIR_DOWN) {
+	if (_direction == Directions::INVALID_DIR) {
+		return CommonErrors::_INVALID_DIRECTION;
+	}
+
+	if (_type == LineType::TYPE_ROW && _direction != Directions::DIR_LEFT && _direction != Directions::DIR_RIGHT || _type == LineType::TYPE_COLUMN && _direction != Directions::DIR_UP && _direction != Directions::DIR_DOWN) {
 		return CommonErrors::_INVALID_DIRECTION;
 	}
 
 	//full line and no eters
-	if (type == ID_ROW) {
-		for (auto& stack : matrix[lineCnt])
+	if (_type == LineType::TYPE_ROW) {
+		for (const auto& stack : matrix[_lineCnt])
 		{
 			if (stack.empty()) {
 				return CommonErrors::_INVALID_LINE_TYPE;
@@ -32,13 +36,14 @@ CommonErrors CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_vie
 			}
 		}
 	}
-	if (type == ID_COLUMN) {
-		for (auto& row : matrix)
+	//full column and no eters
+	else {
+		for (const auto& row : matrix)
 		{
-			if (row[lineCnt].empty()) {
+			if (row[_lineCnt].empty()) {
 				return CommonErrors::_INCOMPLETE_LINE_STRUCTURE;
 			}
-			if (row[lineCnt].back().GetIsEterCard())
+			if (row[_lineCnt].back().GetIsEterCard())
 			{
 				return CommonErrors::_ETER_PROPERTY_VIOLATION;
 			}
@@ -290,8 +295,52 @@ CommonErrors checkFuncBorder(Board&, int16_t, int16_t) {
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncAvalanche(Board&, int16_t, int16_t, int16_t, int16_t, char) {
-	return CommonErrors::_NO_ERRORS;
+CommonErrors checkFuncAvalanche(Board& _board, int16_t _x1, int16_t _y1, int16_t _x2, int16_t _y2, Directions _direction) {
+	
+	if (_board.CheckPos(_x1, _y1) == BoardErrors::_OUTSIDE_BOUND || _board.CheckPos(_x2, _y2) == BoardErrors::_OUTSIDE_BOUND)
+		return CommonErrors::_OUTSIDE_BOUND;
+
+	if (_direction == Directions::INVALID_DIR)
+		return CommonErrors::_INVALID_DIRECTION;
+
+	if (_board.CheckStackCondition(_x1, _y1) != StackConditions::POPULATED || _board.CheckStackCondition(_x2, _y2) != StackConditions::POPULATED)
+		return CommonErrors::_EMPTY_STACK;
+	if (Board::CheckAdjacent(_x1, _y1, _x2, _y2) != AdjacentType::NEIGHBOURING)
+		return CommonErrors::NOT_ADJACENT;
+
+	int16_t xD = -1, yD = -1;
+
+	switch (_direction)
+	{
+	case Directions::DIR_LEFT:
+		if (_board.CheckStackCondition(_x1, std::min(_y1, _y2)) != StackConditions::EMPTY) {
+			xD = _x1;
+			yD = std::min(_y1, _y2);
+		}
+		break;
+	case Directions::DIR_RIGHT:
+		if (_board.CheckStackCondition(_x1, std::max(_y1, _y2)) != StackConditions::EMPTY) {
+			xD = _x1;
+			yD = std::max(_y1, _y2);
+		}
+		break;
+	case Directions::DIR_UP:
+		if (_board.CheckStackCondition(std::min(_x1, _x2), _y2) != StackConditions::EMPTY) {
+			xD = std::min(_x1, _x2);
+			yD = _y2;
+		}
+		break;
+	case Directions::DIR_DOWN:
+		if (_board.CheckStackCondition(std::max(_x1, _x2), _y2) != StackConditions::EMPTY) {
+			xD = std::min(_x1, _x2);
+			yD = _y2;
+		}
+		break;
+	}
+
+	if(xD != -1 && yD != -1)
+		return CommonErrors::_NO_ERRORS;
+	return CommonErrors::_EMPTY_STACK;
 }
 
 CommonErrors checkFuncRock(Board& _board, int16_t _x, int16_t _y, MinionCard&) {
@@ -305,9 +354,9 @@ CommonErrors checkFuncRock(Board& _board, int16_t _x, int16_t _y, MinionCard&) {
 CommonErrors checkFuncFireMage1(Board& _board, Player& _player, int16_t _x, int16_t _y, int16_t _pos) {
 	if (_x < 0 || _y < 0 || _x >= _board.getRowCount() || _y >= _board.getColCount())
 		return CommonErrors::_OUTSIDE_BOUND;
-	if (_board.CheckStackCondition(_x, _y) == StackConditions::_HOLE)
+	if (_board.CheckStackCondition(_x, _y) == StackConditions::HOLE)
 		return CommonErrors::_HOLE_PROPERTY_VIOLATION;
-	if (_board.CheckStackCondition(_x, _y) == StackConditions::_EMPTY || _pos == 0)
+	if (_board.CheckStackCondition(_x, _y) == StackConditions::EMPTY || _pos == 0)
 		return CommonErrors::_EMPTY_STACK;
 	if (_player.CheckCoveredPopulation())
 		return CommonErrors::_NO_COVERED_CARDS;
@@ -364,7 +413,7 @@ CommonErrors checkFuncEarthMage1(Board& _board, Player& _caster, int16_t _x, int
 CommonErrors checkFuncEarthMage2(Board& _board, int16_t _x, int16_t _y) {
 	if (_x < 0 || _y < 0 || _x >= _board.getRowCount() || _y >= _board.getColCount())
 		return CommonErrors::_OUTSIDE_BOUND;
-	if (_board.CheckStackCondition(_x, _y) == StackConditions::_POPULATED)
+	if (_board.CheckStackCondition(_x, _y) == StackConditions::POPULATED)
 		return CommonErrors::_POPULATED_STACK;
 	return CommonErrors::_NO_ERRORS;
 }
@@ -372,9 +421,9 @@ CommonErrors checkFuncEarthMage2(Board& _board, int16_t _x, int16_t _y) {
 CommonErrors checkFuncAirMage1(Board& _board, Colours _color, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD) {
 	if (_board.CheckPos(_xS, _yS) == BoardErrors::_OUTSIDE_BOUND || _board.CheckPos(_xD, _yD) == BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
-	if (_board.CheckStackCondition(_xS, _yS) != StackConditions::_POPULATED)
+	if (_board.CheckStackCondition(_xS, _yS) != StackConditions::POPULATED)
 		return CommonErrors::_EMPTY_STACK;
-	if (_board.CheckStackCondition(_xD, _yD) != StackConditions::_EMPTY)
+	if (_board.CheckStackCondition(_xD, _yD) != StackConditions::EMPTY)
 		return CommonErrors::_POPULATED_STACK;
 	if (_board.ViewTop(_xS, _yS).GetColor() == _color)
 		return CommonErrors::_INVALID_CARD_TYPE;
@@ -384,7 +433,7 @@ CommonErrors checkFuncAirMage1(Board& _board, Colours _color, int16_t _xS, int16
 CommonErrors checkFuncAirMage2(Board& _board, int16_t _x, int16_t _y,Colours _color) {
 	if (_board.CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
-	if (_board.CheckStackCondition(_x, _y) != StackConditions::_EMPTY)
+	if (_board.CheckStackCondition(_x, _y) != StackConditions::EMPTY)
 		return CommonErrors::_POPULATED_STACK;
 	return CommonErrors::_NO_ERRORS;
 }
@@ -392,9 +441,9 @@ CommonErrors checkFuncAirMage2(Board& _board, int16_t _x, int16_t _y,Colours _co
 CommonErrors checkFuncWaterMage1(Board& _board, Colours _color, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD) {
 	if (_board.CheckPos(_xS, _yS) == BoardErrors::_OUTSIDE_BOUND || _board.CheckPos(_xD, _yD) == BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
-	if (_board.CheckStackCondition(_xS, _yS) != StackConditions::_POPULATED)
+	if (_board.CheckStackCondition(_xS, _yS) != StackConditions::POPULATED)
 		return CommonErrors::_EMPTY_STACK;
-	if (_board.CheckStackCondition(_xD, _yD) != StackConditions::_EMPTY)
+	if (_board.CheckStackCondition(_xD, _yD) != StackConditions::EMPTY)
 		return CommonErrors::_POPULATED_STACK;
 	if (_board.ViewTop(_xS, _yS).GetColor() != _color)
 		return CommonErrors::_INVALID_CARD_TYPE;
@@ -449,7 +498,7 @@ CommonErrors checkFuncWaterMage2(Board& _board, char _margin)
 			return CommonErrors::_HOLE_PROPERTY_VIOLATION;
 		}*/
 		
-		if (stackCondition == StackConditions::_POPULATED) {
+		if (stackCondition == StackConditions::POPULATED) {
 			count++;
 			if (_board.CheckTopIsEter(x, y))
 				return CommonErrors::_ETER_PROPERTY_VIOLATION;

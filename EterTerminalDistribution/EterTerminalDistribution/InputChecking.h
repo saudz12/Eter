@@ -7,7 +7,7 @@
 #include "functionsElementalCards.h"
 #include "ErrorPrints.h"
 
-CommonErrors CheckHurricaneInput(Board& board, uint16_t lineCnt, std::string_view type, std::string_view direction);
+CommonErrors CheckHurricaneInput(Board& _board, uint16_t _lineCnt, LineType _type, Directions _direction);
 
 CommonErrors CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view linetype, std::string_view preference);
 
@@ -45,7 +45,7 @@ CommonErrors checkFuncCrumble(Board&, int16_t, int16_t);
 
 CommonErrors checkFuncBorder(Board&, int16_t, int16_t);
 
-CommonErrors checkFuncAvalanche(Board&, int16_t, int16_t, int16_t, int16_t, char);
+CommonErrors checkFuncAvalanche(Board& _board, int16_t _x1, int16_t _y1, int16_t _x2, int16_t _y2, Directions _direction);
 
 CommonErrors checkFuncRock(Board&, int16_t, int16_t, MinionCard&);
 

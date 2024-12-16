@@ -299,46 +299,37 @@ uint16_t funcGale(Board& board, Player& p1, Player& p2)
 }
 
 // modify board, handcard if modified
-uint16_t funcHurricane(Board& board, Hand& h1, Hand& h2, uint16_t lineCnt, std::string_view type, std::string_view direction)
+void funcHurricane(Board& _board, Hand& _h1, Hand& _h2, uint16_t _lineCnt, LineType _type, Directions _direction)
 {
-	Board oldModel(3);
-	Board::cloneMatrix(board, oldModel);
-
-	ResizeableMatrix& matrix = board.getMatrix();
-
 	int start, end, ratio, orientation;
 	
-	if (type == ID_ROW) {
-		if (direction == DIR_LEFT) {
+	if (_type == LineType::TYPE_ROW) {
+		if (_direction == Directions::DIR_LEFT) {
 			start = 0;
-			end = board.getColCount() - 1;
+			end = _board.getColCount() - 1;
 			ratio = +1;
 		}
 		else {
-			start = board.getColCount() - 1;
+			start = _board.getColCount() - 1;
 			end = 0;
 			ratio = -1;
 		}
 		orientation = 1;
 	}
 	else {
-		if (direction == DIR_UP) {
+		if (_direction == Directions::DIR_UP) {
 			start = 0;
-			end = board.getRowCount() - 1;
+			end = _board.getRowCount() - 1;
 			ratio = +1;
 		}
 		else {
-			start = board.getRowCount() - 1;
+			start = _board.getRowCount() - 1;
 			end = 0;
 			ratio = -1;
 		}
 		orientation = 0;
 	}
 	
-
-	int firstX = orientation ? lineCnt : start;
-	int firstY = orientation ? start : lineCnt;
-
 	/*
 	int firstX;
 	int firstY;
@@ -357,21 +348,15 @@ uint16_t funcHurricane(Board& board, Hand& h1, Hand& h2, uint16_t lineCnt, std::
 	setup(start, lineCnt, orientation);
 	*/
 
-	board.shiftLine(start, end, ratio, lineCnt, orientation);
+	int firstX = orientation ? _lineCnt : start;
+	int firstY = orientation ? start : _lineCnt;
 
-	if (isolatedSpaces(board))
-	{
-		Board::cloneMatrix(oldModel, board);
-		std::cout << "Can't have isolated stacks/cards..\n";
-		return 1;
-	}
+	Player::ReturnStackToHand(_h1, _h2, _board.getStackOnPos(firstX, firstY));
 
-	CardStack& firstStack = matrix[firstX][firstY];
-	Player::ReturnStackToHand(h1, h2, firstStack);
 
-	board.checkForUpdates();
+	_board.shiftLine(start, end, ratio, _lineCnt, orientation);
 
-	return 0;
+	_board.checkForUpdates(); //?move it outside? and check only once for all elementals/mages togehter with empty spaces???
 }
 
 // move a card onto a neighboring card of a lower value

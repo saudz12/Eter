@@ -316,10 +316,10 @@ BoardErrors Board::CheckPos(int16_t _x, int16_t _y)
 StackConditions Board::CheckStackCondition(int16_t _x, int16_t _y)
 {
 	if (m_matrix[_x][_y].empty())
-		return StackConditions::_EMPTY;
+		return StackConditions::EMPTY;
 	if (m_matrix[_x][_y].back().CheckIsHole())
-		return StackConditions::_HOLE;
-	return StackConditions::_POPULATED;
+		return StackConditions::HOLE;
+	return StackConditions::POPULATED;
 }
 
 BoardChanges Board::GetChangeFlag(int16_t _x, int16_t _y)
@@ -565,6 +565,17 @@ MinionCard&& Board::ViewTop(int16_t _x, int16_t _y)
 	if (m_matrix[_x][_y].empty())
 		return MinionCard();
 	return std::forward<MinionCard>(m_matrix[_x][_y].back());
+}
+
+AdjacentType Board::CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
+{
+	if (_xS == _xD && _yS == _yD)
+		return AdjacentType::SAME_STACK;
+	if (std::abs(_xS - _yD) == 1 && std::abs(_xD - _yS) == 1)
+		return AdjacentType::CORNERING;
+	if (_xS == _xD && std::abs(_yD - _yD) == 1 || _yS == _yD && std::abs(_xD - _xD) == 1)
+		return AdjacentType::NEIGHBOURING;
+	return AdjacentType::NOT_ADJACENT;
 }
 
 //1 esec, 0 succes

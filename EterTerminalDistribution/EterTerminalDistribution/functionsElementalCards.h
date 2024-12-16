@@ -27,7 +27,7 @@ uint16_t funcSquall(Board&, Player&, uint16_t, uint16_t);
 uint16_t funcGale(Board& board, Player&, Player&);
 
 //shift a line 1 space in its orientation. Overflowing stacks return the respective cards to the users hand
-uint16_t funcHurricane(Board& board, Hand& h1, Hand& h2, uint16_t lineCnt, std::string_view type, std::string_view direction);
+void funcHurricane(Board& _board, Hand& _h1, Hand& _h2, uint16_t _lineCnt, LineType _type, Directions _direction);
 
 //move card one position to antoher
 uint16_t funcGust(Board&, Player&, int16_t, int16_t, int16_t, int16_t);

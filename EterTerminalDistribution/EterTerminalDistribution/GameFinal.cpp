@@ -10,60 +10,6 @@ void GameFinal::GenerateMageCards()
 	//ToDo
 }
 
-void GameFinal::PlayRound()
-{
-	while (true) {
-		system("cls");
-		int16_t option;
-		PrintStandardMenu(option, m_enabledElemental, m_powerUsed, m_enabledMage, true); //needs player
-
-		switch (option)
-		{
-		case 1:
-			int16_t val, x, y;
-			std::cin >> val >> x >> y;
-
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-		case 5:
-			break;
-		default:
-			break;
-		}
-		if (m_tieBraker) {
-			switch (m_board->checkWin())
-			{
-			case Colours::INVALID_COL:
-			{
-
-			}
-			case Colours::RED:
-			{
-				m_gameScore.first++;
-			}
-			case Colours::BLUE:
-			{
-				m_gameScore.second++;
-			}
-			//ResetRound();
-			return;
-			}
-		}
-		if (m_board->isBoardFilled() || m_activePlayingHand->size() == 0) {
-			m_tieBraker = true;
-			AdvanceAction();
-		}
-		if (m_wasPlaced ) {
-
-		}
-	}
-}
-
 void GameFinal::AdvanceAction()
 {
 	switch (m_activeColor)
@@ -117,22 +63,19 @@ void GameFinal::ResetRound()
 	GenerateElementalCards();
 }
 
-GameFinal::GameFinal(int16_t nrOfRounds, int16_t maxBoardSize,	GameOptions enabledEter =	GameOptions::DisabledEter,	GameOptions enabledIllusion =	GameOptions::DisabledIllusion,
-																GameOptions enabledMage =	GameOptions::DisabledMage,	GameOptions enabledElemental =	GameOptions::DisabledElemental,
-																GameOptions enabledTimed =	GameOptions::DisabledTimed,	GameOptions enabledTournament =	GameOptions::DisabledTournament)
+GameFinal::GameFinal()
 	:
-	m_rounds{ nrOfRounds },
-	m_enabledEter{ enabledEter },
-	m_enabledIllusion{ enabledIllusion },
-	m_enabledElemental{ enabledElemental },
-	m_enabledMage{ enabledMage },
-	m_enabledTimed{ enabledTimed },
-	m_enabledTournament{ enabledTournament },
+	m_enabledEter{ GameOptions::EnabledEter },
+	m_enabledIllusion{ GameOptions::EnabledIllusion },
+	m_enabledElemental{ GameOptions::EnabledElemental },
+	m_enabledMage{ GameOptions::EnabledMage },
+	m_enabledTournament{ GameOptions::DisabledTournament },
+	m_enabledTimed{ GameOptions::DisabledTimed },
 	m_activeColor{ Colours::RED },
 	m_wasPlaced{ false },
 	m_powerUsed{ false },
 	m_tieBraker{ false },
-	m_board{ std::make_unique<Board>(maxBoardSize) },
+	m_board{ std::make_unique<Board>(3) },
 	m_player1{ std::make_shared<Player>(Colours::RED) },
 	m_player2{ std::make_shared<Player>(Colours::BLUE) },
 	m_activeCoveredSet{ &m_player1->getCovered() },
@@ -143,17 +86,28 @@ GameFinal::GameFinal(int16_t nrOfRounds, int16_t maxBoardSize,	GameOptions enabl
 	GenerateMageCards();
 }
 
-void GameFinal::GameLoop()
+GameFinal::GameFinal(	int16_t _maxBoardSize,
+						GameOptions _enabledEter,		GameOptions _enabledIllusion,
+						GameOptions _enabledMage,		GameOptions _enabledElemental,
+						GameOptions _enabledTournament, GameOptions _enabledTimed)
+	:
+	m_enabledEter{ _enabledEter },
+	m_enabledIllusion{ _enabledIllusion },
+	m_enabledElemental{ _enabledElemental },
+	m_enabledMage{ _enabledMage },
+	m_enabledTournament{ _enabledTournament },
+	m_enabledTimed{ _enabledTimed },
+	m_activeColor{ Colours::RED },
+	m_wasPlaced{ false },
+	m_powerUsed{ false },
+	m_tieBraker{ false },
+	m_board{ std::make_unique<Board>(_maxBoardSize) },
+	m_player1{ std::make_shared<Player>(Colours::RED) },
+	m_player2{ std::make_shared<Player>(Colours::BLUE) },
+	m_activeCoveredSet{ &m_player1->getCovered() },
+	m_activePlayingHand{ &m_player1->GetHandCards() },
+	m_activeRemovedHand{ &m_player1->GetRemovedCards() }
 {
-	for (int i = 0; i < m_rounds; i++) {
-		PlayRound();
-		if (m_enabledTournament == GameOptions::EnabledElemental) {
-			//get random atributes. For now default.
-			//resetRound(m_board->getMaxSize(), m_enabledEter, m_enabledIllusion, m_enabledMage, m_enabledElemental, m_enabledElemental);
-			ResetRound();
-		}
-		else {
-			ResetRound();
-		}
-	}
+	GenerateElementalCards();
+	GenerateMageCards();
 }

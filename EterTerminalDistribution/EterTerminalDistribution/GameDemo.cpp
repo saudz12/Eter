@@ -786,24 +786,20 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
     }
     //hurricane
     case 9: {
-        std::string type;
-        std::cout << "\nMove Row(R) or Column(C): ";
+        char type;
+        std::cout << "\nMove Row(R-r) or Column(C-c): ";
         std::cin >> type;
         uint16_t lineCnt;
         std::cout << "\nWhich line: ";
         std::cin >> lineCnt;
-        std::string dir;
-        std::cout << "\nWhich direction (left(L)/right(R) for Row, up(U)/down(D) for Column): ";
+        char dir;
+        std::cout << "\nWhich direction (left(L-l)/right(R-r) for Row, up(U-u)/down(D-d) for Column): ";
         std::cin >> dir;
-        CommonErrors condition = CheckHurricaneInput(b, lineCnt, type, dir);
+        CommonErrors condition = CheckHurricaneInput(b, lineCnt, GetLineType(toupper(type)), GetDirection(toupper(dir)));
         if (condition == CommonErrors::_NO_ERRORS) {
-            if (funcHurricane(b, p1->GetHandCards(), p2->GetHandCards(), lineCnt, type, dir) == 0)
-            {
-                wasUsed = true;
-                wasCardUsed = true;
-            }
-            else
-                std::cout << "Failed to use Hurricane\n";
+            funcHurricane(b, p1->GetHandCards(), p2->GetHandCards(), lineCnt, GetLineType(toupper(type)), GetDirection(toupper(dir)));
+            wasUsed = true;
+            wasCardUsed = true;
         }
         else {
             ErrorMesageHuricane(condition);

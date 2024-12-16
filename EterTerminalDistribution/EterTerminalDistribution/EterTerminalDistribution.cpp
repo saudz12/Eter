@@ -1,5 +1,5 @@
 #include "GameDemo.h"
-#include "GameFinal.h"
+#include "ConsolePlayableGUI.h"
 
 int main()
 {
@@ -8,9 +8,13 @@ int main()
 
 	return 0;*/
 
+	//testing a lot. backend 75% complete. Frontend ~20%?
+
 	GameDemo test(3,3);
 	test.runDemo();
 	
-	//GameFinal test(1, 3);
+	//GameView();
+	
+	
 	return 0;
 }

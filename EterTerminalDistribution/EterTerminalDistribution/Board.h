@@ -52,9 +52,16 @@ enum class BoardChanges : int16_t {
 };
 
 enum class StackConditions : int16_t {
-	_POPULATED,
-	_EMPTY,
-	_HOLE
+	POPULATED,
+	EMPTY,
+	HOLE
+};
+
+enum class AdjacentType : int16_t {
+	NEIGHBOURING,
+	CORNERING,
+	NOT_ADJACENT,
+	SAME_STACK
 };
 
 class Board
@@ -124,6 +131,10 @@ public:
 	void MirrorEdge(BoardChanges _margin);
 	bool CheckTopIsEter(int16_t _x, int16_t _y);
 	MinionCard&& ViewTop(int16_t _x, int16_t _y); //wierd??
+
+	//checks if the coordonates of 2 stacks ar adjacent
+	static AdjacentType CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
+	
 
 	//add lines to border
 	void addLineToLeft();
