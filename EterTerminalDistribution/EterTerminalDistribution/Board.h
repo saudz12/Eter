@@ -54,7 +54,8 @@ enum class BoardChanges : int16_t {
 enum class StackConditions : int16_t {
 	POPULATED,
 	EMPTY,
-	HOLE
+	HOLE,
+	ETER
 };
 
 enum class OrientationType : int16_t {

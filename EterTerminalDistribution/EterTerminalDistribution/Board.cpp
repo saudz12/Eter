@@ -319,6 +319,8 @@ StackConditions Board::CheckStackCondition(int16_t _x, int16_t _y)
 		return StackConditions::EMPTY;
 	if (m_matrix[_x][_y].back().CheckIsHole())
 		return StackConditions::HOLE;
+	if (m_matrix[_x][_y].back().GetIsEterCard())
+		return StackConditions::ETER;
 	return StackConditions::POPULATED;
 }
 

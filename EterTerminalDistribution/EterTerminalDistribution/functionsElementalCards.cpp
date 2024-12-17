@@ -1104,6 +1104,7 @@ void funcAvalanche(Board& _board, int16_t _x1 , int16_t _y1, int16_t _x2, int16_
 	}
 
 	_board.ShiftLine(line, type, _direction);
+	//_board.PlaceStack(std::move(aux), _x1, _y1, BoardChanges::_NO_CHANGES); ///implement this
 }
 
 //cover a illusion with a card

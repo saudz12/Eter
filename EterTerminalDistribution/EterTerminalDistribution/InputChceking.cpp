@@ -54,51 +54,35 @@ CommonErrors CheckHurricaneInput(Board& _board, uint16_t _lineCnt, LineType _typ
 }
 
 //incomplete. needs preference cehck - ask about it
-CommonErrors CheckWhirlpool(Board& board, uint16_t x, uint16_t y, std::string_view linetype, std::string_view preference)
+CommonErrors CheckWhirlpool(Board& _board, int16_t _line, uint16_t _x1, uint16_t _y1, uint16_t _x2, uint16_t _y2, LineType _type, Preference _preference)
 {
-	ResizeableMatrix& matrix = board.getMatrix();
+	int ratioX = (_type == LineType::TYPE_ROW) ? 0 : 1;
+	int ratioY = (_type == LineType::TYPE_ROW) ? 1 : 0;
 
-	int ratioX = (linetype == ID_ROW) ? 0 : 1;
-	int ratioY = (linetype == ID_ROW) ? 1 : 0;
-
-	if (linetype != ID_ROW && linetype != ID_COLUMN) {
+	if (_type == LineType::_INVALID_LINE_TYPE) {
 		return CommonErrors::_INVALID_LINE_TYPE;
 	}
+	if (_line < 0 || _type == LineType::TYPE_ROW && _line >= _board.getRowCount() || _type == LineType::TYPE_COLUMN && _line >= _board.getColCount())
+		return CommonErrors::_INVALID_LINE_TYPE;
 
-	if (linetype == ID_ROW && (preference != DIR_LEFT || preference != DIR_RIGHT) || linetype == ID_COLUMN && (preference != DIR_UP || preference != DIR_DOWN)) {
-		return CommonErrors::_INVALID_DIRECTION;
-	}
-	if (!matrix[x][y].empty()) {
-		return CommonErrors::_EMPTY_STACK;
-	}
-
-	if ((x < 0 || x >= board.getRowCount()) || (y < 0 || y >= board.getColCount())) {
+	if (_board.CheckPos(_x1, _y1) != BoardErrors::_INSIDE_BOUND || _board.CheckPos(_x2, _y2) != BoardErrors::_INSIDE_BOUND) {
 		return CommonErrors::_OUTSIDE_BOUND;
 	}
 
-	//check if the adjacent spaces are out of bounds
-	if (linetype == ID_ROW) {
-		if (y - 1 < 0 || y + 1 >= board.getColCount())
-		{
-			return CommonErrors::_ADJACENT_OUTSIDE_BOUNDS;
-		}
-	}
-	else {
-		if (x - 1 < 0 || x + 1 >= board.getRowCount())
-		{
-			return CommonErrors::_ADJACENT_OUTSIDE_BOUNDS;
-		}
+	if (!(_type == LineType::TYPE_ROW && std::abs(_x2 - _x1) == 2 || _type == LineType::TYPE_COLUMN && std::abs(_y2 - _y1) == 2))
+		return CommonErrors::NOT_ADJACENT;
+	if (_board.CheckStackCondition((_x1 + _x2) / 2, (_y1 + _y2) / 2) != StackConditions::EMPTY)
+		return CommonErrors::_NEEDS_EMPTY_SPACE;
+
+	if (_preference == Preference::INVALID_PREFERENCE) {
+		return CommonErrors::_INVALID_DIRECTION;
 	}
 
-	//check if the adjancent spaces are empty
-	if (matrix[x - ratioX][y - ratioY].empty() || matrix[x + ratioX][y + ratioY].empty())
-	{
-		return CommonErrors::_ADJACENT_SPACES_EMPTY;
-	}
-	//check if one of the adjancent spaces is an eter card
-	if (matrix[x - ratioX][y - ratioY].back().GetIsEterCard() || matrix[x + ratioX][y + ratioY].back().GetIsEterCard())
-	{
+	if (_board.CheckStackCondition(_x1, _y1) == StackConditions::ETER || _board.CheckStackCondition(_x2, _y2) == StackConditions::ETER) {
 		return CommonErrors::_ETER_PROPERTY_VIOLATION;
+	}
+	if (_board.CheckStackCondition(_x1, _y1) != StackConditions::POPULATED || _board.CheckStackCondition(_x2, _y2) != StackConditions::POPULATED) {
+		return CommonErrors::_ADJACENT_SPACES_EMPTY;
 	}
 
 	return CommonErrors::_NO_ERRORS;

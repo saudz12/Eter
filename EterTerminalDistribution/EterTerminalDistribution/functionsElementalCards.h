@@ -5,6 +5,14 @@
 using handCard = std::unordered_map<MinionCard, uint16_t>;
 //using position = std::pair<uint16_t, uint16_t>;
 
+enum class Preference : int16_t{
+	FIRST,
+	SECOND,
+	INVALID_PREFERENCE
+};
+
+//get perference func -- find way to implement it
+
 //maybe generate new ExplosionCard
 uint16_t funcControlledExplosion(Board&, Player&, Player&);
 
