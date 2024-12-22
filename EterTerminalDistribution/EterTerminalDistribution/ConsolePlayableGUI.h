@@ -17,9 +17,15 @@ class GameView {
 
 	LaunchOptions GetMode(int16_t _m);
 
-	//std::unique_ptr<test> m_game(new test);
-	GameFinal m_game;
+	std::unique_ptr<GameFinal> m_game;
+	//GameFinal m_game;
 	LaunchOptions m_activeMode;
+	GameOptions Eter;
+	GameOptions Illusion;
+	GameOptions Mage;
+	GameOptions Elemental;
+	GameOptions Tournament;
+	GameOptions Timed;
 
 	void LaunchMenu();
 	void GetPlayingFormat();
@@ -32,6 +38,7 @@ class GameView {
 	static const int SELECT{ 13 };*/
 
 	void PrintGameOptions();
+	void PrintPlayerOptions();
 
 public:
 

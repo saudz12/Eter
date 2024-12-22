@@ -12,7 +12,8 @@ private:
 	CoveredSet m_activeCoveredSet;
 	Hand m_activePlayingHand;
 	Hand m_activeRemovedHand;
-	Player m_activePlayer;
+	std::shared_ptr<Player> m_activePlayer;
+	//Player m_activePlayer;
 
 	Score m_gameScore;
 	Colours m_activeColor;
@@ -28,10 +29,6 @@ private:
 	bool m_powerUsed;
 	bool m_tieBraker;
 	
-	void AdvanceAction();
-	void EndTurn();
-	//void resetRound(int16_t maxBoardSize, GameOptions enabledEter, GameOptions enabledIllusion, GameOptions enabledMage, GameOptions enabledElemental, GameOptions enabledTimed);
-	void ResetRound();
 
 public:
 	GameFinal();
@@ -39,10 +36,20 @@ public:
 				GameOptions _enabledEter,		GameOptions _enabledIllusion,
 				GameOptions _enabledMage,		GameOptions _enabledElemental,
 				GameOptions _enabledTournament,	GameOptions _enabledTimed);
-	
+#pragma region turn_logic
+	void AdvanceAction();
+	void EndTurn();
+	//void resetRound(int16_t maxBoardSize, GameOptions enabledEter, GameOptions enabledIllusion, GameOptions enabledMage, GameOptions enabledElemental, GameOptions enabledTimed);
+	void ResetRound();
+#pragma endregion
+
+#pragma region action_logic
 	bool PlaceCard(int16_t _x, int16_t _y, int16_t _val);
 	void PlayElemental();
 	void PlayMage();
+#pragma endregion
 
+#pragma region print_api
 	void PrintBoard(bool _debug = false);
+#pragma endregion
 };

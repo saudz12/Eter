@@ -352,20 +352,20 @@ BoardChanges Board::GetChangeFlag(int16_t _x, int16_t _y)
 
 	if (_x == -1 && _y == -1)
 		return BoardChanges::_TOP_LEFT_BOUND;
-	if (_x == -1 && _y == m_max_size)
+	if (_x == -1 && _y == getColCount())
 		return BoardChanges::_TOP_RIGHT_BOUND;
-	if (_x == m_max_size && _y == -1)
+	if (_x == getRowCount() && _y == -1)
 		return BoardChanges::_BOT_LEFT_BOUND;
-	if (_x == -1 && _y == m_max_size)
+	if (_x == getRowCount() && _y == getColCount())
 		return BoardChanges::_BOT_RIGHT_BOUND;
 
 	if (_x == -1)
 		return BoardChanges::_TOP_BOUND;
-	if (_x == m_max_size)
+	if (_x == getRowCount())
 		return BoardChanges::_BOT_BOUND;
 	if (_y == -1)
 		return BoardChanges::_LEFT_BOUND;
-	if (_y == m_max_size)
+	if (_y == getColCount())
 		return BoardChanges::_RIGHT_BOUND;
 
 	return BoardChanges::_NO_CHANGES;
@@ -414,7 +414,17 @@ void Board::ExtendBoard(BoardChanges _flag)
 void Board::PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y)
 {
 	ExtendBoard(GetChangeFlag(_x, _y));
+	increaseOnColorRow(_x, _y, _toPlace.GetColor());
+	increaseOnColorColumn(_x, _y, _toPlace.GetColor());
 
+	if (_x == -1)
+		_x = 0;
+	if (_y == -1)
+		_y = 0;
+	if (!isMatMaxSize())
+		m_reachedMaxSize = false;
+	else if (_x == _y || _x + _y == m_max_size - 1)
+		increaseOnColorDiagonal(_x, _y, _toPlace.GetColor());
 	m_matrix[_x][_y].emplace_back(_toPlace);
 }
 

@@ -102,12 +102,6 @@ void GameView::LaunchMenu()
 void GameView::GetPlayingFormat()
 {
     int16_t size = 4;
-    GameOptions Eter {GameOptions::EnabledEter};
-    GameOptions Illusion {GameOptions::EnabledIllusion};
-    GameOptions Mage {GameOptions::EnabledMage};
-    GameOptions Elemental {GameOptions::DisabledElemental};
-    GameOptions Tournament {GameOptions::DisabledTournament};
-    GameOptions Timed {GameOptions::DisabledTimed};
 
     switch (m_activeMode)
     {
@@ -138,7 +132,8 @@ void GameView::GetPlayingFormat()
         break;
     }
     //return std::make_shared<GameFinal>(new GameFinal{size, Eter, Illusion, Mage, Elemental, Tournament, Timed}); //nu merge??
-    m_game = GameFinal{ std::move(GameFinal{ size, Eter, Illusion, Mage, Elemental, Tournament, Timed }) };
+    //m_game = GameFinal{ std::move(GameFinal{ size, Eter, Illusion, Mage, Elemental, Tournament, Timed }) };
+    m_game = std::make_unique<GameFinal>(size, Eter, Illusion, Mage, Elemental, Tournament, Timed);
 }
 
 void GameView::PrintGameOptions()
@@ -152,7 +147,19 @@ void GameView::PrintGameOptions()
     std::cout << "5. Timed" << std::endl;
 }
 
-GameView::GameView()
+void GameView::PrintPlayerOptions()
+{
+}
+
+
+
+GameView::GameView() :
+    Illusion    { GameOptions::EnabledIllusion },
+    Mage        { GameOptions::EnabledMage },
+    Elemental   { GameOptions::DisabledElemental },
+    Tournament  { GameOptions::DisabledTournament },
+    Timed       { GameOptions::DisabledTimed },
+    Eter        { GameOptions::EnabledEter }
 {
     //m_game = std::make_unique<test>(newteste);
     LaunchMenu();
@@ -161,6 +168,16 @@ GameView::GameView()
 
 void GameView::Loop()
 {
-    m_game.PlaceCard(0, 0, 3);
-    m_game.PrintBoard();
+    m_game->PlaceCard(-1, 7, 3);
+    m_game->PlaceCard(1, 1, 3);
+    m_game->PlaceCard(-2, -2, 3);
+    m_game->PrintBoard();
+
+    std::cout << "Where(x, y) and Card: " << std::endl;
+    int16_t x, y, val;
+    std::cin >> x >> y >> val;
+    m_game->PlaceCard(x, y, val);
+
+    m_game->EndTurn();
+
 }
