@@ -39,4 +39,6 @@ public:
 				GameOptions _enabledEter,		GameOptions _enabledIllusion,
 				GameOptions _enabledMage,		GameOptions _enabledElemental,
 				GameOptions _enabledTournament,	GameOptions _enabledTimed);
+	
+	
 };

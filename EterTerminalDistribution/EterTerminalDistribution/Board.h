@@ -20,11 +20,15 @@
 enum class BoardErrors : int16_t {
 	_OUTSIDE_BOUND,
 	_INSIDE_BOUND,
-	
+	_EXTEND_BOUND,
+	_EMPTY_BOARD,
+
 	_INVALID_VAL,
 	_NONE_LEFT_OF_VAL, 
 	
-	_NO_ERRORS
+	_HOLE_PROPERTY,
+	_ETER_PROPERTY,
+	_NO_ERRORS,
 };
 
 enum class MarginType : int16_t {
@@ -124,6 +128,7 @@ public:
 
 	StackConditions CheckStackCondition(int16_t _x, int16_t _y); 
 	BoardErrors CheckPos(int16_t _x, int16_t _y); 
+	BoardErrors CanPlace(int16_t _x, int16_t _y, int16_t _val);
 	BoardChanges GetChangeFlag(int16_t _x, int16_t _y); 
 	void ExtendBoard(BoardChanges _flag); 
 	void PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y, BoardChanges _flag); 

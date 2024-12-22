@@ -297,22 +297,6 @@ int16_t Board::setPosWaterfall(int16_t x, int16_t y, const MinionCard& card)
 	return 0;
 }
 
-
-
-BoardErrors Board::CheckPos(int16_t _x, int16_t _y)
-{
-	if (_x == -1 && m_max_size == getRowCount() || _x < -1)
-		return BoardErrors::_OUTSIDE_BOUND;
-	if (_x == getRowCount() && getRowCount() == m_max_size || _x > getRowCount())
-		return BoardErrors::_OUTSIDE_BOUND;
-	if (_y == -1 && m_max_size == getColCount() || _y < -1)
-		return BoardErrors::_OUTSIDE_BOUND;
-	if (_y == getColCount() && getColCount() == m_max_size || _y > getColCount())
-		return BoardErrors::_OUTSIDE_BOUND;
-
-	return BoardErrors::_INSIDE_BOUND;
-}
-
 StackConditions Board::CheckStackCondition(int16_t _x, int16_t _y)
 {
 	if (m_matrix[_x][_y].empty())
@@ -323,6 +307,43 @@ StackConditions Board::CheckStackCondition(int16_t _x, int16_t _y)
 		return StackConditions::ETER;
 	return StackConditions::POPULATED;
 }
+
+BoardErrors Board::CheckPos(int16_t _x, int16_t _y)
+{
+	if (_x < -1 || _y < -1 || _x > getRowCount() || _y > getColCount())
+		return BoardErrors::_OUTSIDE_BOUND;
+	if (getRowCount() == m_max_size && (_x == -1 || _x == getRowCount()))
+		return BoardErrors::_OUTSIDE_BOUND;
+	if (getColCount() == m_max_size && (_y == -1 || _y == getColCount()))
+		return BoardErrors::_OUTSIDE_BOUND;
+
+	return BoardErrors::_INSIDE_BOUND;
+}
+
+BoardErrors Board::CanPlace(int16_t _x, int16_t _y, int16_t _val)
+{
+	if (CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
+		return BoardErrors::_OUTSIDE_BOUND;
+
+	if (_x == -1 || _y == -1 || _x == getRowCount() || _y == getColCount())
+		return BoardErrors::_NO_ERRORS;
+
+	StackConditions tryPlaceOnStack = CheckStackCondition(_x, _y);
+	switch (tryPlaceOnStack)
+	{
+	case StackConditions::POPULATED:
+		if (_val < m_matrix[_x][_y].back().GetValue())
+			return BoardErrors::_INVALID_VAL;
+		break;
+	case StackConditions::HOLE:
+		return BoardErrors::_HOLE_PROPERTY;
+	case StackConditions::ETER:
+		return BoardErrors::_ETER_PROPERTY;
+	}
+
+	return BoardErrors::_NO_ERRORS;
+}
+
 
 BoardChanges Board::GetChangeFlag(int16_t _x, int16_t _y)
 {
