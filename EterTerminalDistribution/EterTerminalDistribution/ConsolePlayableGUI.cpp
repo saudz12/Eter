@@ -1,8 +1,27 @@
 #include "ConsolePlayableGUI.h"
 
+GameView::LaunchOptions GameView::GetMode(int16_t _m)
+{
+    switch (_m)
+    {
+    case 0:
+        return LaunchOptions::TRAINING;
+    case 1:
+        return LaunchOptions::ELEMENTAL;
+    case 2:
+        return LaunchOptions::MAGE_DUEL;
+    case 3:
+        return LaunchOptions::TOURNAMENT;
+    case 4:
+        return LaunchOptions::TIMED;
+    default:
+        return LaunchOptions::INVALID_GAME_MODE;
+    }
+}
+
 void GameView::LaunchMenu()
 {
-	int cnt = 0;
+	/*int cnt = 0;
     
     int c = 0;
     
@@ -47,10 +66,40 @@ void GameView::LaunchMenu()
         system("cls");
         
         m_activeMode = GetMode(c);
+    }*/
+
+    uint16_t option;
+
+    while (true)
+    {
+        PrintGameOptions();
+
+        std::cin >> option;
+
+        switch (option)
+        {
+        case 0:
+            exit(0);
+        case 1:
+            ;
+            return;
+        case 2:
+            return;
+        case 3:
+            return;
+        case 4:
+            return;
+        case 5:
+            return;
+        default:
+            std::cout << "Invalid option..";
+            system("cls");
+            break;
+        }
     }
 }
 
-std::shared_ptr<GameFinal>&& GameView::GetPlayingFormat()
+void GameView::GetPlayingFormat()
 {
     int16_t size = 4;
     GameOptions Eter {GameOptions::EnabledEter};
@@ -89,36 +138,27 @@ std::shared_ptr<GameFinal>&& GameView::GetPlayingFormat()
         break;
     }
     //return std::make_shared<GameFinal>(new GameFinal{size, Eter, Illusion, Mage, Elemental, Tournament, Timed}); //nu merge??
-    return std::make_shared<GameFinal>(GameFinal());
+    m_game = std::move(GameFinal{ size, Eter, Illusion, Mage, Elemental, Tournament, Timed });
 }
 
-GameView::GameView::GameView()
-    : m_activeMode{LaunchOptions::TRAINING}
+void GameView::PrintGameOptions()
 {
-	LaunchMenu();
-    
-    m_game = GetPlayingFormat();
+    std::cout << "Chose a game mode to play: " << std::endl << std::endl;
+    std::cout << "0. Exit" << std::endl;
+    std::cout << "1. Standard" << std::endl;
+    std::cout << "2. Elemental" << std::endl;
+    std::cout << "3. Mage Duel" << std::endl;
+    std::cout << "4. Tournament" << std::endl;
+    std::cout << "5. Timed" << std::endl;
+}
+
+GameView::GameView()
+{
+    //m_game = std::make_unique<test>(newteste);
+    LaunchMenu();
+    GetPlayingFormat();
 }
 
 void GameView::Loop()
 {
-}
-
-LaunchOptions GetMode(int _m)
-{
-    switch (_m)
-    {
-    case 0:
-        return LaunchOptions::TRAINING;
-    case 1:
-        return LaunchOptions::ELEMENTAL;
-    case 2:
-        return LaunchOptions::MAGE_DUEL;
-    case 3:
-        return LaunchOptions::TOURNAMENT;
-    case 4:
-        return LaunchOptions::TIMED;
-    default:
-        return LaunchOptions::INVALID_GAME_MODE;
-    }
 }

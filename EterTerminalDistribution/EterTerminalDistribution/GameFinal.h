@@ -1,7 +1,6 @@
 #pragma once
 #include "Board.h"
 #include "InputChecking.h"
-#include "ConsoleView.h"
 
 class GameFinal{
 private:
@@ -10,10 +9,10 @@ private:
 	std::unique_ptr<Board> m_board;
 
 	//weak pointer(and change to shared) to current player? - usefull in some places
-	CoveredSet* m_activeCoveredSet;
-	Hand* m_activePlayingHand;
-	Hand* m_activeRemovedHand;
-	Player* m_activePlayer;
+	CoveredSet m_activeCoveredSet;
+	Hand m_activePlayingHand;
+	Hand m_activeRemovedHand;
+	Player m_activePlayer;
 
 	Score m_gameScore;
 	Colours m_activeColor;
@@ -33,7 +32,7 @@ private:
 	void GenerateMageCards();
 	
 	void AdvanceAction();
-	void EndTurn(bool& tieBraker);
+	void EndTurn();
 	//void resetRound(int16_t maxBoardSize, GameOptions enabledEter, GameOptions enabledIllusion, GameOptions enabledMage, GameOptions enabledElemental, GameOptions enabledTimed);
 	void ResetRound();
 

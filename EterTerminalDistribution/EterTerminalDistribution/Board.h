@@ -120,6 +120,7 @@ public:
 	//only checks it. to modify it it needs to return a reference. do the check somewhere beforehand to get modifyable card
 
 #pragma region new_code
+	//moves and other tricky thigs camn be modifyed to bools to check if they executed properly
 
 	StackConditions CheckStackCondition(int16_t _x, int16_t _y); 
 	BoardErrors CheckPos(int16_t _x, int16_t _y); 
@@ -134,11 +135,12 @@ public:
 	bool ShiftLine(int16_t _line, LineType _type, Directions _direction);
 	bool LineContainsColour(int16_t _line, LineType _type, Colours _col); 
 	int16_t GetNrOfCardsOnLine(int16_t _line, LineType _type); 
+	void MoveCard(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD); //from top of stack (xs ys) to top of pos stacl (xd yd)
 	void MoveStack(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD); //replaces the stack on destination
 	void SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 	void MirrorEdge(BoardChanges _margin);
 	bool CheckTopIsEter(int16_t _x, int16_t _y);
-	MinionCard&& ViewTop(int16_t _x, int16_t _y); //wierd??
+	const MinionCard&& ViewTop(int16_t _x, int16_t _y); //wierd??
 
 	//checks if the coordonates of 2 stacks ar adjacent
 	static AdjacentType CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);

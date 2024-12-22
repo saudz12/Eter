@@ -56,7 +56,7 @@ uint16_t funcMist(Board&, Player&, int16_t, int16_t, MinionCard&);
 uint16_t funcWave(Board&, Player&, int16_t, int16_t, MinionCard);
 
 //move 2 card separated by empty space into the empty space and place them as stacks 
-uint16_t funcWhirlpool(Board&, uint16_t, uint16_t);
+void funcWhirlpool(Board& _board, uint16_t _x1, uint16_t _y1, uint16_t _x2, uint16_t _y2, Preference _preference);
 
 //make the line unplayable for the next round
 uint16_t funcBlizzard(Board&, uint16_t, char);

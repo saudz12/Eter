@@ -577,6 +577,46 @@ int16_t Board::GetNrOfCardsOnLine(int16_t _line, LineType _type)
 	}
 }
 
+void Board::MoveCard(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
+{
+	if (m_matrix[_xS][_yS].back().GetColor() == Colours::RED) {
+		m_rowChecker[_xS].first--;
+		m_colChecker[_yS].first--;
+	}
+	else {
+		m_rowChecker[_xS].second--;
+		m_colChecker[_yS].second--;
+	}
+	if (m_matrix[_xD][_yD].back().GetColor() == Colours::RED) {
+		m_rowChecker[_xD].first--;
+		m_colChecker[_yD].first--;
+	}
+	else {
+		m_rowChecker[_xD].second--;
+		m_colChecker[_yD].second--;
+	}
+
+	m_matrix[_xD][_yD].push_back(std::move(m_matrix[_xS][_yS]).back());
+	m_matrix[_xS][_yS].pop_back();
+
+	if (m_matrix[_xS][_yS].back().GetColor() == Colours::RED) {
+		m_rowChecker[_xS].first++;
+		m_colChecker[_yS].first++;
+	}
+	else {
+		m_rowChecker[_xS].second++;
+		m_colChecker[_yS].second++;
+	}
+	if (m_matrix[_xD][_yD].back().GetColor() == Colours::RED) {
+		m_rowChecker[_xD].first++;
+		m_colChecker[_yD].first++;
+	}
+	else {
+		m_rowChecker[_xD].second++;
+		m_colChecker[_yD].second++;
+	}
+}
+
 void Board::MoveStack(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
 {
 	if (m_matrix[_xS][_yS].empty() && m_matrix[_xD][_yD].empty())
@@ -699,10 +739,11 @@ bool Board::CheckTopIsEter(int16_t _x, int16_t _y)
 }
 
 //sper ca merge
-MinionCard&& Board::ViewTop(int16_t _x, int16_t _y)
+const MinionCard&& Board::ViewTop(int16_t _x, int16_t _y)
 {
+	//just in case if
 	if (m_matrix[_x][_y].empty())
-		return MinionCard();
+		return MinionCard::CreateHoleCard();
 	return std::forward<MinionCard>(m_matrix[_x][_y].back());
 }
 

@@ -54,23 +54,24 @@ CommonErrors CheckHurricaneInput(Board& _board, uint16_t _lineCnt, LineType _typ
 }
 
 //incomplete. needs preference cehck - ask about it
-CommonErrors CheckWhirlpool(Board& _board, int16_t _line, uint16_t _x1, uint16_t _y1, uint16_t _x2, uint16_t _y2, LineType _type, Preference _preference)
+CommonErrors CheckWhirlpool(Board& _board, uint16_t _x1, uint16_t _y1, uint16_t _x2, uint16_t _y2, Preference _preference)
 {
-	int ratioX = (_type == LineType::TYPE_ROW) ? 0 : 1;
-	int ratioY = (_type == LineType::TYPE_ROW) ? 1 : 0;
-
-	if (_type == LineType::_INVALID_LINE_TYPE) {
-		return CommonErrors::_INVALID_LINE_TYPE;
-	}
-	if (_line < 0 || _type == LineType::TYPE_ROW && _line >= _board.getRowCount() || _type == LineType::TYPE_COLUMN && _line >= _board.getColCount())
-		return CommonErrors::_INVALID_LINE_TYPE;
-
+	if (_x1 != _x2 && _y1 != _y2)
+		return CommonErrors::NOT_ADJACENT;
+	
 	if (_board.CheckPos(_x1, _y1) != BoardErrors::_INSIDE_BOUND || _board.CheckPos(_x2, _y2) != BoardErrors::_INSIDE_BOUND) {
 		return CommonErrors::_OUTSIDE_BOUND;
 	}
 
-	if (!(_type == LineType::TYPE_ROW && std::abs(_x2 - _x1) == 2 || _type == LineType::TYPE_COLUMN && std::abs(_y2 - _y1) == 2))
+	LineType type;
+	if (_x1 == _x2)
+		type = LineType::TYPE_ROW;
+	else
+		type = LineType::TYPE_COLUMN;
+
+	if (!(type == LineType::TYPE_ROW && std::abs(_x2 - _x1) == 2 || type == LineType::TYPE_COLUMN && std::abs(_y2 - _y1) == 2))
 		return CommonErrors::NOT_ADJACENT;
+
 	if (_board.CheckStackCondition((_x1 + _x2) / 2, (_y1 + _y2) / 2) != StackConditions::EMPTY)
 		return CommonErrors::_NEEDS_EMPTY_SPACE;
 
@@ -81,6 +82,7 @@ CommonErrors CheckWhirlpool(Board& _board, int16_t _line, uint16_t _x1, uint16_t
 	if (_board.CheckStackCondition(_x1, _y1) == StackConditions::ETER || _board.CheckStackCondition(_x2, _y2) == StackConditions::ETER) {
 		return CommonErrors::_ETER_PROPERTY_VIOLATION;
 	}
+
 	if (_board.CheckStackCondition(_x1, _y1) != StackConditions::POPULATED || _board.CheckStackCondition(_x2, _y2) != StackConditions::POPULATED) {
 		return CommonErrors::_ADJACENT_SPACES_EMPTY;
 	}

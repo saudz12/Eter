@@ -630,164 +630,25 @@ uint16_t funcWave(Board& board, Player& p, int16_t x1, int16_t y1, MinionCard ne
 	}
 }
 
-// move 2 cards separated by empty space into the empty space and place them as stacks
-uint16_t funcWhirlpool(Board& board, uint16_t x, uint16_t y)
+void funcWhirlpool(Board& _board, uint16_t _x1, uint16_t _y1, uint16_t _x2, uint16_t _y2, Preference _preference)
 {
-	ResizeableMatrix& matrix = board.getMatrix();
-	
-	std::cout << "Type R if you want to whirlpool the row or C if you want to whirlpool the column\n";
-	char lineType;
-	std::cin >> lineType;
-
-	if (lineType == 'R')
-	{
-		MinionCard leftCard = matrix[x][y - 1].back();
-		matrix[x][y - 1].pop_back();
-		if (leftCard.GetColor() == Colours::RED)
+	int16_t xm = (_x1 + _x2) / 2;
+	int16_t ym = (_y1 + _y2) / 2;
+	if (_board.ViewTop(_x1, _y1).GetValue() == _board.ViewTop(_x2, _y2).GetValue()) {
+		switch (_preference)
 		{
-			board.updateRowChecker(x, RED_DEC);
-			board.updateColChecker(y - 1, RED_DEC);
-		}
-		else
-		{
-			board.updateRowChecker(x, BLUE_DEC);
-			board.updateColChecker(y - 1, BLUE_DEC);
-		}
-
-		MinionCard rightCard = matrix[x][y + 1].back();
-		matrix[x][y + 1].pop_back();
-		if (rightCard.GetColor() == Colours::RED)
-		{
-			board.updateRowChecker(x, RED_DEC);
-			board.updateColChecker(y + 1, RED_DEC);
-		}
-		else
-		{
-			board.updateRowChecker(x, BLUE_DEC);
-			board.updateColChecker(y + 1, BLUE_DEC);
-		}
-
-		if (leftCard.GetValue() < rightCard.GetValue())
-		{
-			matrix[x][y].push_back(leftCard);
-			matrix[x][y].push_back(rightCard);
-		}
-		else if (leftCard.GetValue() > rightCard.GetValue())
-		{
-			matrix[x][y].push_back(rightCard);
-			matrix[x][y].push_back(leftCard);
-		}
-		else if (leftCard.GetValue() == rightCard.GetValue())
-		{
-			std::cout << "Cards are equal in value, type L if you want the left card on top, type R if you want the right card on top\n";
-			char direction;
-			std::cin >> direction;
-			if (direction == 'L')
-			{
-				matrix[x][y].push_back(rightCard);
-				matrix[x][y].push_back(leftCard);
-			}
-			else if (direction == 'R')
-			{
-				matrix[x][y].push_back(leftCard);
-				matrix[x][y].push_back(rightCard);
-			}
-			else
-			{
-				"You didn't type L or R";
-				return 1;
-			}
-		}
-		if (matrix[x][y].back().GetColor() == Colours::RED)
-		{
-			board.updateRowChecker(x, RED_ADD);
-			board.updateColChecker(y, RED_ADD);
-		}
-		else
-		{
-			board.updateRowChecker(x, BLUE_ADD);
-			board.updateColChecker(y, BLUE_ADD);
+		case Preference::FIRST:
+			_board.MoveCard(_x1, _y1, xm, ym);
+			_board.MoveCard(_x2, _y2, xm, ym);
+			return;
+		case Preference::SECOND:
+			_board.MoveCard(_x2, _y2, xm, ym);
+			_board.MoveCard(_x1, _y1, xm, ym);
+			return;
 		}
 	}
-	else if (lineType == 'C')
-	{
-		MinionCard upCard = matrix[x - 1][y].back();
-		matrix[x - 1][y].pop_back();
-		if (upCard.GetColor() == Colours::RED)
-		{
-			board.updateRowChecker(x - 1, RED_DEC);
-			board.updateColChecker(y, RED_DEC);
-		}
-		else
-		{
-			board.updateRowChecker(x - 1, BLUE_DEC);
-			board.updateColChecker(y, BLUE_DEC);
-		}
-
-		MinionCard downCard = matrix[x + 1][y].back();
-		matrix[x + 1][y].pop_back();
-		if (downCard.GetColor() == Colours::RED)
-		{
-			board.updateRowChecker(x + 1, RED_DEC);
-			board.updateColChecker(y, RED_DEC);
-		}
-		else
-		{
-			board.updateRowChecker(x + 1, BLUE_DEC);
-			board.updateColChecker(y, BLUE_DEC);
-		}
-
-		if (upCard.GetValue() < downCard.GetValue())
-		{
-			matrix[x][y].push_back(upCard);
-			matrix[x][y].push_back(downCard);
-		}
-		else if (upCard.GetValue() > downCard.GetValue())
-		{
-			matrix[x][y].push_back(downCard);
-			matrix[x][y].push_back(upCard);
-		}
-		else if (upCard.GetValue() == downCard.GetValue())
-		{
-			std::cout << "Cards are equal in value, type U if you want the above card on top, type D if you want the below card on top\n";
-			char direction;
-			std::cin >> direction;
-			if (direction == 'U')
-			{
-				matrix[x][y].push_back(downCard);
-				matrix[x][y].push_back(upCard);
-			}
-			else if (direction == 'D')
-			{
-				matrix[x][y].push_back(upCard);
-				matrix[x][y].push_back(downCard);
-			}
-			else
-			{
-				"You didn't type U or D";
-				return 1;
-			}
-		}
-		if (matrix[x][y].back().GetColor() == Colours::RED)
-		{
-			board.updateRowChecker(x, RED_ADD);
-			board.updateColChecker(y, RED_ADD);
-		}
-		else
-		{
-			board.updateRowChecker(x, BLUE_ADD);
-			board.updateColChecker(y, BLUE_ADD);
-		}
-	}
-	else
-	{
-		std::cout << "You didn't type R or C\n";
-		return 1;
-	}
-	board.checkForUpdates();
-
-	return 0;
-	std::cout << "Whirlpool used successfully on " << x << " " << y << '\n';
+	_board.MoveCard(_x1, _y1, xm, ym);
+	_board.MoveCard(_x2, _y2, xm, ym);
 }
 
 // make the line unplayable for the next round

@@ -16,13 +16,13 @@ void GameFinal::AdvanceAction()
 	{
 	case Colours::RED:
 		m_activeColor = Colours::BLUE;
-		m_activePlayingHand = &m_player2->GetHandCards();
-		m_activeRemovedHand = &m_player2->GetRemovedCards();
+		m_activePlayingHand = m_player2->GetHandCards();
+		m_activeRemovedHand = m_player2->GetRemovedCards();
 		break;
 	case Colours::BLUE:
 		m_activeColor = Colours::RED;
-		m_activePlayingHand = &m_player1->GetHandCards();
-		m_activeRemovedHand = &m_player1->GetRemovedCards();
+		m_activePlayingHand = m_player1->GetHandCards();
+		m_activeRemovedHand = m_player1->GetRemovedCards();
 		break;
 	default:
 		break;
@@ -32,10 +32,10 @@ void GameFinal::AdvanceAction()
 	return;
 }
 
-void GameFinal::EndTurn(bool& tieBraker)
+void GameFinal::EndTurn()
 {
-	if (m_activePlayingHand->size() == 0 || m_board->isBoardFilled()) {
-		tieBraker = true;
+	if (m_activePlayingHand.size() == 0 || m_board->isBoardFilled()) {
+		m_tieBraker = true;
 		AdvanceAction();
 	}
 
@@ -56,9 +56,9 @@ void GameFinal::ResetRound()
 
 	m_activeColor = Colours::RED;
 
-	m_activeCoveredSet = &m_player1->getCovered();
-	m_activePlayingHand = &m_player1->GetHandCards();
-	m_activeRemovedHand = &m_player1->GetRemovedCards();
+	m_activeCoveredSet = m_player1->getCovered();
+	m_activePlayingHand = m_player1->GetHandCards();
+	m_activeRemovedHand = m_player1->GetRemovedCards();
 
 	GenerateElementalCards();
 }
@@ -74,14 +74,14 @@ GameFinal::GameFinal()
 	m_activeColor{ Colours::RED },
 	m_wasPlaced{ false },
 	m_powerUsed{ false },
-	m_tieBraker{ false },
-	m_board{ std::make_unique<Board>(3) },
-	m_player1{ std::make_shared<Player>(Colours::RED) },
-	m_player2{ std::make_shared<Player>(Colours::BLUE) },
-	m_activeCoveredSet{ &m_player1->getCovered() },
-	m_activePlayingHand{ &m_player1->GetHandCards() },
-	m_activeRemovedHand{ &m_player1->GetRemovedCards() }
+	m_tieBraker{ false }
 {
+	m_board = std::make_unique<Board>(3);
+	m_player1 = std::make_shared<Player>(Colours::RED);
+	m_player2 = std::make_shared<Player>(Colours::BLUE);
+	m_activeCoveredSet =  m_player1->getCovered();
+	m_activePlayingHand = m_player1->GetHandCards();
+	m_activeRemovedHand = m_player1->GetRemovedCards();
 	GenerateElementalCards();
 	GenerateMageCards();
 }
@@ -100,14 +100,14 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	m_activeColor{ Colours::RED },
 	m_wasPlaced{ false },
 	m_powerUsed{ false },
-	m_tieBraker{ false },
-	m_board{ std::make_unique<Board>(_maxBoardSize) },
-	m_player1{ std::make_shared<Player>(Colours::RED) },
-	m_player2{ std::make_shared<Player>(Colours::BLUE) },
-	m_activeCoveredSet{ &m_player1->getCovered() },
-	m_activePlayingHand{ &m_player1->GetHandCards() },
-	m_activeRemovedHand{ &m_player1->GetRemovedCards() }
+	m_tieBraker{ false }
 {
+	m_board = std::make_unique<Board>(_maxBoardSize);
+	m_player1 = std::make_shared<Player>(Colours::RED);
+	m_player2 = std::make_shared<Player>(Colours::BLUE);
+	m_activeCoveredSet = m_player1->getCovered();
+	m_activePlayingHand = m_player1->GetHandCards();
+	m_activeRemovedHand = m_player1->GetRemovedCards();
 	GenerateElementalCards();
 	GenerateMageCards();
 }

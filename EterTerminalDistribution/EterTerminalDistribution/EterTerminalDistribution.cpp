@@ -10,11 +10,14 @@ int main()
 
 	//testing a lot. backend 75% complete. Frontend ~20%?
 
-	GameDemo test(3,3);
-	test.runDemo();
+	//GameDemo test(3,3);
+	//test.runDemo();
 	
-	//GameView();
+	//std::shared_ptr<GameView> test = std::make_shared<GameView>(new GameView());
+	//test->Loop();
 	
-	
+	GameView test;
+	test.Loop();
+
 	return 0;
 }

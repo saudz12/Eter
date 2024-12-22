@@ -975,10 +975,11 @@ void GameDemo::checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Pl
     //whirlpool
     case 16: {
         std::cout << "\nChoose an empty space you want to whirlpool\n";
-        int16_t x, y;
-        std::cin >> x >> y;
-        if (funcWhirlpool(b, x, y) == 0)
+        int16_t x1, y1, x2, y2;
+        std::cin >> x1 >> y1 >> x2 >> y2;
+        if (CheckWhirlpool(b, x1, y1, x2, y2, Preference::FIRST) == CommonErrors::_NO_ERRORS)
         {
+            //funcWhirlpool();
             wasUsed = true;
             wasCardUsed = true;
         }
