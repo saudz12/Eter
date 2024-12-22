@@ -4,6 +4,7 @@
 #include <QDrag>
 #include <QMimeData>
 #include <QMouseEvent>
+#include <qpointer.h>
 
 class qDraggableLabel : public QLabel
 {

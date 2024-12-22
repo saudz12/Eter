@@ -27,9 +27,6 @@ private:
 	bool m_wasPlaced;
 	bool m_powerUsed;
 	bool m_tieBraker;
-
-	void GenerateElementalCards();
-	void GenerateMageCards();
 	
 	void AdvanceAction();
 	void EndTurn();

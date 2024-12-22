@@ -4,6 +4,8 @@
 #include <QLabel>
 #include <QMimeData>
 #include <QDropEvent>
+#include <qpointer.h>
+
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -77,7 +79,7 @@ private:
 	void addCardsToRedrawnBoard(QGridLayout*& gridLayout);
 public:
 	void setBoardPosition(const int x,const int y,const int card_width,const int card_height);
-	void addWidgetOnBoard(qDraggableLabel* card,int row,int column);
+	void addWidgetOnBoard(QPointer<qDraggableLabel>& card,int row,int column);
 	void setupEmptyBoard();
 	QLabel* createWhiteSpace();
 signals:

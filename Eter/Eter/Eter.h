@@ -16,6 +16,7 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include "qgridlayout.h"
+#include "qpointer.h"
 
 #include "qtCompletePlayer.h"
 #include "qtCompleteBoard.h"
@@ -36,12 +37,12 @@ private:
     qtCompletePlayer plRed{ 'R' }, plBlue{ 'B' };
     qtCompleteBoard board{BOARD_SIZE};
 
-    QWidget* widgetHBoxRedCards;
-    QWidget* widgetHBoxBlueCards;
+    QPointer<QWidget> widgetHBoxRedCards;
+    QPointer<QWidget> widgetHBoxBlueCards;
 
     std::deque <qDraggableLabel*> labelCards;
 
-    qGameBoardWidget* widgetBoard;
+    QPointer<qGameBoardWidget> widgetBoard;
 
     int WINDOW_WIDTH, WINDOW_HEIGTH;
     const int REDCARDS_OFFSET_WINDOW_WIDTH = 100;
@@ -63,9 +64,9 @@ private:
     void placeHorizontalLayoutBlueSide();
 
     void placeCardInsideHLayout(std::vector<QString>& pathCards, std::deque<QPixmap>& pixmapCards,
-        QHBoxLayout*& hboxLayoutCards,QWidget*& widgetHBoxCards);
+        QHBoxLayout*& hboxLayoutCards,QPointer<QWidget>& widgetHBoxCards);
 public:
-    QPushButton* pushButtonStartGame;
+    QPointer<QPushButton> pushButtonStartGame;
 
     Eter(QWidget *parent = nullptr);
     ~Eter();

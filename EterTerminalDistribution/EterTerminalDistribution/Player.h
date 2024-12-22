@@ -1,5 +1,7 @@
 #pragma once
 #include "MinionCard.h"
+#include "ElementalCard.h"
+#include "MageCard.h"
 
 using Hand = std::unordered_map<MinionCard, uint16_t>;
 
@@ -39,6 +41,9 @@ private:
 	Colours m_playerColor;
 	Hand m_removedCards;
 
+	std::optional<ElementalCard> m_elementalCard;
+	std::optional<MageCard> m_mageCard;
+
 	bool m_illusionUsage; 
 
 	bool m_eterCardUsage;
@@ -56,6 +61,7 @@ public:
 	Player(Colours playerColor);
 	Player(Colours _playerColor, bool _training); //new
 	Player();
+	Player(Colours playerColor, GameOptions elementalDuelOption, GameOptions mageDuelOption);
 
 	//getters
 	Colours GetPlayerColor() const;

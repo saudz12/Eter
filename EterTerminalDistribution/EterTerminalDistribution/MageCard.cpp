@@ -8,6 +8,13 @@ MageCard::MageCard(MageCardType type,bool activeFace) : Card(CardType::MageCard)
 	m_isActiveFace = activeFace;
 }
 
+MageCard::MageCard() : Card(CardType::MageCard)
+{
+	auto& [card, associatedFunction] = m_mageType;
+	card = generateRandomMageCard<ActionCard>();
+	associatedFunction = (void*)associateCardWithFunc(card);
+}
+
 CardType MageCard::GetCardType() const
 {
 	return m_cardType;

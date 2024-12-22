@@ -2,7 +2,7 @@
 #include <cstdint>
 
 enum class ActionCard : uint16_t {
-	ControlledExplosion,
+	ControlledExplosion=0,
 	Destruction,
 	Flame,
 	Fire,

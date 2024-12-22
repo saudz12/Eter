@@ -76,13 +76,13 @@ void Eter::placeHorizontalLayoutBlueSide()
 }
 
 void Eter::placeCardInsideHLayout(std::vector<QString>& pathCards, std::deque<QPixmap>& pixmapCards,
-    QHBoxLayout*& hboxLayoutCards,QWidget*& widgetHBoxCards)
+    QHBoxLayout*& hboxLayoutCards, QPointer<QWidget>& widgetHBoxCards)
 {
     int index = 0;
     for (const auto& card : pixmapCards)
     {
         QPixmap resizedCard = card.scaled(CARD_WIDTH, CARD_HEIGHT, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        qDraggableLabel* currCardLabelDraggable = new qDraggableLabel(resizedCard,CARD_WIDTH,CARD_HEIGHT,widgetHBoxCards);
+        QPointer<qDraggableLabel> currCardLabelDraggable = new qDraggableLabel(resizedCard,CARD_WIDTH,CARD_HEIGHT,widgetHBoxCards);
         
         hboxLayoutCards->addWidget(currCardLabelDraggable);
 

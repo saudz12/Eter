@@ -12,6 +12,7 @@
 #include <vector>
 #include <memory>
 #include <random>
+#include <optional>
 
 constexpr auto ID_ROW = "R";
 constexpr auto ID_COLUMN = "C";

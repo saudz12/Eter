@@ -9,6 +9,8 @@ class ElementalCard : public Card
 private:
 	ElementalCardType m_elementType;
 
+	template<typename T>
+	T generateRandomElementalCard();
 public:
 	//constructors
 	ElementalCard();
@@ -25,3 +27,17 @@ public:
 	void SetElementalCardType(ElementalCardType);
 	
 };
+
+template<typename T>
+inline T ElementalCard::generateRandomElementalCard()
+{
+	constexpr int first = static_cast<int>(T::ControlledExplosion);
+	constexpr int last = static_cast<int>(T::Rock);
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<> dist(first, last);
+
+	return static_cast<T>(dist(gen));
+}
+

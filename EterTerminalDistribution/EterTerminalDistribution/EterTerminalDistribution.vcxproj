@@ -147,7 +147,6 @@
     <ClCompile Include="MinionCard.cpp" />
     <ClCompile Include="MoveLaterToGameClass.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="__for_rewriting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ActionType.h" />
