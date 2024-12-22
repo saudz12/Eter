@@ -892,20 +892,6 @@ uint16_t funcCrumble(Board& _board,uint16_t _x, uint16_t _y)
 // defines a border in a position
 uint16_t funcBorder(Board& board, int16_t x, int16_t y)
 {
-	ResizeableMatrix& matrix = board.getMatrix();
-	
-	/*if (!matrix[x][y].empty())
-		return 1;*/
-
-	if (board.isMatMaxSize())
-		return 1;
-
-	if (abs(x) > board.getMaxSize())
-		return 1;
-
-	if (abs(y) > board.getMaxSize())
-		return 1;
-
 
 	if (x < 0)
 	{

@@ -57,7 +57,7 @@ CommonErrors CheckHurricaneInput(Board& _board, uint16_t _lineCnt, LineType _typ
 CommonErrors CheckWhirlpool(Board& _board, uint16_t _x1, uint16_t _y1, uint16_t _x2, uint16_t _y2, Preference _preference)
 {
 	if (_x1 != _x2 && _y1 != _y2)
-		return CommonErrors::NOT_ADJACENT;
+		return CommonErrors::_NOT_ADJACENT;
 	
 	if (_board.CheckPos(_x1, _y1) != BoardErrors::_INSIDE_BOUND || _board.CheckPos(_x2, _y2) != BoardErrors::_INSIDE_BOUND) {
 		return CommonErrors::_OUTSIDE_BOUND;
@@ -70,7 +70,7 @@ CommonErrors CheckWhirlpool(Board& _board, uint16_t _x1, uint16_t _y1, uint16_t 
 		type = LineType::TYPE_COLUMN;
 
 	if (!(type == LineType::TYPE_ROW && std::abs(_x2 - _x1) == 2 || type == LineType::TYPE_COLUMN && std::abs(_y2 - _y1) == 2))
-		return CommonErrors::NOT_ADJACENT;
+		return CommonErrors::_NOT_ADJACENT;
 
 	if (_board.CheckStackCondition((_x1 + _x2) / 2, (_y1 + _y2) / 2) != StackConditions::EMPTY)
 		return CommonErrors::_NEEDS_EMPTY_SPACE;
@@ -248,7 +248,14 @@ CommonErrors checkFuncCrumble(Board& _board, int16_t _x, int16_t _y) {
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncBorder(Board&, int16_t, int16_t) {
+CommonErrors checkFuncBorder(Board& _board, int16_t _x, int16_t _y) {
+
+	if (_board.isMatMaxSize())
+		return CommonErrors::_MAX_BOARD_SIZE;
+
+	if (abs(_x) > _board.getMaxSize()|| abs(_y) > _board.getMaxSize())
+		return CommonErrors::_OUTSIDE_BOUND;
+
 	return CommonErrors::_NO_ERRORS;
 }
 
@@ -263,7 +270,7 @@ CommonErrors checkFuncAvalanche(Board& _board, int16_t _x1, int16_t _y1, int16_t
 	if (_board.CheckStackCondition(_x1, _y1) != StackConditions::POPULATED || _board.CheckStackCondition(_x2, _y2) != StackConditions::POPULATED)
 		return CommonErrors::_EMPTY_STACK;
 	if (Board::CheckAdjacent(_x1, _y1, _x2, _y2) != AdjacentType::NEIGHBOURING)
-		return CommonErrors::NOT_ADJACENT;
+		return CommonErrors::_NOT_ADJACENT;
 
 	int16_t xD = -1, yD = -1; //  xD
 

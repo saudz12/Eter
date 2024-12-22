@@ -252,6 +252,21 @@ void ErrorMessageRock(CommonErrors _message)
 	}
 }
 
+void ErrorMessageBorder(CommonErrors _message)
+{
+	switch (_message)
+	{
+	case CommonErrors::_OUTSIDE_BOUND:
+		std::cout << "ERR::Chosen border is outside playable area...\n";
+		return;
+	case CommonErrors::_MAX_BOARD_SIZE:
+		std::cout << "ERR::Board is already at the maximum size, cannot at a border at the moment...\n";
+	default:
+		break;
+
+	}
+}
+
 void ErrorMessageFireMage1(CommonErrors _message)
 {
 	switch (_message)

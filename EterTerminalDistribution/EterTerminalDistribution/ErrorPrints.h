@@ -29,10 +29,11 @@ static enum class CommonErrors : int16_t {
 	_NO_CARDS_OF_VALUE,
 
 	_NO_COVERED_CARDS,
+	_MAX_BOARD_SIZE,
 
 	_ADJACENT_OUTSIDE_BOUNDS,
 	_ADJACENT_SPACES_EMPTY,
-	NOT_ADJACENT
+	_NOT_ADJACENT
 
 };
 
@@ -52,6 +53,7 @@ void ErrorMessageWave(CommonErrors _message);
 void ErrorMessageSupport(CommonErrors _message);
 void ErrorMessageCrumble(CommonErrors _message);
 void ErrorMessageRock(CommonErrors _message);
+void ErrorMessageBorder(CommonErrors _message);
 
 void ErrorMessageFireMage1(CommonErrors _message);
 void ErrorMessageFireMage2(CommonErrors _message);
