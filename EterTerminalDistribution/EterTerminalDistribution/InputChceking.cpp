@@ -95,8 +95,6 @@ CommonErrors checkFuncFlame(Board& board, int16_t x1, int16_t y1, int16_t x2, in
 	int16_t lines = board.getLineCount(), cols = board.getColCount();
 	if (x1 < 0 || x1 > lines || y1 < 0 || y1 > cols)
 		return CommonErrors::_OUTSIDE_BOUND;
-	/*if (board.setPos(x2, y2, CardToBePlaced, p) == 1)
-		return FAILED_FLAME_CARD_PLACEMENT;*/
 	return CommonErrors::_NO_ERRORS;
 }
 
@@ -187,30 +185,26 @@ CommonErrors checkFuncMirage(Board& board, int16_t x1, int16_t y1, const MinionC
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncStorm(Board& board, int16_t x, int16_t y) {
+CommonErrors checkFuncStorm(Board& _board, int16_t _x, int16_t _y) {
 
-	ResizeableMatrix& matrix = board.getMatrix();
-	int16_t lines = board.getRowCount(), cols = board.getColCount();
+	//ResizeableMatrix& matrix = _board.getMatrix();
+	//int16_t lines = _board.getRowCount(), cols = _board.getColCount();
 
-	if (x < 0 || x > lines ||
-		y < 0 || y > cols) //bound check
+	if (_board.CheckPos(_x,_y)==BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
-	if (matrix[x][y].size() < 2)
+	if (_board.getStackOnPos(_x,_y).size() < 2)
 		return CommonErrors::_STACK_HEIGHT_TOO_SMALL;
 
 	return CommonErrors::_OUTSIDE_BOUND;
 }
 
-CommonErrors checkFuncTide(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
+CommonErrors checkFuncTide(Board& _board, int16_t _x1, int16_t _y1, int16_t _x2, int16_t _y2) {
 
-	CardStack& first = board.getStackOnPos(x1, y1);
-	CardStack& second = board.getStackOnPos(x2, y2);
-	int16_t lines = board.getRowCount(), cols = board.getColCount();
+	CardStack& first = _board.getStackOnPos(_x1, _y1);
+	CardStack& second = _board.getStackOnPos(_x2, _y2);
+	//int16_t lines = board.getRowCount(), cols = board.getColCount();
 
-	if (x1<0 || x1>lines ||
-		x2<0 || x2>lines ||
-		y1<0 || y1>cols ||
-		y2<0 || y2>cols) // bound check
+	if (_board.CheckPos(_x1,_y1)==BoardErrors::_OUTSIDE_BOUND || _board.CheckPos(_x2,_y2)==BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
 
 	if (first.back().GetIsEterCard() || second.back().GetIsEterCard())
@@ -221,17 +215,12 @@ CommonErrors checkFuncTide(Board& board, int16_t x1, int16_t y1, int16_t x2, int
 
 CommonErrors checkFuncMist(Board& _board, Player& _p, int16_t _x, int16_t _y, MinionCard& _card) {
 
-	/*if (board.setPos(x, y, card, p) == 1)
-		return 1;*/
 	if (!_p.GetIllusionUsage() || _p.GetIllusionCard() == nullptr)
 		return CommonErrors::_ILLUSION_PROPERTY_VIOLATION;
 	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncWave(Board& _board, int16_t _x1, int16_t _y1, MinionCard) {
-	/*ResizeableMatrix matrix = board.getMatrix();
-	if (matrix[x1][y1].back().GetIsEterCard())
-		return -2;*/
 	//nothing else to add
 	return CommonErrors::_NO_ERRORS;
 }
@@ -245,15 +234,14 @@ CommonErrors checkFuncWaterfall(Board&, int16_t) {
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncSupport(Board& board, int16_t x, int16_t y) {
-	ResizeableMatrix& matrix = board.getMatrix();
-	int CardValue = matrix[x][y].back().GetValue();
+CommonErrors checkFuncSupport(Board& _board, int16_t _x, int16_t _y) {
+	MinionCard& card = _board.getCardOnPos(_x, _y);
 
-	if (matrix[x][y].back().GetIsEterCard()) 
+	if (card.GetIsEterCard()) 
 	{
 		return CommonErrors::_ETER_PROPERTY_VIOLATION;
 	}
-	if (CardValue > 3)	//check according to game rules
+	if (card.GetValue() > 3)	//check according to game rules
 	{
 		return CommonErrors::_INVALID_CARD_VALUE;
 	}
@@ -266,13 +254,12 @@ CommonErrors checkFuncEarthquake(Board&) {
 }
 
 CommonErrors checkFuncCrumble(Board& _board, int16_t _x, int16_t _y) {
-	ResizeableMatrix& matrix = _board.getMatrix();
-	int CardValue = matrix[_x][_y].back().GetValue();
-	if (matrix[_x][_y].back().GetIsEterCard())
+	MinionCard& card = _board.getCardOnPos(_x, _y);
+	if (card.GetIsEterCard())
 		return CommonErrors::_ETER_PROPERTY_VIOLATION;
-	if (matrix[_x][_y].back().GetIsIllusionCard())
+	if (card.GetIsIllusionCard())
 		return CommonErrors::_ILLUSION_PROPERTY_VIOLATION;
-	if (CardValue < 2)	//check according to game rules
+	if (card.GetValue() < 2)	//check according to game rules
 		return CommonErrors::_INVALID_CARD_VALUE;
 	return CommonErrors::_NO_ERRORS;
 }
