@@ -20,7 +20,7 @@ void GameDemo::runDemo()
     while (m_rounds) {
         //get current player data
         system("cls");
-        m_board->printBoard();
+        m_board->printBoard(false);
         m_wasPlaced = false;
         m_currPlayer = m_currPlayerColor== Colours::RED ? m_p1 : m_p2;
         showPlayerTurn(m_currPlayerColor);
@@ -166,7 +166,7 @@ void GameDemo::runDemo()
                     m_currHand = m_currPlayer->GetHandCards();
 
                     system("cls");
-                    m_board->printBoard();
+                    m_board->printBoard(false);
                     showPlayerTurn(m_currPlayerColor);
 
                     ///menu

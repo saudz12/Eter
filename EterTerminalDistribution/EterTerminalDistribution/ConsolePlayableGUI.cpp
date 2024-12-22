@@ -138,7 +138,7 @@ void GameView::GetPlayingFormat()
         break;
     }
     //return std::make_shared<GameFinal>(new GameFinal{size, Eter, Illusion, Mage, Elemental, Tournament, Timed}); //nu merge??
-    m_game = std::move(GameFinal{ size, Eter, Illusion, Mage, Elemental, Tournament, Timed });
+    m_game = GameFinal{ std::move(GameFinal{ size, Eter, Illusion, Mage, Elemental, Tournament, Timed }) };
 }
 
 void GameView::PrintGameOptions()
@@ -161,4 +161,6 @@ GameView::GameView()
 
 void GameView::Loop()
 {
+    m_game.PlaceCard(0, 0, 3);
+    m_game.PrintBoard();
 }

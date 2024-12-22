@@ -67,7 +67,7 @@ GameFinal::GameFinal()
 	m_tieBraker{ false }
 {
 	m_board = std::make_unique<Board>(3);
-	m_player1 = std::make_shared<Player>(Colours::RED,m_enabledElemental, m_enabledMage);
+	m_player1 = std::make_shared<Player>(Colours::RED, m_enabledElemental, m_enabledMage);
 	m_player2 = std::make_shared<Player>(Colours::BLUE, m_enabledElemental, m_enabledMage);
 	m_activeCoveredSet =  m_player1->getCovered();
 	m_activePlayingHand = m_player1->GetHandCards();
@@ -88,12 +88,39 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	m_activeColor{ Colours::RED },
 	m_wasPlaced{ false },
 	m_powerUsed{ false },
-	m_tieBraker{ false }
+	m_tieBraker{ false },
+	m_board{ std::make_unique<Board>(_maxBoardSize) },
+	m_player1{ std::make_shared<Player>(Colours::RED, false) },
+	m_player2{ std::make_shared<Player>(Colours::BLUE, false) },
+	m_activePlayer{ *m_player1 }	
 {
-	m_board = std::make_unique<Board>(_maxBoardSize);
-	m_player1 = std::make_shared<Player>(Colours::RED);
-	m_player2 = std::make_shared<Player>(Colours::BLUE);
 	m_activeCoveredSet = m_player1->getCovered();
 	m_activePlayingHand = m_player1->GetHandCards();
 	m_activeRemovedHand = m_player1->GetRemovedCards();
+}
+
+bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
+{
+	if (!m_activePlayer.HasCardOfValue(_val)) {
+		return false;
+	}
+	if (m_board->CanPlace(_x, _y, _val) != BoardErrors::_NO_ERRORS)
+		return false;
+	m_board->PlaceCard(m_activePlayer.MoveCard(_val), _x, _y);
+
+	return true;
+}
+
+void GameFinal::PlayElemental()
+{
+
+}
+
+void GameFinal::PlayMage()
+{
+}
+
+void GameFinal::PrintBoard(bool _debug)
+{
+	m_board->printBoard(_debug);
 }

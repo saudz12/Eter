@@ -261,14 +261,14 @@ void Player::UpdateCard(int16_t val, CardAction action)
 
 bool Player::HasCardOfValue(uint16_t value)
 {
-	for (auto& card : m_handCards) {
+	/*for (auto& card : m_handCards) {
 		if (card.first.GetValue() == value)
 			return true;
 	}
-	return false;
+	return false;*/
 
 	//DO NOT REMOVE
-	//return m_remainingCounter[value] > 0;
+	return m_remainingCounter[value] > 0;
 }
 
 void Player::SetIllusionCard(MinionCard* illusionCard)

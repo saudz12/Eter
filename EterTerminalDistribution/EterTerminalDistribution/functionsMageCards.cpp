@@ -56,7 +56,7 @@ void funcAirMage1(Board& _board, int16_t _xS, int16_t _yS, int16_t _xD, int16_t 
 // position for additional Eter card
 void funcAirMage2(Board& _board, Colours _colour, uint16_t _x, uint16_t _y)
 {
-	_board.PlaceCard(MinionCard::CreateEterCard(_colour), _x, _y, _board.GetChangeFlag(_x, _y));
+	_board.PlaceCard(MinionCard::CreateEterCard(_colour), _x, _y);
 }
 
 // original position, destination position (opponent's card)

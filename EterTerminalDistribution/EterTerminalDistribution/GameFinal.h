@@ -40,5 +40,9 @@ public:
 				GameOptions _enabledMage,		GameOptions _enabledElemental,
 				GameOptions _enabledTournament,	GameOptions _enabledTimed);
 	
-	
+	bool PlaceCard(int16_t _x, int16_t _y, int16_t _val);
+	void PlayElemental();
+	void PlayMage();
+
+	void PrintBoard(bool _debug = false);
 };

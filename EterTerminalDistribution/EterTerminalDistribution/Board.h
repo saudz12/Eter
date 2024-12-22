@@ -131,7 +131,7 @@ public:
 	BoardErrors CanPlace(int16_t _x, int16_t _y, int16_t _val);
 	BoardChanges GetChangeFlag(int16_t _x, int16_t _y); 
 	void ExtendBoard(BoardChanges _flag); 
-	void PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y, BoardChanges _flag); 
+	void PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y); 
 	void RemoveCard(int16_t _x, int16_t _y, int16_t _pos); 
 	void CreateHole(int16_t _x, int16_t _y); 
 	void RemoveLine(int16_t _line, LineType _type); 
@@ -184,7 +184,7 @@ public:
 	bool checkPosition(uint16_t x, uint16_t y);
 	//false = valid, true = not good - sorry
 	bool checkPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
-	void printBoard();
+	void printBoard(bool _debug);
 
 	bool removeRow(uint16_t x);
 	bool removeColumn(uint16_t y);

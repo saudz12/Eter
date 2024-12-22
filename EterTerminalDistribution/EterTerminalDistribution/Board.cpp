@@ -411,9 +411,9 @@ void Board::ExtendBoard(BoardChanges _flag)
 	}
 }
 
-void Board::PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y, BoardChanges _flag)
+void Board::PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y)
 {
-	ExtendBoard(_flag);
+	ExtendBoard(GetChangeFlag(_x, _y));
 
 	m_matrix[_x][_y].emplace_back(_toPlace);
 }
@@ -1164,7 +1164,8 @@ bool Board::checkPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 	return x1 < 0 || x1 >= getRowCount() || x2 < 0 || x2 >= getRowCount() || y1 < 0 || y1 >= getColCount() || y2 < 0 || y2 >= getColCount();
 }
 
-void Board::printBoard()
+//rewrtie it
+void Board::printBoard(bool _debug)
 {
 	std::cout << "R\\B ";
 	for (int i = 0; i < getColCount(); i++)
