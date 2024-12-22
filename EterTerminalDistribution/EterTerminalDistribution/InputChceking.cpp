@@ -90,11 +90,12 @@ CommonErrors CheckWhirlpool(Board& _board, uint16_t _x1, uint16_t _y1, uint16_t 
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncFlame(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2, const MinionCard& CardToBePlaced, Player& p)
+CommonErrors checkFuncFlame(Board& _board, int16_t _x1, int16_t _y1, int16_t _x2, int16_t _y2, const MinionCard& CardToBePlaced, Player& p)
 {
-	int16_t lines = board.getLineCount(), cols = board.getColCount();
-	if (x1 < 0 || x1 > lines || y1 < 0 || y1 > cols)
+	if (_board.CheckPos(_x1, _y1) == BoardErrors::_OUTSIDE_BOUND|| _board.CheckPos(_x2, _y2) == BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
+	if (!_board.getCardOnPos(_x1, _y1).GetIsIllusionCard())
+		return CommonErrors::_NOT_ILLUSION;
 	return CommonErrors::_NO_ERRORS;
 }
 
@@ -104,91 +105,73 @@ CommonErrors checkFuncFire(Board&, int16_t cardValue) {
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncAsh(Board& board, const MinionCard& card, int16_t x, int16_t y) {
-	int16_t lines = board.getLineCount(), cols = board.getColCount();
-	if (card.GetValue() > 4 || card.GetValue() < 1)
+CommonErrors checkFuncAsh(Board& _board, const MinionCard& _card, int16_t _x, int16_t _y) {
+	if (_card.GetValue() > 4 || _card.GetValue() < 1)
 		return CommonErrors::_INVALID_CARD_VALUE;
-	if (x < 0 || x > lines || y < 0 || y > cols)/// bound check
+	if (_board.CheckPos(_x,_y)==BoardErrors::_OUTSIDE_BOUND)/// bound check
 		return CommonErrors::_OUTSIDE_BOUND;
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncSpark(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2)
+CommonErrors checkFuncSpark(Board& _board, int16_t _x1, int16_t _y1, int16_t _x2, int16_t _y2)
 {
-	int16_t lines = board.getRowCount(), cols = board.getColCount();
-	ResizeableMatrix& matrix = board.getMatrix();
-	if (x1<0 || x1>lines ||
-		x2<0 || x2>lines ||
-		y1<0 || y1>cols ||
-		y2<0 || y2>cols)
+
+	if (_board.CheckPos(_x1, _y1) == BoardErrors::_OUTSIDE_BOUND|| _board.CheckPos(_x2, _y2) == BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
-	if (matrix[x1][y1].back().GetIsEterCard())
+	if (_board.getCardOnPos(_x1,_y1).GetIsEterCard())
 		return CommonErrors::_ETER_PROPERTY_VIOLATION;
 
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncSquall(Board& board, int16_t x1, int16_t y1,Player p) {
-	int16_t lines = board.getRowCount(), cols = board.getColCount();
-	ResizeableMatrix& matrix = board.getMatrix();
-
-	if (x1 < 0 || x1 > lines)
-		return CommonErrors::_OUTSIDE_BOUND;
-	if (y1 < 0 || y1 > cols)
+CommonErrors checkFuncSquall(Board& _board, int16_t _x, int16_t _y,Player& _p) {
+	MinionCard& Card = _board.getCardOnPos(_x,_y);
+	if (_board.CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
 
-	if (matrix[x1][y1].empty())
+	if (_board.getStackOnPos(_x,_y).empty())
 		return CommonErrors::_EMPTY_STACK;
 
-	if (matrix[x1][y1].back().GetIsEterCard())
+	if (Card.GetIsEterCard())
 		return CommonErrors::_ETER_PROPERTY_VIOLATION;
 
-	if (matrix[x1][y1].back().GetIsIllusionCard())
+	if (Card.GetIsIllusionCard())
 		return CommonErrors::_NOT_ILLUSION;
-	if (matrix[x1][y1].back().GetColor() != p.GetPlayerColor())
+	if (Card.GetColor() != _p.GetPlayerColor())
 		return CommonErrors::_NOT_ENEMY_CARD;
 
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncGust(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
-	ResizeableMatrix& matrix = board.getMatrix();
-	int16_t lines = board.getRowCount(), cols = board.getColCount();
+CommonErrors checkFuncGust(Board& _board, int16_t _x1, int16_t _y1, int16_t _x2, int16_t _y2) {
 
-	if (x1<0 || x1>lines ||
-		x2<0 || x2>lines ||
-		y1<0 || y1>cols ||
-		y2<0 || y2>cols) // bound check
+	if (_board.CheckPos(_x1, _y1) == BoardErrors::_OUTSIDE_BOUND|| _board.CheckPos(_x2, _y2) == BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
 
-	if (matrix[x1][y1].back().GetIsEterCard() || matrix[x2][y2].back().GetIsEterCard())
+	if (_board.getCardOnPos(_x1,_y1).GetIsEterCard()|| _board.getCardOnPos(_x2,_y2).GetIsEterCard())
 		return CommonErrors::_ETER_PROPERTY_VIOLATION;
 
-	if (!((x1 == x2 && std::abs(y1 - y2) == 1) || (y1 == y2) && std::abs(x1 - x2)))
+	if (!((_x1 == _x2 && std::abs(_y1 - _y2) == 1) || (_y1 == _y2) && std::abs(_x1 - _x2)))
 		return CommonErrors::_IDENTICAL_COORDINATES;
 
-	if (!(matrix[x1][y1].back().GetValue() > matrix[x2][y2].back().GetValue()))
+	if (_board.getCardOnPos(_x1, _y1).GetValue() < _board.getCardOnPos(_x2, _y2).GetValue())
 		return CommonErrors::_INVALID_CARD_VALUE;
 
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncMirage(Board& board, int16_t x1, int16_t y1, const MinionCard&) {
-	ResizeableMatrix& matrix = board.getMatrix();
-	int16_t lines = board.getRowCount(), cols = board.getColCount();
-	if (x1 < 0 || x1 > lines ||
-		y1 < 0 || y1 > cols) //bound check
+CommonErrors checkFuncMirage(Board& _board, int16_t _x, int16_t _y) {
+	
+	if (_board.CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
 
-	if (!matrix[x1][y1].back().GetIsIllusionCard())
+	if (_board.getCardOnPos(_x,_y).GetIsIllusionCard())
 		return CommonErrors::_NOT_ILLUSION;
 	return CommonErrors::_NO_ERRORS;
 }
 
 CommonErrors checkFuncStorm(Board& _board, int16_t _x, int16_t _y) {
 
-	//ResizeableMatrix& matrix = _board.getMatrix();
-	//int16_t lines = _board.getRowCount(), cols = _board.getColCount();
 
 	if (_board.CheckPos(_x,_y)==BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
@@ -226,6 +209,7 @@ CommonErrors checkFuncWave(Board& _board, int16_t _x1, int16_t _y1, MinionCard) 
 }
 
 CommonErrors checkFuncBlizzard(Line&) {
+	//nothing to add
 	return CommonErrors::_NO_ERRORS;
 }
 
@@ -281,7 +265,7 @@ CommonErrors checkFuncAvalanche(Board& _board, int16_t _x1, int16_t _y1, int16_t
 	if (Board::CheckAdjacent(_x1, _y1, _x2, _y2) != AdjacentType::NEIGHBOURING)
 		return CommonErrors::NOT_ADJACENT;
 
-	int16_t xD = -1, yD = -1;
+	int16_t xD = -1, yD = -1; //  xD
 
 	switch (_direction)
 	{
@@ -325,7 +309,7 @@ CommonErrors checkFuncRock(Board& _board, int16_t _x, int16_t _y, MinionCard&) {
 
 //i think it's bad practice to select by coordonates --> change covered set to list of pointers which will be printed like a list - select then which 
 CommonErrors checkFuncFireMage1(Board& _board, Player& _player, int16_t _x, int16_t _y, int16_t _pos) {
-	if (_x < 0 || _y < 0 || _x >= _board.getRowCount() || _y >= _board.getColCount())
+	if (_board.CheckPos(_x,_y)==BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
 	if (_board.CheckStackCondition(_x, _y) == StackConditions::HOLE)
 		return CommonErrors::_HOLE_PROPERTY_VIOLATION;
@@ -358,7 +342,7 @@ CommonErrors checkFuncEarthMage1(Board& _board, Player& _caster, int16_t _x, int
 	if (_val < 0 || _val > 3)
 		return CommonErrors::_INVALID_CARD_VALUE;
 
-	if (_x < 0 || _y < 0 || _x >= _board.getRowCount() || _y >= _board.getColCount())
+	if (_board.CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
 
 	if (!_caster.HasCardOfValue((uint16_t)_val))
@@ -384,7 +368,7 @@ CommonErrors checkFuncEarthMage1(Board& _board, Player& _caster, int16_t _x, int
 }
 
 CommonErrors checkFuncEarthMage2(Board& _board, int16_t _x, int16_t _y) {
-	if (_x < 0 || _y < 0 || _x >= _board.getRowCount() || _y >= _board.getColCount())
+	if (_board.CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
 	if (_board.CheckStackCondition(_x, _y) == StackConditions::POPULATED)
 		return CommonErrors::_POPULATED_STACK;

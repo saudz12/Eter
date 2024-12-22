@@ -19,11 +19,11 @@ CommonErrors checkFuncAsh(Board&, const MinionCard&, int16_t, int16_t);
 
 CommonErrors checkFuncSpark(Board&, int16_t, int16_t, int16_t, int16_t);
 
-CommonErrors checkFuncSquall(Board&, int16_t, int16_t, Player);
+CommonErrors checkFuncSquall(Board&, int16_t, int16_t, Player&);
 
 CommonErrors checkFuncGust(Board&, int16_t, int16_t, int16_t, int16_t);
 
-CommonErrors checkFuncMirage(Board&, int16_t, int16_t, const MinionCard&);
+CommonErrors checkFuncMirage(Board&, int16_t, int16_t);
 
 CommonErrors checkFuncStorm(Board&, int16_t, int16_t);
 

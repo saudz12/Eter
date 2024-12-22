@@ -59,6 +59,9 @@ void ErrorMessageFlame(CommonErrors _message)
 	case CommonErrors::_OUTSIDE_BOUND:
 		std::cout << "ERR: Invalid slot.. Slot coordinates are out of bounds...\n";
 		return;
+	case CommonErrors::_NOT_ILLUSION:
+		std::cout << "ERR: Your opponent does not have an active illusion..\n";
+		return;
 	default:
 		break;
 	}
