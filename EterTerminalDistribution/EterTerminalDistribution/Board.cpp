@@ -25,32 +25,9 @@ bool Board::isMatMaxSize()
 }
 
 //update 
-void Board::increaseOnColorSides(uint16_t x, uint16_t y, Colours col)
-{
-	if (col == Colours::RED) {
-		if (!m_matrix[x][y].empty())
-			if (m_matrix[x][y].back().GetColor() == Colours::BLUE) {
-				m_rowChecker[x].second--;
-				m_colChecker[y].second--;
-			}
-			else
-				return;
-		m_rowChecker[x].first++;
-		m_colChecker[y].first++;
-	}
-	else {
-		if (!m_matrix[x][y].empty())
-			if (m_matrix[x][y].back().GetColor() == Colours::RED) {
-				m_rowChecker[x].second++;
-				m_colChecker[y].second++;
+void Board::UpdateOnColor(uint16_t _x, uint16_t _y, Colours _col, OrientationType _type, CardAction _action)
+{ 
 
-				return;
-			}
-			else
-				return;
-		m_rowChecker[x].second++;
-		m_colChecker[y].second++;
-	}
 }
 
 void Board::increaseOnColorColumn(uint16_t x, uint16_t y, Colours col)
@@ -96,6 +73,8 @@ void Board::increaseOnColorRow(uint16_t x, uint16_t y, Colours col)
 		m_rowChecker[x].second++;
 	}
 }
+
+
 
 /// <summary>
 /// Implementation notes:
@@ -413,18 +392,24 @@ void Board::ExtendBoard(BoardChanges _flag)
 
 void Board::PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y)
 {
-	ExtendBoard(GetChangeFlag(_x, _y));
-	increaseOnColorRow(_x, _y, _toPlace.GetColor());
-	increaseOnColorColumn(_x, _y, _toPlace.GetColor());
+	if (isBoardEmpty()) {
+		m_matrix[0][0].emplace_back(_toPlace);
+		return;
+	}
 
+	ExtendBoard(GetChangeFlag(_x, _y));
 	if (_x == -1)
 		_x = 0;
 	if (_y == -1)
 		_y = 0;
+
+	increaseOnColorRow(_x, _y, _toPlace.GetColor());
+	increaseOnColorColumn(_x, _y, _toPlace.GetColor());
 	if (!isMatMaxSize())
 		m_reachedMaxSize = false;
 	else if (_x == _y || _x + _y == m_max_size - 1)
 		increaseOnColorDiagonal(_x, _y, _toPlace.GetColor());
+
 	m_matrix[_x][_y].emplace_back(_toPlace);
 }
 
@@ -770,12 +755,12 @@ bool Board::CheckTopIsEter(int16_t _x, int16_t _y)
 }
 
 //sper ca merge
-const MinionCard&& Board::ViewTop(int16_t _x, int16_t _y)
+const MinionCard& Board::ViewTop(int16_t _x, int16_t _y)
 {
 	//just in case if
 	if (m_matrix[_x][_y].empty())
 		return MinionCard::CreateHoleCard();
-	return std::forward<MinionCard>(m_matrix[_x][_y].back());
+	return m_matrix[_x][_y].back();
 }
 
 AdjacentType Board::CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)

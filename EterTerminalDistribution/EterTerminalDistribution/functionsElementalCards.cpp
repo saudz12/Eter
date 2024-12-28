@@ -174,23 +174,6 @@ uint16_t funcAsh(Board& board, Player& player, const MinionCard& card, int16_t x
 	return 0;
 }
 
-/* versiune saud cu set si move -- ramane de terminat do not touch!!! 
-uint16_t funcSpark(Board& board, Player& player, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
-{
-	if (!player.printCoveredCards()) {
-		return;
-	}
-	covered& coveredCards = player.getCovered();
-	resizeableMatrix& matrix = board.getMatrix();
-
-	//can't create isolated spaces
-
-	int i;
-	std::cout << "Chose a covered card to move: ";
-	std::cin >> i;
-}
-*/
-
 //move a card which was covered by your opponent's card
 uint16_t funcSpark(Board& board, Player& p)  //this function needs to be reworked
 {
@@ -295,6 +278,8 @@ uint16_t funcGale(Board& board, Player& p1, Player& p2)
 		}
 	}
 	
+
+
 	return 0;
 }
 

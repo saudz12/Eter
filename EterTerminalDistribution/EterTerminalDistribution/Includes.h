@@ -12,6 +12,8 @@
 #include <vector>
 #include <memory>
 #include <random>
+#include <ranges>
+#include <algorithm>
 #include <optional>
 
 constexpr auto ID_ROW = "R";

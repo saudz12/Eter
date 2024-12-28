@@ -7,11 +7,13 @@ void GameFinal::AdvanceAction()
 	{
 	case Colours::RED:
 		m_activeColor = Colours::BLUE;
+		m_activePlayer = m_player2;
 		m_activePlayingHand = m_player2->GetHandCards();
 		m_activeRemovedHand = m_player2->GetRemovedCards();
 		break;
 	case Colours::BLUE:
 		m_activeColor = Colours::RED;
+		m_activePlayer = m_player1;
 		m_activePlayingHand = m_player1->GetHandCards();
 		m_activeRemovedHand = m_player1->GetRemovedCards();
 		break;
@@ -62,6 +64,7 @@ GameFinal::GameFinal()
 	m_enabledTournament	{ GameOptions::DisabledTournament },
 	m_enabledTimed		{ GameOptions::DisabledTimed },
 	m_activeColor		{ Colours::RED },
+	m_winnerStatus		{ Colours::INVALID_COL },
 	m_wasPlaced			{ false },
 	m_powerUsed			{ false },
 	m_tieBraker			{ false }
@@ -85,6 +88,7 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	m_enabledTournament	{ _enabledTournament },
 	m_enabledTimed		{ _enabledTimed },
 	m_activeColor		{ Colours::RED },
+	m_winnerStatus		{ Colours::INVALID_COL},
 	m_wasPlaced			{ false },
 	m_powerUsed			{ false },
 	m_tieBraker			{ false },
@@ -122,9 +126,26 @@ void GameFinal::PlayElemental()
 
 void GameFinal::PlayMage()
 {
+
+}
+
+bool GameFinal::CheckWin()
+{
+	return (m_winnerStatus = m_board->checkWin()) != Colours::INVALID_COL;
+}
+
+bool GameFinal::CheckWin(int16_t _x, int16_t _y)
+{
+	return (m_winnerStatus = m_board->checkWin(_x, _y, m_activeColor)) != Colours::INVALID_COL;
 }
 
 void GameFinal::PrintBoard(bool _debug)
 {
 	m_board->printBoard(_debug);
+}
+
+void GameFinal::PrintActiveHand()
+{
+	auto& seekHand = m_activePlayer->GetRemaningCounter();
+	std::for_each(seekHand.begin(), seekHand.end(), [&seekHand](const auto& key) {std::cout << key.first << ": " << key.second << "copies left"; });
 }

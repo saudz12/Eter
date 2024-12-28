@@ -149,9 +149,11 @@ void GameView::PrintGameOptions()
 
 void GameView::PrintPlayerOptions()
 {
+    std::cout << "Chose an action: " << std::endl << std::endl;
+    std::cout << "0. Exit" << std::endl;
+    std::cout << "1. Place a card from hand" << std::endl;
+    std::cout << "2. Use a special power" << std::endl;
 }
-
-
 
 GameView::GameView() :
     Illusion    { GameOptions::EnabledIllusion },
@@ -168,16 +170,20 @@ GameView::GameView() :
 
 void GameView::Loop()
 {
-    m_game->PlaceCard(-1, 7, 3);
-    m_game->PlaceCard(1, 1, 3);
-    m_game->PlaceCard(-2, -2, 3);
-    m_game->PrintBoard();
-
-    std::cout << "Where(x, y) and Card: " << std::endl;
     int16_t x, y, val;
-    std::cin >> x >> y >> val;
-    m_game->PlaceCard(x, y, val);
 
-    m_game->EndTurn();
+
+    while (true)
+    {
+        m_game->PrintBoard();
+        
+        std::cout << "Where(x, y) and Card: " << std::endl;
+        std::cin >> x >> y >> val;
+        if (m_game->PlaceCard(x, y, val)) {
+            m_game->EndTurn();
+            if (m_game->CheckWin())
+                m_game->ResetRound();
+        }
+    }
 
 }

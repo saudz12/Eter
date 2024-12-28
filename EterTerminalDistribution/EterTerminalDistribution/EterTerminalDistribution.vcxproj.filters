@@ -54,9 +54,6 @@
     <ClCompile Include="MoveLaterToGameClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameDemo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ErrorPrints.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -126,9 +123,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ErrorPrints.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameDemo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputChecking.h">

@@ -64,9 +64,9 @@ const Hand& Player::GetHandCards() const
 	return m_handCards;
 }
 
-Hand& Player::GetHandCards()
+const CardCounter& Player::GetRemaningCounter()
 {
-	return m_handCards;
+	return m_remainingCounter;
 }
 
 Hand& Player::GetRemovedCards()
@@ -243,20 +243,27 @@ bool Player::CheckCoveredProperty(int16_t _x, int16_t _y, int16_t _pos)
 }
 
 MinionCard&& Player::MoveCard(int16_t _val) {
-	MinionCard&& toMove = std::move(m_remainingCards[_val].back());
+	MinionCard toMove = std::move(m_remainingCards[_val].back());
 
-	m_remainingCards.pop_back();
-	m_remainingCounter[_val]--;
+	UpdateCard(_val, CardAction::REMOVE);
 
 	return std::move(toMove);
 }
 
-void Player::UpdateCard(int16_t val, CardAction action)
+void Player::UpdateCard(int16_t _val, CardAction _action)
 {
-	if (action == CardAction::RETURN)
-		m_remainingCounter[val]++;
+	if (_action == CardAction::RETURN)
+		m_remainingCounter[_val]++;
 	else
-		m_remainingCounter[val]--;
+	{
+		m_remainingCounter[_val]--;
+		m_remainingCards[_val].pop_back();
+	}
+}
+
+void Player::CoverCard(MinionCard* _card)
+{
+	m_coveredCards.push_back(_card);
 }
 
 bool Player::HasCardOfValue(uint16_t value)

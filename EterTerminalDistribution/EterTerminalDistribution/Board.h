@@ -93,7 +93,6 @@ private:
 	bool m_reachedMaxSize;
 
 	//score counter on each line
-	void increaseOnColorSides(uint16_t x, uint16_t y, Colours col);
 	void increaseOnColorColumn(uint16_t x, uint16_t y, Colours col);
 	void increaseOnColorRow(uint16_t x, uint16_t y, Colours col);
 	void increaseOnColorDiagonal(uint16_t x, uint16_t y, Colours col);
@@ -130,6 +129,7 @@ public:
 	BoardErrors CheckPos(int16_t _x, int16_t _y); 
 	BoardErrors CanPlace(int16_t _x, int16_t _y, int16_t _val);
 	BoardChanges GetChangeFlag(int16_t _x, int16_t _y); 
+	void UpdateOnColor(uint16_t _x, uint16_t _y, Colours _col, OrientationType _side, CardAction _action);
 	void ExtendBoard(BoardChanges _flag); 
 	void PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y); 
 	void RemoveCard(int16_t _x, int16_t _y, int16_t _pos); 
@@ -145,7 +145,7 @@ public:
 	void SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 	void MirrorEdge(BoardChanges _margin);
 	bool CheckTopIsEter(int16_t _x, int16_t _y);
-	const MinionCard&& ViewTop(int16_t _x, int16_t _y); //wierd??
+	const MinionCard& ViewTop(int16_t _x, int16_t _y); //wierd??
 
 	//checks if the coordonates of 2 stacks ar adjacent
 	static AdjacentType CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
@@ -159,8 +159,10 @@ public:
 	
 #pragma endregion
 
-	Colours checkWin();
+	//use it only when placing cards
 	Colours checkWin(int16_t x, int16_t y, Colours col);
+	//use it after removing minions and/or using elemental/mage cards
+	Colours checkWin();
 
 	uint16_t getRowCount();
 	uint16_t getColCount();

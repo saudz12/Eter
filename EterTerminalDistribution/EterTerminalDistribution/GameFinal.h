@@ -17,6 +17,7 @@ private:
 
 	Score m_gameScore;
 	Colours m_activeColor;
+	Colours m_winnerStatus;
 
 	GameOptions m_enabledEter;
 	GameOptions m_enabledIllusion;
@@ -28,7 +29,6 @@ private:
 	bool m_wasPlaced;
 	bool m_powerUsed;
 	bool m_tieBraker;
-	
 
 public:
 	GameFinal();
@@ -36,10 +36,10 @@ public:
 				GameOptions _enabledEter,		GameOptions _enabledIllusion,
 				GameOptions _enabledMage,		GameOptions _enabledElemental,
 				GameOptions _enabledTournament,	GameOptions _enabledTimed);
+
 #pragma region turn_logic
 	void AdvanceAction();
 	void EndTurn();
-	//void resetRound(int16_t maxBoardSize, GameOptions enabledEter, GameOptions enabledIllusion, GameOptions enabledMage, GameOptions enabledElemental, GameOptions enabledTimed);
 	void ResetRound();
 #pragma endregion
 
@@ -47,9 +47,12 @@ public:
 	bool PlaceCard(int16_t _x, int16_t _y, int16_t _val);
 	void PlayElemental();
 	void PlayMage();
+	bool CheckWin(); //cheking everything
+	bool CheckWin(int16_t _x, int16_t _y); //singlechecking
 #pragma endregion
 
 #pragma region print_api
 	void PrintBoard(bool _debug = false);
+	void PrintActiveHand();
 #pragma endregion
 };

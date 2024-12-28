@@ -1,4 +1,3 @@
-#include "GameDemo.h"
 #include "ConsolePlayableGUI.h"
 
 int main()

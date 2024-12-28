@@ -7,6 +7,7 @@ using Hand = std::unordered_map<MinionCard, uint16_t>;
 
 using CardCounter = std::unordered_map<int16_t, int16_t>; //new
 using CardList = std::vector<std::vector<MinionCard>>; //new
+using CoveredCards = std::deque<MinionCard*>;
 
 //using coords = std::pair<uint16_t, uint16_t>;
 using CoveredSet = std::unordered_set<position, hashPosition>;
@@ -33,6 +34,7 @@ private:
 
 	CardCounter m_remainingCounter; //new
 	CardList m_remainingCards; //new
+	CoveredCards m_coveredCards;
 
 #pragma endregion
 
@@ -68,7 +70,7 @@ public:
 	bool GetIllusionUsage() const;
 	bool GetEterCardUsage() const;
 	const Hand& GetHandCards() const;
-	Hand& GetHandCards();
+	const CardCounter& GetRemaningCounter();
 	Hand& GetRemovedCards();
 	MinionCard* GetLastMinionCardPlayed() const;
 	MinionCard* GetIllusionCard() const;
@@ -79,7 +81,8 @@ public:
 	bool CheckCoveredPopulation(); //new
 	bool CheckCoveredProperty(int16_t _x, int16_t _y, int16_t _pos); //new
 	MinionCard&& MoveCard(int16_t _val); //new
-	void UpdateCard(int16_t val, CardAction _action); //new; Either asa si cu un check daca poate scoate din mana sau
+	void UpdateCard(int16_t _val, CardAction _action); //new; Either asa si cu un check daca poate scoate din mana sau
+	void CoverCard(MinionCard* _card);
 
 #pragma endregion
 
