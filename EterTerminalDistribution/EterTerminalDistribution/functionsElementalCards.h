@@ -20,7 +20,7 @@ uint16_t funcControlledExplosion(Board&, Player&, Player&);
 uint16_t funcDestruction(Board&, Player&);
 
 //first 2 uint16_t for revealing Illusion and the next for placing Card
-uint16_t funcFlame(Board&, int16_t x1, int16_t y1, int16_t x2, int16_t y2, const MinionCard&, Player&);
+void funcFlame(Board& _board, int16_t _xi, int16_t _yi, Player& _player, int16_t _val,int16_t _xp, int16_t _yp);
 
 //player Red,player Blue
 uint16_t funcFire(Board&, Player&, Player&, uint16_t);

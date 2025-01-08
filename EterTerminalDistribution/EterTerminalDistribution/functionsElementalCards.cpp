@@ -33,7 +33,8 @@ uint16_t funcControlledExplosion(Board& board, Player& pl1, Player& pl2)
 //remove from play last card played by opponent
 uint16_t funcDestruction(Board& board, Player& player)
 {
-	Board copyBoard(3);
+	//after moving the board to shared pointers and the covered and last played to weak pointers, rewrite it
+	/*Board copyBoard(3);
 	Board::cloneMatrix(board, copyBoard);
 
 	MinionCard* toberemoved = player.GetLastMinionCardPlayed();
@@ -63,7 +64,7 @@ uint16_t funcDestruction(Board& board, Player& player)
 
 	player.addToRemovedCards(*toberemoved);
 	player.SetLastMinionCardPlayed(nullptr);
-	board.checkForUpdates();
+	board.checkForUpdates();*/
 
 	return 0;
 }
@@ -72,15 +73,20 @@ uint16_t funcDestruction(Board& board, Player& player)
 //first 2 uint16_t for revealing Illusion and the next for placing Card
 //returns 1 if it failed to place card, 0 if it succeeded
 //moved the if to checkInput
-uint16_t funcFlame(Board& board, int16_t x1, int16_t y1, int16_t x2, int16_t y2, const MinionCard& CardToBePlaced, Player& p)
+void funcFlame(Board& _board, int16_t _xi, int16_t _yi, Player& _player, int16_t _val, int16_t _xp, int16_t _yp)
 {
-	/*if (checkFuncFlame(board, x1, y1, x2, y2, CardToBePlaced, p) != 0)
-		return 1;*/
-	if (board.setPos(x2, y2, CardToBePlaced, p) == 1)
-		return 1;
-	ResizeableMatrix& matrix = board.getMatrix();
-	matrix[x1][y1].back().SetIsIllusionCard(false);
-	return 0;
+	///*if (checkFuncFlame(board, x1, y1, x2, y2, CardToBePlaced, p) != 0)
+	//	return 1;*/
+	//if (board.setPos(x2, y2, CardToBePlaced, p) == 1)
+	//	return 1;
+	//ResizeableMatrix& matrix = board.getMatrix();
+	//matrix[x1][y1].back().SetIsIllusionCard(false);
+
+
+	//return 0;
+
+	_board.RemoveIllusionProperty(_xi, _xi);
+	_board.PlaceCard(_player.PlayCard(_val), _xp, _yp);
 }
 
 //return to hand all cards with a specific value
@@ -623,17 +629,17 @@ void funcWhirlpool(Board& _board, uint16_t _x1, uint16_t _y1, uint16_t _x2, uint
 		switch (_preference)
 		{
 		case Preference::FIRST:
-			_board.MoveCard(_x1, _y1, xm, ym);
-			_board.MoveCard(_x2, _y2, xm, ym);
+			_board.PlayCard(_x1, _y1, xm, ym);
+			_board.PlayCard(_x2, _y2, xm, ym);
 			return;
 		case Preference::SECOND:
-			_board.MoveCard(_x2, _y2, xm, ym);
-			_board.MoveCard(_x1, _y1, xm, ym);
+			_board.PlayCard(_x2, _y2, xm, ym);
+			_board.PlayCard(_x1, _y1, xm, ym);
 			return;
 		}
 	}
-	_board.MoveCard(_x1, _y1, xm, ym);
-	_board.MoveCard(_x2, _y2, xm, ym);
+	_board.PlayCard(_x1, _y1, xm, ym);
+	_board.PlayCard(_x2, _y2, xm, ym);
 }
 
 // make the line unplayable for the next round

@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Elementals">
+      <UniqueIdentifier>{7589842b-911d-4ac1-a01b-cb1fe315fdc2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EterTerminalDistribution.cpp">
@@ -68,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="ConsolePlayableGUI.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Elementals.cpp">
+      <Filter>Elementals</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +139,12 @@
     </ClInclude>
     <ClInclude Include="ConsolePlayableGUI.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Elementals.h">
+      <Filter>Elementals</Filter>
+    </ClInclude>
+    <ClInclude Include="Essential.h">
+      <Filter>Elementals</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

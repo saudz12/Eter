@@ -11,7 +11,7 @@ CommonErrors CheckHurricaneInput(Board& _board, uint16_t _lineCnt, LineType _typ
 
 CommonErrors CheckWhirlpool(Board& _board, uint16_t _x1, uint16_t _y1, uint16_t _x2, uint16_t _y2, Preference _preference);
 
-CommonErrors checkFuncFlame(Board&, int16_t x1, int16_t y1, int16_t x2, int16_t y2, const MinionCard&, Player&);
+CommonErrors checkFuncFlame(Board& _board, int16_t _xi, int16_t _yi, Player& _player, int16_t _val, int16_t _xp, int16_t _yp);
 
 CommonErrors checkFuncFire(Board&, int16_t);
 

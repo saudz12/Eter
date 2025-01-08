@@ -28,6 +28,7 @@ enum class BoardErrors : int16_t {
 	
 	_HOLE_PROPERTY,
 	_ETER_PROPERTY,
+	ILLUSION_PROPERTY,
 	_NO_ERRORS,
 };
 
@@ -132,7 +133,8 @@ public:
 	void UpdateOnColor(uint16_t _x, uint16_t _y, Colours _col, OrientationType _side, CardAction _action);
 	void ExtendBoard(BoardChanges _flag); 
 	void PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y); 
-	void RemoveCard(int16_t _x, int16_t _y, int16_t _pos); 
+	MinionCard&& RemoveTop(int16_t _x, int16_t _y); 
+	MinionCard&& RemoveCard(int16_t _x, int16_t _y, int16_t _pos); 
 	void CreateHole(int16_t _x, int16_t _y); 
 	void RemoveLine(int16_t _line, LineType _type); 
 	void RemoveRow(int16_t _line); 
@@ -140,11 +142,12 @@ public:
 	bool ShiftLine(int16_t _line, LineType _type, Directions _direction);
 	bool LineContainsColour(int16_t _line, LineType _type, Colours _col); 
 	int16_t GetNrOfCardsOnLine(int16_t _line, LineType _type); 
-	void MoveCard(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD); //from top of stack (xs ys) to top of pos stacl (xd yd)
+	void PlayCard(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD); //from top of stack (xs ys) to top of pos stacl (xd yd)
 	void MoveStack(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD); //replaces the stack on destination
 	void SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 	void MirrorEdge(BoardChanges _margin);
 	bool CheckTopIsEter(int16_t _x, int16_t _y);
+	void RemoveIllusionProperty(int16_t _x, int16_t _y);
 	const MinionCard& ViewTop(int16_t _x, int16_t _y); //wierd??
 
 	//checks if the coordonates of 2 stacks ar adjacent

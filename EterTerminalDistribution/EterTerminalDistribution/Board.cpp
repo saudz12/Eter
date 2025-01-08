@@ -311,8 +311,11 @@ BoardErrors Board::CanPlace(int16_t _x, int16_t _y, int16_t _val)
 	switch (tryPlaceOnStack)
 	{
 	case StackConditions::POPULATED:
-		if (_val < m_matrix[_x][_y].back().GetValue())
-			return BoardErrors::_INVALID_VAL;
+		if (_val <= m_matrix[_x][_y].back().GetValue())
+			if (m_matrix[_x][_y].back().GetIsIllusionCard())
+				return BoardErrors::ILLUSION_PROPERTY;
+			else
+				return BoardErrors::_INVALID_VAL;
 		break;
 	case StackConditions::HOLE:
 		return BoardErrors::_HOLE_PROPERTY;
@@ -403,6 +406,11 @@ void Board::PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y)
 	if (_y == -1)
 		_y = 0;
 
+	if (!m_matrix[_x][_y].empty()) {
+		if (m_matrix[_x][_y].back().GetIsIllusionCard() && m_matrix[_x][_y].back().GetColor() != _toPlace.GetColor() && m_matrix[_x][_y].back().GetValue() >= _toPlace.GetValue())
+			return;
+	}
+
 	increaseOnColorRow(_x, _y, _toPlace.GetColor());
 	increaseOnColorColumn(_x, _y, _toPlace.GetColor());
 	if (!isMatMaxSize())
@@ -410,13 +418,24 @@ void Board::PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y)
 	else if (_x == _y || _x + _y == m_max_size - 1)
 		increaseOnColorDiagonal(_x, _y, _toPlace.GetColor());
 
-	m_matrix[_x][_y].emplace_back(_toPlace);
+	m_matrix[_x][_y].push_back(_toPlace);
 }
 
-void Board::RemoveCard(int16_t _x, int16_t _y, int16_t _pos)
+MinionCard&& Board::RemoveTop(int16_t _x, int16_t _y)
 {
-	for (int i = _pos; i < m_matrix[_x][_y].size() - 1; i++)
-		m_matrix[_x][_y][i] = std::move(m_matrix[_x][_y][i + 1]);
+	MinionCard&& toMove = std::move(m_matrix[_x][_y].back());
+	m_matrix[_x][_y].pop_back();
+	return std::move(toMove);
+}
+
+MinionCard&& Board::RemoveCard(int16_t _x, int16_t _y, int16_t _pos)
+{
+	/*for (int i = _pos; i < m_matrix[_x][_y].size() - 1; i++)
+		m_matrix[_x][_y][i] = std::move(m_matrix[_x][_y][i + 1]);*/
+
+	MinionCard&& toMove = std::move(m_matrix[_x][_y][_pos]);
+	m_matrix[_x][_y].erase(m_matrix[_x][_y].begin() + _pos);
+	return std::move(toMove);
 }
 
 void Board::CreateHole(int16_t _x, int16_t _y)
@@ -593,7 +612,7 @@ int16_t Board::GetNrOfCardsOnLine(int16_t _line, LineType _type)
 	}
 }
 
-void Board::MoveCard(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
+void Board::PlayCard(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
 {
 	if (m_matrix[_xS][_yS].back().GetColor() == Colours::RED) {
 		m_rowChecker[_xS].first--;
@@ -752,6 +771,11 @@ bool Board::CheckTopIsEter(int16_t _x, int16_t _y)
 	if (m_matrix[_x][_y].empty())
 		return false;
 	return m_matrix[_x][_y].back().GetIsEterCard();
+}
+
+void Board::RemoveIllusionProperty(int16_t _x, int16_t _y)
+{
+	m_matrix[_x][_y].back().SetIsIllusionCard(false);
 }
 
 //sper ca merge

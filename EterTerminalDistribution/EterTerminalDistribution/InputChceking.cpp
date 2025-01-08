@@ -90,11 +90,12 @@ CommonErrors CheckWhirlpool(Board& _board, uint16_t _x1, uint16_t _y1, uint16_t 
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncFlame(Board& _board, int16_t _x1, int16_t _y1, int16_t _x2, int16_t _y2, const MinionCard& CardToBePlaced, Player& p)
+CommonErrors checkFuncFlame(Board& _board, int16_t _xi, int16_t _yi, Player& _player, int16_t _val, int16_t _xp, int16_t _yp)
 {
-	if (_board.CheckPos(_x1, _y1) == BoardErrors::_OUTSIDE_BOUND|| _board.CheckPos(_x2, _y2) == BoardErrors::_OUTSIDE_BOUND)
+	BoardErrors tryPlace = _board.CanPlace(_xp, _yp, _val);
+	if (_board.CheckPos(_xi, _yi) == BoardErrors::_OUTSIDE_BOUND|| _board.CanPlace(_xp, _yp, _val) == BoardErrors::_OUTSIDE_BOUND)
 		return CommonErrors::_OUTSIDE_BOUND;
-	if (!_board.getCardOnPos(_x1, _y1).GetIsIllusionCard())
+	if (!_board.ViewTop(_xi, _yi).GetIsIllusionCard())
 		return CommonErrors::_NOT_ILLUSION;
 	return CommonErrors::_NO_ERRORS;
 }

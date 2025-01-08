@@ -108,13 +108,14 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 		return false;
 	}
 	if (m_board->isBoardEmpty()) {
-		m_board->PlaceCard(m_activePlayer->MoveCard(_val), 0, 0);
+		m_board->PlaceCard(m_activePlayer->PlayCard(_val), 0, 0);
 		return true;
 	}
-	if (m_board->CanPlace(_x, _y, _val) != BoardErrors::_NO_ERRORS)
+	BoardErrors tryPlace = m_board->CanPlace(_x, _y, _val);
+	if (tryPlace != BoardErrors::_NO_ERRORS && tryPlace != BoardErrors::ILLUSION_PROPERTY)
 		return false;
 
-	m_board->PlaceCard(m_activePlayer->MoveCard(_val), _x, _y);
+	m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
 
 	return true;
 }

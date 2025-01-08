@@ -242,7 +242,10 @@ bool Player::CheckCoveredProperty(int16_t _x, int16_t _y, int16_t _pos)
 	return m_coveredCardSet.find({ _x, _y, _pos }) != m_coveredCardSet.end();
 }
 
-MinionCard&& Player::MoveCard(int16_t _val) {
+MinionCard&& Player::PlayCard(int16_t _val) 
+{
+	m_lastPlayedCard.push_back(&m_remainingCards[_val].back());
+
 	MinionCard toMove = std::move(m_remainingCards[_val].back());
 
 	UpdateCard(_val, CardAction::REMOVE);
@@ -250,31 +253,78 @@ MinionCard&& Player::MoveCard(int16_t _val) {
 	return std::move(toMove);
 }
 
+MinionCard&& Player::ReplayCard(int16_t _val)
+{
+	m_lastPlayedCard.push_back(&m_removed_Cards[_val].back());
+
+	MinionCard toMove = std::move(m_removed_Cards[_val].back());
+
+	UpdateCard(_val, CardAction::FORGET);
+
+	return std::move(toMove);
+}
+
+void Player::ReturnCard(MinionCard&& _toMove)
+{
+	//weak_ptr shinanigans pt last placed sau altceva - tinem pointeri normali dar trebuie sa schimbam 
+	UpdateCard(_toMove.GetValue(), CardAction::RETURN);
+
+	m_remainingCards[_toMove.GetValue()].push_back(_toMove);
+}
+
+void Player::KillCard(MinionCard&& _toMove)
+{
+	/*for (int i = 0; i < m_lastPlayedCard.size(); i++)
+		if (m_lastPlayedCard[i].GetValue() == _toMove.GetValue())
+		{
+			m_lastPlayedCard.erase(m_lastPlayedCard.begin() + i);
+			break;
+		}*/
+
+	UpdateCard(_toMove.GetValue(), CardAction::REMEMBER);
+
+	m_removed_Cards[_toMove.GetValue()].push_back(_toMove);
+}
+
 void Player::UpdateCard(int16_t _val, CardAction _action)
 {
-	if (_action == CardAction::RETURN)
-		m_remainingCounter[_val]++;
-	else
+	switch (_action)
 	{
+	case CardAction::RETURN:
+		m_remainingCounter[_val]++;
+		break;
+	case CardAction::REMOVE:
 		m_remainingCounter[_val]--;
 		m_remainingCards[_val].pop_back();
+		break;
+	case CardAction::REMEMBER:
+		m_removedCounter[_val]++;
+		break;
+	case CardAction::FORGET:
+		m_removedCounter[_val]--;
+		m_removed_Cards[_val].pop_back();
+	default:
+		break;
 	}
 }
 
-void Player::CoverCard(MinionCard* _card)
+void Player::CoverCard(MinionCard& _card)
 {
-	m_coveredCards.push_back(_card);
+	m_coveredCards.push_back(&_card);
+}
+
+void Player::UncoverCard(MinionCard& _card)
+{
+	/*for (int i = 0; i < m_coveredCards.size(); i++)
+		if (&m_coveredCards[i] == &_card) {
+			m_coveredCards.erase(m_coveredCards.begin() + i);
+			break;
+		}*/
+
 }
 
 bool Player::HasCardOfValue(uint16_t value)
 {
-	/*for (auto& card : m_handCards) {
-		if (card.first.GetValue() == value)
-			return true;
-	}
-	return false;*/
-
-	//DO NOT REMOVE
 	return m_remainingCounter[value] > 0;
 }
 
@@ -287,7 +337,6 @@ void Player::SetLastMinionCardPlayed(MinionCard* cardPlayed)
 {
 	m_lastMinionCardPlayed = cardPlayed;
 }
-
 
 bool Player::placeMinionCardFromHand(MinionCard& card)
 {

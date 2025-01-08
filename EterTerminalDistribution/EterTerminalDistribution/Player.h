@@ -7,7 +7,7 @@ using Hand = std::unordered_map<MinionCard, uint16_t>;
 
 using CardCounter = std::unordered_map<int16_t, int16_t>; //new
 using CardList = std::vector<std::vector<MinionCard>>; //new
-using CoveredCards = std::deque<MinionCard*>;
+using CardColection = std::deque<MinionCard*>;
 
 //using coords = std::pair<uint16_t, uint16_t>;
 using CoveredSet = std::unordered_set<position, hashPosition>;
@@ -23,6 +23,8 @@ using LineChecker = std::deque<Score>;
 enum class CardAction : int16_t {
 	RETURN,
 	REMOVE,
+	REMEMBER,
+	FORGET,
 };
 
 class Player
@@ -34,7 +36,13 @@ private:
 
 	CardCounter m_remainingCounter; //new
 	CardList m_remainingCards; //new
-	CoveredCards m_coveredCards;
+
+	CardColection m_coveredCards;
+
+	CardCounter m_removedCounter; //new
+	CardList m_removed_Cards; //new
+
+	CardColection m_lastPlayedCard;
 
 #pragma endregion
 
@@ -80,9 +88,13 @@ public:
 
 	bool CheckCoveredPopulation(); //new
 	bool CheckCoveredProperty(int16_t _x, int16_t _y, int16_t _pos); //new
-	MinionCard&& MoveCard(int16_t _val); //new
+	MinionCard&& PlayCard(int16_t _val); //new
+	MinionCard&& ReplayCard(int16_t _val);
+	void ReturnCard(MinionCard&& _toMove);
+	void KillCard(MinionCard&& _toMove); //new
 	void UpdateCard(int16_t _val, CardAction _action); //new; Either asa si cu un check daca poate scoate din mana sau
-	void CoverCard(MinionCard* _card);
+	void CoverCard(MinionCard& _card);
+	void UncoverCard(MinionCard& _card);
 
 #pragma endregion
 
