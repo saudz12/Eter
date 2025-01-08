@@ -17,6 +17,7 @@
 #include <QScreen>
 #include "qgridlayout.h"
 #include "qpointer.h"
+#include <qdir.h>
 
 #include "qtCompletePlayer.h"
 #include "qtCompleteBoard.h"
@@ -33,6 +34,8 @@ private:
     Ui::EterClass* ui;
     QHBoxLayout* hboxLayoutRedCards;
     QHBoxLayout* hboxLayoutBlueCards;
+
+    QPointer<QLabel> labelEterLogo;
 
     qtCompletePlayer plRed{ 'R' }, plBlue{ 'B' };
     qtCompleteBoard board{BOARD_SIZE};
@@ -76,7 +79,7 @@ public:
     void initializeHandCardLayouts();
 
     void initializeGridLayoutBoard();
-
+    void initializeEterLogo();
 
 private slots:
     void onPushButtonStartGameClicked();

@@ -5,6 +5,7 @@ Eter::Eter(QWidget *parent)
 {
     ui->setupUi(this);
 
+    initializeEterLogo();
     initializeGameWindow();
     initializePushButtons();
     initializeHandCardLayouts();
@@ -34,7 +35,7 @@ void Eter::initializeGameWindow()
 void Eter::initializePushButtons()
 {
     pushButtonStartGame = new QPushButton("Start game", this);
-    pushButtonStartGame->setGeometry(WINDOW_WIDTH / 30, WINDOW_HEIGTH / 20, 100, 30);
+    pushButtonStartGame->setGeometry(WINDOW_WIDTH / 50, WINDOW_HEIGTH / 5, 100, 30);
     pushButtonStartGame->setVisible(true);
 
     connect(pushButtonStartGame, &QPushButton::clicked, this, &Eter::onPushButtonStartGameClicked);
@@ -111,6 +112,16 @@ void Eter::initializeGridLayoutBoard()
                                 (WINDOW_HEIGTH-CARDS_SPACING)/2,
                                 CARD_WIDTH,CARD_HEIGHT);
     widgetBoard->show();
+}
+
+void Eter::initializeEterLogo()
+{
+    QString dir = QDir::currentPath() + "/textures/raw/eterLogo.jpg";
+    QPixmap logoPixmap(dir);
+    labelEterLogo = new QLabel(this);
+    labelEterLogo->setGeometry(0, 0, 150, 150);
+    logoPixmap = logoPixmap.scaled(labelEterLogo->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    labelEterLogo->setPixmap(logoPixmap);
 }
 
 void Eter::onBoardResized()

@@ -33,7 +33,7 @@ void qGameBoardWidget::dropEvent(QDropEvent* event)
 {
     if (event->mimeData()->hasText())
     {
-        QPoint dropPosition = event->position().toPoint();
+        QPoint dropPosition =event->position().toPoint();
 
         int row = dropPosition.y() / CARD_HEIGTH;
         int col = dropPosition.x() / CARD_WIDTH;
