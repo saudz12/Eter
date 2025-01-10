@@ -28,9 +28,10 @@ private:
 public:
 	static MinionCard&& CreateHoleCard();
 	static MinionCard&& CreateEterCard(Colours _colour);
-
+	MinionCard(MinionCard&& other) noexcept;
 	MinionCard(uint16_t value, Colours colour, bool isEter, bool isHole = false);
 	MinionCard();
+	MinionCard(const MinionCard& other);
 
 	//overload functions
 	friend std::ostream& operator<<(std::ostream &out,const MinionCard &card);

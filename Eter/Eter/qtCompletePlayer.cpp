@@ -3,8 +3,8 @@
 #include "qtCompletePlayer.h"
 
 
-qtCompletePlayer::qtCompletePlayer(char color) :
-	m_player{color}
+qtCompletePlayer::qtCompletePlayer(char color,int width,int heigth) :
+	m_player{color},m_CARD_WIDTH{width},m_CARD_HEIGTH{heigth}
 {
 	generatePathsForMinionCards();
     loadCards();
@@ -20,6 +20,11 @@ std::deque<QPixmap>& qtCompletePlayer::GetPixmapCards()
     return m_pixmapCards;
 }
 
+std::deque<QPointer<qDraggableLabel>>& qtCompletePlayer::GetLabelsCards()
+{
+    return m_labelsCards;
+}
+
 void qtCompletePlayer::SetPathCards(std::vector<QString>& pathCards)
 {
     m_pathCards = pathCards;
@@ -33,17 +38,23 @@ void qtCompletePlayer::SetPixmapCards(std::deque<QPixmap>& pixmapCards)
 void qtCompletePlayer::loadCards()
 {
     const hand& currPlayerHandCard=m_player.GetHandCards();
-
+    int i = 0;
     for (auto& currCard : currPlayerHandCard)
     {
         auto& [currMinionCard, remainingCards] = currCard;
         int cardValue = currMinionCard.GetValue();
         int auxRemainingCards = remainingCards;
+        m_pixmapCards.emplace_back(m_pathCards[cardValue]);
         while (auxRemainingCards != 0)
         {
-            m_pixmapCards.emplace_back(m_pathCards[cardValue]);
+            QPixmap resizedCard=m_pixmapCards[i].scaled(m_CARD_WIDTH, m_CARD_HEIGTH, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            QPointer<qDraggableLabel> currDragLabel = new qDraggableLabel(resizedCard, m_CARD_WIDTH, m_CARD_HEIGTH);
+            currDragLabel->setColor(m_player.GetPlayerColor());
+            currDragLabel->setValue(cardValue);
+            m_labelsCards.emplace_back(currDragLabel);
             auxRemainingCards--;
         }
+        i++;
     }
 }
 
@@ -57,8 +68,8 @@ void qtCompletePlayer::generatePathsForMinionCards()
     for (size_t i = 0; i < 5; i++)
     {
         m_pathCards.emplace_back(basePath + QString::number(i) + ".jpg");
+        qDebug() << basePath + QString::number(i) + ".jpg";
     }
-
 }
 
 

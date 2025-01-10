@@ -1,7 +1,8 @@
 #include "Eter.h"
 
 Eter::Eter(QWidget *parent)
-    : QMainWindow(parent), ui {new Ui::EterClass}
+    : QMainWindow(parent), ui {new Ui::EterClass},
+     plRed{'R',CARD_WIDTH,CARD_HEIGHT},plBlue{'B',CARD_WIDTH,CARD_HEIGHT}
 {
     ui->setupUi(this);
 
@@ -14,7 +15,7 @@ Eter::Eter(QWidget *parent)
 
 Eter::~Eter()
 {
-    delete pushButtonStartGame;
+    delete pushButtonStartTraining;
     delete ui;
 }
 
@@ -34,11 +35,31 @@ void Eter::initializeGameWindow()
 
 void Eter::initializePushButtons()
 {
-    pushButtonStartGame = new QPushButton("Start game", this);
-    pushButtonStartGame->setGeometry(WINDOW_WIDTH / 50, WINDOW_HEIGTH / 5, 100, 30);
-    pushButtonStartGame->setVisible(true);
+    pushButtonStartTraining = new QPushButton("Start training game", this);
+    pushButtonStartTraining->setGeometry(WINDOW_HEIGTH /30, WINDOW_WIDTH / 15+20, 120, 30);
+    pushButtonStartTraining->setVisible(true);
 
-    connect(pushButtonStartGame, &QPushButton::clicked, this, &Eter::onPushButtonStartGameClicked);
+    pushButtonStartElemental = new QPushButton("Start elemental game", this);
+    pushButtonStartElemental->setGeometry(pushButtonStartTraining->x(), pushButtonStartTraining->y()+50, 120, 30);
+    pushButtonStartElemental->setVisible(true);
+
+    pushButtonStartMage = new QPushButton("Start mage duel game", this);
+    pushButtonStartMage->setGeometry(pushButtonStartElemental->x(), pushButtonStartElemental->y() + 50, 130, 30);
+    pushButtonStartMage->setVisible(true);
+
+    pushButtonStartTournament = new QPushButton("Start tournament game", this);
+    pushButtonStartTournament->setGeometry(pushButtonStartMage->x(), pushButtonStartMage->y() + 50, 130, 30);
+    pushButtonStartTournament->setVisible(true);
+
+    pushButtonStartTimed = new QPushButton("Start timed game", this);
+    pushButtonStartTimed->setGeometry(pushButtonStartTournament->x(), pushButtonStartTournament->y() + 50, 130, 30);
+    pushButtonStartTimed->setVisible(true);
+
+    connect(pushButtonStartTraining, &QPushButton::clicked, this, &Eter::onPushButtonStartTrainingClicked);
+    connect(pushButtonStartElemental, &QPushButton::clicked, this, &Eter::onPushButtonStartElementalClicked);
+    connect(pushButtonStartMage, &QPushButton::clicked, this, &Eter::onPushButtonStartMageClicked);
+    connect(pushButtonStartTournament, &QPushButton::clicked, this, &Eter::onPushButtonStartTournamentClicked);
+    connect(pushButtonStartTimed, &QPushButton::clicked, this, &Eter::onPushButtonStartTimedClicked);
 }
 
 void Eter::initializeHandCardLayouts()
@@ -64,31 +85,41 @@ void Eter::initializeHandCardLayouts()
 
 void Eter::placeHorizontalLayoutRedSide()
 {
-    placeCardInsideHLayout(plRed.GetPathCards(), plRed.GetPixmapCards(), hboxLayoutRedCards,widgetHBoxRedCards);
+    placeCardInsideHLayout(plRed, hboxLayoutRedCards,widgetHBoxRedCards);
     widgetHBoxRedCards->setParent(this);
     widgetHBoxRedCards->setVisible(true);
 }
 
 void Eter::placeHorizontalLayoutBlueSide()
 {
-    placeCardInsideHLayout(plBlue.GetPathCards(), plBlue.GetPixmapCards(), hboxLayoutBlueCards,widgetHBoxBlueCards);
+    placeCardInsideHLayout(plBlue, hboxLayoutBlueCards,widgetHBoxBlueCards);
     widgetHBoxBlueCards->setParent(this);
     widgetHBoxBlueCards->setVisible(true);
 }
 
-void Eter::placeCardInsideHLayout(std::vector<QString>& pathCards, std::deque<QPixmap>& pixmapCards,
-    QHBoxLayout*& hboxLayoutCards, QPointer<QWidget>& widgetHBoxCards)
+void Eter::removeCardFromHorizontalLayout(QPointer<QHBoxLayout> hboxLayout,int valueToRemove)
 {
-    int index = 0;
-    for (const auto& card : pixmapCards)
-    {
-        QPixmap resizedCard = card.scaled(CARD_WIDTH, CARD_HEIGHT, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        QPointer<qDraggableLabel> currCardLabelDraggable = new qDraggableLabel(resizedCard,CARD_WIDTH,CARD_HEIGHT,widgetHBoxCards);
-        
-        hboxLayoutCards->addWidget(currCardLabelDraggable);
+    for (int i = 0; i < hboxLayout->count(); ++i) {
+        QLayoutItem* item = hboxLayout->itemAt(i);
+        if (item) {
+            QWidget* widget = item->widget();
+            if (widget && widget->property("value").toInt() == valueToRemove) {
+                delete widget;
+                break;
+            }
+        }
+    }
+}
 
-        labelCards.push_back(currCardLabelDraggable);
-        index++;
+void Eter::placeCardInsideHLayout(qtCompletePlayer& pl,
+    QPointer<QHBoxLayout>& hboxLayoutCards, QPointer<QWidget>& widgetHBoxCards)
+{
+    const std::deque<QPointer<qDraggableLabel>>& labels = pl.GetLabelsCards();
+    for(int i=0;i< labels.size();++i)
+    {
+        hboxLayoutCards->addWidget(labels[i]);
+
+        labelCards.push_back(labels[i]);
     }
 }
 
@@ -98,7 +129,7 @@ void Eter::placeHorizontalLayout()
     placeHorizontalLayoutBlueSide();
 }
 
-void Eter::onPushButtonStartGameClicked()
+void Eter::onPushButtonStartTrainingClicked()
 {
     placeHorizontalLayout();
     initializeGridLayoutBoard();
@@ -112,6 +143,7 @@ void Eter::initializeGridLayoutBoard()
                                 (WINDOW_HEIGTH-CARDS_SPACING)/2,
                                 CARD_WIDTH,CARD_HEIGHT);
     widgetBoard->show();
+    connect(widgetBoard, &qGameBoardWidget::cardDropAccepted, this, &Eter::cardDropHandler);
 }
 
 void Eter::initializeEterLogo()
@@ -119,9 +151,25 @@ void Eter::initializeEterLogo()
     QString dir = QDir::currentPath() + "/textures/raw/eterLogo.jpg";
     QPixmap logoPixmap(dir);
     labelEterLogo = new QLabel(this);
-    labelEterLogo->setGeometry(0, 0, 150, 150);
+    labelEterLogo->setGeometry(20, 0, 150, 150);
     logoPixmap = logoPixmap.scaled(labelEterLogo->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     labelEterLogo->setPixmap(logoPixmap);
+}
+
+void Eter::onPushButtonStartElementalClicked()
+{
+}
+
+void Eter::onPushButtonStartMageClicked()
+{
+}
+
+void Eter::onPushButtonStartTournamentClicked()
+{
+}
+
+void Eter::onPushButtonStartTimedClicked()
+{
 }
 
 void Eter::onBoardResized()
@@ -132,4 +180,14 @@ void Eter::onBoardResized()
         widgetBoard->move(newX, newY);
 }
 
-
+void Eter::cardDropHandler(const QMimeData* mimeData)
+{
+    if (mimeData->property("color").toString() == QString('R'))
+    {
+        removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
+    }
+    else
+    {
+        removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
+    }
+}

@@ -1,30 +1,35 @@
 #include "qDraggableLabel.h"
 
-qDraggableLabel::qDraggableLabel(QPixmap cardPixmap, int CARD_WIDTH, int CARD_HEIGHT, QWidget* parent)
-    : QLabel(parent), m_cardPixmap(cardPixmap) 
+qDraggableLabel::qDraggableLabel(QPixmap& cardPixmap, const int CARD_WIDTH,const int CARD_HEIGHT)
+    : m_cardPixmap{ cardPixmap }
 {
-    setPixmap(m_cardPixmap);  // Set the card image on the label
+    setPixmap(m_cardPixmap);
     setAlignment(Qt::AlignCenter);
-    setFixedSize(CARD_WIDTH,CARD_HEIGHT); // Card size
+    setFixedSize(CARD_WIDTH,CARD_HEIGHT);
+}
+
+void qDraggableLabel::setParent(QWidget* parent)
+{
+    setParent(parent);
 }
 
 void qDraggableLabel::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton) {
         QMimeData* mimeData = new QMimeData;
-        mimeData->setText("minion");  // You can set other data here as well, like card ID
         QByteArray pixmapData;
         QDataStream stream(&pixmapData, QIODevice::WriteOnly);
-        stream << m_cardPixmap;  // Assuming m_cardPixmap contains the image data
-
+        mimeData->setText("minion");
+        mimeData->setProperty("value", m_value);
+        mimeData->setProperty("color", QString(m_color));
+        stream << m_cardPixmap;
         mimeData->setData("application/x-card-pixmap", pixmapData);
         QDrag* drag = new QDrag(this);
         drag->setMimeData(mimeData);
         drag->setPixmap(m_cardPixmap);
         drag->setHotSpot(event->pos());
-
         // Start the drag
         drag->exec();
     }
-    QLabel::mousePressEvent(event);
+    //QLabel::mousePressEvent(event);
 }

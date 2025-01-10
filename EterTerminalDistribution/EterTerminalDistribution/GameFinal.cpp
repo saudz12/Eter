@@ -31,8 +31,7 @@ void GameFinal::EndTurn()
 		m_tieBraker = true;
 		AdvanceAction();
 	}
-
-	if (m_board->checkWin() == Colours::INVALID_COL) {
+	if (m_board->checkWin() != Colours::INVALID_COL) {
 		AdvanceAction();
 	}
 }
@@ -109,6 +108,7 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 	}
 	if (m_board->isBoardEmpty()) {
 		m_board->PlaceCard(m_activePlayer->PlayCard(_val), 0, 0);
+		PrintActiveHand();
 		return true;
 	}
 	BoardErrors tryPlace = m_board->CanPlace(_x, _y, _val);
@@ -116,7 +116,7 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 		return false;
 
 	m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
-
+	PrintActiveHand();
 	return true;
 }
 
@@ -135,11 +135,6 @@ bool GameFinal::CheckWin()
 	return (m_winnerStatus = m_board->checkWin()) != Colours::INVALID_COL;
 }
 
-bool GameFinal::CheckWin(int16_t _x, int16_t _y)
-{
-	return (m_winnerStatus = m_board->checkWin(_x, _y, m_activeColor)) != Colours::INVALID_COL;
-}
-
 void GameFinal::PrintBoard(bool _debug)
 {
 	m_board->printBoard(_debug);
@@ -148,5 +143,5 @@ void GameFinal::PrintBoard(bool _debug)
 void GameFinal::PrintActiveHand()
 {
 	auto& seekHand = m_activePlayer->GetRemaningCounter();
-	std::for_each(seekHand.begin(), seekHand.end(), [&seekHand](const auto& key) {std::cout << key.first << ": " << key.second << "copies left"; });
+	std::for_each(seekHand.begin(), seekHand.end(), [&seekHand](const auto& key) {std::cout << key.first << ": " << key.second << "copies left\n"; });
 }

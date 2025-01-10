@@ -33,13 +33,13 @@ void qGameBoardWidget::dropEvent(QDropEvent* event)
 {
     if (event->mimeData()->hasText())
     {
+
         QPoint dropPosition =event->position().toPoint();
 
         int row = dropPosition.y() / CARD_HEIGTH;
         int col = dropPosition.x() / CARD_WIDTH;
 
         qDebug() << "determined row:" << row << " determined column:" << col << '\n';
-
 
         QLabel* newCardLabel = new QLabel(this);
 
@@ -90,8 +90,8 @@ void qGameBoardWidget::dropEvent(QDropEvent* event)
                 
             }
         }
-
         event->acceptProposedAction();
+        emit cardDropAccepted(event->mimeData());
     }
 }
 

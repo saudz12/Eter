@@ -10,6 +10,18 @@ MinionCard&& MinionCard::CreateEterCard(Colours _colour)
     return { 1, _colour, true, false };
 }
 
+MinionCard::MinionCard(MinionCard&& other) noexcept : Card{ CardType::MinionCard },
+    m_value(std::exchange(other.m_value, 0)),
+    m_color(std::exchange(other.m_color, Colours::INVALID_COL)),
+    m_isEterCard(std::exchange(other.m_isEterCard, false)),
+    m_isIllusionCard(std::exchange(other.m_isIllusionCard, false)),
+    m_marker(std::exchange(other.m_marker, false)),
+    m_belongsTo(std::exchange(other.m_belongsTo, Colours::INVALID_COL)),
+    m_isHole(std::exchange(other.m_isHole, false))
+{
+    // Optionally log or perform other necessary actions for move
+}
+
 MinionCard::MinionCard(uint16_t value, Colours color, bool isEter, bool isHole)
     : Card{ CardType::MinionCard },
     m_value{ value },
@@ -32,6 +44,18 @@ MinionCard::MinionCard()
     m_belongsTo{ Colours::RED }, 
     m_isHole{ false }
 {
+}
+
+MinionCard::MinionCard(const MinionCard& other) :Card{m_cardType},
+    m_value(other.m_value),
+    m_color(other.m_color),
+    m_isEterCard(other.m_isEterCard),
+    m_isIllusionCard(other.m_isIllusionCard),
+    m_marker(other.m_marker),
+    m_belongsTo(other.m_belongsTo),
+    m_isHole(other.m_isHole)
+{
+    // Optionally log or perform other necessary actions for copy
 }
 
 uint16_t MinionCard::GetValue() const

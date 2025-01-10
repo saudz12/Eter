@@ -159,7 +159,7 @@ public:
 	void AddLineToRight();
 	void AddLineOnTop();
 	void AddLineOnBottom();
-	
+	void SetEmptyBoard(Colours color);
 #pragma endregion
 
 	//use it only when placing cards

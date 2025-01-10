@@ -358,7 +358,7 @@ void Board::ExtendBoard(BoardChanges _flag)
 	switch (_flag)
 	{
 	case BoardChanges::_EMPTY_BOARD:
-		AddLineOnTop(); //anything really -- rewrite the board in such way that the board will be initialised FULLY empty so it will not need coordonates for the first palcement when fully empty.
+		//AddLineOnTop(); //anything really -- rewrite the board in such way that the board will be initialised FULLY empty so it will not need coordonates for the first palcement when fully empty.
 		break;
 	case BoardChanges::_TOP_BOUND:
 		AddLineOnTop();
@@ -397,6 +397,16 @@ void Board::PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y)
 {
 	if (isBoardEmpty()) {
 		m_matrix[0][0].emplace_back(_toPlace);
+		if (_toPlace.GetColor() == Colours::RED)
+		{
+			m_rowChecker[0].first = 1;
+			m_colChecker[0].first = 1;
+		}
+		else
+		{
+			m_rowChecker[0].second = 1;
+			m_colChecker[0].second = 1;
+		}
 		return;
 	}
 
@@ -410,7 +420,7 @@ void Board::PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y)
 		if (m_matrix[_x][_y].back().GetIsIllusionCard() && m_matrix[_x][_y].back().GetColor() != _toPlace.GetColor() && m_matrix[_x][_y].back().GetValue() >= _toPlace.GetValue())
 			return;
 	}
-
+	
 	increaseOnColorRow(_x, _y, _toPlace.GetColor());
 	increaseOnColorColumn(_x, _y, _toPlace.GetColor());
 	if (!isMatMaxSize())
@@ -915,8 +925,6 @@ int16_t Board::removeStack(int16_t x, int16_t y)
 
 Colours Board::checkWin()
 {
-	if (this->isMatMaxSize() == false)
-		return Colours::INVALID_COL;
 	for (const auto& diff : m_colChecker)
 	{
 		if (diff.first == 3)

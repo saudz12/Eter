@@ -32,20 +32,27 @@ class Eter : public QMainWindow
 private:
     ///members
     Ui::EterClass* ui;
-    QHBoxLayout* hboxLayoutRedCards;
-    QHBoxLayout* hboxLayoutBlueCards;
+    QPointer<QHBoxLayout> hboxLayoutRedCards;
+    QPointer<QHBoxLayout> hboxLayoutBlueCards;
 
     QPointer<QLabel> labelEterLogo;
 
-    qtCompletePlayer plRed{ 'R' }, plBlue{ 'B' };
+    qtCompletePlayer plRed;
+    qtCompletePlayer plBlue;
     qtCompleteBoard board{BOARD_SIZE};
 
     QPointer<QWidget> widgetHBoxRedCards;
     QPointer<QWidget> widgetHBoxBlueCards;
 
-    std::deque <qDraggableLabel*> labelCards;
+    std::deque<QPointer<qDraggableLabel>>labelCards;
 
     QPointer<qGameBoardWidget> widgetBoard;
+
+    QPointer<QPushButton> pushButtonStartTraining;
+    QPointer<QPushButton> pushButtonStartElemental;
+    QPointer<QPushButton> pushButtonStartMage;
+    QPointer<QPushButton> pushButtonStartTournament;
+    QPointer<QPushButton> pushButtonStartTimed;
 
     int WINDOW_WIDTH, WINDOW_HEIGTH;
     const int REDCARDS_OFFSET_WINDOW_WIDTH = 100;
@@ -56,9 +63,6 @@ private:
     const uint16_t BOARD_SIZE=3;
 
     const int CARDS_SPACING = 10;
-
-    const int CARD_WIDTH = 80;
-    const int CARD_HEIGHT = 80;
     
     ///functions
 
@@ -66,10 +70,13 @@ private:
     void placeHorizontalLayoutRedSide();
     void placeHorizontalLayoutBlueSide();
 
-    void placeCardInsideHLayout(std::vector<QString>& pathCards, std::deque<QPixmap>& pixmapCards,
-        QHBoxLayout*& hboxLayoutCards,QPointer<QWidget>& widgetHBoxCards);
+    void removeCardFromHorizontalLayout(QPointer<QHBoxLayout> hboxLayout,int valueToRemove);
+
+    void placeCardInsideHLayout(qtCompletePlayer &pl,
+        QPointer<QHBoxLayout>& hboxLayoutCards,QPointer<QWidget>& widgetHBoxCards);
 public:
-    QPointer<QPushButton> pushButtonStartGame;
+    static const int CARD_WIDTH=80;
+    static const int CARD_HEIGHT=80;
 
     Eter(QWidget *parent = nullptr);
     ~Eter();
@@ -82,6 +89,11 @@ public:
     void initializeEterLogo();
 
 private slots:
-    void onPushButtonStartGameClicked();
+    void onPushButtonStartTrainingClicked();
+    void onPushButtonStartElementalClicked();
+    void onPushButtonStartMageClicked();
+    void onPushButtonStartTournamentClicked();
+    void onPushButtonStartTimedClicked();
     void onBoardResized();
+    void cardDropHandler(const QMimeData* mimeData);
 };
