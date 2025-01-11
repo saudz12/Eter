@@ -1,7 +1,7 @@
 #include "qDraggableLabel.h"
 
-qDraggableLabel::qDraggableLabel(QPixmap& cardPixmap, const int CARD_WIDTH,const int CARD_HEIGHT)
-    : m_cardPixmap{ cardPixmap }
+qDraggableLabel::qDraggableLabel(QPixmap& cardPixmap, const int CARD_WIDTH,const int CARD_HEIGHT,bool isDraggable)
+    : m_cardPixmap{ cardPixmap },m_isDraggable{isDraggable}
 {
     setPixmap(m_cardPixmap);
     setAlignment(Qt::AlignCenter);
@@ -20,7 +20,7 @@ void qDraggableLabel::setColor(Colours color)
 
 void qDraggableLabel::mousePressEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (m_isDraggable && event->button() == Qt::LeftButton) {
         QMimeData* mimeData = new QMimeData;
         QByteArray pixmapData;
         QDataStream stream(&pixmapData, QIODevice::WriteOnly);

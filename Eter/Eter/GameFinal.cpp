@@ -108,7 +108,7 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 	}
 	if (m_board->isBoardEmpty()) {
 		m_board->PlaceCard(m_activePlayer->PlayCard(_val), 0, 0);
-		PrintActiveHand();
+		PrintBoard();
 		return true;
 	}
 	BoardErrors tryPlace = m_board->CanPlace(_x, _y, _val);
@@ -116,7 +116,7 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 		return false;
 
 	m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
-	PrintActiveHand();
+	PrintBoard();
 	return true;
 }
 

@@ -3,8 +3,8 @@
 #include "qtCompletePlayer.h"
 
 
-qtCompletePlayer::qtCompletePlayer(Colours color,int width,int heigth) :
-	m_player{color},m_CARD_WIDTH{width},m_CARD_HEIGTH{heigth}
+qtCompletePlayer::qtCompletePlayer(Colours color,int width,int heigth,bool isDraggable) :
+	m_player{color},m_CARD_WIDTH{width},m_CARD_HEIGTH{heigth},m_isDraggable{isDraggable}
 {
 	generatePathsForMinionCards();
     loadCards();
@@ -47,8 +47,12 @@ void qtCompletePlayer::loadCards()
         m_pixmapCards.emplace_back(m_pathCards[cardValue]);
         while (auxRemainingCards != 0)
         {
-            QPixmap resizedCard=m_pixmapCards[i].scaled(m_CARD_WIDTH, m_CARD_HEIGTH, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-            QPointer<qDraggableLabel> currDragLabel = new qDraggableLabel(resizedCard, m_CARD_WIDTH, m_CARD_HEIGTH);
+            QPixmap resizedCard=
+                m_pixmapCards[i].scaled(m_CARD_WIDTH, m_CARD_HEIGTH, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+            QPointer<qDraggableLabel> currDragLabel = new 
+                qDraggableLabel(resizedCard, m_CARD_WIDTH, m_CARD_HEIGTH,m_isDraggable);
+
             currDragLabel->setColor(m_player.GetPlayerColor());
             currDragLabel->setValue(cardValue);
             m_labelsCards.emplace_back(currDragLabel);

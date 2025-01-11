@@ -2,8 +2,9 @@
 
 Eter::Eter(QWidget *parent)
     : QMainWindow(parent), ui {new Ui::EterClass},
-     plRed{Colours::RED,CARD_WIDTH,CARD_HEIGHT},plBlue{Colours::BLUE,CARD_WIDTH,CARD_HEIGHT},
-     m_gameview{}
+     m_gameview{},
+     plRed{Colours::RED,CARD_WIDTH,CARD_HEIGHT,m_gameview.GetGameFinal().GetActiveColor()==Colours::RED ?true:false},
+     plBlue{Colours::BLUE,CARD_WIDTH,CARD_HEIGHT,m_gameview.GetGameFinal().GetActiveColor() == Colours::BLUE ? true : false }
 {
     ui->setupUi(this);
 
@@ -100,11 +101,14 @@ void Eter::placeHorizontalLayoutBlueSide()
 
 void Eter::removeCardFromHorizontalLayout(QPointer<QHBoxLayout> hboxLayout,int valueToRemove)
 {
-    for (int i = 0; i < hboxLayout->count(); ++i) {
+    for (int i = 0; i < hboxLayout->count(); ++i) 
+    {
         QLayoutItem* item = hboxLayout->itemAt(i);
-        if (item) {
+        if (item) 
+        {
             QWidget* widget = item->widget();
-            if (widget && widget->property("value").toInt() == valueToRemove) {
+            if (widget && widget->property("value").toInt() == valueToRemove) 
+            {
                 delete widget;
                 break;
             }
@@ -116,7 +120,7 @@ void Eter::resizeGameLogo()
 {
     QString dir = QDir::currentPath() + "/textures/raw/eterLogo.jpg";
     QPixmap logoPixmap(dir);
-    labelEterLogo->setGeometry(30, 0, 150, 150);
+    labelEterLogo->setGeometry(0, 0, 150, 150);
     logoPixmap = logoPixmap.scaled(labelEterLogo->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     labelEterLogo->setPixmap(logoPixmap);
 }
@@ -130,6 +134,23 @@ void Eter::placeCardInsideHLayout(qtCompletePlayer& pl,
         hboxLayoutCards->addWidget(labels[i]);
 
         labelCards.push_back(labels[i]);
+    }
+}
+
+void Eter::changeDraggabilityHBoxLayout(QPointer<QHBoxLayout>& currentLayout,bool enable)
+{
+    for (int i = 0; i < currentLayout->count(); ++i)
+    {
+        QLayoutItem* item = currentLayout->itemAt(i);
+        if (item)
+        {
+            QWidget* widget = item->widget();
+            QPointer<qDraggableLabel> label = qobject_cast<qDraggableLabel*>(widget);
+            if (label)
+            {
+                label->setDraggable(enable);
+            }
+        }
     }
 }
 
@@ -162,7 +183,7 @@ void Eter::initializeEterLogo()
     QString dir = QDir::currentPath() + "/textures/raw/eterLogo.jpg";
     QPixmap logoPixmap(dir);
     labelEterLogo = new QLabel(this);
-    labelEterLogo->setGeometry(500, 0, 1000, 1000);
+    labelEterLogo->setGeometry(300, 0, 1000, 1000);
     logoPixmap = logoPixmap.scaled(labelEterLogo->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     labelEterLogo->setPixmap(logoPixmap);
 }
@@ -204,10 +225,14 @@ void Eter::cardDropHandler(const QMimeData* mimeData, int row, int column)
     int value = mimeData->property("value").toInt();
     if (mimeData->property("color").toString() == QString('R'))
     {
+        changeDraggabilityHBoxLayout(hboxLayoutRedCards,false);
+        changeDraggabilityHBoxLayout(hboxLayoutBlueCards, true);
         removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
     }
     else
     {
+        changeDraggabilityHBoxLayout(hboxLayoutBlueCards, false);
+        changeDraggabilityHBoxLayout(hboxLayoutRedCards, true);
         removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
     }
     scaleCoordinates(row, column);

@@ -39,6 +39,9 @@ private:
 
     QPointer<QLabel> labelEterLogo;
 
+    //aici un game final
+    GameView m_gameview;
+
     qtCompletePlayer plRed;
     qtCompletePlayer plBlue;
     qtCompleteBoard board{BOARD_SIZE};
@@ -68,6 +71,7 @@ private:
     
     ///functions
 
+    void changeDraggabilityHBoxLayout(QPointer<QHBoxLayout>& currentLayout,bool enabled);
     void placeHorizontalLayout();
     void placeHorizontalLayoutRedSide();
     void placeHorizontalLayoutBlueSide();
@@ -79,8 +83,7 @@ private:
     void placeCardInsideHLayout(qtCompletePlayer &pl,
         QPointer<QHBoxLayout>& hboxLayoutCards,QPointer<QWidget>& widgetHBoxCards);
 
-    //aici un game final
-    GameView m_gameview;
+
 public:
     static const int CARD_WIDTH=80;
     static const int CARD_HEIGHT=80;
