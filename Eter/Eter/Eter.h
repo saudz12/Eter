@@ -39,12 +39,17 @@ private:
 
     QPointer<QLabel> labelEterLogo;
 
+    QPointer<QLabel> labelFirstElementalCard;
+    QPointer<QLabel> labelSecondElementalCard;
+
     //aici un game final
     GameView m_gameview;
 
     qtCompletePlayer plRed;
     qtCompletePlayer plBlue;
     qtCompleteBoard board{BOARD_SIZE};
+
+    std::vector<QString> m_elementalCardsPaths;
 
     QPointer<QWidget> widgetHBoxRedCards;
     QPointer<QWidget> widgetHBoxBlueCards;
@@ -65,6 +70,11 @@ private:
     const int BLUECARDS_OFFSET_WINDOW_WIDTH = REDCARDS_OFFSET_WINDOW_WIDTH;
     int BLUE_CARDS_OFFSET_WINDOW_HEIGHT;
 
+    const int FIRST_ELEMENTAL_CARD_X = 1500;
+    const int FIRST_ELEMENTAL_CARD_Y = 400;
+    const int SECOND_ELEMENTAL_CARD_X = 1500;
+    const int SECOND_ELEMENTAL_CARD_Y = 600;
+
     const uint16_t BOARD_SIZE=3;
 
     const int CARDS_SPACING = 10;
@@ -83,6 +93,8 @@ private:
     void placeCardInsideHLayout(qtCompletePlayer &pl,
         QPointer<QHBoxLayout>& hboxLayoutCards,QPointer<QWidget>& widgetHBoxCards);
 
+    void loadElementalCardsPaths();
+    void initializeElementalCards();
 
 public:
     static const int CARD_WIDTH=80;

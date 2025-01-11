@@ -18,6 +18,7 @@ Eter::Eter(QWidget *parent)
 Eter::~Eter()
 {
     delete pushButtonStartTraining;
+    delete pushButtonStartElemental;
     delete ui;
 }
 
@@ -137,6 +138,53 @@ void Eter::placeCardInsideHLayout(qtCompletePlayer& pl,
     }
 }
 
+void Eter::loadElementalCardsPaths()
+{
+    QString basePath = QDir::currentPath() + "/textures/spell_";
+    for (size_t i = 0; i < 24; i++)
+    {
+        m_elementalCardsPaths.emplace_back(basePath + QString::number(i) + ".jpg");
+        qDebug() << basePath + QString::number(i) + ".jpg";
+    }
+}
+
+void Eter::initializeElementalCards()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<uint16_t> distribution(0, 23);
+
+    uint16_t firstCardNumber{ distribution(gen) };
+    distribution.reset();
+    uint16_t secondCardNumber{ distribution(gen) };
+
+    while (firstCardNumber == secondCardNumber)
+    {
+        distribution.reset();
+        secondCardNumber = distribution(gen);
+    }
+
+    QPixmap firstCardPixmap(m_elementalCardsPaths[firstCardNumber]);
+    QPixmap secondCardPixmap(m_elementalCardsPaths[secondCardNumber]);
+
+    qDebug() << m_elementalCardsPaths[firstCardNumber];
+    qDebug() << m_elementalCardsPaths[secondCardNumber];
+
+    labelFirstElementalCard = new QLabel(this);
+    labelSecondElementalCard = new QLabel(this);
+
+    labelFirstElementalCard->setGeometry(FIRST_ELEMENTAL_CARD_X, FIRST_ELEMENTAL_CARD_Y, CARD_WIDTH, CARD_HEIGHT);
+    firstCardPixmap = firstCardPixmap.scaled(labelFirstElementalCard->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    labelFirstElementalCard->setPixmap(firstCardPixmap);
+
+    labelSecondElementalCard->setGeometry(SECOND_ELEMENTAL_CARD_X, SECOND_ELEMENTAL_CARD_Y, CARD_WIDTH, CARD_HEIGHT);
+    secondCardPixmap = secondCardPixmap.scaled(labelSecondElementalCard->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    labelSecondElementalCard->setPixmap(secondCardPixmap);
+
+    labelFirstElementalCard->show();
+    labelSecondElementalCard->show();
+}
+
 void Eter::changeDraggabilityHBoxLayout(QPointer<QHBoxLayout>& currentLayout,bool enable)
 {
     for (int i = 0; i < currentLayout->count(); ++i)
@@ -196,6 +244,11 @@ void Eter::scaleCoordinates(int& row, int& column)
 
 void Eter::onPushButtonStartElementalClicked()
 {
+    resizeGameLogo();
+    loadElementalCardsPaths();
+    initializeElementalCards();
+    placeHorizontalLayout();
+    initializeGridLayoutBoard();
 }
 
 void Eter::onPushButtonStartMageClicked()
