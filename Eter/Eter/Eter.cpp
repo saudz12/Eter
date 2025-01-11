@@ -157,6 +157,12 @@ void Eter::initializeEterLogo()
     labelEterLogo->setPixmap(logoPixmap);
 }
 
+void Eter::scaleCoordinates(int& row, int& column)
+{
+    row--;
+    column--;
+}
+
 void Eter::onPushButtonStartElementalClicked()
 {
 }
@@ -181,8 +187,11 @@ void Eter::onBoardResized()
         widgetBoard->move(newX, newY);
 }
 
-void Eter::cardDropHandler(const QMimeData* mimeData)
+void Eter::cardDropHandler(const QMimeData* mimeData, int row, int column)
 {
+    char color = mimeData->property("color").toString().toLatin1().at(0);
+    Colours currentColor = GetColour(color);
+    int value = mimeData->property("value").toInt();
     if (mimeData->property("color").toString() == QString('R'))
     {
         removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
@@ -191,4 +200,6 @@ void Eter::cardDropHandler(const QMimeData* mimeData)
     {
         removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
     }
+    scaleCoordinates(row, column);
+    m_gameview.PlaceCard(row, column, value);
 }

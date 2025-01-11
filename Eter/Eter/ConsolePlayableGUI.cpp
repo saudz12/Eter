@@ -188,6 +188,7 @@ void GameView::PlaceCard(const int16_t x, const uint16_t y, const uint16_t val)
 {
     if (m_game->PlaceCard(x, y, val))
     {
+        qDebug()<<m_game->GetActiveColor()<<'\n';
         m_game->EndTurn();
         if (m_game->CheckWin())
             m_game->ResetRound();

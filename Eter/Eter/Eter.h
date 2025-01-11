@@ -93,6 +93,7 @@ public:
     void initializeGridLayoutBoard();
     void initializeEterLogo();
 
+    void scaleCoordinates(int& row, int& column);
 private slots:
     void onPushButtonStartTrainingClicked();
     void onPushButtonStartElementalClicked();
@@ -100,5 +101,5 @@ private slots:
     void onPushButtonStartTournamentClicked();
     void onPushButtonStartTimedClicked();
     void onBoardResized();
-    void cardDropHandler(const QMimeData* mimeData);
+    void cardDropHandler(const QMimeData* mimeData,int row,int column);
 };

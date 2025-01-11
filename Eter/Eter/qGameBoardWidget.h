@@ -84,6 +84,6 @@ public:
 	QLabel* createWhiteSpace();
 signals:
 	void boardResized();
-	void cardDropAccepted(const QMimeData* mimeData);
+	void cardDropAccepted(const QMimeData* mimeData,int row,int column);
 };
 
