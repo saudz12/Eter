@@ -35,7 +35,7 @@ uint16_t checkFuncAsh(Board& board, const MinionCard& card, uint16_t x, uint16_t
 uint16_t checkFuncSpark(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 	if (x1<0 || x1>lines ||
 		x2<0 || x2>lines ||
 		y1<0 || y1>cols ||
@@ -49,7 +49,7 @@ uint16_t checkFuncSpark(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uin
 
 uint16_t checkFuncSquall(Board& board, uint16_t x1, uint16_t y1) {
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 
 	if (x1 < 0 || x1 > lines)
 		return 1;
@@ -82,7 +82,7 @@ uint16_t checkFuncHurricane(Board&, hand& p1, hand& p2) {// for saud, don't touc
 }
 
 uint16_t checkFuncGust(Board&board , uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 
 	if (x1<0 || x1>lines ||
@@ -106,7 +106,7 @@ uint16_t checkFuncGust(Board&board , uint16_t x1, uint16_t y1, uint16_t x2, uint
 }
 
 uint16_t checkFuncMirage(Board& board, uint16_t x1, uint16_t y1, const MinionCard&) {
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 	if (x1 < 0 || x1 > lines || 
 		y1 < 0 || y1 > cols) //bound check
@@ -121,7 +121,7 @@ uint16_t checkFuncMirage(Board& board, uint16_t x1, uint16_t y1, const MinionCar
 
 uint16_t checkFuncStorm(Board& board,uint16_t x, uint16_t y) {
 
-	resizeableMatrix& matrix = board.getMatrix();
+	ResizeableMatrix& matrix = board.getMatrix();
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 
 	if (x < 0 || x > lines ||
@@ -137,8 +137,8 @@ uint16_t checkFuncStorm(Board& board,uint16_t x, uint16_t y) {
 
 uint16_t checkFuncTide(Board& board, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
 	
-	cardStack& first = board.getStackOnPos(x1, y1);
-	cardStack& second = board.getStackOnPos(x2, y2);
+	CardStack& first = board.getStackOnPos(x1, y1);
+	CardStack& second = board.getStackOnPos(x2, y2);
 	uint16_t lines = board.getRowCount(), cols = board.getColCount();
 
 	if (x1<0 || x1>lines ||

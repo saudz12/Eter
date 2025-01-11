@@ -25,6 +25,8 @@
 #include "qDraggableLabel.h"
 #include "qGameBoardWidget.h"
 
+#include "ConsolePlayableGUI.h"
+
 class Eter : public QMainWindow
 {
     Q_OBJECT
@@ -74,6 +76,9 @@ private:
 
     void placeCardInsideHLayout(qtCompletePlayer &pl,
         QPointer<QHBoxLayout>& hboxLayoutCards,QPointer<QWidget>& widgetHBoxCards);
+
+    //aici un game final
+    GameView m_gameview;
 public:
     static const int CARD_WIDTH=80;
     static const int CARD_HEIGHT=80;

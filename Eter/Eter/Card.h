@@ -1,5 +1,7 @@
 #pragma once
-#include "CardType.h"
+#include "Includes.h"
+
+enum class CardType : uint16_t { MinionCard, ExplosionCard, HoleCard, MageCard, ElementalCard, BlizzardCard};
 
 class Card
 {

@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,16 +130,20 @@
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Card.cpp" />
-    <ClCompile Include="ConsolePrints.cpp" />
+    <ClCompile Include="ConsolePlayableGUI.cpp" />
+    <ClCompile Include="ConsoleView.cpp" />
     <ClCompile Include="ElementalCard.cpp" />
-    <ClCompile Include="ErrorPrints.cpp" />
+    <ClCompile Include="ErrorPrints.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="EterTerminalDistribution.cpp" />
     <ClCompile Include="ExplosionCard.cpp" />
+    <ClCompile Include="Elementals.cpp" />
     <ClCompile Include="functionsElementalCards.cpp" />
-    <ClCompile Include="functionsInputCheck.cpp" />
     <ClCompile Include="functionsMageCards.cpp" />
-    <ClCompile Include="GameDemo.cpp" />
+    <ClCompile Include="GameFinal.cpp" />
     <ClCompile Include="HoleCard.cpp" />
+    <ClCompile Include="Includes.cpp" />
     <ClCompile Include="InputChceking.cpp" />
     <ClCompile Include="MageCard.cpp" />
     <ClCompile Include="MinionCard.cpp" />
@@ -150,15 +154,19 @@
     <ClInclude Include="ActionType.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="Card.h" />
-    <ClInclude Include="CardType.h" />
-    <ClInclude Include="ConsolePrints.h" />
+    <ClInclude Include="ConsolePlayableGUI.h" />
+    <ClInclude Include="ConsoleView.h" />
     <ClInclude Include="ElementalCard.h" />
-    <ClInclude Include="ErrorPrints.h" />
+    <ClInclude Include="ErrorPrints.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Essential.h" />
     <ClInclude Include="ExplosionCard.h" />
+    <ClInclude Include="Elementals.h" />
     <ClInclude Include="funcAssociationsToCard.h" />
     <ClInclude Include="functionsElementalCards.h" />
     <ClInclude Include="functionsMageCards.h" />
-    <ClInclude Include="GameDemo.h" />
+    <ClInclude Include="GameFinal.h" />
     <ClInclude Include="HoleCard.h" />
     <ClInclude Include="Includes.h" />
     <ClInclude Include="InputChecking.h" />

@@ -2,22 +2,30 @@
 #include <cstdint>
 #include <iostream>
 
-//Shared
-constexpr int16_t NO_ERRORS = 0;
-constexpr int16_t OUTSIDE_BOUNDS = -1;
-constexpr int16_t ETER_PROPERTY_VIOALTION = -2;
-constexpr int16_t EMPTY_SPACE = -3;
-constexpr int16_t INVALID_LINE_TYPE = -4;
-constexpr int16_t INVALID_DIRECTION = -5;
+void ErrorMesageHuricane(CommonErrors _message);
+void ErrorMessageWhirlpool(CommonErrors _message);
+void ErrorMessageFlame(CommonErrors _message);
+void ErrorMessageFire(CommonErrors _message);
+void ErrorMessageAsh(CommonErrors _message);
+void ErrorMessageSpark(CommonErrors _message);
+void ErrorMessageSquall(CommonErrors _message);
+void ErrorMessageGust(CommonErrors _message);
+void ErrorMessageMirage(CommonErrors _message);
+void ErrorMessagestorm(CommonErrors _message);
+void ErrorMessageTide(CommonErrors _message);
+void ErrorMessageMist(CommonErrors _message);
+void ErrorMessageWave(CommonErrors _message);
+void ErrorMessageSupport(CommonErrors _message);
+void ErrorMessageCrumble(CommonErrors _message);
+void ErrorMessageRock(CommonErrors _message);
+void ErrorMessageBorder(CommonErrors _message);
 
-//Hurricane span
-constexpr int16_t INVALID_LINE_STRUCTURE = 2;
-
-//Whirlpool
-constexpr int16_t ADJACENT_OUTSIDE_BOUNDS = 1;
-constexpr int16_t ADJACENT_SPACES_EMPTY = 2;
-
-void ErrorMesageHuricane(int message);
-void ErrorMessageWhirlpool(int message);
-
+void ErrorMessageFireMage1(CommonErrors _message);
+void ErrorMessageFireMage2(CommonErrors _message);
+void ErrorMessageEarthMage1(CommonErrors _message);
+void ErrorMessageEarthMage2(CommonErrors _message);
+void ErrorMessageAirMage1(CommonErrors _message);
+void ErrorMessageAirMage2(CommonErrors _message);
+void ErrorMessageWaterMage1(CommonErrors _message);
+void ErrorMessageWaterMage2(CommonErrors _message);
 

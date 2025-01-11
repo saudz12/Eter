@@ -16,17 +16,76 @@
 
 #include "Player.h"
 #include "ExplosionCard.h"
+#include "Includes.h"
+
+enum class BoardErrors : int16_t {
+	_OUTSIDE_BOUND,
+	_INSIDE_BOUND,
+	_EXTEND_BOUND,
+	_EMPTY_BOARD,
+
+	_INVALID_VAL,
+	_NONE_LEFT_OF_VAL, 
+	
+	_HOLE_PROPERTY,
+	_ETER_PROPERTY,
+	ILLUSION_PROPERTY,
+	_NO_ERRORS,
+};
+
+enum class MarginType : int16_t {
+	MARGIN_TOP,
+	MARGIN_BOT,
+	MARGIN_LEFT,
+	MARGIN_RIGHT,
+
+	INVALID_MARGIN
+};
+
+MarginType GetMargin(char _type);
+
+enum class BoardChanges : int16_t {
+	_TOP_BOUND,
+	_BOT_BOUND,
+	_LEFT_BOUND,
+	_RIGHT_BOUND,
+	_TOP_LEFT_BOUND,
+	_TOP_RIGHT_BOUND,
+	_BOT_LEFT_BOUND,
+	_BOT_RIGHT_BOUND,
+	_EMPTY_BOARD,
+	_NO_CHANGES
+};
+
+enum class StackConditions : int16_t {
+	POPULATED,
+	EMPTY,
+	HOLE,
+	ETER
+};
+
+enum class OrientationType : int16_t {
+	HORIZONTAL,
+	VERTICAL
+};
+
+enum class AdjacentType : int16_t {
+	NEIGHBOURING,
+	CORNERING,
+	NOT_ADJACENT,
+	SAME_STACK
+};
 
 class Board
 {
 private:
-	resizeableMatrix m_matrix;
+	ResizeableMatrix m_matrix;
 	
 	//score by color management
-	lineChecker m_rowChecker;
-	lineChecker m_colChecker;
-	score m_firstDiag;
-	score m_seconDiag;
+	LineChecker m_rowChecker;
+	LineChecker m_colChecker;
+	Score m_firstDiag;
+	Score m_seconDiag;
 
 	//for explosions, keep check either here or in game
 	uint16_t m_lineCnt;
@@ -35,13 +94,11 @@ private:
 	uint16_t m_max_size;
 	bool m_reachedMaxSize;
 
-
 	//score counter on each line
-	void increaseOnColorSides(uint16_t x, uint16_t y, char col);
-	void increaseOnColorColumn(uint16_t x, uint16_t y, char col);
-	void increaseOnColorRow(uint16_t x, uint16_t y, char col);
-	void increaseOnColorDiagonal(uint16_t x, uint16_t y, char col);
-	void increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, char col);
+	void increaseOnColorColumn(uint16_t x, uint16_t y, Colours col);
+	void increaseOnColorRow(uint16_t x, uint16_t y, Colours col);
+	void increaseOnColorDiagonal(uint16_t x, uint16_t y, Colours col);
+	void increaseOnColorDiagonalNoResize(uint16_t x, uint16_t y, Colours col);
 
 	//check position to board bounds
 	int16_t XBoundTest(int16_t x);
@@ -49,65 +106,108 @@ private:
 
 	//other check
 	bool posPlaceTest(int16_t x, int16_t y, const MinionCard& card);
-	bool isMatMaxSize();
-
-	//add lines to border
-	void addLineToLeft();
-	void addLineToRight();
-	void addLineOnTop();
-	void addLineOnBottom();
 
 	//will be changed if you can remove from middle
 	void removeLeftMargin();
 	void removeRightMargin();
 	void removeTopMargin();
 	void removeBottomMargin();
+
 	//other interactions
 
 public:
 
 	Board(uint16_t size);
+	Board();
 	~Board() = default;
 
 	//Update board
 	//only checks it. to modify it it needs to return a reference. do the check somewhere beforehand to get modifyable card
-	MinionCard& getCardOnPos(int16_t x, int16_t y);
-	int16_t setPos(int16_t x, int16_t y, const MinionCard& card, Player& p);
-	int16_t setPosWaterfall(int16_t x, int16_t y, const MinionCard& card);
-	int16_t removePos(int16_t x, int16_t y);
-	int16_t removeStack(int16_t x, int16_t y);
-	char entityWon(int16_t x, int16_t y, char col);
+
+#pragma region new_code
+	//moves and other tricky thigs camn be modifyed to bools to check if they executed properly
+
+	StackConditions CheckStackCondition(int16_t _x, int16_t _y); 
+	BoardErrors CheckPos(int16_t _x, int16_t _y); 
+	BoardErrors CanPlace(int16_t _x, int16_t _y, int16_t _val);
+	BoardChanges GetChangeFlag(int16_t _x, int16_t _y); 
+	void UpdateOnColor(uint16_t _x, uint16_t _y, Colours _col, OrientationType _side, CardAction _action);
+	void ExtendBoard(BoardChanges _flag); 
+	void PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y); 
+	MinionCard&& RemoveTop(int16_t _x, int16_t _y); 
+	MinionCard&& RemoveCard(int16_t _x, int16_t _y, int16_t _pos); 
+	void CreateHole(int16_t _x, int16_t _y); 
+	void RemoveLine(int16_t _line, LineType _type); 
+	void RemoveRow(int16_t _line); 
+	void RemoveColumn(int16_t _line); 
+	bool ShiftLine(int16_t _line, LineType _type, Directions _direction);
+	bool LineContainsColour(int16_t _line, LineType _type, Colours _col); 
+	int16_t GetNrOfCardsOnLine(int16_t _line, LineType _type); 
+	void PlayCard(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD); //from top of stack (xs ys) to top of pos stacl (xd yd)
+	void MoveStack(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD); //replaces the stack on destination
+	void SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
+	void MirrorEdge(BoardChanges _margin);
+	bool CheckTopIsEter(int16_t _x, int16_t _y);
+	void RemoveIllusionProperty(int16_t _x, int16_t _y);
+	const MinionCard& ViewTop(int16_t _x, int16_t _y); //wierd??
+
+	//checks if the coordonates of 2 stacks ar adjacent
+	static AdjacentType CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
+	
+
+	//add lines to border ///vezi ca ai ExtendBoard. foloseste-l in loc de astea :). Board changes impune ce cum vrei sa adaugi inii.
+	void AddLineToLeft();
+	void AddLineToRight();
+	void AddLineOnTop();
+	void AddLineOnBottom();
+	void SetEmptyBoard(Colours color);
+#pragma endregion
+
+	//use it only when placing cards
+	Colours checkWin(int16_t x, int16_t y, Colours col);
+	//use it after removing minions and/or using elemental/mage cards
+	Colours checkWin();
 
 	uint16_t getRowCount();
 	uint16_t getColCount();
 	uint16_t getMaxSize();
-	lineChecker& getRowChecker();
-	lineChecker& getColChecker();
-	resizeableMatrix& getMatrix();
-	cardStack& getStackOnPos(uint16_t x, uint16_t y);
+	bool isMatMaxSize();
+
+#pragma region remove_later
+
+	MinionCard& getCardOnPos(int16_t x, int16_t y);
+	int16_t setPos(int16_t& x, int16_t& y, const MinionCard& card, Player& p);
+	int16_t setPosWaterfall(int16_t x, int16_t y, const MinionCard& card);
+	int16_t removePos(int16_t x, int16_t y);
+	int16_t removeStack(int16_t x, int16_t y);
+
+	LineChecker& getRowChecker();
+	LineChecker& getColChecker();
+	ResizeableMatrix& getMatrix();
+	CardStack& getStackOnPos(uint16_t x, uint16_t y);
 	uint16_t getLineCount();
+	//false = valid, true = not good - sorry --change them later
+	bool checkPosition(uint16_t x, uint16_t y);
+	//false = valid, true = not good - sorry
+	bool checkPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+	void printBoard(bool _debug);
 
 	bool removeRow(uint16_t x);
 	bool removeColumn(uint16_t y);
 
-	void setMatrix(const resizeableMatrix& matrix);
+#pragma endregion
+
+	void setMatrix(const ResizeableMatrix& matrix);
 	
 	void updateFirstDiagChecker(uint16_t option);
 	void updateSeconDiagChecker(uint16_t option);
 	void updateColChecker(uint16_t y, uint16_t option);
 	void updateRowChecker(uint16_t x, uint16_t option);
 
-	void shiftLine(uint16_t start, uint16_t end, int16_t ratio, uint16_t lineNo, uint16_t orientation);
-	void checkForUpdates();
-
 	bool isBoardFilled();
 	bool isBoardEmpty();
-	//false = valid, true = not good - sorry --change them later
-	bool checkPosition(uint16_t x, uint16_t y);
-	//false = valid, true = not good - sorry
-	bool checkPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 
-	void printBoard();
+	void checkForUpdates();
 
 	static void cloneMatrix(const Board& from, Board& to);
 

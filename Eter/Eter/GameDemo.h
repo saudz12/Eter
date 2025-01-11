@@ -36,7 +36,7 @@ public:
     void restartRound();
 
     void checkCoveredCards(const coveredSet& coveredCardSet);
-    void checkStack(const cardStack& stackToCheck);
+    void checkStack(const CardStack& stackToCheck);
     void checkElementalCardFunction(Board& b, Player*& p1, Player*& p2, Player* currPlayer, hand& currHand, hand& removedCardsHand, bool& wasUsed, bool& wasCardUsed);
 
 };

@@ -4,12 +4,12 @@ bool isolatedSpaces(Board& boardModel)
 {
 	uint16_t l = boardModel.getRowCount(), c = boardModel.getColCount();
 
-	resizeableMatrix& matr = boardModel.getMatrix();
+	ResizeableMatrix& matr = boardModel.getMatrix();
 
 	//reusing line checker - simulating queue of adjacent nodes
-	lineChecker visitedStack;
+	LineChecker visitedStack;
 
-	uint16_t cardStackCount = 0;
+	uint16_t CardStackCount = 0;
 
 	std::vector<std::vector<bool>> checkedMat;
 	uint16_t uniqueVisited = 0;
@@ -22,17 +22,17 @@ bool isolatedSpaces(Board& boardModel)
 		for (uint16_t j = 0; j < c; j++) {
 			if (matr[i][j].empty())
 				continue;
-			if (cardStackCount == 0) {
+			if (CardStackCount == 0) {
 				visitedStack.emplace_back(i, j);
 				checkedMat[i][j] = true;
 			}
-			cardStackCount++;
+			CardStackCount++;
 		}
 	}
 
 	while (!visitedStack.empty())
 	{
-		score& front = visitedStack.front();
+		Score& front = visitedStack.front();
 		uint16_t i = front.first;
 		uint16_t j = front.second;
 
@@ -90,7 +90,7 @@ bool isolatedSpaces(Board& boardModel)
 		visitedStack.pop_front();
 	}
 
-	return (uniqueVisited != cardStackCount);
+	return (uniqueVisited != CardStackCount);
 }
 
 void TestIsolatedSpacesFunc(Board& boardModel) {
@@ -98,15 +98,15 @@ void TestIsolatedSpacesFunc(Board& boardModel) {
 	uint16_t y;
 	std::cin >> x >> y;
 	if (boardModel.checkPosition(x, y)) {
-		std::cout << "Invalid position..\n";
+		qDebug() << "Invalid position..\n";
 		return;
 	}
-	cardStack removed = std::move(boardModel.getMatrix()[x][y]);
-	boardModel.getMatrix()[x][y] = std::move(cardStack());
+	CardStack removed = std::move(boardModel.getMatrix()[x][y]);
+	boardModel.getMatrix()[x][y] = std::move(CardStack());
 	if (!isolatedSpaces(boardModel)) {
-		std::cout << "Valid deletion";
+		qDebug() << "Valid deletion";
 		return;
 	}
-	std::cout << "Invalid move";
+	qDebug() << "Invalid move";
 	boardModel.getMatrix()[x][y] = std::move(removed);
 }

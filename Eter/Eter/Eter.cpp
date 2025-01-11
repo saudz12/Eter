@@ -2,7 +2,8 @@
 
 Eter::Eter(QWidget *parent)
     : QMainWindow(parent), ui {new Ui::EterClass},
-     plRed{'R',CARD_WIDTH,CARD_HEIGHT},plBlue{'B',CARD_WIDTH,CARD_HEIGHT}
+     plRed{Colours::RED,CARD_WIDTH,CARD_HEIGHT},plBlue{Colours::BLUE,CARD_WIDTH,CARD_HEIGHT},
+     m_gameview{}
 {
     ui->setupUi(this);
 

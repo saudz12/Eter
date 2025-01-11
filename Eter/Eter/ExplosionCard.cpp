@@ -1,6 +1,5 @@
 #include "ExplosionCard.h"
 #include "Card.h"
-#include <random>
 
 std::pair<uint16_t, uint16_t> ExplosionCard::GeneratePositionInMatrix(uint16_t size)
 {
@@ -47,7 +46,7 @@ ExplosionCard::ExplosionCard(uint16_t size):Card{ CardType::ExplosionCard }
 	else if (size == 4)
 		distr = std::uniform_int_distribution(3, 6);
 	uint16_t numberOfEffects = distr(gen);
-	for (size_t i = 0; i < numberOfEffects; ++i)
+	for (int16_t i = 0; i < numberOfEffects; ++i)
 	{
 		std::pair<uint16_t, uint16_t> pos = GeneratePositionInMatrix(size);
 		ReturnRemoveOrHoleCard effect = GenerateEffect();
@@ -89,34 +88,34 @@ void ExplosionCard::RotateToRight(uint16_t size)
 	m_explosionMap = newMap;
 }
 
-void ExplosionCard::showExpl(size_t size)
+void ExplosionCard::showExpl(int16_t size)
 {
-	std::cout << "The explosion:\n";
-	for (size_t i = 0; i < size; ++i)
+	qDebug() << "The explosion:\n";
+	for (int16_t i = 0; i < size; ++i)
 	{
-		for (size_t j = 0; j < size; ++j)
+		for (int16_t j = 0; j < size; ++j)
 		{
 			if (m_explosionMap.find({ i,j }) != m_explosionMap.end())
 			{
 				switch (m_explosionMap[{i,j}])
 				{
 				case ReturnRemoveOrHoleCard::ReturnCard:
-					std::cout << "Ret ";
+					qDebug() << "Ret ";
 					break;
 				case ReturnRemoveOrHoleCard::RemoveCard:
-					std::cout << "Rem ";
+					qDebug() << "Rem ";
 					break;
 				case ReturnRemoveOrHoleCard::HoleCard:
-					std::cout << "Hol ";
+					qDebug() << "Hol ";
 					break;
 				default:
 					break;
 				}
 			}
 			else
-				std::cout << "--- ";
+				qDebug() << "--- ";
 		}
-		std::cout << '\n';
+		qDebug() << '\n';
 	}
 }
 

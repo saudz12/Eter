@@ -1,15 +1,61 @@
 #include "MinionCard.h"
 
-MinionCard::MinionCard(uint16_t value, char color, bool isEter) 
-    : Card{ CardType::MinionCard }, 
-    m_value{ value }, 
-    m_color{ color }, 
-    m_isEterCard{ isEter }, 
+MinionCard&& MinionCard::CreateHoleCard()
+{
+    return { 0, Colours::INVALID_COL, false, true };
+}
+
+MinionCard&& MinionCard::CreateEterCard(Colours _colour)
+{
+    return { 1, _colour, true, false };
+}
+
+MinionCard::MinionCard(MinionCard&& other) noexcept : Card{ CardType::MinionCard },
+    m_value(std::exchange(other.m_value, 0)),
+    m_color(std::exchange(other.m_color, Colours::INVALID_COL)),
+    m_isEterCard(std::exchange(other.m_isEterCard, false)),
+    m_isIllusionCard(std::exchange(other.m_isIllusionCard, false)),
+    m_marker(std::exchange(other.m_marker, false)),
+    m_belongsTo(std::exchange(other.m_belongsTo, Colours::INVALID_COL)),
+    m_isHole(std::exchange(other.m_isHole, false))
+{
+    // Optionally log or perform other necessary actions for move
+}
+
+MinionCard::MinionCard(uint16_t value, Colours color, bool isEter, bool isHole)
+    : Card{ CardType::MinionCard },
+    m_value{ value },
+    m_color{ color },
+    m_isEterCard{ isEter },
+    m_isIllusionCard{ false },
+    m_marker{ false },
+    m_belongsTo(color), 
+    m_isHole{ isHole }
+{
+}
+
+MinionCard::MinionCard()
+    : Card {CardType::MinionCard},
+    m_value{ 0 }, 
+    m_color{ Colours::RED }, 
+    m_isEterCard{ false }, 
     m_isIllusionCard{ false }, 
     m_marker{ false }, 
-    m_belongsTo('R'), 
-    m_isHole{false}
+    m_belongsTo{ Colours::RED }, 
+    m_isHole{ false }
 {
+}
+
+MinionCard::MinionCard(const MinionCard& other) :Card{m_cardType},
+    m_value(other.m_value),
+    m_color(other.m_color),
+    m_isEterCard(other.m_isEterCard),
+    m_isIllusionCard(other.m_isIllusionCard),
+    m_marker(other.m_marker),
+    m_belongsTo(other.m_belongsTo),
+    m_isHole(other.m_isHole)
+{
+    // Optionally log or perform other necessary actions for copy
 }
 
 uint16_t MinionCard::GetValue() const
@@ -17,7 +63,7 @@ uint16_t MinionCard::GetValue() const
     return m_value;
 }
 
-char MinionCard::GetColor() const
+Colours MinionCard::GetColor() const
 {
     return m_color;
 }
@@ -42,12 +88,7 @@ CardType MinionCard::GetCardType() const
     return m_cardType;
 }
 
-char MinionCard::GetBelongsTo() const
-{
-    return m_belongsTo;
-}
-
-bool MinionCard::GetIsHole() const
+bool MinionCard::CheckIsHole() const
 {
     return m_isHole;
 }
@@ -57,7 +98,7 @@ void MinionCard::SetValue(uint16_t value)
     m_value = value;
 }
 
-void MinionCard::SetColor(char color)
+void MinionCard::SetColor(Colours color)
 {
     m_color = color;
 }
@@ -83,7 +124,12 @@ void MinionCard::SetMarker(bool isMarked)
     m_marker = isMarked;
 }
 
-void MinionCard::SetBelongsTo(char belongsTo)
+//void MinionCard::SetBelongsTo(char belongsTo)
+//{
+//    m_belongsTo = belongsTo;
+//}
+
+void MinionCard::SetBelongsTo(Colours belongsTo)
 {
     m_belongsTo = belongsTo;
 }
@@ -133,3 +179,19 @@ std::ostream& operator<<(std::ostream& out, const MinionCard& card)
         out << card.GetValue() << ":" << card.GetColor();
     return out;
 }
+
+QDebug operator<<(QDebug debug, const MinionCard& card)
+{
+    QDebugStateSaver saver(debug);
+    if (card.GetCardType() == CardType::HoleCard)
+        debug.nospace() << " H ";
+    else if (card.GetIsEterCard())
+        debug.nospace() << "E:" << card.GetColor();
+    else if (card.GetIsIllusionCard())
+        debug.nospace() << "I:" << card.GetColor();
+    else
+        debug.nospace() << card.GetValue() << ":" << card.GetColor();
+    return debug;
+}
+
+

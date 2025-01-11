@@ -172,7 +172,6 @@ void GameView::Loop()
 {
     int16_t x, y, val;
 
-
     while (true)
     {
         m_game->PrintBoard();

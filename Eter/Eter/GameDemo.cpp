@@ -462,7 +462,7 @@ void GameDemo::checkCoveredCards(const coveredSet& coveredCardSet)
     
 }
 
-void GameDemo::checkStack(const cardStack& stackToCheck)
+void GameDemo::checkStack(const CardStack& stackToCheck)
 {
     std::cout << "Bottom: (";
     for (auto& i : stackToCheck) {

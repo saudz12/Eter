@@ -3,10 +3,12 @@
 #include "Board.h"
 #include "funcAssociationsToCard.h"
 
-ElementalCard::ElementalCard() : 
-	Card(CardType::ElementalCard), 
-	m_elementType{ActionCard::Default,nullptr}
+ElementalCard::ElementalCard() :
+	Card(CardType::ElementalCard)
 {
+	auto & [cardType,asssociatedFunction] = m_elementType;
+	cardType= generateRandomElementalCard<ActionCard>();
+	asssociatedFunction = (void*)associateCardWithFunc(cardType);
 }
 
 ElementalCard::ElementalCard(ElementalCardType& ECardType) : 

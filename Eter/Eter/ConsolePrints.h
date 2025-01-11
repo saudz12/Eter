@@ -11,7 +11,7 @@ void playerTurn(bool ok);
 
 void placeOption();
 
-void showHand(hand& currHand);
+void showHand(Hand& currHand);
 
 void helpOption();
 

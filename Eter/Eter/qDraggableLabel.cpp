@@ -13,6 +13,11 @@ void qDraggableLabel::setParent(QWidget* parent)
     setParent(parent);
 }
 
+void qDraggableLabel::setColor(Colours color)
+{
+    m_color = color;
+}
+
 void qDraggableLabel::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton) {
@@ -21,7 +26,12 @@ void qDraggableLabel::mousePressEvent(QMouseEvent* event)
         QDataStream stream(&pixmapData, QIODevice::WriteOnly);
         mimeData->setText("minion");
         mimeData->setProperty("value", m_value);
-        mimeData->setProperty("color", QString(m_color));
+
+        if (m_color == Colours::RED)
+            mimeData->setProperty("color", QString("R"));
+        else if (m_color == Colours::BLUE)
+            mimeData->setProperty("color", QString("B"));
+
         stream << m_cardPixmap;
         mimeData->setData("application/x-card-pixmap", pixmapData);
         QDrag* drag = new QDrag(this);

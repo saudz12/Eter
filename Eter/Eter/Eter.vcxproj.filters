@@ -79,13 +79,7 @@
     <ClCompile Include="functionsElementalCards.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="functionsInputCheck.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="functionsMageCards.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameDemo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputChceking.cpp">
@@ -107,6 +101,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="qGameBoardWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsolePlayableGUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFinal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Includes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -159,13 +162,7 @@
     <ClInclude Include="functionsElementalCards.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="functionsInputCheck.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="functionsMageCards.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameDemo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Includes.h">
@@ -184,6 +181,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="qtCompleteBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsolePlayableGUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFinal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,7 +3,7 @@
 #include "qtCompletePlayer.h"
 
 
-qtCompletePlayer::qtCompletePlayer(char color,int width,int heigth) :
+qtCompletePlayer::qtCompletePlayer(Colours color,int width,int heigth) :
 	m_player{color},m_CARD_WIDTH{width},m_CARD_HEIGTH{heigth}
 {
 	generatePathsForMinionCards();
@@ -37,7 +37,7 @@ void qtCompletePlayer::SetPixmapCards(std::deque<QPixmap>& pixmapCards)
 
 void qtCompletePlayer::loadCards()
 {
-    const hand& currPlayerHandCard=m_player.GetHandCards();
+    const Hand& currPlayerHandCard = m_player.GetHandCards();
     int i = 0;
     for (auto& currCard : currPlayerHandCard)
     {
@@ -61,7 +61,7 @@ void qtCompletePlayer::loadCards()
 void qtCompletePlayer::generatePathsForMinionCards()
 {
     QString basePath = QDir::currentPath() + "/textures/";
-    if (m_player.GetPlayerColor() == 'R')
+    if (m_player.GetPlayerColor() == Colours::RED)
         basePath += "red_";
     else
         basePath += "blue_";

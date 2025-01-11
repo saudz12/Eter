@@ -1,8 +1,26 @@
-#include "GameDemo.h"
+#include "ConsolePlayableGUI.h"
 
-/*int main()
-{
-	GameDemo test(3,3);
-	test.runDemo();
-	return 0;
-}*/
+//class idk {
+//	int a;
+//	int b;
+//	int c;
+//public:
+//
+//	idk() {
+//		a = 2;
+//		b = 3;
+//		c = 4;
+//	}
+//	idk(int a, int b, int c) :
+//		a{ a }, b{ b }, c{ c } {
+//	}
+//	void set(int a, int b, int c) {
+//		this->a = a;
+//		this->b = b;
+//		this->c = c;
+//	}
+//	friend std::ostream& operator<<(std::ostream& os, const idk& item) {
+//		os << item.a << item.b << item.c;
+//		return os;
+//	}
+//};
