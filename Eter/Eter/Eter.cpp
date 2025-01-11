@@ -112,6 +112,15 @@ void Eter::removeCardFromHorizontalLayout(QPointer<QHBoxLayout> hboxLayout,int v
     }
 }
 
+void Eter::resizeGameLogo()
+{
+    QString dir = QDir::currentPath() + "/textures/raw/eterLogo.jpg";
+    QPixmap logoPixmap(dir);
+    labelEterLogo->setGeometry(30, 0, 150, 150);
+    logoPixmap = logoPixmap.scaled(labelEterLogo->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    labelEterLogo->setPixmap(logoPixmap);
+}
+
 void Eter::placeCardInsideHLayout(qtCompletePlayer& pl,
     QPointer<QHBoxLayout>& hboxLayoutCards, QPointer<QWidget>& widgetHBoxCards)
 {
@@ -132,6 +141,7 @@ void Eter::placeHorizontalLayout()
 
 void Eter::onPushButtonStartTrainingClicked()
 {
+    resizeGameLogo();
     placeHorizontalLayout();
     initializeGridLayoutBoard();
 }
@@ -152,7 +162,7 @@ void Eter::initializeEterLogo()
     QString dir = QDir::currentPath() + "/textures/raw/eterLogo.jpg";
     QPixmap logoPixmap(dir);
     labelEterLogo = new QLabel(this);
-    labelEterLogo->setGeometry(20, 0, 150, 150);
+    labelEterLogo->setGeometry(500, 0, 1000, 1000);
     logoPixmap = logoPixmap.scaled(labelEterLogo->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     labelEterLogo->setPixmap(logoPixmap);
 }

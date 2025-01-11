@@ -74,6 +74,8 @@ private:
 
     void removeCardFromHorizontalLayout(QPointer<QHBoxLayout> hboxLayout,int valueToRemove);
 
+    void resizeGameLogo();
+
     void placeCardInsideHLayout(qtCompletePlayer &pl,
         QPointer<QHBoxLayout>& hboxLayoutCards,QPointer<QWidget>& widgetHBoxCards);
 
