@@ -19,14 +19,14 @@ private:
 	std::vector<QString> m_pathCards;
 	std::deque<QPixmap> m_pixmapCards;
 	std::deque<QPointer<qDraggableLabel>> m_labelsCards;
-	Player m_player;//initializat ca referinta la player din game final
+	const Player& m_player;//initializat ca referinta la player din game final
 	bool m_isDraggable;
 	const int m_CARD_WIDTH, m_CARD_HEIGTH;
 	///functions
 	void generatePathsForMinionCards();
 	void loadCards();
 public:
-	qtCompletePlayer(Colours color,int width,int heigth,bool m_isDraggable);
+	qtCompletePlayer(const Player& player,int width,int heigth,bool m_isDraggable);
 
 	///getters
 	std::vector<QString>& GetPathCards();

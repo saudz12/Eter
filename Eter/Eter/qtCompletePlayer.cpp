@@ -3,8 +3,8 @@
 #include "qtCompletePlayer.h"
 
 
-qtCompletePlayer::qtCompletePlayer(Colours color,int width,int heigth,bool isDraggable) :
-	m_player{color},m_CARD_WIDTH{width},m_CARD_HEIGTH{heigth},m_isDraggable{isDraggable}
+qtCompletePlayer::qtCompletePlayer(const Player& player,int width,int heigth,bool isDraggable) :
+    m_player{ player },m_CARD_WIDTH { width}, m_CARD_HEIGTH{ heigth }, m_isDraggable{ isDraggable }
 {
 	generatePathsForMinionCards();
     loadCards();
@@ -37,12 +37,12 @@ void qtCompletePlayer::SetPixmapCards(std::deque<QPixmap>& pixmapCards)
 
 void qtCompletePlayer::loadCards()
 {
-    const Hand& currPlayerHandCard = m_player.GetHandCards();
+    const CardCounter& currRemainingCards = m_player.GetRemainingCounter();
     int i = 0;
-    for (auto& currCard : currPlayerHandCard)
+    for (auto& currCard : currRemainingCards)
     {
         auto& [currMinionCard, remainingCards] = currCard;
-        int cardValue = currMinionCard.GetValue();
+        int cardValue = currMinionCard;
         int auxRemainingCards = remainingCards;
         m_pixmapCards.emplace_back(m_pathCards[cardValue]);
         while (auxRemainingCards != 0)

@@ -37,6 +37,9 @@ public:
 				GameOptions _enabledMage,		GameOptions _enabledElemental,
 				GameOptions _enabledTournament,	GameOptions _enabledTimed);
 	Colours GetActiveColor() { return m_activeColor; }
+	const Player& GetRedPlayer() const  { return *m_player1; }
+	const Player& GetBluePlayer() const { return *m_player2; }
+
 #pragma region turn_logic
 	void AdvanceAction();
 	void EndTurn();

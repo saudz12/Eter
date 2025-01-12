@@ -2,8 +2,6 @@
 
 Eter::Eter(QWidget *parent)
     : QMainWindow(parent), ui {new Ui::EterClass},
-     plRed{Colours::RED,CARD_WIDTH,CARD_HEIGHT,true},//red starts first
-     plBlue{Colours::BLUE,CARD_WIDTH,CARD_HEIGHT,false },
      m_wasFirstCardPlaced{false}
 {
     ui->setupUi(this);
@@ -88,14 +86,14 @@ void Eter::initializeHandCardLayouts()
 
 void Eter::placeHorizontalLayoutRedSide()
 {
-    placeCardInsideHLayout(plRed, hboxLayoutRedCards,widgetHBoxRedCards);
+    placeCardInsideHLayout(*plRed, hboxLayoutRedCards,widgetHBoxRedCards);
     widgetHBoxRedCards->setParent(this);
     widgetHBoxRedCards->setVisible(true);
 }
 
 void Eter::placeHorizontalLayoutBlueSide()
 {
-    placeCardInsideHLayout(plBlue, hboxLayoutBlueCards,widgetHBoxBlueCards);
+    placeCardInsideHLayout(*plBlue, hboxLayoutBlueCards,widgetHBoxBlueCards);
     widgetHBoxBlueCards->setParent(this);
     widgetHBoxBlueCards->setVisible(true);
 }
@@ -211,6 +209,8 @@ void Eter::placeHorizontalLayout()
 void Eter::onPushButtonStartTrainingClicked()
 {
     m_gameview = std::make_unique<GameView>();
+    plRed = std::make_unique<qtCompletePlayer>(m_gameview->GetRedPlayer(), CARD_WIDTH, CARD_HEIGHT, true);//red starts first
+    plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
     resizeGameLogo();
     placeHorizontalLayout();
     initializeGridLayoutBoard();
@@ -274,22 +274,9 @@ void Eter::onBoardResized()
 
 void Eter::cardDropHandler(const QMimeData* mimeData, int row, int column)
 {
-    char color = mimeData->property("color").toString().toLatin1().at(0);
-    Colours currentColor = GetColour(color);
-    int value = mimeData->property("value").toInt();
-    if (mimeData->property("color").toString() == QString('R'))
-    {
-        changeDraggabilityHBoxLayout(hboxLayoutRedCards, false);
-        changeDraggabilityHBoxLayout(hboxLayoutBlueCards, true);
-        removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
-    }
-    else
-    {
-        changeDraggabilityHBoxLayout(hboxLayoutBlueCards, false);
-        changeDraggabilityHBoxLayout(hboxLayoutRedCards, true);
-        removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
-    }
 
+    int value = mimeData->property("value").toInt();
+    
     if (m_wasFirstCardPlaced == false)
     {
         m_wasFirstCardPlaced = true;
@@ -298,9 +285,25 @@ void Eter::cardDropHandler(const QMimeData* mimeData, int row, int column)
     {
         scaleCoordinates(row, column);
     }
-
     if (!m_gameview->PlaceCard(row, column, value))
     {
         QMessageBox::warning(nullptr, "Warning", "Cannot place that card there");
+    }
+    else
+    {
+        char color = mimeData->property("color").toString().toLatin1().at(0);
+        Colours currentColor = GetColour(color);
+        if (mimeData->property("color").toString() == QString('R'))
+        {
+            changeDraggabilityHBoxLayout(hboxLayoutRedCards, false);
+            changeDraggabilityHBoxLayout(hboxLayoutBlueCards, true);
+            removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
+        }
+        else
+        {
+            changeDraggabilityHBoxLayout(hboxLayoutBlueCards, false);
+            changeDraggabilityHBoxLayout(hboxLayoutRedCards, true);
+            removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
+        }
     }
 }

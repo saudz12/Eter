@@ -53,5 +53,8 @@ public:
 	bool PlaceCard(const int16_t x,const uint16_t y,const uint16_t val);
 
     GameFinal& GetGameFinal()  { return *m_game; }
+
+	const Player& GetRedPlayer() const { return m_game->GetRedPlayer(); }
+	const Player& GetBluePlayer() const  { return m_game->GetBluePlayer(); }
 };
 

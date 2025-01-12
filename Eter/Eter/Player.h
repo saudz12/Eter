@@ -83,7 +83,7 @@ public:
 	MinionCard* GetLastMinionCardPlayed() const;
 	MinionCard* GetIllusionCard() const;
 	CoveredSet& getCovered();
-
+	const CardCounter& GetRemainingCounter() const { return m_remainingCounter; }
 #pragma region new code
 
 	bool CheckCoveredPopulation(); //new

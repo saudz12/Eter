@@ -48,8 +48,8 @@ private:
     //aici un game final
     std::unique_ptr<GameView> m_gameview;
 
-    qtCompletePlayer plRed;
-    qtCompletePlayer plBlue;
+    std::unique_ptr<qtCompletePlayer> plRed;
+    std::unique_ptr<qtCompletePlayer> plBlue;
 
     std::vector<QString> m_elementalCardsPaths;
 
