@@ -52,6 +52,85 @@ void GameFinal::ResetRound()
 	m_activePlayingHand = m_player1->GetHandCards();
 	m_activeRemovedHand = m_player1->GetRemovedCards();
 
+	std::random_device rd;
+	std::uniform_int_distribution<int16_t> elementalrange(1, 24);
+	m_elemental1 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd)) });
+	m_elemental2 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd)) });
+}
+
+void GameFinal::FindPower(ActionCard identif)
+{
+	switch (identif)
+	{
+	case ActionCard::ControlledExplosion:
+		break;
+	case ActionCard::Destruction:
+		break;
+	case ActionCard::Flame:
+		break;
+	case ActionCard::Fire:
+		break;
+	case ActionCard::Ash:
+		break;
+	case ActionCard::Spark:
+		break;
+	case ActionCard::Squall:
+		break;
+	case ActionCard::Gale:
+		break;
+	case ActionCard::Hurricane:
+		break;
+	case ActionCard::Gust:
+		break;
+	case ActionCard::Mirage:
+		break;
+	case ActionCard::Storm:
+		break;
+	case ActionCard::Tide:
+		break;
+	case ActionCard::Mist:
+		break;
+	case ActionCard::Wave:
+		break;
+	case ActionCard::Whirlpool:
+		break;
+	case ActionCard::Blizzard:
+		break;
+	case ActionCard::Waterfall:
+		break;
+	case ActionCard::Support:
+		break;
+	case ActionCard::Earthquake:
+		break;
+	case ActionCard::Crumble:
+		break;
+	case ActionCard::Border:
+		break;
+	case ActionCard::Avalanche:
+		break;
+	case ActionCard::Rock:
+		break;
+	case ActionCard::Default:
+		break;
+	case ActionCard::FireMage1:
+		break;
+	case ActionCard::FireMage2:
+		break;
+	case ActionCard::EarthMage1:
+		break;
+	case ActionCard::EarthMage2:
+		break;
+	case ActionCard::AirMage1:
+		break;
+	case ActionCard::AirMage2:
+		break;
+	case ActionCard::WaterMage1:
+		break;
+	case ActionCard::WaterMage2:
+		break;
+	default:
+		break;
+	}
 }
 
 GameFinal::GameFinal()
@@ -99,6 +178,13 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	m_activeCoveredSet = m_player1->getCovered();
 	m_activePlayingHand = m_player1->GetHandCards();
 	m_activeRemovedHand = m_player1->GetRemovedCards();
+	std::random_device rd;
+	std::uniform_int_distribution<int16_t> magerange(1, 8);
+	m_redMage = std::move(PowerUsage{false, GetMageCard(magerange(rd))});
+	m_blueMage = std::move(PowerUsage{ false, GetMageCard(magerange(rd))});
+	std::uniform_int_distribution<int16_t> elementalrange(1, 24);
+	m_elemental1 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd))});
+	m_elemental2 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd))});
 }
 
 bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
@@ -120,13 +206,35 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 	return true;
 }
 
-void GameFinal::PlayElemental()
+void GameFinal::PlayElemental(PowerSelect select)
 {
-
+	if (m_powerUsed) return;
+	m_powerUsed = true;
+	if (select == PowerSelect::First && m_elemental1.first == false)
+	{
+		m_elemental1.first = true;
+		FindPower(m_elemental1.second);
+	}
+	else if (select == PowerSelect::Second && m_elemental2.first == false)
+	{
+		m_elemental2.first = true;
+		FindPower(m_elemental2.second);
+	}
 }
 
 void GameFinal::PlayMage()
 {
+	if (m_powerUsed) return;
+	m_powerUsed = true;
+	if (m_activeColor == Colours::RED && m_redMage.first == false) {
+		m_redMage.first = true;
+		FindPower(m_redMage.second);
+	}
+	else if (m_activeColor == Colours::BLUE && m_blueMage.first == false)
+	{
+		m_blueMage.first = true;
+		FindPower(m_blueMage.second);
+	}
 
 }
 

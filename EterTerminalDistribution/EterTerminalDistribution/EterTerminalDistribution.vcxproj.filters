@@ -75,6 +75,9 @@
     <ClCompile Include="Elementals.cpp">
       <Filter>Elementals</Filter>
     </ClCompile>
+    <ClCompile Include="ActionType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h">

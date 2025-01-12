@@ -29,8 +29,8 @@ int main()
 {
 	GameView test;
 	test.Loop();
-	int a = 3;
-	int b = 1;
+	//int a = 3;
+	//int b = 1;
 	/*int a = 100;
 	int* b = &a;
 	std::cout << "a: " << a << std::endl;

@@ -38,3 +38,6 @@ enum class ActionCard : uint16_t {
 	WaterMage1,
 	WaterMage2
 };
+
+ActionCard GetElementalCard(int16_t _val);
+ActionCard GetMageCard(int16_t _val);

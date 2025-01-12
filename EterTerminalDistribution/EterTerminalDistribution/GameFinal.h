@@ -2,6 +2,13 @@
 #include "Board.h"
 #include "InputChecking.h"
 
+using PowerUsage = std::pair<bool, ActionCard>;
+
+enum class PowerSelect : int16_t {
+	First,
+	Second,
+};
+
 class GameFinal{
 private:
 	std::shared_ptr<Player> m_player1;
@@ -30,6 +37,13 @@ private:
 	bool m_powerUsed;
 	bool m_tieBraker;
 
+	PowerUsage m_redMage;
+	PowerUsage m_blueMage;
+	PowerUsage m_elemental1;
+	PowerUsage m_elemental2;
+
+	void FindPower(ActionCard identif);
+
 public:
 	GameFinal();
 	GameFinal(	int16_t _maxBoardSize,	
@@ -45,7 +59,7 @@ public:
 
 #pragma region action_logic
 	bool PlaceCard(int16_t _x, int16_t _y, int16_t _val);
-	void PlayElemental();
+	void PlayElemental(PowerSelect select);
 	void PlayMage();
 	bool CheckWin(); //cheking everything
 	bool CheckWin(int16_t _x, int16_t _y); //singlechecking
