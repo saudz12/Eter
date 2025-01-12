@@ -18,6 +18,7 @@
 #include "qgridlayout.h"
 #include "qpointer.h"
 #include <qdir.h>
+#include "qmessagebox.h"
 
 #include "qtCompletePlayer.h"
 #include "qtCompleteBoard.h"
@@ -71,9 +72,9 @@ private:
     const int BLUECARDS_OFFSET_WINDOW_WIDTH = REDCARDS_OFFSET_WINDOW_WIDTH;
     int BLUE_CARDS_OFFSET_WINDOW_HEIGHT;
 
-    const int FIRST_ELEMENTAL_CARD_X = 1500;
-    const int FIRST_ELEMENTAL_CARD_Y = 400;
-    const int SECOND_ELEMENTAL_CARD_X = 1500;
+    const int FIRST_ELEMENTAL_CARD_X = 200;
+    const int FIRST_ELEMENTAL_CARD_Y = 200;
+    const int SECOND_ELEMENTAL_CARD_X = 1300;
     const int SECOND_ELEMENTAL_CARD_Y = 600;
 
     const uint16_t BOARD_SIZE=3;

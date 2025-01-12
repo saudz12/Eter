@@ -50,7 +50,7 @@ public:
 		GameOptions timed,
 		GameOptions eter);
 	void Loop();
-	void PlaceCard(const int16_t x,const uint16_t y,const uint16_t val);
+	bool PlaceCard(const int16_t x,const uint16_t y,const uint16_t val);
 
     GameFinal& GetGameFinal()  { return *m_game; }
 };

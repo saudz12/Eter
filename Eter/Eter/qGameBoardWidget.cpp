@@ -84,7 +84,8 @@ void qGameBoardWidget::dropEvent(QDropEvent* event)
                         }
                     }
                 }
-                else if (label->property("type") == QString("minion"))
+                else if (label->property("type") == QString("minion") && 
+                    currentCardValue > m_cardPosition[{row, col}].back()->property("value").toInt())
                 {
                     currCardPixmap = newCardLabel->pixmap();
                     label = createNewMinionCard();

@@ -193,7 +193,7 @@ void GameView::Loop()
     }
 }
 
-void GameView::PlaceCard(const int16_t x, const uint16_t y, const uint16_t val)
+bool GameView::PlaceCard(const int16_t x, const uint16_t y, const uint16_t val)
 {
     if (m_game->PlaceCard(x, y, val))
     {
@@ -202,9 +202,10 @@ void GameView::PlaceCard(const int16_t x, const uint16_t y, const uint16_t val)
         if (m_game->CheckWin())
             m_game->ResetRound();
         m_game->PrintBoard();
+        return true;
     }
     else
     {
-        qDebug() << "not suceeded";
+        return false;
     }
 }

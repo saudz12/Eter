@@ -119,7 +119,7 @@ void Eter::removeCardFromHorizontalLayout(QPointer<QHBoxLayout> hboxLayout,int v
 
 void Eter::resizeGameLogo()
 {
-    QString dir = QDir::currentPath() + "/textures/raw/eterLogo.jpg";
+    QString dir = QDir::currentPath() + "/textures/raw/eter.png";
     QPixmap logoPixmap(dir);
     labelEterLogo->setGeometry(0, 0, 150, 150);
     logoPixmap = logoPixmap.scaled(labelEterLogo->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -229,10 +229,10 @@ void Eter::initializeGridLayoutBoard()
 
 void Eter::initializeEterLogo()
 {
-    QString dir = QDir::currentPath() + "/textures/raw/eterLogo.jpg";
+    QString dir = QDir::currentPath() + "/textures/raw/eter.png";
     QPixmap logoPixmap(dir);
     labelEterLogo = new QLabel(this);
-    labelEterLogo->setGeometry(300, 0, 1000, 1000);
+    labelEterLogo->setGeometry(300, 100, 1000, 500);
     logoPixmap = logoPixmap.scaled(labelEterLogo->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     labelEterLogo->setPixmap(logoPixmap);
 }
@@ -298,5 +298,9 @@ void Eter::cardDropHandler(const QMimeData* mimeData, int row, int column)
     {
         scaleCoordinates(row, column);
     }
-    m_gameview->PlaceCard(row, column, value);
+
+    if (!m_gameview->PlaceCard(row, column, value))
+    {
+        QMessageBox::warning(nullptr, "Warning", "Cannot place that card there");
+    }
 }
