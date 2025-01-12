@@ -108,6 +108,7 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 	}
 	if (m_board->isBoardEmpty()) {
 		m_board->PlaceCard(m_activePlayer->PlayCard(_val), 0, 0);
+		m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
 		PrintBoard();
 		return true;
 	}
@@ -116,6 +117,7 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 		return false;
 
 	m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
+	m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
 	PrintBoard();
 	return true;
 }

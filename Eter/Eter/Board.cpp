@@ -1208,7 +1208,7 @@ void Board::printBoard(bool _debug)
 				else if (m_matrix[i][j].back().GetCardType() == CardType::BlizzardCard)
 					qDebug() << "Bli ";
 				else
-					qDebug() << m_matrix[i][j].back() << " ";
+					qDebug() <<i<<" "<<j<<":"<< m_matrix[i][j].back() << " ";
 			}
 			else
 				qDebug() << "--- ";

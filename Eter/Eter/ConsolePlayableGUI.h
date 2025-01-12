@@ -43,7 +43,12 @@ class GameView {
 public:
 
 	GameView();
-
+	GameView(GameOptions illusion,
+		GameOptions mage,
+		GameOptions elemental,
+		GameOptions tournament,
+		GameOptions timed,
+		GameOptions eter);
 	void Loop();
 	void PlaceCard(const int16_t x,const uint16_t y,const uint16_t val);
 

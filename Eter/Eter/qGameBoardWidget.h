@@ -12,6 +12,7 @@
 #include <vector>
 #include <tuple>
 
+
 #include "qDraggableLabel.h"
 
 struct PairHash1 {
@@ -27,17 +28,19 @@ struct PairHash1 {
 class qGameBoardWidget : public QWidget
 {
 	Q_OBJECT
-
 private:
 	const int CARD_WIDTH, CARD_HEIGTH;
 	const int BOARD_MAX_SIZE;
 
 	std::unordered_set<std::pair<int, int>,PairHash1> m_emptyPositions;
-	std::unordered_map<std::pair<int, int>, QLabel*,PairHash1> m_cardPosition;
-	std::unordered_map<std::pair<int, int>, QPixmap, PairHash1> m_pixmapPosition;
+	std::unordered_map<std::pair<int, int>, std::deque<QLabel*>,PairHash1> m_cardPosition;
+	std::unordered_map<std::pair<int, int>, std::deque<QPixmap>, PairHash1> m_pixmapPosition;
 
 	int maxRow, maxColumn;
 	int minRow, minColumn;
+	
+	int currentCardValue;
+	QString currentCardColor;
 
 	QPixmap currCardPixmap;
 

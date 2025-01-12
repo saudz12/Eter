@@ -2,9 +2,9 @@
 
 Eter::Eter(QWidget *parent)
     : QMainWindow(parent), ui {new Ui::EterClass},
-     m_gameview{},
-     plRed{Colours::RED,CARD_WIDTH,CARD_HEIGHT,m_gameview.GetGameFinal().GetActiveColor()==Colours::RED ?true:false},
-     plBlue{Colours::BLUE,CARD_WIDTH,CARD_HEIGHT,m_gameview.GetGameFinal().GetActiveColor() == Colours::BLUE ? true : false }
+     plRed{Colours::RED,CARD_WIDTH,CARD_HEIGHT,true},//red starts first
+     plBlue{Colours::BLUE,CARD_WIDTH,CARD_HEIGHT,false },
+     m_wasFirstCardPlaced{false}
 {
     ui->setupUi(this);
 
@@ -210,6 +210,7 @@ void Eter::placeHorizontalLayout()
 
 void Eter::onPushButtonStartTrainingClicked()
 {
+    m_gameview = std::make_unique<GameView>();
     resizeGameLogo();
     placeHorizontalLayout();
     initializeGridLayoutBoard();
@@ -278,7 +279,7 @@ void Eter::cardDropHandler(const QMimeData* mimeData, int row, int column)
     int value = mimeData->property("value").toInt();
     if (mimeData->property("color").toString() == QString('R'))
     {
-        changeDraggabilityHBoxLayout(hboxLayoutRedCards,false);
+        changeDraggabilityHBoxLayout(hboxLayoutRedCards, false);
         changeDraggabilityHBoxLayout(hboxLayoutBlueCards, true);
         removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
     }
@@ -288,6 +289,14 @@ void Eter::cardDropHandler(const QMimeData* mimeData, int row, int column)
         changeDraggabilityHBoxLayout(hboxLayoutRedCards, true);
         removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
     }
-    scaleCoordinates(row, column);
-    m_gameview.PlaceCard(row, column, value);
+
+    if (m_wasFirstCardPlaced == false)
+    {
+        m_wasFirstCardPlaced = true;
+    }
+    else
+    {
+        scaleCoordinates(row, column);
+    }
+    m_gameview->PlaceCard(row, column, value);
 }

@@ -27,6 +27,8 @@
 
 #include "ConsolePlayableGUI.h"
 
+#include <memory>
+
 class Eter : public QMainWindow
 {
     Q_OBJECT
@@ -43,11 +45,10 @@ private:
     QPointer<QLabel> labelSecondElementalCard;
 
     //aici un game final
-    GameView m_gameview;
+    std::unique_ptr<GameView> m_gameview;
 
     qtCompletePlayer plRed;
     qtCompletePlayer plBlue;
-    qtCompleteBoard board{BOARD_SIZE};
 
     std::vector<QString> m_elementalCardsPaths;
 
@@ -78,6 +79,8 @@ private:
     const uint16_t BOARD_SIZE=3;
 
     const int CARDS_SPACING = 10;
+
+    bool m_wasFirstCardPlaced;
     
     ///functions
 

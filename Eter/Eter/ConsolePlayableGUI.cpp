@@ -169,28 +169,42 @@ GameView::GameView() :
     GetPlayingFormat();
 }
 
+GameView::GameView(GameOptions illusion,
+    GameOptions mage, GameOptions elemental, GameOptions tournament, GameOptions timed, GameOptions eter) : 
+    Illusion{illusion},
+    Elemental{elemental},
+    Mage{mage},
+    Tournament{tournament},
+    Timed{timed},
+    Eter{eter}
+{
+    GetPlayingFormat();
+}
+
 void GameView::Loop()
 {
     int16_t x, y, val;
-
     while (true)
     {
         m_game->PrintBoard();
         
         qDebug() << "Where(x, y) and Card: " << '\n';
         std::cin >> x >> y >> val;
-        
     }
-
 }
 
 void GameView::PlaceCard(const int16_t x, const uint16_t y, const uint16_t val)
 {
     if (m_game->PlaceCard(x, y, val))
     {
-        qDebug()<<m_game->GetActiveColor()<<'\n';
+        //qDebug()<<m_game->GetActiveColor()<<'\n';
         m_game->EndTurn();
         if (m_game->CheckWin())
             m_game->ResetRound();
+        m_game->PrintBoard();
+    }
+    else
+    {
+        qDebug() << "not suceeded";
     }
 }

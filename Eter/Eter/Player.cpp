@@ -246,8 +246,6 @@ MinionCard&& Player::PlayCard(int16_t _val)
 {
 	m_lastPlayedCard.push_back(&m_remainingCards[_val].back());
 
-	UpdateCard(_val, CardAction::REMOVE);
-
 	return std::move(m_remainingCards[_val].back());
 }
 
