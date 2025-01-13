@@ -66,7 +66,8 @@ GameFinal::GameFinal()
 	m_winnerStatus		{ Colours::INVALID_COL },
 	m_wasPlaced			{ false },
 	m_powerUsed			{ false },
-	m_tieBraker			{ false }
+	m_tieBraker			{ false },
+	m_wasExplosionCardPlayed{false}
 {
 	m_board = std::make_unique<Board>(3);
 	m_player1 = std::make_shared<Player>(Colours::RED, m_enabledElemental, m_enabledMage);
@@ -91,6 +92,7 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	m_wasPlaced			{ false },
 	m_powerUsed			{ false },
 	m_tieBraker			{ false },
+	m_wasExplosionCardPlayed{false},
 	m_board				{ std::make_unique<Board>(_maxBoardSize) },
 	m_player1			{ std::make_shared<Player>(Colours::RED, false) },
 	m_player2			{ std::make_shared<Player>(Colours::BLUE, false) },

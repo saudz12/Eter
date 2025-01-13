@@ -26,10 +26,12 @@ private:
 	GameOptions m_enabledTimed;
 	GameOptions m_enabledTournament;
 
+	//ExplosionCard m_explosion;
+
 	bool m_wasPlaced;
 	bool m_powerUsed;
 	bool m_tieBraker;
-
+	bool m_wasExplosionCardPlayed;
 public:
 	GameFinal();
 	GameFinal(	int16_t _maxBoardSize,	

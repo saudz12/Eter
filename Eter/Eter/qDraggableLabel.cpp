@@ -25,6 +25,7 @@ void qDraggableLabel::mousePressEvent(QMouseEvent* event)
         QByteArray pixmapData;
         QDataStream stream(&pixmapData, QIODevice::WriteOnly);
         mimeData->setText("minion");
+        mimeData->setProperty("type", QString("minion"));
         mimeData->setProperty("value", m_value);
 
         if (m_color == Colours::RED)

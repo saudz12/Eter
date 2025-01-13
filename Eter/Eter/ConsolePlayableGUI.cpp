@@ -209,3 +209,5 @@ bool GameView::PlaceCard(const int16_t x, const uint16_t y, const uint16_t val)
         return false;
     }
 }
+
+//bool canPlayElementalCard

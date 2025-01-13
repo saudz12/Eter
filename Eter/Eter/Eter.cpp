@@ -8,7 +8,7 @@ Eter::Eter(QWidget *parent)
 
     initializeEterLogo();
     initializeGameWindow();
-    initializePushButtons();
+    initializeButtons();
     initializeHandCardLayouts();
     BLUE_CARDS_OFFSET_WINDOW_HEIGHT = WINDOW_HEIGTH - 30;
 }
@@ -34,7 +34,7 @@ void Eter::initializeGameWindow()
     this->showMaximized();
 }
 
-void Eter::initializePushButtons()
+void Eter::initializeButtons()
 {
     pushButtonStartTraining = new QPushButton("Start training game", this);
     pushButtonStartTraining->setGeometry(WINDOW_HEIGTH /30, WINDOW_WIDTH / 15+20, 120, 30);
@@ -55,6 +55,10 @@ void Eter::initializePushButtons()
     pushButtonStartTimed = new QPushButton("Start timed game", this);
     pushButtonStartTimed->setGeometry(pushButtonStartTournament->x(), pushButtonStartTournament->y() + 50, 130, 30);
     pushButtonStartTimed->setVisible(true);
+
+    radioButtonPlayIllusion = new QRadioButton("Play Illusion", this);
+    radioButtonPlayIllusion->setGeometry(pushButtonStartTimed->x(), pushButtonStartTimed->y() + 50, 130, 30);
+    radioButtonPlayIllusion->setVisible(true);
 
     connect(pushButtonStartTraining, &QPushButton::clicked, this, &Eter::onPushButtonStartTrainingClicked);
     connect(pushButtonStartElemental, &QPushButton::clicked, this, &Eter::onPushButtonStartElementalClicked);
@@ -146,6 +150,22 @@ void Eter::loadElementalCardsPaths()
     }
 }
 
+void Eter::loadIllusion(QPointer<QLabel>& label,QString path)
+{
+    label = new QLabel(this);
+
+    QString dirIllusion = QDir::currentPath() + "/textures/";
+
+    QPixmap pixmap{ dirIllusion + path};
+    label->setFixedSize(CARD_WIDTH, CARD_HEIGHT);
+    label->setGeometry(0, 0, CARD_WIDTH, CARD_WIDTH);
+    label->setText("illusion");
+    label->setProperty("type", QString("illusion"));
+    pixmap = pixmap.scaled(label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    label->setPixmap(pixmap);
+    label->hide();
+}
+
 void Eter::initializeElementalCards()
 {
     std::random_device rd;
@@ -183,6 +203,46 @@ void Eter::initializeElementalCards()
     labelSecondElementalCard->show();
 }
 
+void Eter::handleMinionCard(const QMimeData* mimeData, int row, int column)
+{
+    int value = mimeData->property("value").toInt();
+
+    if (m_wasFirstCardPlaced == false)
+    {
+        m_wasFirstCardPlaced = true;
+    }
+    else
+    {
+        scaleCoordinates(row, column);
+    }
+    if (!m_gameview->PlaceCard(row, column, value))
+    {
+        QMessageBox::warning(nullptr, "Warning", "Cannot place that card there");
+    }
+    else
+    {
+        char color = mimeData->property("color").toString().toLatin1().at(0);
+        m_activeColor = GetColour(color);
+        if (mimeData->property("color").toString() == QString('R'))
+        {
+            changeDraggabilityHBoxLayout(hboxLayoutRedCards, false);
+            changeDraggabilityHBoxLayout(hboxLayoutBlueCards, true);
+            removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
+        }
+        else
+        {
+            changeDraggabilityHBoxLayout(hboxLayoutBlueCards, false);
+            changeDraggabilityHBoxLayout(hboxLayoutRedCards, true);
+            removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
+        }
+    }
+}
+
+void Eter::handleIllusionCard(const QMimeData* mimeData, int row, int column)
+{
+
+}
+
 void Eter::changeDraggabilityHBoxLayout(QPointer<QHBoxLayout>& currentLayout,bool enable)
 {
     for (int i = 0; i < currentLayout->count(); ++i)
@@ -211,6 +271,8 @@ void Eter::onPushButtonStartTrainingClicked()
     m_gameview = std::make_unique<GameView>();
     plRed = std::make_unique<qtCompletePlayer>(m_gameview->GetRedPlayer(), CARD_WIDTH, CARD_HEIGHT, true);//red starts first
     plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
+    loadIllusion(labelRedIllusion,QString("red_back.jpg"));
+    loadIllusion(labelBlueIllusion, QString("blue_back.jpg"));
     resizeGameLogo();
     placeHorizontalLayout();
     initializeGridLayoutBoard();
@@ -274,36 +336,8 @@ void Eter::onBoardResized()
 
 void Eter::cardDropHandler(const QMimeData* mimeData, int row, int column)
 {
-
-    int value = mimeData->property("value").toInt();
-    
-    if (m_wasFirstCardPlaced == false)
-    {
-        m_wasFirstCardPlaced = true;
-    }
-    else
-    {
-        scaleCoordinates(row, column);
-    }
-    if (!m_gameview->PlaceCard(row, column, value))
-    {
-        QMessageBox::warning(nullptr, "Warning", "Cannot place that card there");
-    }
-    else
-    {
-        char color = mimeData->property("color").toString().toLatin1().at(0);
-        Colours currentColor = GetColour(color);
-        if (mimeData->property("color").toString() == QString('R'))
-        {
-            changeDraggabilityHBoxLayout(hboxLayoutRedCards, false);
-            changeDraggabilityHBoxLayout(hboxLayoutBlueCards, true);
-            removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
-        }
-        else
-        {
-            changeDraggabilityHBoxLayout(hboxLayoutBlueCards, false);
-            changeDraggabilityHBoxLayout(hboxLayoutRedCards, true);
-            removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
-        }
-    }
+    if (mimeData->property("type") == QString("minion") && !radioButtonPlayIllusion->isChecked())
+        handleMinionCard(mimeData, row, column);
+    else if (mimeData->property("type") == QString("minion") && !radioButtonPlayIllusion->isChecked())
+        handleIllusionCard(mimeData, row, column);
 }

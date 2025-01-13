@@ -78,7 +78,6 @@ void qGameBoardWidget::dropEvent(QDropEvent* event)
                         else if (BOARD_MAX_SIZE == maxRow - minRow + 1 && BOARD_MAX_SIZE == maxColumn - minColumn + 1)
                         {
                             //removeWidgetFromGrid(gridLayout, row, col);
-                            addNewMinionCardToGrid(label, gridLayout, row, col);
 
                             createFixedSizeBoard(gridLayout);
                         }
@@ -450,7 +449,6 @@ void qGameBoardWidget::clearBoard(QGridLayout*&  gridLayout) {
     while (QLayoutItem* item = gridLayout->takeAt(0)) {
         if (QWidget* widget = item->widget()) {
             widget->hide();  // Hide instead of delete
-
         }
         delete item;
     }
@@ -636,8 +634,7 @@ void qGameBoardWidget::createFixedSizeBoard(QGridLayout*&  gridLayout)
         cardLabel.back()->setAlignment(Qt::AlignCenter);
         cardLabel.back()->show();
         int toAddRow = row, toAddColumn = column;
-        addNewMinionCardToGrid(cardLabel.back(), gridLayout, toAddRow, toAddColumn);
-
+        gridLayout->addWidget(m_cardPosition[{toAddRow, toAddColumn}].back(), toAddRow, toAddColumn);
         qDebug() << "Card placed at:" << row << "," << column << '\n';
     }
 

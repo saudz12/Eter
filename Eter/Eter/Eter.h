@@ -19,6 +19,7 @@
 #include "qpointer.h"
 #include <qdir.h>
 #include "qmessagebox.h"
+#include "qradiobutton.h"
 
 #include "qtCompletePlayer.h"
 #include "qtCompleteBoard.h"
@@ -66,6 +67,11 @@ private:
     QPointer<QPushButton> pushButtonStartTournament;
     QPointer<QPushButton> pushButtonStartTimed;
 
+    QPointer<QRadioButton> radioButtonPlayIllusion;
+
+    QPointer<QLabel> labelRedIllusion;
+    QPointer<QLabel> labelBlueIllusion;
+
     int WINDOW_WIDTH, WINDOW_HEIGTH;
     const int REDCARDS_OFFSET_WINDOW_WIDTH = 100;
     const int REDCARDS_OFFSET_WINDOW_HEIGHT = 30;
@@ -83,6 +89,7 @@ private:
 
     bool m_wasFirstCardPlaced;
     
+    Colours m_activeColor;
     ///functions
 
     void changeDraggabilityHBoxLayout(QPointer<QHBoxLayout>& currentLayout,bool enabled);
@@ -98,8 +105,11 @@ private:
         QPointer<QHBoxLayout>& hboxLayoutCards,QPointer<QWidget>& widgetHBoxCards);
 
     void loadElementalCardsPaths();
-    void initializeElementalCards();
+    void loadIllusion(QPointer<QLabel>& label, QString path);
 
+    void initializeElementalCards();
+    void handleMinionCard(const QMimeData* mimeData, int row, int column);
+    void handleIllusionCard(const QMimeData* mimeData, int row, int column);
 public:
     static const int CARD_WIDTH=80;
     static const int CARD_HEIGHT=80;
@@ -108,13 +118,14 @@ public:
     ~Eter();
 
     void initializeGameWindow();
-    void initializePushButtons();
+    void initializeButtons();
     void initializeHandCardLayouts();
 
     void initializeGridLayoutBoard();
     void initializeEterLogo();
 
     void scaleCoordinates(int& row, int& column);
+
 private slots:
     void onPushButtonStartTrainingClicked();
     void onPushButtonStartElementalClicked();
