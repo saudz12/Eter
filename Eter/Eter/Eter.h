@@ -45,6 +45,9 @@ private:
     QPointer<QWidget> widgetHBoxBlueCards;
     bool m_wasFirstCardPlaced;
 
+    //game message box
+    QPointer<QLabel> labelGameMessage;
+
     //eter logo
     QPointer<QLabel> labelEterLogo;
 
@@ -122,6 +125,8 @@ private:
     void checkWin();
     void resetUItoNormal();
     void resetElements();
+
+    void initializeGameMessage();
 public:
     static const int CARD_WIDTH=80;
     static const int CARD_HEIGHT=80;

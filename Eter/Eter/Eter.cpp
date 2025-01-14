@@ -230,12 +230,16 @@ void Eter::handleMinionCard(const QMimeData* mimeData, int row, int column)
         m_activeColor = GetColour(color);
         if (mimeData->property("color").toString() == QString('R'))
         {
+            labelGameMessage->setText("It's blue player's turn");
+            labelGameMessage->setStyleSheet("QLabel { border: 2px solid blue; }");
             changeDraggabilityHBoxLayout(hboxLayoutRedCards, false);
             changeDraggabilityHBoxLayout(hboxLayoutBlueCards, true);
             removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
         }
         else
         {
+            labelGameMessage->setText("It's red player's turn");
+            labelGameMessage->setStyleSheet("QLabel { border: 2px solid red; }");
             changeDraggabilityHBoxLayout(hboxLayoutBlueCards, false);
             changeDraggabilityHBoxLayout(hboxLayoutRedCards, true);
             removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
@@ -266,6 +270,15 @@ void Eter::resetElements()
 {
     labelRedElementalCard->hide();
     labelBlueElementalCard->hide();
+}
+
+void Eter::initializeGameMessage()
+{
+    labelGameMessage = new QLabel(this);
+    labelGameMessage->setGeometry(1600, 450, 200, 100);
+    labelGameMessage->setText("It's red player's turn");
+    labelGameMessage->setStyleSheet("QLabel { border: 2px solid red; }");
+    labelGameMessage->show();
 }
 
 void Eter::resetUItoNormal()
@@ -354,6 +367,7 @@ void Eter::onPushButtonStartTrainingClicked()
     plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
     loadIllusion(labelRedIllusion, QString("red_back.jpg"));
     loadIllusion(labelBlueIllusion, QString("blue_back.jpg"));
+    initializeGameMessage();
     resizeGameLogo();
     placeHorizontalLayout();
     initializeGridLayoutBoard();
