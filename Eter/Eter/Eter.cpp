@@ -385,14 +385,15 @@ void Eter::onPushButtonStartElementalClicked()
 {
     m_activeGamemode = GameView::LaunchOptions::ELEMENTAL;
     m_gameview = std::make_unique<GameView>(GameOptions::EnabledIllusion,
-        GameOptions::EnabledMage,
-        GameOptions::DisabledElemental,
+        GameOptions::DisabledMage,
+        GameOptions::EnabledElemental,
         GameOptions::DisabledTournament,
         GameOptions::DisabledTimed,
-        GameOptions::DisabledEter);
+        GameOptions::EnabledEter);
     plRed = std::make_unique<qtCompletePlayer>(m_gameview->GetRedPlayer(), CARD_WIDTH, CARD_HEIGHT, true);//red starts first
     plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
     resizeGameLogo();
+    initializeGameMessage();
     loadElementalCardsPaths();
     initializeElementalCards();
     placeHorizontalLayout();

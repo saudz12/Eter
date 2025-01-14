@@ -2,7 +2,14 @@
 #include "Board.h"
 #include "InputChecking.h"
 
-class GameFinal{
+using PowerUsage = std::pair<bool, ActionCard>;
+
+enum class PowerSelect : int16_t {
+	First,
+	Second,
+};
+
+class GameFinal {
 private:
 	std::shared_ptr<Player> m_player1;
 	std::shared_ptr<Player> m_player2;
@@ -26,21 +33,23 @@ private:
 	GameOptions m_enabledTimed;
 	GameOptions m_enabledTournament;
 
-	//ExplosionCard m_explosion;
-
 	bool m_wasPlaced;
 	bool m_powerUsed;
 	bool m_tieBraker;
-	bool m_wasExplosionCardPlayed;
+
+	PowerUsage m_redMage;
+	PowerUsage m_blueMage;
+	PowerUsage m_elemental1;
+	PowerUsage m_elemental2;
+
+	void FindPower(ActionCard identif);
+
 public:
 	GameFinal();
-	GameFinal(	int16_t _maxBoardSize,	
-				GameOptions _enabledEter,		GameOptions _enabledIllusion,
-				GameOptions _enabledMage,		GameOptions _enabledElemental,
-				GameOptions _enabledTournament,	GameOptions _enabledTimed);
-	Colours GetActiveColor() { return m_activeColor; }
-	const Player& GetRedPlayer() const  { return *m_player1; }
-	const Player& GetBluePlayer() const { return *m_player2; }
+	GameFinal(int16_t _maxBoardSize,
+		GameOptions _enabledEter, GameOptions _enabledIllusion,
+		GameOptions _enabledMage, GameOptions _enabledElemental,
+		GameOptions _enabledTournament, GameOptions _enabledTimed);
 
 #pragma region turn_logic
 	void AdvanceAction();
@@ -50,7 +59,7 @@ public:
 
 #pragma region action_logic
 	bool PlaceCard(int16_t _x, int16_t _y, int16_t _val);
-	void PlayElemental();
+	void PlayElemental(PowerSelect select);
 	void PlayMage();
 	bool CheckWin(); //cheking everything
 	bool CheckWin(int16_t _x, int16_t _y); //singlechecking
