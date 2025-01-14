@@ -281,6 +281,13 @@ void Eter::initializeGameMessage()
     labelGameMessage->show();
 }
 
+void Eter::resetGameMessage()
+{
+    labelGameMessage->setText("It's red player's turn");
+    labelGameMessage->setStyleSheet("QLabel { border: 2px solid red; }");
+    labelGameMessage->hide();
+}
+
 void Eter::resetUItoNormal()
 {
     widgetBoard->hide();
@@ -301,6 +308,7 @@ void Eter::resetUItoNormal()
         }
     }
     initializeEterLogo();
+    resetGameMessage();
 }
 
 void Eter::changeDraggabilityHBoxLayout(QPointer<QHBoxLayout>& currentLayout,bool enable)

@@ -127,6 +127,7 @@ private:
     void resetElements();
 
     void initializeGameMessage();
+    void resetGameMessage();
 public:
     static const int CARD_WIDTH=80;
     static const int CARD_HEIGHT=80;
