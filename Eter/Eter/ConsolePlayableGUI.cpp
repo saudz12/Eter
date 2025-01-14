@@ -100,14 +100,27 @@ GameView::LaunchOptions GameView::GetMode(int16_t _m)
 //    }
 //}
 
+void GameView::GetLaunchMode()
+{
+    m_activeMode = LaunchOptions::TRAINING;
+    if (Mage == GameOptions::EnabledMage)
+        m_activeMode = LaunchOptions::MAGE_DUEL;
+    else if (Elemental == GameOptions::EnabledElemental)
+        m_activeMode = LaunchOptions::ELEMENTAL;
+    else if (Tournament == GameOptions::EnabledTournament)
+        m_activeMode = LaunchOptions::TOURNAMENT;
+    else if (Timed == GameOptions::EnabledTimed)
+        m_activeMode = LaunchOptions::TIMED;
+}
+
 void GameView::GetPlayingFormat()
 {
-    int16_t size = 4;
+    boardSize = 4;
 
     switch (m_activeMode)
     {
     case LaunchOptions::TRAINING:
-        size = 3;
+        boardSize = 3;
         Eter = GameOptions::DisabledEter;
         Illusion = GameOptions::DisabledIllusion;
         break;
@@ -127,14 +140,14 @@ void GameView::GetPlayingFormat()
         Timed = GameOptions::EnabledTimed;
         break;
     case LaunchOptions::INVALID_GAME_MODE:
-        size = 0;
+        boardSize = 0;
         break;
     default:
         break;
     }
     //return std::make_shared<GameFinal>(new GameFinal{size, Eter, Illusion, Mage, Elemental, Tournament, Timed}); //nu merge??
     //m_game = GameFinal{ std::move(GameFinal{ size, Eter, Illusion, Mage, Elemental, Tournament, Timed }) };
-    m_game = std::make_unique<GameFinal>(size, Eter, Illusion, Mage, Elemental, Tournament, Timed);
+    m_game = std::make_unique<GameFinal>(boardSize, Eter, Illusion, Mage, Elemental, Tournament, Timed);
 }
 
 void GameView::PrintGameOptions()
@@ -166,6 +179,7 @@ GameView::GameView() :
 {
     //m_game = std::make_unique<test>(newteste);
     //LaunchMenu();
+    GetLaunchMode();
     GetPlayingFormat();
 }
 
@@ -178,6 +192,7 @@ GameView::GameView(GameOptions illusion,
     Timed{timed},
     Eter{eter}
 {
+    GetLaunchMode();
     GetPlayingFormat();
 }
 

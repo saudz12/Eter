@@ -5,6 +5,7 @@
 
 
 class GameView {
+public:
 	enum class LaunchOptions : int16_t
 	{
 		TRAINING,
@@ -14,7 +15,7 @@ class GameView {
 		TIMED,
 		INVALID_GAME_MODE
 	};
-
+private:
 	LaunchOptions GetMode(int16_t _m);
 
 	std::unique_ptr<GameFinal> m_game;
@@ -27,7 +28,9 @@ class GameView {
 	GameOptions Tournament;
 	GameOptions Timed;
 
-	void LaunchMenu();
+    int boardSize;
+
+	void GetLaunchMode();
 	void GetPlayingFormat();
 
 	/*static const int UP{ 72 };
@@ -57,5 +60,7 @@ public:
 
 	const Player& GetRedPlayer() const { return m_game->GetRedPlayer(); }
 	const Player& GetBluePlayer() const  { return m_game->GetBluePlayer(); }
+
+	int GetBoardSize() const { return boardSize; }
 };
 

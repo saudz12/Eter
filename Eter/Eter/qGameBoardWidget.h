@@ -52,6 +52,7 @@ public:
 private:
 	void dragEnterEvent(QDragEnterEvent* event) override;
 	void dropEvent(QDropEvent* event) override;
+	void handleMinionCardDrop(QDropEvent* event);
 	void resizeEvent(QResizeEvent* event) override;
 	void expandBoard(int& row,int& column);
 	bool checkPositionsForWhiteSpaces(QGridLayout*& gridLayout,int row,int column,

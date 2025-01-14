@@ -33,80 +33,89 @@ void qGameBoardWidget::dropEvent(QDropEvent* event)
 {
     if (event->mimeData()->hasText())
     {
-
-        QPoint dropPosition =event->position().toPoint();
-
-        int row = dropPosition.y() / CARD_HEIGTH;
-        int col = dropPosition.x() / CARD_WIDTH;
-        
-        qDebug() << "determined row:" << row << " determined column:" << col << '\n';
-
-        QLabel* newCardLabel = new QLabel(this);
-
-        if (event->mimeData()->hasFormat("application/x-card-pixmap")) {
-            QByteArray pixmapData = event->mimeData()->data("application/x-card-pixmap");
-            QDataStream stream(&pixmapData, QIODevice::ReadOnly);
-            QPixmap droppedCardPixmap;
-            stream >> droppedCardPixmap;
-
-            newCardLabel->setPixmap(droppedCardPixmap.scaled(CARD_WIDTH, CARD_HEIGTH));
-            currentCardValue= event->mimeData()->property("value").toInt();
-            currentCardColor= event->mimeData()->property("color").toString();
-        }
-
-        QGridLayout* gridLayout = qobject_cast<QGridLayout*>(this->layout());
-        if (gridLayout)
+        if (event->mimeData()->property("type") == QString("minion"))
         {
-            QLayoutItem* item = gridLayout->itemAtPosition(row, col);
-            emit cardDropAccepted(event->mimeData(), row, col);
-            if (item)
-            {
-                QLabel* label = qobject_cast<QLabel*>(item->widget());
-                if (label->property("type") == QString("empty"))
-                {
-                    currCardPixmap = newCardLabel->pixmap();
-                    label = createNewMinionCard();
-                    updateMinMaxRowCol();
-                    expandBoard(row, col);
-                    updateMinMaxRowCol();
-                    if (wasFirstCardPlaced)
-                    {
-                        if (!(BOARD_MAX_SIZE == maxRow - minRow + 1 && BOARD_MAX_SIZE == maxColumn - minColumn + 1))
-                        {
-                            redrawBoard(gridLayout);
-                        }
-                        else if (BOARD_MAX_SIZE == maxRow - minRow + 1 && BOARD_MAX_SIZE == maxColumn - minColumn + 1)
-                        {
-                            //removeWidgetFromGrid(gridLayout, row, col);
-
-                            createFixedSizeBoard(gridLayout);
-                        }
-                    }
-                }
-                else if (label->property("type") == QString("minion") && 
-                    currentCardValue > m_cardPosition[{row, col}].back()->property("value").toInt())
-                {
-                    currCardPixmap = newCardLabel->pixmap();
-                    label = createNewMinionCard();
-                    //removeWidgetFromGrid(gridLayout, row, col);
-                    addNewMinionCardToGrid(label, gridLayout, row, col);
-                }
-                
-            }
+            handleMinionCardDrop(event);
         }
-        for (auto& cardStack : m_cardPosition)
-        {
-            qDebug() << cardStack.first.first << " " << cardStack.first.second << ":";
-            for (int i=0;i<cardStack.second.size();++i)
-            {
-                qDebug() << cardStack.second[i]->property("value").toString() << " ";
-            }
-            qDebug() << '\n';
-        }
-        event->acceptProposedAction();
-
     }
 }
+
+void qGameBoardWidget::handleMinionCardDrop(QDropEvent* event)
+{
+    QPoint dropPosition = event->position().toPoint();
+
+    int row = dropPosition.y() / CARD_HEIGTH;
+    int col = dropPosition.x() / CARD_WIDTH;
+
+    qDebug() << "determined row:" << row << " determined column:" << col << '\n';
+
+    QLabel* newCardLabel = new QLabel(this);
+
+    if (event->mimeData()->hasFormat("application/x-card-pixmap")) 
+    {
+        QByteArray pixmapData = event->mimeData()->data("application/x-card-pixmap");
+        QDataStream stream(&pixmapData, QIODevice::ReadOnly);
+        QPixmap droppedCardPixmap;
+        stream >> droppedCardPixmap;
+
+        newCardLabel->setPixmap(droppedCardPixmap.scaled(CARD_WIDTH, CARD_HEIGTH));
+        currentCardValue = event->mimeData()->property("value").toInt();
+        currentCardColor = event->mimeData()->property("color").toString();
+    }
+    const int originalRow = row, originalCol = col;
+    QGridLayout* gridLayout = qobject_cast<QGridLayout*>(this->layout());
+    if (gridLayout)
+    {
+        QLayoutItem* item = gridLayout->itemAtPosition(row, col);
+
+        if (item)
+        {
+            QLabel* label = qobject_cast<QLabel*>(item->widget());
+            if (label->property("type") == QString("empty"))
+            {
+                currCardPixmap = newCardLabel->pixmap();
+                label = createNewMinionCard();
+                updateMinMaxRowCol();
+                expandBoard(row, col);
+                updateMinMaxRowCol();
+                if (wasFirstCardPlaced)
+                {
+                    if (!(BOARD_MAX_SIZE == maxRow - minRow + 1 && BOARD_MAX_SIZE == maxColumn - minColumn + 1))
+                    {
+                        redrawBoard(gridLayout);
+                    }
+                    else if (BOARD_MAX_SIZE == maxRow - minRow + 1 && BOARD_MAX_SIZE == maxColumn - minColumn + 1)
+                    {
+                        //removeWidgetFromGrid(gridLayout, row, col);
+
+                        createFixedSizeBoard(gridLayout);
+                    }
+                }
+            }
+            else if (label->property("type") == QString("minion") &&
+                currentCardValue > m_cardPosition[{row, col}].back()->property("value").toInt())
+            {
+                currCardPixmap = newCardLabel->pixmap();
+                label = createNewMinionCard();
+                //removeWidgetFromGrid(gridLayout, row, col);
+                addNewMinionCardToGrid(label, gridLayout, row, col);
+            }
+
+        }
+    }
+    for (auto& cardStack : m_cardPosition)
+    {
+        qDebug() << cardStack.first.first << " " << cardStack.first.second << ":";
+        for (int i = 0; i < cardStack.second.size(); ++i)
+        {
+            qDebug() << cardStack.second[i]->property("value").toString() << " ";
+        }
+        qDebug() << '\n';
+    }
+    event->acceptProposedAction();
+    emit cardDropAccepted(event->mimeData(), originalRow, originalCol);
+}
+
 
 void qGameBoardWidget::resizeEvent(QResizeEvent* event)
 {

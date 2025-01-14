@@ -141,8 +141,6 @@ void Eter::placeCardInsideHLayout(qtCompletePlayer& pl,
     for(int i=0;i< labels.size();++i)
     {
         hboxLayoutCards->addWidget(labels[i]);
-
-        labelCards.push_back(labels[i]);
     }
 }
 
@@ -194,19 +192,19 @@ void Eter::initializeElementalCards()
     qDebug() << m_elementalCardsPaths[firstCardNumber];
     qDebug() << m_elementalCardsPaths[secondCardNumber];
 
-    labelFirstElementalCard = new QLabel(this);
-    labelSecondElementalCard = new QLabel(this);
+    labelRedElementalCard = new QLabel(this);
+    labelBlueElementalCard = new QLabel(this);
 
-    labelFirstElementalCard->setGeometry(FIRST_ELEMENTAL_CARD_X, FIRST_ELEMENTAL_CARD_Y, CARD_WIDTH, CARD_HEIGHT);
-    firstCardPixmap = firstCardPixmap.scaled(labelFirstElementalCard->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    labelFirstElementalCard->setPixmap(firstCardPixmap);
+    labelRedElementalCard->setGeometry(FIRST_ELEMENTAL_CARD_X, FIRST_ELEMENTAL_CARD_Y, CARD_WIDTH, CARD_HEIGHT);
+    firstCardPixmap = firstCardPixmap.scaled(labelRedElementalCard->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    labelRedElementalCard->setPixmap(firstCardPixmap);
 
-    labelSecondElementalCard->setGeometry(SECOND_ELEMENTAL_CARD_X, SECOND_ELEMENTAL_CARD_Y, CARD_WIDTH, CARD_HEIGHT);
-    secondCardPixmap = secondCardPixmap.scaled(labelSecondElementalCard->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    labelSecondElementalCard->setPixmap(secondCardPixmap);
+    labelBlueElementalCard->setGeometry(SECOND_ELEMENTAL_CARD_X, SECOND_ELEMENTAL_CARD_Y, CARD_WIDTH, CARD_HEIGHT);
+    secondCardPixmap = secondCardPixmap.scaled(labelBlueElementalCard->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    labelBlueElementalCard->setPixmap(secondCardPixmap);
 
-    labelFirstElementalCard->show();
-    labelSecondElementalCard->show();
+    labelRedElementalCard->show();
+    labelBlueElementalCard->show();
 }
 
 void Eter::handleMinionCard(const QMimeData* mimeData, int row, int column)
@@ -257,7 +255,17 @@ void Eter::checkWin()
     {
         QMessageBox::information(nullptr,"Information",QString(GetColour(m_activeColor)) + QString(" player won the game"));
         resetUItoNormal();
+        if (m_activeGamemode == GameView::LaunchOptions::ELEMENTAL)
+        {
+            resetElements();
+        }
     }
+}
+
+void Eter::resetElements()
+{
+    labelRedElementalCard->hide();
+    labelBlueElementalCard->hide();
 }
 
 void Eter::resetUItoNormal()
@@ -305,21 +313,9 @@ void Eter::placeHorizontalLayout()
     placeHorizontalLayoutBlueSide();
 }
 
-void Eter::onPushButtonStartTrainingClicked()
-{
-    m_gameview = std::make_unique<GameView>();
-    plRed = std::make_unique<qtCompletePlayer>(m_gameview->GetRedPlayer(), CARD_WIDTH, CARD_HEIGHT, true);//red starts first
-    plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
-    loadIllusion(labelRedIllusion,QString("red_back.jpg"));
-    loadIllusion(labelBlueIllusion, QString("blue_back.jpg"));
-    resizeGameLogo();
-    placeHorizontalLayout();
-    initializeGridLayoutBoard();
-}
-
 void Eter::initializeGridLayoutBoard()
 {
-    widgetBoard = new qGameBoardWidget(this,BOARD_SIZE,CARD_WIDTH,CARD_HEIGHT,CARDS_SPACING);
+    widgetBoard = new qGameBoardWidget(this,m_gameview->GetBoardSize(), CARD_WIDTH, CARD_HEIGHT, CARDS_SPACING);
     connect(widgetBoard, &qGameBoardWidget::boardResized, this, &Eter::onBoardResized);
     widgetBoard->setBoardPosition((WINDOW_WIDTH-REDCARDS_OFFSET_WINDOW_WIDTH-CARDS_SPACING)/2,
                                 (WINDOW_HEIGTH-CARDS_SPACING)/2,
@@ -345,8 +341,35 @@ void Eter::scaleCoordinates(int& row, int& column)
     column--;
 }
 
+void Eter::onPushButtonStartTrainingClicked()
+{
+    m_activeGamemode = GameView::LaunchOptions::TRAINING;
+    m_gameview = std::make_unique<GameView>(GameOptions::EnabledIllusion,
+        GameOptions::DisabledMage,
+        GameOptions::DisabledElemental,
+        GameOptions::DisabledTournament,
+        GameOptions::DisabledTimed,
+        GameOptions::DisabledEter);
+    plRed = std::make_unique<qtCompletePlayer>(m_gameview->GetRedPlayer(), CARD_WIDTH, CARD_HEIGHT, true);//red starts first
+    plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
+    loadIllusion(labelRedIllusion, QString("red_back.jpg"));
+    loadIllusion(labelBlueIllusion, QString("blue_back.jpg"));
+    resizeGameLogo();
+    placeHorizontalLayout();
+    initializeGridLayoutBoard();
+}
+
 void Eter::onPushButtonStartElementalClicked()
 {
+    m_activeGamemode = GameView::LaunchOptions::ELEMENTAL;
+    m_gameview = std::make_unique<GameView>(GameOptions::EnabledIllusion,
+        GameOptions::EnabledMage,
+        GameOptions::DisabledElemental,
+        GameOptions::DisabledTournament,
+        GameOptions::DisabledTimed,
+        GameOptions::DisabledEter);
+    plRed = std::make_unique<qtCompletePlayer>(m_gameview->GetRedPlayer(), CARD_WIDTH, CARD_HEIGHT, true);//red starts first
+    plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
     resizeGameLogo();
     loadElementalCardsPaths();
     initializeElementalCards();
@@ -356,14 +379,17 @@ void Eter::onPushButtonStartElementalClicked()
 
 void Eter::onPushButtonStartMageClicked()
 {
+    m_activeGamemode = GameView::LaunchOptions::MAGE_DUEL;
 }
 
 void Eter::onPushButtonStartTournamentClicked()
 {
+    m_activeGamemode = GameView::LaunchOptions::TOURNAMENT;
 }
 
 void Eter::onPushButtonStartTimedClicked()
 {
+    m_activeGamemode = GameView::LaunchOptions::TIMED;
 }
 
 void Eter::onBoardResized()
@@ -378,6 +404,6 @@ void Eter::cardDropHandler(const QMimeData* mimeData, int row, int column)
 {
     if (mimeData->property("type") == QString("minion") && !radioButtonPlayIllusion->isChecked())
         handleMinionCard(mimeData, row, column);
-    else if (mimeData->property("type") == QString("minion") && !radioButtonPlayIllusion->isChecked())
+    else if (mimeData->property("type") == QString("minion") && radioButtonPlayIllusion->isChecked())
         handleIllusionCard(mimeData, row, column);
 }

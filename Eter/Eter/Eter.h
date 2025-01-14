@@ -38,29 +38,35 @@ class Eter : public QMainWindow
 private:
     ///members
     Ui::EterClass* ui;
-    QPointer<QHBoxLayout> hboxLayoutRedCards;
+    //hand card
+    QPointer<QHBoxLayout> hboxLayoutRedCards; 
     QPointer<QHBoxLayout> hboxLayoutBlueCards;
-
-    QPointer<QLabel> labelEterLogo;
-
-    QPointer<QLabel> labelFirstElementalCard;
-    QPointer<QLabel> labelSecondElementalCard;
-
-    //aici un game final
-    std::unique_ptr<GameView> m_gameview;
-
-    std::unique_ptr<qtCompletePlayer> plRed;
-    std::unique_ptr<qtCompletePlayer> plBlue;
-
-    std::vector<QString> m_elementalCardsPaths;
-
     QPointer<QWidget> widgetHBoxRedCards;
     QPointer<QWidget> widgetHBoxBlueCards;
+    bool m_wasFirstCardPlaced;
 
-    std::deque<QPointer<qDraggableLabel>>labelCards;
+    //eter logo
+    QPointer<QLabel> labelEterLogo;
 
+    //de pus in qElementalMode
+    QPointer<QLabel> labelRedElementalCard;
+    QPointer<QLabel> labelBlueElementalCard;
+
+    //current gamemode
+    std::unique_ptr<GameView> m_gameview;
+    
+    //players
+    std::unique_ptr<qtCompletePlayer> plRed;
+    std::unique_ptr<qtCompletePlayer> plBlue;
+    Colours m_activeColor;
+
+    //de pus in qElementalMode
+    std::vector<QString> m_elementalCardsPaths;
+
+    //uiBoard
     QPointer<qGameBoardWidget> widgetBoard;
 
+    //buttons
     QPointer<QPushButton> pushButtonStartTraining;
     QPointer<QPushButton> pushButtonStartElemental;
     QPointer<QPushButton> pushButtonStartMage;
@@ -69,9 +75,13 @@ private:
 
     QPointer<QRadioButton> radioButtonPlayIllusion;
 
+    //illusions
     QPointer<QLabel> labelRedIllusion;
     QPointer<QLabel> labelBlueIllusion;
 
+    GameView::LaunchOptions m_activeGamemode;
+
+    //object placement details
     int WINDOW_WIDTH, WINDOW_HEIGTH;
     const int REDCARDS_OFFSET_WINDOW_WIDTH = 100;
     const int REDCARDS_OFFSET_WINDOW_HEIGHT = 30;
@@ -83,13 +93,11 @@ private:
     const int SECOND_ELEMENTAL_CARD_X = 1300;
     const int SECOND_ELEMENTAL_CARD_Y = 600;
 
+    //trebuie scos
     const uint16_t BOARD_SIZE=3;
 
     const int CARDS_SPACING = 10;
 
-    bool m_wasFirstCardPlaced;
-    
-    Colours m_activeColor;
     ///functions
 
     void changeDraggabilityHBoxLayout(QPointer<QHBoxLayout>& currentLayout,bool enabled);
@@ -113,6 +121,7 @@ private:
 
     void checkWin();
     void resetUItoNormal();
+    void resetElements();
 public:
     static const int CARD_WIDTH=80;
     static const int CARD_HEIGHT=80;

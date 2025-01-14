@@ -94,8 +94,8 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	m_tieBraker			{ false },
 	m_wasExplosionCardPlayed{false},
 	m_board				{ std::make_unique<Board>(_maxBoardSize) },
-	m_player1			{ std::make_shared<Player>(Colours::RED, false) },
-	m_player2			{ std::make_shared<Player>(Colours::BLUE, false) },
+	m_player1			{ std::make_shared<Player>(Colours::RED,_maxBoardSize==3 ? true : false) },
+	m_player2			{ std::make_shared<Player>(Colours::BLUE,_maxBoardSize == 3 ? true : false) },
 	m_activePlayer		{ std::shared_ptr<Player>(m_player1)}
 {
 	m_activeCoveredSet = m_player1->getCovered();

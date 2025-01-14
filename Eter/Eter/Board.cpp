@@ -926,19 +926,62 @@ Colours Board::checkWin()
 {
 	for (const auto& diff : m_colChecker)
 	{
-		if (diff.first == 3)
+		if (diff.first == m_max_size)
 			return Colours::RED;
-		if (diff.second == 3)
+		if (diff.second == m_max_size)
 			return Colours::BLUE;
 	}
 	for (const auto& diff : m_rowChecker)
 	{
-		if (diff.first == 3)
+		if (diff.first == m_max_size)
 			return Colours::RED;
-		if (diff.second == 3)
+		if (diff.second == m_max_size)
 			return Colours::BLUE;
 	}
+	Colours diagWin = checkDiagWin();
+	if (m_max_size == m_rowChecker.size() && m_max_size == m_colChecker.size() && diagWin != Colours::INVALID_COL)
+		return diagWin;
+	if (m_max_size == m_rowChecker.size() && m_max_size == m_colChecker.size())
+	{
+		return checkWinFullBoard();
+	}
+	return Colours::INVALID_COL;
+}
 
+Colours Board::checkWinFullBoard()
+{
+	int sumRed = 0, sumBlue = 0;
+	for (int i = 0; i < getRowCount(); ++i) 
+	{
+		for (int j = 0; j < getColCount();++j)
+		{
+			if (!m_matrix[i][j].empty())
+			{
+				if(m_matrix[i][j].back().GetCardType()==CardType::MinionCard)
+				{
+					if (m_matrix[i][j].back().GetColor() == Colours::RED)
+						sumRed += m_matrix[i][j].back().GetValue();
+					else if(m_matrix[i][j].back().GetColor() == Colours::BLUE)
+						sumBlue+= m_matrix[i][j].back().GetValue();
+				}
+			}
+			else
+			{
+				return Colours::INVALID_COL;
+			}
+		}
+	}
+	if (sumBlue > sumRed)
+		return Colours::BLUE;
+	return Colours::RED;
+}
+
+Colours Board::checkDiagWin()
+{
+	if (m_firstDiag.second == m_max_size || m_seconDiag.second == m_max_size)
+		return Colours::BLUE;
+	if (m_firstDiag.first == m_max_size || m_seconDiag.first == m_max_size)
+		return Colours::RED;
 	return Colours::INVALID_COL;
 }
 

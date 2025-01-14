@@ -167,6 +167,8 @@ public:
 	Colours checkWin(int16_t x, int16_t y, Colours col);
 	//use it after removing minions and/or using elemental/mage cards
 	Colours checkWin();
+	Colours checkWinFullBoard();
+	Colours checkDiagWin();
 
 	uint16_t getRowCount();
 	uint16_t getColCount();
