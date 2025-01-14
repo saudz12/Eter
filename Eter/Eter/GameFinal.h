@@ -1,8 +1,9 @@
 #pragma once
+#include <cstdint>
 #include "Board.h"
 #include "InputChecking.h"
 
-using PowerUsage = std::pair<bool, ActionCard>;
+using PowerUsage = std::tuple<bool, ActionCard, uint16_t>;
 
 enum class PowerSelect : int16_t {
 	First,
@@ -69,4 +70,7 @@ public:
 	void PrintBoard(bool _debug = false);
 	void PrintActiveHand();
 #pragma endregion
+
+	std::shared_ptr<Player> getPlayer1() const;
+	std::shared_ptr<Player> getPlayer2() const;
 };

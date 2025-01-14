@@ -102,6 +102,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActionType.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="ConsolePlayableGUI.cpp" />
     <ClCompile Include="ConsolePrints.cpp" />

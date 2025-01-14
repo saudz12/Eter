@@ -58,8 +58,8 @@ public:
 	void EndTurn();
     GameFinal& GetGameFinal()  { return *m_game; }
 
-	const Player& GetRedPlayer() const { return m_game->GetRedPlayer(); }
-	const Player& GetBluePlayer() const  { return m_game->GetBluePlayer(); }
+	std::shared_ptr<Player> GetRedPlayer() const { return m_game->getPlayer1(); }
+	std::shared_ptr<Player> GetBluePlayer() const  { return m_game->getPlayer2(); }
 
 	int GetBoardSize() const { return boardSize; }
 };

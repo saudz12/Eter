@@ -54,8 +54,15 @@ void GameFinal::ResetRound()
 
 	std::random_device rd;
 	std::uniform_int_distribution<int16_t> elementalrange(1, 24);
-	m_elemental1 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd)) });
-	m_elemental2 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd)) });
+
+	int16_t firstCardNumber{ elementalrange(rd) };
+	int16_t secondCardNumber{ elementalrange(rd) };
+
+	while (firstCardNumber == secondCardNumber)
+		secondCardNumber = elementalrange(rd);
+
+	m_elemental1 = std::move(PowerUsage{ false, GetElementalCard(firstCardNumber), firstCardNumber });
+	m_elemental2 = std::move(PowerUsage{ false, GetElementalCard(secondCardNumber), secondCardNumber });
 }
 
 void GameFinal::FindPower(ActionCard identif)
@@ -180,11 +187,26 @@ GameFinal::GameFinal(int16_t _maxBoardSize,
 	m_activeRemovedHand = m_player1->GetRemovedCards();
 	std::random_device rd;
 	std::uniform_int_distribution<int16_t> magerange(1, 8);
-	m_redMage = std::move(PowerUsage{ false, GetMageCard(magerange(rd)) });
-	m_blueMage = std::move(PowerUsage{ false, GetMageCard(magerange(rd)) });
+
+	int16_t firstMageCard{ magerange(rd) };
+	int16_t secondMageCard{ magerange(rd) };
+
+	while (firstMageCard == secondMageCard)
+		secondMageCard = magerange(rd);
+
+	m_redMage = std::move(PowerUsage{ false, GetMageCard(magerange(rd)), firstMageCard });
+	m_blueMage = std::move(PowerUsage{ false, GetMageCard(magerange(rd)), secondMageCard });
+
 	std::uniform_int_distribution<int16_t> elementalrange(1, 24);
-	m_elemental1 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd)) });
-	m_elemental2 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd)) });
+
+	int16_t firstCardNumber{ elementalrange(rd) };
+	int16_t secondCardNumber{ elementalrange(rd) };
+
+	while (firstCardNumber == secondCardNumber)
+		secondCardNumber = elementalrange(rd);
+
+	m_elemental1 = std::move(PowerUsage{ false, GetElementalCard(firstCardNumber), firstCardNumber });
+	m_elemental2 = std::move(PowerUsage{ false, GetElementalCard(secondCardNumber), secondCardNumber });
 }
 
 bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
@@ -210,15 +232,15 @@ void GameFinal::PlayElemental(PowerSelect select)
 {
 	if (m_powerUsed) return;
 	m_powerUsed = true;
-	if (select == PowerSelect::First && m_elemental1.first == false)
+	if (select == PowerSelect::First && std::get<0>(m_elemental1) == false)
 	{
-		m_elemental1.first = true;
-		FindPower(m_elemental1.second);
+		std::get<0>(m_elemental1) = true;
+		FindPower(std::get<1>(m_elemental1));
 	}
-	else if (select == PowerSelect::Second && m_elemental2.first == false)
+	else if (select == PowerSelect::Second && std::get<0>(m_elemental2) == false)
 	{
-		m_elemental2.first = true;
-		FindPower(m_elemental2.second);
+		std::get<0>(m_elemental2) = true;
+		FindPower(std::get<1>(m_elemental2));
 	}
 }
 
@@ -226,14 +248,14 @@ void GameFinal::PlayMage()
 {
 	if (m_powerUsed) return;
 	m_powerUsed = true;
-	if (m_activeColor == Colours::RED && m_redMage.first == false) {
-		m_redMage.first = true;
-		FindPower(m_redMage.second);
+	if (m_activeColor == Colours::RED && std::get<0>(m_redMage) == false) {
+		std::get<0>(m_redMage) = true;
+		FindPower(std::get<1>(m_redMage));
 	}
-	else if (m_activeColor == Colours::BLUE && m_blueMage.first == false)
+	else if (m_activeColor == Colours::BLUE && std::get<0>(m_blueMage) == false)
 	{
-		m_blueMage.first = true;
-		FindPower(m_blueMage.second);
+		std::get<0>(m_blueMage) = true;
+		FindPower(std::get<1>(m_blueMage));
 	}
 
 }
@@ -253,3 +275,12 @@ void GameFinal::PrintActiveHand()
 	auto& seekHand = m_activePlayer->GetRemaningCounter();
 	std::for_each(seekHand.begin(), seekHand.end(), [&seekHand](const auto& key) {std::cout << key.first << ": " << key.second << "copies left\n"; });
 }
+
+std::shared_ptr<Player> GameFinal::getPlayer1() const {
+	return m_player1;
+}
+
+std::shared_ptr<Player> GameFinal::getPlayer2() const {
+	return m_player2;
+}
+

@@ -3,7 +3,7 @@
 #include "qtCompletePlayer.h"
 
 
-qtCompletePlayer::qtCompletePlayer(const Player& player,int width,int heigth,bool isDraggable) :
+qtCompletePlayer::qtCompletePlayer(std::shared_ptr<Player> player,int width,int heigth,bool isDraggable) :
     m_player{ player },m_CARD_WIDTH { width}, m_CARD_HEIGTH{ heigth }, m_isDraggable{ isDraggable }
 {
 	generatePathsForMinionCards();
@@ -37,7 +37,7 @@ void qtCompletePlayer::SetPixmapCards(std::deque<QPixmap>& pixmapCards)
 
 void qtCompletePlayer::loadCards()
 {
-    const CardCounter& currRemainingCards = m_player.GetRemainingCounter();
+    const CardCounter& currRemainingCards = m_player->GetRemainingCounter();
     int i = 0;
     for (auto& currCard : currRemainingCards)
     {
@@ -53,7 +53,7 @@ void qtCompletePlayer::loadCards()
             QPointer<qDraggableLabel> currDragLabel = new 
                 qDraggableLabel(resizedCard, m_CARD_WIDTH, m_CARD_HEIGTH,m_isDraggable);
 
-            currDragLabel->setColor(m_player.GetPlayerColor());
+            currDragLabel->setColor(m_player->GetPlayerColor());
             currDragLabel->setValue(cardValue);
             m_labelsCards.emplace_back(currDragLabel);
             auxRemainingCards--;
@@ -65,7 +65,7 @@ void qtCompletePlayer::loadCards()
 void qtCompletePlayer::generatePathsForMinionCards()
 {
     QString basePath = QDir::currentPath() + "/textures/";
-    if (m_player.GetPlayerColor() == Colours::RED)
+    if (m_player->GetPlayerColor() == Colours::RED)
         basePath += "red_";
     else
         basePath += "blue_";
