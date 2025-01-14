@@ -36,27 +36,33 @@ void Eter::initializeGameWindow()
 
 void Eter::initializeButtons()
 {
-    pushButtonStartTraining = new QPushButton("Start training game", this);
+    if(!pushButtonStartTraining)
+        pushButtonStartTraining = new QPushButton("Start training game", this);
     pushButtonStartTraining->setGeometry(WINDOW_HEIGTH /30, WINDOW_WIDTH / 15+20, 120, 30);
     pushButtonStartTraining->setVisible(true);
 
-    pushButtonStartElemental = new QPushButton("Start elemental game", this);
+    if(!pushButtonStartElemental)
+        pushButtonStartElemental = new QPushButton("Start elemental game", this);
     pushButtonStartElemental->setGeometry(pushButtonStartTraining->x(), pushButtonStartTraining->y()+50, 120, 30);
     pushButtonStartElemental->setVisible(true);
 
-    pushButtonStartMage = new QPushButton("Start mage duel game", this);
+    if(!pushButtonStartMage)
+        pushButtonStartMage = new QPushButton("Start mage duel game", this);
     pushButtonStartMage->setGeometry(pushButtonStartElemental->x(), pushButtonStartElemental->y() + 50, 130, 30);
     pushButtonStartMage->setVisible(true);
 
-    pushButtonStartTournament = new QPushButton("Start tournament game", this);
+    if(!pushButtonStartTournament)
+        pushButtonStartTournament = new QPushButton("Start tournament game", this);
     pushButtonStartTournament->setGeometry(pushButtonStartMage->x(), pushButtonStartMage->y() + 50, 130, 30);
     pushButtonStartTournament->setVisible(true);
 
-    pushButtonStartTimed = new QPushButton("Start timed game", this);
+    if(!pushButtonStartTimed)
+        pushButtonStartTimed = new QPushButton("Start timed game", this);
     pushButtonStartTimed->setGeometry(pushButtonStartTournament->x(), pushButtonStartTournament->y() + 50, 130, 30);
     pushButtonStartTimed->setVisible(true);
 
-    radioButtonPlayIllusion = new QRadioButton("Play Illusion", this);
+    if(!radioButtonPlayIllusion)
+        radioButtonPlayIllusion = new QRadioButton("Play Illusion", this);
     radioButtonPlayIllusion->setGeometry(pushButtonStartTimed->x(), pushButtonStartTimed->y() + 50, 130, 30);
     radioButtonPlayIllusion->setVisible(true);
 
@@ -221,6 +227,7 @@ void Eter::handleMinionCard(const QMimeData* mimeData, int row, int column)
     }
     else
     {
+        m_gameview->EndTurn();
         char color = mimeData->property("color").toString().toLatin1().at(0);
         m_activeColor = GetColour(color);
         if (mimeData->property("color").toString() == QString('R'))
@@ -236,11 +243,43 @@ void Eter::handleMinionCard(const QMimeData* mimeData, int row, int column)
             removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
         }
     }
+    checkWin();
 }
 
 void Eter::handleIllusionCard(const QMimeData* mimeData, int row, int column)
 {
 
+}
+
+void Eter::checkWin()
+{
+    if (m_gameview->CheckWin())
+    {
+        QMessageBox::information(nullptr,"Information",QString(GetColour(m_activeColor)) + QString(" player won the game"));
+        resetUItoNormal();
+    }
+}
+
+void Eter::resetUItoNormal()
+{
+    widgetBoard->hide();
+    if (!hboxLayoutRedCards.isNull()) {
+        for (int i = 0; i < hboxLayoutRedCards->count(); ++i) {
+            QWidget* widget = hboxLayoutRedCards->itemAt(i)->widget();
+            if (widget) {
+                widget->hide();
+            }
+        }
+    }
+    if (!hboxLayoutBlueCards.isNull()) {
+        for (int i = 0; i < hboxLayoutBlueCards->count(); ++i) {
+            QWidget* widget = hboxLayoutBlueCards->itemAt(i)->widget();
+            if (widget) {
+                widget->hide();
+            }
+        }
+    }
+    initializeEterLogo();
 }
 
 void Eter::changeDraggabilityHBoxLayout(QPointer<QHBoxLayout>& currentLayout,bool enable)
@@ -293,7 +332,8 @@ void Eter::initializeEterLogo()
 {
     QString dir = QDir::currentPath() + "/textures/raw/eter.png";
     QPixmap logoPixmap(dir);
-    labelEterLogo = new QLabel(this);
+    if(!labelEterLogo)
+        labelEterLogo = new QLabel(this);
     labelEterLogo->setGeometry(300, 100, 1000, 500);
     logoPixmap = logoPixmap.scaled(labelEterLogo->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     labelEterLogo->setPixmap(logoPixmap);

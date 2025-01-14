@@ -110,6 +110,9 @@ private:
     void initializeElementalCards();
     void handleMinionCard(const QMimeData* mimeData, int row, int column);
     void handleIllusionCard(const QMimeData* mimeData, int row, int column);
+
+    void checkWin();
+    void resetUItoNormal();
 public:
     static const int CARD_WIDTH=80;
     static const int CARD_HEIGHT=80;

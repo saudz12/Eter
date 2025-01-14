@@ -181,6 +181,11 @@ GameView::GameView(GameOptions illusion,
     GetPlayingFormat();
 }
 
+bool GameView::CheckWin()
+{
+    return m_game->CheckWin();
+}
+
 void GameView::Loop()
 {
     int16_t x, y, val;
@@ -197,10 +202,6 @@ bool GameView::PlaceCard(const int16_t x, const uint16_t y, const uint16_t val)
 {
     if (m_game->PlaceCard(x, y, val))
     {
-        //qDebug()<<m_game->GetActiveColor()<<'\n';
-        m_game->EndTurn();
-        if (m_game->CheckWin())
-            m_game->ResetRound();
         m_game->PrintBoard();
         return true;
     }
@@ -208,6 +209,11 @@ bool GameView::PlaceCard(const int16_t x, const uint16_t y, const uint16_t val)
     {
         return false;
     }
+}
+
+void GameView::EndTurn()
+{
+    m_game->EndTurn();
 }
 
 //bool canPlayElementalCard
