@@ -226,6 +226,19 @@ bool GameView::PlaceCard(const int16_t x, const uint16_t y, const uint16_t val)
     }
 }
 
+bool GameView::PlaceIllusion(const int16_t x, const uint16_t y, const uint16_t val)
+{
+    if (m_game->PlaceIllusion(x, y, val))
+    {
+        m_game->PrintBoard();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 void GameView::EndTurn()
 {
     m_game->EndTurn();

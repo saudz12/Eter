@@ -55,6 +55,7 @@ public:
 	bool CheckWin();
 	void Loop();
 	bool PlaceCard(const int16_t x,const uint16_t y,const uint16_t val);
+	bool PlaceIllusion(const int16_t x, const uint16_t y, const uint16_t val);
 	void EndTurn();
     GameFinal& GetGameFinal()  { return *m_game; }
 

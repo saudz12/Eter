@@ -4,7 +4,9 @@ qGameBoardWidget::qGameBoardWidget(QWidget* parent, int board_max_size, int card
     QWidget{ parent },
     CARD_WIDTH{ card_width },
     CARD_HEIGTH{ card_heigth },
-    BOARD_MAX_SIZE{ board_max_size }
+    BOARD_MAX_SIZE{ board_max_size },
+    wasIllusionChecked{false},
+    isCurrentCardIllusion{false}
 {
     setAcceptDrops(true);
 
@@ -51,14 +53,25 @@ void qGameBoardWidget::handleMinionCardDrop(QDropEvent* event)
 
     QLabel* newCardLabel = new QLabel(this);
 
+
     if (event->mimeData()->hasFormat("application/x-card-pixmap")) 
     {
+        isCurrentCardIllusion = false;
         QByteArray pixmapData = event->mimeData()->data("application/x-card-pixmap");
         QDataStream stream(&pixmapData, QIODevice::ReadOnly);
         QPixmap droppedCardPixmap;
         stream >> droppedCardPixmap;
+        bool isIllusionChecked = false;
+        emit isRadioButtonToggledIllusions(&isIllusionChecked);
+        if (isIllusionChecked==true)
+        {
+            loadIllusion(GetColour(event->mimeData()->property("color").toString().toLatin1().at(0)));
+            droppedCardPixmap = currCardPixmap;
+            isCurrentCardIllusion = true;
+        }
 
         newCardLabel->setPixmap(droppedCardPixmap.scaled(CARD_WIDTH, CARD_HEIGTH));
+
         currentCardValue = event->mimeData()->property("value").toInt();
         currentCardColor = event->mimeData()->property("color").toString();
     }
@@ -91,6 +104,32 @@ void qGameBoardWidget::handleMinionCardDrop(QDropEvent* event)
                         createFixedSizeBoard(gridLayout);
                     }
                 }
+            }
+            else if (m_cardPosition[{row, col}].back()->property("isIllusion").toString()==QString("yes")
+                && currentCardValue < m_cardPosition[{row, col}].back()->property("value").toInt())
+            {
+                label = createNewMinionCard();
+                QString dir = QDir::currentPath() + "/textures/";
+                if (currentCardColor == GetColour(Colours::RED))
+                {
+                    QPixmap underneathCard(dir + QString("blue_") + QString::number(m_cardPosition[{row, col}].back()->property("value").toInt()) + QString(".jpg"));
+                    underneathCard=underneathCard.scaled(CARD_WIDTH, CARD_HEIGTH, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                    qDebug() << dir + QString("blue_" + m_cardPosition[{row, col}].back()->property("value").toInt()+QString(".jpg"));
+                    currCardPixmap = underneathCard;
+                    label->setPixmap(underneathCard);
+                }
+                else
+                {
+                    QPixmap underneathCard(dir + QString("red_")+QString::number(m_cardPosition[{row, col}].back()->property("value").toInt()) +QString(".jpg"));
+                    qDebug() << dir + QString("red_" + m_cardPosition[{row, col}].back()->property("value").toInt()+ QString(".jpg"));
+                    underneathCard=underneathCard.scaled(CARD_WIDTH, CARD_HEIGTH, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                    currCardPixmap = underneathCard;
+                    label->setPixmap(underneathCard);
+                }
+                currentCardValue = m_cardPosition[{row, col}].back()->property("value").toInt();
+                currentCardColor = m_cardPosition[{row, col}].back()->property("color").toString().toLatin1().at(0);
+                removeWidgetFromGrid(gridLayout, row, col);
+                addNewMinionCardToGrid(label, gridLayout, row, col);
             }
             else if (label->property("type") == QString("minion") &&
                 currentCardValue > m_cardPosition[{row, col}].back()->property("value").toInt())
@@ -521,6 +560,7 @@ void qGameBoardWidget::addNewMinionCardToGrid(QLabel*& newCard, QGridLayout*&  g
 {
     newCard->setProperty("value", currentCardValue);
     newCard->setProperty("color", currentCardColor);
+    newCard->setProperty("isIllusion", isCurrentCardIllusion == true ? QString("yes"):QString("no"));
     m_cardPosition[{row, column}].emplace_back(newCard);
     m_pixmapPosition[{row, column}].emplace_back(newCard->pixmap());
     gridLayout->addWidget(newCard, row, column);
@@ -536,10 +576,12 @@ void qGameBoardWidget::removeWidgetFromGrid(QGridLayout*&  gridLayout, int row, 
             //widget->deleteLater(); // Optionally delete the widget
             widget->hide();
             gridLayout->removeWidget(widget);
-            m_cardPosition.erase({ row, column });
-            m_pixmapPosition.erase({ row, column });
+            if(!m_cardPosition[{row,column}].empty())
+                m_cardPosition[{ row, column }].pop_back();
+            if(!m_pixmapPosition[{row,column}].empty())
+                m_pixmapPosition[{ row, column }].pop_back();
+            //delete item; // Delete the layout item
         }
-        //delete item; // Delete the layout item
     }
 }
 
@@ -764,6 +806,18 @@ void qGameBoardWidget::addCardsToRedrawnBoard(QGridLayout*&  gridLayout)
         gridLayout->addWidget(cardLabel.back(), toAddRow, toAddColumn);
         qDebug() << "Card placed at:" << row << "," << column << '\n';
     }
+}
+
+void qGameBoardWidget::loadIllusion(Colours color)
+{
+    QString dirIllusion = QDir::currentPath() + "/textures/";
+    QString colorPath;
+    if (color == Colours::BLUE)
+        colorPath = "blue_back.jpg";
+    else
+        colorPath = "red_back.jpg";
+    QPixmap pixmap{ dirIllusion + colorPath};
+    currCardPixmap = pixmap;
 }
 
 void qGameBoardWidget::addEmptySpacesToRedrawnBoard(QGridLayout*&  gridLayout)

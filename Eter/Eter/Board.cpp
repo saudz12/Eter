@@ -311,11 +311,15 @@ BoardErrors Board::CanPlace(int16_t _x, int16_t _y, int16_t _val)
 	switch (tryPlaceOnStack)
 	{
 	case StackConditions::POPULATED:
-		if (_val <= m_matrix[_x][_y].back().GetValue())
-			if (m_matrix[_x][_y].back().GetIsIllusionCard())
+		if (m_matrix[_x][_y].back().GetIsIllusionCard())
+		{
+			if (_val <= m_matrix[_x][_y].back().GetValue())
 				return BoardErrors::ILLUSION_PROPERTY;
 			else
 				return BoardErrors::_INVALID_VAL;
+		}
+		else
+			return BoardErrors::_NO_ERRORS;
 		break;
 	case StackConditions::HOLE:
 		return BoardErrors::_HOLE_PROPERTY;
@@ -417,8 +421,10 @@ void Board::PlaceCard(MinionCard&& _toPlace, int16_t _x, int16_t _y)
 		_y = 0;
 
 	if (!m_matrix[_x][_y].empty()) {
-		if (m_matrix[_x][_y].back().GetIsIllusionCard() && m_matrix[_x][_y].back().GetColor() != _toPlace.GetColor() && m_matrix[_x][_y].back().GetValue() >= _toPlace.GetValue())
-			return;
+		if (m_matrix[_x][_y].back().GetIsIllusionCard() && 
+			m_matrix[_x][_y].back().GetColor() != _toPlace.GetColor())
+			if(m_matrix[_x][_y].back().GetValue() >= _toPlace.GetValue())
+				return;
 	}
 	
 	increaseOnColorRow(_x, _y, _toPlace.GetColor());
@@ -805,6 +811,15 @@ AdjacentType Board::CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t
 	if (_xS == _xD && std::abs(_yD - _yD) == 1 || _yS == _yD && std::abs(_xD - _xD) == 1)
 		return AdjacentType::NEIGHBOURING;
 	return AdjacentType::NOT_ADJACENT;
+}
+
+bool Board::isEmptySpace(int16_t _x, int16_t _y)
+{
+	if ((_x<0 || _y<0 || _x>=getRowCount() || _y >=getColCount()))
+		return true;
+	if (m_matrix[_x][_y].empty())
+		return true;
+	return false;
 }
 
 //1 esec, 0 succes
@@ -1336,6 +1351,62 @@ void Board::AddLineOnBottom()
 {
 	m_matrix.push_back(Line(getColCount()));
 	m_rowChecker.emplace_back(0, 0);
+}
+
+void Board::PlaceIllusion(MinionCard&& _toPlace, int16_t _x, int16_t _y)
+{
+	_toPlace.SetIsIllusionCard(true);
+	_toPlace.SetIsEterCard(false);
+	_toPlace.SetIsHole(false);
+	if (isBoardEmpty()) {
+		m_matrix[0][0].emplace_back(_toPlace);
+		if (_toPlace.GetColor() == Colours::RED)
+		{
+			m_rowChecker[0].first = 1;
+			m_colChecker[0].first = 1;
+		}
+		else
+		{
+			m_rowChecker[0].second = 1;
+			m_colChecker[0].second = 1;
+		}
+		return;
+	}
+
+	ExtendBoard(GetChangeFlag(_x, _y));
+	if (_x == -1)
+		_x = 0;
+	if (_y == -1)
+		_y = 0;
+
+	if (!m_matrix[_x][_y].empty()) {
+		return;
+	}
+
+	increaseOnColorRow(_x, _y, _toPlace.GetColor());
+	increaseOnColorColumn(_x, _y, _toPlace.GetColor());
+	if (!isMatMaxSize())
+		m_reachedMaxSize = false;
+	else if (_x == _y || _x + _y == m_max_size - 1)
+		increaseOnColorDiagonal(_x, _y, _toPlace.GetColor());
+
+	m_matrix[_x][_y].push_back(_toPlace);
+}
+
+bool Board::canCoverIllusion(uint16_t _x, uint16_t _y, uint16_t _val)
+{
+	if (_x >= 0 && _x < getRowCount() && _y >= 0 && _y < getColCount())
+	{
+		if (!m_matrix[_x][_y].empty() && m_matrix[_x][_y].back().GetIsIllusionCard())
+			return true;
+	}
+	return false;
+}
+
+void Board::revealIllusion(int16_t _x, int16_t _y)
+{
+	m_matrix[_x][_y].back().SetCardType(CardType::MinionCard);
+	m_matrix[_x][_y].back().SetIsIllusionCard(false);
 }
 
 void Board::removeLeftMargin()

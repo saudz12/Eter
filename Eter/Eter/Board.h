@@ -153,7 +153,7 @@ public:
 
 	//checks if the coordonates of 2 stacks ar adjacent
 	static AdjacentType CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
-	
+	bool isEmptySpace(int16_t _x, int16_t _y);
 
 	//add lines to border ///vezi ca ai ExtendBoard. foloseste-l in loc de astea :). Board changes impune ce cum vrei sa adaugi inii.
 	void AddLineToLeft();
@@ -161,6 +161,10 @@ public:
 	void AddLineOnTop();
 	void AddLineOnBottom();
 	void SetEmptyBoard(Colours color);
+
+	void PlaceIllusion(MinionCard&& _toPlace,int16_t _x,int16_t _y);//illusionCard
+	bool canCoverIllusion(uint16_t _x,uint16_t _y,uint16_t _val);
+	void revealIllusion(int16_t _x, int16_t _y);
 #pragma endregion
 
 	//use it only when placing cards

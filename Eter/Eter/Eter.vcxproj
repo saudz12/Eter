@@ -125,7 +125,6 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="qDraggableLabel.cpp" />
     <ClCompile Include="qGameBoardWidget.cpp" />
-    <ClCompile Include="qtCompleteBoard.cpp" />
     <ClCompile Include="qtCompleteMinionCard.cpp" />
     <ClCompile Include="qtCompletePlayer.cpp" />
     <QtRcc Include="Eter.qrc" />
@@ -162,7 +161,6 @@
     <ClInclude Include="Player.h" />
     <QtMoc Include="qDraggableLabel.h" />
     <QtMoc Include="qGameBoardWidget.h" />
-    <ClInclude Include="qtCompleteBoard.h" />
     <ClInclude Include="qtCompleteMinionCard.h" />
     <ClInclude Include="qtCompletePlayer.h" />
     <ClInclude Include="ReturnOrRemoveType.h" />

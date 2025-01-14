@@ -8,7 +8,7 @@ Eter::Eter(QWidget *parent)
 
     initializeEterLogo();
     initializeGameWindow();
-    initializeButtons();
+    initializePushButtons();
     initializeHandCardLayouts();
     BLUE_CARDS_OFFSET_WINDOW_HEIGHT = WINDOW_HEIGTH - 30;
 }
@@ -34,7 +34,7 @@ void Eter::initializeGameWindow()
     this->showMaximized();
 }
 
-void Eter::initializeButtons()
+void Eter::initializePushButtons()
 {
     if(!pushButtonStartTraining)
         pushButtonStartTraining = new QPushButton("Start training game", this);
@@ -61,16 +61,28 @@ void Eter::initializeButtons()
     pushButtonStartTimed->setGeometry(pushButtonStartTournament->x(), pushButtonStartTournament->y() + 50, 130, 30);
     pushButtonStartTimed->setVisible(true);
 
-    if(!radioButtonPlayIllusion)
-        radioButtonPlayIllusion = new QRadioButton("Play Illusion", this);
-    radioButtonPlayIllusion->setGeometry(pushButtonStartTimed->x(), pushButtonStartTimed->y() + 50, 130, 30);
-    radioButtonPlayIllusion->setVisible(true);
-
     connect(pushButtonStartTraining, &QPushButton::clicked, this, &Eter::onPushButtonStartTrainingClicked);
     connect(pushButtonStartElemental, &QPushButton::clicked, this, &Eter::onPushButtonStartElementalClicked);
     connect(pushButtonStartMage, &QPushButton::clicked, this, &Eter::onPushButtonStartMageClicked);
     connect(pushButtonStartTournament, &QPushButton::clicked, this, &Eter::onPushButtonStartTournamentClicked);
     connect(pushButtonStartTimed, &QPushButton::clicked, this, &Eter::onPushButtonStartTimedClicked);
+}
+
+void Eter::initializeRadioButtons()
+{
+    if (!radioButtonPlayIllusion)
+        radioButtonPlayIllusion = new QRadioButton("Play Illusion", this);
+    radioButtonPlayIllusion->setGeometry(pushButtonStartTimed->x(), pushButtonStartTimed->y() + 50, 130, 30);
+    radioButtonPlayIllusion->setVisible(true);
+    if (QObject::connect(widgetBoard, &qGameBoardWidget::isRadioButtonToggledIllusions,
+        this, &Eter::IllusionHandler))
+    {
+        qDebug() << "Connection established successfully";
+    }
+    else {
+        qDebug() << "Connection failed";
+    }
+    //connect(this, &Eter::IllusionHandler, widgetBoard, &qGameBoardWidget::isRadioButtonToggledIllusions);
 }
 
 void Eter::initializeHandCardLayouts()
@@ -156,18 +168,7 @@ void Eter::loadElementalCardsPaths()
 
 void Eter::loadIllusion(QPointer<QLabel>& label,QString path)
 {
-    label = new QLabel(this);
 
-    QString dirIllusion = QDir::currentPath() + "/textures/";
-
-    QPixmap pixmap{ dirIllusion + path};
-    label->setFixedSize(CARD_WIDTH, CARD_HEIGHT);
-    label->setGeometry(0, 0, CARD_WIDTH, CARD_WIDTH);
-    label->setText("illusion");
-    label->setProperty("type", QString("illusion"));
-    pixmap = pixmap.scaled(label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    label->setPixmap(pixmap);
-    label->hide();
 }
 
 void Eter::initializeElementalCards()
@@ -233,13 +234,51 @@ void Eter::handleMinionCard(const QMimeData* mimeData, int row, int column)
             changeDraggabilityHBoxLayout(hboxLayoutRedCards, true);
             removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
         }
+        labelGameMessage->setAlignment(Qt::AlignCenter);
+        labelGameMessage->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     }
     checkWin();
 }
 
 void Eter::handleIllusionCard(const QMimeData* mimeData, int row, int column)
 {
+    int value = mimeData->property("value").toInt();
 
+    if (m_wasFirstCardPlaced == false)
+    {
+        m_wasFirstCardPlaced = true;
+    }
+    else
+    {
+        scaleCoordinates(row, column);
+    }
+    if (!m_gameview->PlaceIllusion(row, column, value))
+    {
+        QMessageBox::warning(nullptr, "Warning", "Cannot place a illusion there");
+    }
+    else
+    {
+        m_gameview->EndTurn();
+        char color = mimeData->property("color").toString().toLatin1().at(0);
+        m_activeColor = GetColour(color);
+        if (mimeData->property("color").toString() == QString('R'))
+        {
+            labelGameMessage->setText("It's blue player's turn");
+            labelGameMessage->setStyleSheet("QLabel { border: 2px solid blue; }");
+            changeDraggabilityHBoxLayout(hboxLayoutRedCards, false);
+            changeDraggabilityHBoxLayout(hboxLayoutBlueCards, true);
+            removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
+        }
+        else
+        {
+            labelGameMessage->setText("It's red player's turn");
+            labelGameMessage->setStyleSheet("QLabel { border: 2px solid red; }");
+            changeDraggabilityHBoxLayout(hboxLayoutBlueCards, false);
+            changeDraggabilityHBoxLayout(hboxLayoutRedCards, true);
+            removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
+        }
+    }
+    checkWin();
 }
 
 void Eter::checkWin()
@@ -264,9 +303,11 @@ void Eter::resetElements()
 void Eter::initializeGameMessage()
 {
     labelGameMessage = new QLabel(this);
-    labelGameMessage->setGeometry(1600, 450, 200, 100);
+    labelGameMessage->setGeometry(pushButtonStartTraining->x()-25, WINDOW_HEIGTH-100, 150, 50);
     labelGameMessage->setText("It's red player's turn");
     labelGameMessage->setStyleSheet("QLabel { border: 2px solid red; }");
+    labelGameMessage->setAlignment(Qt::AlignCenter);
+    labelGameMessage->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     labelGameMessage->show();
 }
 
@@ -362,8 +403,6 @@ void Eter::onPushButtonStartTrainingClicked()
         GameOptions::DisabledEter);
     plRed = std::make_unique<qtCompletePlayer>(m_gameview->GetRedPlayer(), CARD_WIDTH, CARD_HEIGHT, true);//red starts first
     plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
-    loadIllusion(labelRedIllusion, QString("red_back.jpg"));
-    loadIllusion(labelBlueIllusion, QString("blue_back.jpg"));
     initializeGameMessage();
     resizeGameLogo();
     placeHorizontalLayout();
@@ -381,27 +420,35 @@ void Eter::onPushButtonStartElementalClicked()
         GameOptions::EnabledEter);
     plRed = std::make_unique<qtCompletePlayer>(m_gameview->GetRedPlayer(), CARD_WIDTH, CARD_HEIGHT, true);//red starts first
     plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
+    initializeGameMessage();
     resizeGameLogo();
     initializeGameMessage();
     loadElementalCardsPaths();
     initializeElementalCards();
     placeHorizontalLayout();
     initializeGridLayoutBoard();
+    initializeRadioButtons();
 }
 
 void Eter::onPushButtonStartMageClicked()
 {
     m_activeGamemode = GameView::LaunchOptions::MAGE_DUEL;
+    initializeGameMessage();
+    initializeRadioButtons();
 }
 
 void Eter::onPushButtonStartTournamentClicked()
 {
     m_activeGamemode = GameView::LaunchOptions::TOURNAMENT;
+    initializeGameMessage();
+    initializeRadioButtons();
 }
 
 void Eter::onPushButtonStartTimedClicked()
 {
     m_activeGamemode = GameView::LaunchOptions::TIMED;
+    initializeGameMessage();
+    initializeRadioButtons();
 }
 
 void Eter::onBoardResized()
@@ -419,3 +466,9 @@ void Eter::cardDropHandler(const QMimeData* mimeData, int row, int column)
     else if (mimeData->property("type") == QString("minion") && radioButtonPlayIllusion->isChecked())
         handleIllusionCard(mimeData, row, column);
 }
+
+void Eter::IllusionHandler(bool* toogled)
+{
+    *toogled = radioButtonPlayIllusion->isChecked();
+}
+

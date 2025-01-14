@@ -22,7 +22,6 @@
 #include "qradiobutton.h"
 
 #include "qtCompletePlayer.h"
-#include "qtCompleteBoard.h"
 
 #include "qDraggableLabel.h"
 #include "qGameBoardWidget.h"
@@ -136,7 +135,8 @@ public:
     ~Eter();
 
     void initializeGameWindow();
-    void initializeButtons();
+    void initializePushButtons();
+    void initializeRadioButtons();
     void initializeHandCardLayouts();
 
     void initializeGridLayoutBoard();
@@ -152,4 +152,5 @@ private slots:
     void onPushButtonStartTimedClicked();
     void onBoardResized();
     void cardDropHandler(const QMimeData* mimeData,int row,int column);
+    void IllusionHandler(bool* toogled);
 };

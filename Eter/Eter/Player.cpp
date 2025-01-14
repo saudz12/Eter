@@ -244,6 +244,7 @@ bool Player::CheckCoveredProperty(int16_t _x, int16_t _y, int16_t _pos)
 
 MinionCard&& Player::PlayCard(int16_t _val) 
 {
+
 	m_lastPlayedCard.push_back(&m_remainingCards[_val].back());
 
 	return std::move(m_remainingCards[_val].back());

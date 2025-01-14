@@ -95,7 +95,6 @@ public:
 	void UpdateCard(int16_t _val, CardAction _action); //new; Either asa si cu un check daca poate scoate din mana sau
 	void CoverCard(MinionCard& _card);
 	void UncoverCard(MinionCard& _card);
-
 #pragma endregion
 
 	bool HasCardOfValue(uint16_t value);

@@ -5,6 +5,7 @@
 #include <QMimeData>
 #include <QDropEvent>
 #include <qpointer.h>
+#include "qdir.h"
 
 #include <unordered_map>
 #include <unordered_set>
@@ -46,6 +47,8 @@ private:
 
 	bool wasFirstCardPlaced;
 	bool wasFixedBoardCreated;
+	bool wasIllusionChecked;
+	bool isCurrentCardIllusion;
 public:
 	qGameBoardWidget(QWidget* parent = nullptr,int board_max_size=0,int card_width=0,int card_heigth=0,int spacing=0);
 	
@@ -81,6 +84,7 @@ private:
 	void createEmptySpacesForRedrawnBoard();
 	void addEmptySpacesToRedrawnBoard(QGridLayout*& gridLayout);
 	void addCardsToRedrawnBoard(QGridLayout*& gridLayout);
+	void loadIllusion(Colours color);
 public:
 	void setBoardPosition(const int x,const int y,const int card_width,const int card_height);
 	void addWidgetOnBoard(QPointer<qDraggableLabel>& card,int row,int column);
@@ -89,5 +93,6 @@ public:
 signals:
 	void boardResized();
 	void cardDropAccepted(const QMimeData* mimeData,int row,int column);
+	void isRadioButtonToggledIllusions(bool* toggled);
 };
 
