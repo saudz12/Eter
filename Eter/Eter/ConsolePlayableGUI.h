@@ -60,6 +60,8 @@ public:
 
 	std::shared_ptr<Player> GetRedPlayer() const { return m_game->getPlayer1(); }
 	std::shared_ptr<Player> GetBluePlayer() const  { return m_game->getPlayer2(); }
+	int16_t firstElementalCardId() const { return m_game->getFirstElementalCardId(); }
+	int16_t secondElementalCardId() const { return m_game->getSecondElementalCardId(); }
 
 	int GetBoardSize() const { return boardSize; }
 };

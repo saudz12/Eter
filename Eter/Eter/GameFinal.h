@@ -73,4 +73,7 @@ public:
 
 	std::shared_ptr<Player> getPlayer1() const;
 	std::shared_ptr<Player> getPlayer2() const;
+
+	int16_t getFirstElementalCardId() const;
+	int16_t getSecondElementalCardId() const;
 };

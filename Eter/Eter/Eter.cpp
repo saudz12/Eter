@@ -172,19 +172,8 @@ void Eter::loadIllusion(QPointer<QLabel>& label,QString path)
 
 void Eter::initializeElementalCards()
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<uint16_t> distribution(0, 23);
-
-    uint16_t firstCardNumber{ distribution(gen) };
-    distribution.reset();
-    uint16_t secondCardNumber{ distribution(gen) };
-
-    while (firstCardNumber == secondCardNumber)
-    {
-        distribution.reset();
-        secondCardNumber = distribution(gen);
-    }
+    int16_t firstCardNumber = m_gameview->firstElementalCardId();
+    int16_t secondCardNumber = m_gameview->secondElementalCardId();
 
     QPixmap firstCardPixmap(m_elementalCardsPaths[firstCardNumber]);
     QPixmap secondCardPixmap(m_elementalCardsPaths[secondCardNumber]);

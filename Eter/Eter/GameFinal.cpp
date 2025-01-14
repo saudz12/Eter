@@ -284,3 +284,13 @@ std::shared_ptr<Player> GameFinal::getPlayer2() const {
 	return m_player2;
 }
 
+int16_t GameFinal::getFirstElementalCardId() const
+{
+	return std::get<2>(m_elemental1);
+}
+
+int16_t GameFinal::getSecondElementalCardId() const
+{
+	return std::get<2>(m_elemental2);
+}
+
