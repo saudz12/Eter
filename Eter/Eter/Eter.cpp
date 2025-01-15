@@ -1,4 +1,5 @@
 #include "Eter.h"
+#include <fstream>
 
 Eter::Eter(QWidget *parent)
     : QMainWindow(parent), ui {new Ui::EterClass},
@@ -162,13 +163,29 @@ void Eter::placeCardInsideHLayout(qtCompletePlayer& pl,
     }
 }
 
-void Eter::loadElementalCardsPaths()
+void Eter::loadElementalCardsFromJSON()
 {
-    QString basePath = QDir::currentPath() + "/textures/spell_";
-    for (size_t i = 0; i < 24; i++)
+    std::ifstream inputFile("data/elementalCards.json");
+
+    if (!inputFile.is_open()) {
+        qDebug() << "Could not open the file!";
+        return;
+    }
+
+    json jsonData;
+
+    inputFile >> jsonData;
+
+    inputFile.close();
+
+    for (const auto& item : jsonData)
     {
-        m_elementalCardsPaths.emplace_back(basePath + QString::number(i) + ".jpg");
-        qDebug() << basePath + QString::number(i) + ".jpg";
+        int16_t id = item["id"];
+        QString name = QString::fromStdString(item["name"]);
+        QString effect = QString::fromStdString(item["effect"]);
+        QString filePath = QDir::currentPath() + QString::fromStdString(item["filepath"]);
+
+        m_elementalCardsInfo.push_back({ id, name, effect, filePath });
     }
 }
 
@@ -182,11 +199,8 @@ void Eter::initializeElementalCards()
     int16_t firstCardNumber = m_gameview->firstElementalCardId();
     int16_t secondCardNumber = m_gameview->secondElementalCardId();
 
-    QPixmap firstCardPixmap(m_elementalCardsPaths[firstCardNumber]);
-    QPixmap secondCardPixmap(m_elementalCardsPaths[secondCardNumber]);
-
-    qDebug() << m_elementalCardsPaths[firstCardNumber];
-    qDebug() << m_elementalCardsPaths[secondCardNumber];
+    QPixmap firstCardPixmap(std::get<3>(m_elementalCardsInfo[firstCardNumber - 1]));
+    QPixmap secondCardPixmap(std::get<3>(m_elementalCardsInfo[secondCardNumber - 1]));
 
     labelRedElementalCard = new QLabel(this);
     labelBlueElementalCard = new QLabel(this);
@@ -429,7 +443,7 @@ void Eter::onPushButtonStartElementalClicked()
     plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
     resizeGameLogo();
     initializeGameMessage();
-    loadElementalCardsPaths();
+    loadElementalCardsFromJSON();
     initializeElementalCards();
     placeHorizontalLayout();
     initializeGridLayoutBoard();

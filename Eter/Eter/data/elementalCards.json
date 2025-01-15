@@ -1,0 +1,147 @@
+[
+    {
+      "id": 1,
+      "name": "CONTROLLED EXPLOSION",
+      "effect": "Cause a Power Explosion. This will be the only Power Explosion for that play. If you have a ‘normal’ Power Explosion before using this Elemental Power, draw a new Power Explosion to be used with this power.",
+      "filepath": "/textures/spell_0.jpg"
+    },
+    {
+      "id": 2,
+      "name": "DESTRUCTION",
+      "effect": "Remove from play the last card played by the opponent.",
+      "filepath": "/textures/spell_1.jpg"
+    },
+    {
+      "id": 3,
+      "name": "FLAME",
+      "effect": "Reveal an opponent’s Illusion and next place your card on any space on the playing field.",
+      "filepath": "/textures/spell_2.jpg"
+    },
+    {
+      "id": 4,
+      "name": "FIRE",
+      "effect": "Return to their owners’ hands all visible cards of the same value (at least 2 of them) chosen by you - also yours! In case of stacks remove only the top card.",
+      "filepath": "/textures/spell_3.jpg"
+    },
+    {
+      "id": 5,
+      "name": "ASH",
+      "effect": "Rise like a Phoenix! If one of your cards was removed from play, you can immediately play it again.",
+      "filepath": "/textures/spell_4.jpg"
+    },
+    {
+      "id": 6,
+      "name": "SPARK",
+      "effect": "Take any of your cards that is covered by an opponent’s cards and play it onto a different space. In case of stacks, you can choose any of your covered cards.",
+      "filepath": "/textures/spell_5.jpg"
+    },
+    {
+      "id": 7,
+      "name": "SQUALL",
+      "effect": "Return to the opponent’s hand any one of his visible cards on the playing field.",
+      "filepath": "/textures/spell_6.jpg"
+    },
+    {
+      "id": 8,
+      "name": "GALE",
+      "effect": "Remove any cards that are covered by others (yours as well) - they are returned to their owners’ hands.",
+      "filepath": "/textures/spell_7.jpg"
+    },
+    {
+      "id": 9,
+      "name": "HURRICANE",
+      "effect": "Move any one full row/column by one card so that the first card/stack is moved off the playing field. Cards moved outside the playing field return to their owners’ hands.",
+      "filepath": "/textures/spell_8.jpg"
+    },
+    {
+      "id": 10,
+      "name": "GUST",
+      "effect": "Move any card on the playing field horizontally or vertically onto a neighboring card of a lower value. Affects individual cards not stacks.",
+      "filepath": "/textures/spell_9.jpg"
+    },
+    {
+      "id": 11,
+      "name": "MIRAGE",
+      "effect": "Exchange your Illusion (face-down card) with a different card from your hand (face-down).",
+      "filepath": "/textures/spell_10.jpg"
+    },
+    {
+      "id": 12,
+      "name": "STORM",
+      "effect": "Remove from play any stack of minimum 2 cards.",
+      "filepath": "/textures/spell_11.jpg"
+    },
+    {
+      "id": 13,
+      "name": "TIDE",
+      "effect": "Change positions of 2 different cards or stacks of cards.",
+      "filepath": "/textures/spell_12.jpg"
+    },
+    {
+      "id": 14,
+      "name": "MIST",
+      "effect": "Play an Illusion again. You cannot have 2 Illusions at the same time.",
+      "filepath": "/textures/spell_13.jpg"
+    },
+    {
+      "id": 15,
+      "name": "WAVE",
+      "effect": "Move any card/stack to the adjacent empty space, then play a card from your hand to this now empty space.",
+      "filepath": "/textures/spell_14.jpg"
+    },
+    {
+      "id": 16,
+      "name": "WHIRLPOOL",
+      "effect": "Move onto empty space two cards from different adjacent spaces in a straight line. The card of lower value goes to the bottom of the stack. If the cards are of equal values, you choose which one will be on top. Affects individual cards not stacks.",
+      "filepath": "/textures/spell_15.jpg"
+    },
+    {
+      "id": 17,
+      "name": "BLIZZARD",
+      "effect": "Place this card onto any space and choose a row or column that it will impact. The opponent cannot play any cards onto the chosen row/column during his next turn. Condition - your opponent must have a free space to play a card. Remove this card from play after the next opponent turn.",
+      "filepath": "/textures/spell_16.jpg"
+    },
+    {
+      "id": 18,
+      "name": "WATERFALL",
+      "effect": "Move all cards in a chosen column into one stack at the bottom of that column, placing them on top of each other, regardless of their values. The card that was visible on the top of the chosen column stays at the top of the new stack. Condition - the chosen column must contain minimum 3 cards.",
+      "filepath": "/textures/spell_17.jpg"
+    },
+    {
+      "id": 19,
+      "name": "SUPPORT",
+      "effect": "Value of a chosen card is increased by +1 (cannot be used on a ‘4’ card). Place your marker on the card. If the chosen card is ever covered or returned to your hand, the marker is removed. In case of a tie, the marker (if present on the playing field), is worth +1 point.",
+      "filepath": "/textures/spell_18.jpg"
+    },
+    {
+      "id": 20,
+      "name": "EARTHQUAKE",
+      "effect": "Remove from play all visible ‘1’ cards.",
+      "filepath": "/textures/spell_19.jpg"
+    },
+    {
+      "id": 21,
+      "name": "CRUMBLE",
+      "effect": "Value of a card is decreased by 1 (cannot be used on a ‘1’ card). Place your marker on the card. If the chosen card is ever covered or returned to your hand, the marker is removed. In case of a tie, the marker (if present on the playing field), is worth -1 point.",
+      "filepath": "/textures/spell_20.jpg"
+    },
+    {
+      "id": 22,
+      "name": "BORDER",
+      "effect": "Place this card in any empty space on the playing field to establish the border of the play area. Next, play your normal card. Any player may replace the Border card with any of their cards (it does not block the space). Condition - when played, this card must define one of the borders of the playing area.",
+      "filepath": "/textures/spell_21.jpg"
+    },
+    {
+      "id": 23,
+      "name": "AVALANCHE",
+      "effect": "Move two neighboring cards/stacks by one space horizontally or vertically. The space that the first card moves onto must be empty.",
+      "filepath": "/textures/spell_22.jpg"
+    },
+    {
+      "id": 24,
+      "name": "ROCK",
+      "effect": "Cover any Illusion card with your card, without revealing the value of the Illusion.",
+      "filepath": "/textures/spell_23.jpg"
+    }
+]
+

@@ -29,6 +29,12 @@
 #include "ConsolePlayableGUI.h"
 
 #include <memory>
+#include <json.hpp>
+
+using json = nlohmann::json;
+
+//id, name, file path, effect
+using elementalCardInfo = std::tuple<int16_t, QString, QString, QString>;
 
 class Eter : public QMainWindow
 {
@@ -63,7 +69,7 @@ private:
     Colours m_activeColor;
 
     //de pus in qElementalMode
-    std::vector<QString> m_elementalCardsPaths;
+    std::vector<elementalCardInfo> m_elementalCardsInfo;
 
     //uiBoard
     QPointer<qGameBoardWidget> widgetBoard;
@@ -114,7 +120,7 @@ private:
     void placeCardInsideHLayout(qtCompletePlayer &pl,
         QPointer<QHBoxLayout>& hboxLayoutCards,QPointer<QWidget>& widgetHBoxCards);
 
-    void loadElementalCardsPaths();
+    void loadElementalCardsFromJSON();
     void loadIllusion(QPointer<QLabel>& label, QString path);
 
     void initializeElementalCards();

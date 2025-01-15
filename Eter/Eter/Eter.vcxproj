@@ -154,6 +154,7 @@
     <ClInclude Include="HoleCard.h" />
     <ClInclude Include="Includes.h" />
     <ClInclude Include="InputChecking.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="MinionCard.h" />
     <ClInclude Include="MageCard.h" />
     <ClInclude Include="MageType.h" />

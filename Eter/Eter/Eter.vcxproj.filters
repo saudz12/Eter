@@ -94,9 +94,6 @@
     <ClCompile Include="qtCompleteMinionCard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="qtCompleteBoard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="qDraggableLabel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -183,13 +180,13 @@
     <ClInclude Include="qtCompleteMinionCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="qtCompleteBoard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ConsolePlayableGUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameFinal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
