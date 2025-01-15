@@ -313,11 +313,13 @@ BoardErrors Board::CanPlace(int16_t _x, int16_t _y, int16_t _val)
 	case StackConditions::POPULATED:
 		if (m_matrix[_x][_y].back().GetIsIllusionCard())
 		{
-			if (_val <= m_matrix[_x][_y].back().GetValue())
+			if (_val > m_matrix[_x][_y].back().GetValue())
 				return BoardErrors::ILLUSION_PROPERTY;
 			else
-				return BoardErrors::_INVALID_VAL;
+				return BoardErrors::ILLUSION_PROPERTY;
 		}
+		else if (m_matrix[_x][_y].back().GetValue() > _val)
+			return BoardErrors::_INVALID_VAL;
 		else
 			return BoardErrors::_NO_ERRORS;
 		break;

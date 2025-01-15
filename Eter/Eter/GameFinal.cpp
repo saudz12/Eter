@@ -216,18 +216,37 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 	}
 	if (m_board->isBoardEmpty()) {
 		m_board->PlaceCard(m_activePlayer->PlayCard(_val), 0, 0);
-		PrintActiveHand();
+		m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
+		PrintBoard();
 		return true;
 	}
+
 	BoardErrors tryPlace = m_board->CanPlace(_x, _y, _val);
 	if (tryPlace != BoardErrors::_NO_ERRORS && tryPlace != BoardErrors::ILLUSION_PROPERTY)
 		return false;
+	
+	bool canCoverIllusion = m_board->canCoverIllusion(_x, _y, _val);
+	if (canCoverIllusion)
+	{
+		if (m_board->getCardOnPos(_x, _y).GetValue() < _val)
+		{
+			m_board->RemoveTop(_x, _y);
+			m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
+			m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
+		}
+		else
+		{
+			m_board->revealIllusion(_x, _y);
+			m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
+		}
+		return true;
+	}
 
 	m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
-	PrintActiveHand();
+	m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
+	PrintBoard();
 	return true;
 }
-
 void GameFinal::PlayElemental(PowerSelect select)
 {
 	if (m_powerUsed) return;
@@ -263,6 +282,36 @@ void GameFinal::PlayMage()
 bool GameFinal::CheckWin()
 {
 	return (m_winnerStatus = m_board->checkWin()) != Colours::INVALID_COL;
+}
+
+bool GameFinal::PlaceIllusion(int16_t _x, int16_t _y, int16_t _val)
+{
+	//if (!m_wasIllusionUsed) {
+	//	return;//do nothing
+	//}
+
+	//if (!m_activePlayer->HasCardOfValue(_val)) {
+	//	return;//do nothing
+	//}
+
+	if (m_board->isBoardEmpty()) {
+		m_board->PlaceIllusion(m_activePlayer->PlayCard(_val), 0, 0);
+		m_activePlayer->PlayCard(0);
+		m_activePlayer->UpdateCard(0, CardAction::REMOVE);
+		m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
+		return true;
+	}
+
+	if (!m_board->isEmptySpace(_x, _y)) {
+		return false;//invalid space
+	}
+
+	m_board->PlaceIllusion(m_activePlayer->PlayCard(_val), _x, _y);
+	m_activePlayer->PlayCard(0);
+	m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
+	m_activePlayer->UpdateCard(0, CardAction::REMOVE);
+
+	return true;
 }
 
 void GameFinal::PrintBoard(bool _debug)

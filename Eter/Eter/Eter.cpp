@@ -82,7 +82,6 @@ void Eter::initializeRadioButtons()
     else {
         qDebug() << "Connection failed";
     }
-    //connect(this, &Eter::IllusionHandler, widgetBoard, &qGameBoardWidget::isRadioButtonToggledIllusions);
 }
 
 void Eter::initializeHandCardLayouts()
@@ -258,11 +257,13 @@ void Eter::handleIllusionCard(const QMimeData* mimeData, int row, int column)
     }
     else
     {
+        qDebug() << "value" << value;
         m_gameview->EndTurn();
         char color = mimeData->property("color").toString().toLatin1().at(0);
         m_activeColor = GetColour(color);
         if (mimeData->property("color").toString() == QString('R'))
         {
+            labelGameMessage->clear();
             labelGameMessage->setText("It's blue player's turn");
             labelGameMessage->setStyleSheet("QLabel { border: 2px solid blue; }");
             changeDraggabilityHBoxLayout(hboxLayoutRedCards, false);
@@ -271,6 +272,7 @@ void Eter::handleIllusionCard(const QMimeData* mimeData, int row, int column)
         }
         else
         {
+            labelGameMessage->clear();
             labelGameMessage->setText("It's red player's turn");
             labelGameMessage->setStyleSheet("QLabel { border: 2px solid red; }");
             changeDraggabilityHBoxLayout(hboxLayoutBlueCards, false);
@@ -311,13 +313,6 @@ void Eter::initializeGameMessage()
     labelGameMessage->show();
 }
 
-void Eter::resetGameMessage()
-{
-    labelGameMessage->setText("It's red player's turn");
-    labelGameMessage->setStyleSheet("QLabel { border: 2px solid red; }");
-    labelGameMessage->hide();
-}
-
 void Eter::resetUItoNormal()
 {
     widgetBoard->hide();
@@ -338,7 +333,6 @@ void Eter::resetUItoNormal()
         }
     }
     initializeEterLogo();
-    resetGameMessage();
 }
 
 void Eter::changeDraggabilityHBoxLayout(QPointer<QHBoxLayout>& currentLayout,bool enable)
@@ -420,7 +414,6 @@ void Eter::onPushButtonStartElementalClicked()
         GameOptions::EnabledEter);
     plRed = std::make_unique<qtCompletePlayer>(m_gameview->GetRedPlayer(), CARD_WIDTH, CARD_HEIGHT, true);//red starts first
     plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
-    initializeGameMessage();
     resizeGameLogo();
     initializeGameMessage();
     loadElementalCardsPaths();
