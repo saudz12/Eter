@@ -53,7 +53,6 @@ void qGameBoardWidget::handleMinionCardDrop(QDropEvent* event)
 
     QLabel* newCardLabel = new QLabel(this);
 
-
     if (event->mimeData()->hasFormat("application/x-card-pixmap")) 
     {
         isCurrentCardIllusion = false;
@@ -469,7 +468,7 @@ void qGameBoardWidget::addColumnLeft(QGridLayout*&  gridLayout, int& row, int& c
     column+=addColumn;
 }
 
-void qGameBoardWidget::redrawBoard(QGridLayout*&  gridLayout)
+void qGameBoardWidget::redrawBoard(QGridLayout*& gridLayout)
 {
     clearBoard(gridLayout);
     
@@ -743,7 +742,7 @@ void qGameBoardWidget::createEmptySpacesForRedrawnBoard()
 
         for (const auto& [adjRow, adjCol] : adjacentPositions)
         {
-            if (m_cardPosition.find({ adjRow, adjCol }) != m_cardPosition.end())
+            if (m_cardPosition.find({ adjRow, adjCol }) != m_cardPosition.end() && !m_cardPosition[{adjRow, adjCol}].empty())
             {
                 hasAdjacentCard = true;
                 break;
@@ -793,18 +792,21 @@ void qGameBoardWidget::addCardsToRedrawnBoard(QGridLayout*&  gridLayout)
 
         if (m_pixmapPosition.find({ row, column }) != m_pixmapPosition.end())
         {
-            qDebug() << "Found pixmap for position:" << row << "," << column;
-            qDebug() << "Pixmap:" << m_pixmapPosition[{row, column}].back();
-            cardLabel.back()->setPixmap(m_pixmapPosition[{row, column}].back());
+            if (!m_pixmapPosition[{row, column}].empty())
+            {
+                cardLabel.back()->setPixmap(m_pixmapPosition[{row, column}].back());
+            }
         }
-
-        cardLabel.back()->setProperty("type", "minion");
-        cardLabel.back()->setFixedSize(CARD_WIDTH, CARD_HEIGTH);
-        cardLabel.back()->show();
-        int toAddRow = row, toAddColumn = column;
-        //addNewMinionCardToGrid(cardLabel.back(), gridLayout, toAddRow, toAddColumn);
-        gridLayout->addWidget(cardLabel.back(), toAddRow, toAddColumn);
-        qDebug() << "Card placed at:" << row << "," << column << '\n';
+        if (!cardLabel.empty())
+        {
+            cardLabel.back()->setProperty("type", "minion");
+            cardLabel.back()->setFixedSize(CARD_WIDTH, CARD_HEIGTH);
+            cardLabel.back()->show();
+            int toAddRow = row, toAddColumn = column;
+            //addNewMinionCardToGrid(cardLabel.back(), gridLayout, toAddRow, toAddColumn);
+            gridLayout->addWidget(cardLabel.back(), toAddRow, toAddColumn);
+            qDebug() << "Card placed at:" << row << "," << column << '\n';
+        }
     }
 }
 
@@ -820,6 +822,12 @@ void qGameBoardWidget::loadIllusion(Colours color)
     currCardPixmap = pixmap;
 }
 
+void qGameBoardWidget::scaleCoordinates(int& row, int& col)
+{
+    row++;
+    col++;
+}
+
 void qGameBoardWidget::addEmptySpacesToRedrawnBoard(QGridLayout*&  gridLayout)
 {
     for (const auto& emptySpace : m_emptyPositions)
@@ -828,6 +836,26 @@ void qGameBoardWidget::addEmptySpacesToRedrawnBoard(QGridLayout*&  gridLayout)
         gridLayout->addWidget(createWhiteSpace(), row, column);
         qDebug() << "empty:" << row << "," << column << '\n';
     }
+}
+
+void qGameBoardWidget::removeCard(int row,int col, IllusionErrors error)
+{
+    QGridLayout* gridLayout = qobject_cast<QGridLayout*>(this->layout());
+    scaleCoordinates(row, col);
+    if (error == IllusionErrors::_ILLUSION_ALREADY_USED)
+    {
+        qDebug() << "row:" << row << "col:" << col << '\n';
+        removeWidgetFromGrid(gridLayout, row, col);
+        redrawBoard(gridLayout);
+        QLabel* emptySpace = createWhiteSpace();
+        gridLayout->addWidget(emptySpace, row, col);
+        m_emptyPositions.emplace(std::make_pair(row, col));
+    }
+    //else if (error == IllusionErrors::_INVALID_SPACE)
+    //{
+    //    removeWidgetFromGrid(gridLayout, row, col);
+    //    redrawBoard(gridLayout);
+    //}
 }
 
 

@@ -82,6 +82,13 @@ void Eter::initializeRadioButtons()
     else {
         qDebug() << "Connection failed";
     }
+    if (QObject::connect(this, &Eter::signalRemoveCard, widgetBoard, &qGameBoardWidget::removeCard))
+    {
+        qDebug() << "Connection established successfully";
+    }
+    else {
+        qDebug() << "Connection failed";
+    }
 }
 
 void Eter::initializeHandCardLayouts()
@@ -251,9 +258,15 @@ void Eter::handleIllusionCard(const QMimeData* mimeData, int row, int column)
     {
         scaleCoordinates(row, column);
     }
-    if (!m_gameview->PlaceIllusion(row, column, value))
+    IllusionErrors placeIllusionResult = m_gameview->PlaceIllusion(row, column, value);
+    if (placeIllusionResult ==IllusionErrors::_INVALID_SPACE)
     {
         QMessageBox::warning(nullptr, "Warning", "Cannot place a illusion there");
+    }
+    else if (placeIllusionResult==IllusionErrors::_ILLUSION_ALREADY_USED)
+    {
+        emit signalRemoveCard(row, column, IllusionErrors::_ILLUSION_ALREADY_USED);
+        QMessageBox::warning(nullptr, "Warning", "Player "+QString(GetColour(GetOppositeColour(m_activeColor)))+" already used the illusion");
     }
     else
     {

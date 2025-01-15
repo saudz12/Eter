@@ -152,4 +152,6 @@ private slots:
     void onBoardResized();
     void cardDropHandler(const QMimeData* mimeData,int row,int column);
     void IllusionHandler(bool* toogled);
+signals:
+    void signalRemoveCard(int row, int col, IllusionErrors error);
 };

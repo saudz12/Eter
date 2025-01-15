@@ -64,7 +64,7 @@ public:
 	void PlayMage();
 	bool CheckWin(); //cheking everything
 	bool CheckWin(int16_t _x, int16_t _y); //singlechecking
-	bool PlaceIllusion(int16_t _x, int16_t _y, int16_t _val);
+	IllusionErrors PlaceIllusion(int16_t _x, int16_t _y, int16_t _val);
 #pragma endregion
 
 #pragma region print_api

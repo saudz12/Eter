@@ -85,6 +85,7 @@ private:
 	void addEmptySpacesToRedrawnBoard(QGridLayout*& gridLayout);
 	void addCardsToRedrawnBoard(QGridLayout*& gridLayout);
 	void loadIllusion(Colours color);
+	void scaleCoordinates(int& row, int& col);
 public:
 	void setBoardPosition(const int x,const int y,const int card_width,const int card_height);
 	void addWidgetOnBoard(QPointer<qDraggableLabel>& card,int row,int column);
@@ -94,5 +95,7 @@ signals:
 	void boardResized();
 	void cardDropAccepted(const QMimeData* mimeData,int row,int column);
 	void isRadioButtonToggledIllusions(bool* toggled);
+public slots:
+	void removeCard(int row,int col, IllusionErrors error);
 };
 

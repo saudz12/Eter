@@ -49,6 +49,7 @@ enum class Colours : int16_t {
 
 Colours GetColour(char c);
 char GetColour(Colours c);
+Colours GetOppositeColour(Colours c);
 
 enum class ColorActions : int16_t {
 	_RED_ADD,
@@ -110,6 +111,12 @@ static enum class CommonErrors : int16_t {
 	_ADJACENT_SPACES_EMPTY,
 	_NOT_ADJACENT
 
+};
+
+enum class IllusionErrors : int16_t {
+	_NO_ERRORS,
+	_INVALID_SPACE,
+	_ILLUSION_ALREADY_USED
 };
 
 Directions GetDirection(char d);

@@ -284,34 +284,31 @@ bool GameFinal::CheckWin()
 	return (m_winnerStatus = m_board->checkWin()) != Colours::INVALID_COL;
 }
 
-bool GameFinal::PlaceIllusion(int16_t _x, int16_t _y, int16_t _val)
+IllusionErrors GameFinal::PlaceIllusion(int16_t _x, int16_t _y, int16_t _val)
 {
-	//if (!m_wasIllusionUsed) {
-	//	return;//do nothing
-	//}
-
-	//if (!m_activePlayer->HasCardOfValue(_val)) {
-	//	return;//do nothing
-	//}
+	if (m_activePlayer->GetIllusionUsage() == true)
+		return IllusionErrors::_ILLUSION_ALREADY_USED;
 
 	if (m_board->isBoardEmpty()) {
 		m_board->PlaceIllusion(m_activePlayer->PlayCard(_val), 0, 0);
+		m_activePlayer->SetIllusionUsage(true);
 		m_activePlayer->PlayCard(0);
 		m_activePlayer->UpdateCard(0, CardAction::REMOVE);
 		m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
-		return true;
+		return IllusionErrors::_NO_ERRORS;
 	}
 
 	if (!m_board->isEmptySpace(_x, _y)) {
-		return false;//invalid space
+		return IllusionErrors::_INVALID_SPACE;//invalid space
 	}
 
 	m_board->PlaceIllusion(m_activePlayer->PlayCard(_val), _x, _y);
+	m_activePlayer->SetIllusionUsage(true);
 	m_activePlayer->PlayCard(0);
 	m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
 	m_activePlayer->UpdateCard(0, CardAction::REMOVE);
 
-	return true;
+	return IllusionErrors::_NO_ERRORS;
 }
 
 void GameFinal::PrintBoard(bool _debug)

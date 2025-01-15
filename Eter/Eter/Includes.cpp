@@ -25,6 +25,19 @@ char GetColour(Colours c)
 	}
 }
 
+Colours GetOppositeColour(Colours c)
+{
+	switch (c)
+	{
+	case Colours::RED:
+		return Colours::BLUE;
+	case Colours::BLUE:
+		return Colours::RED;
+	default:
+		return Colours::INVALID_COL;
+	}
+}
+
 LineType GetLineType(char t)
 {
 	switch (toupper(t))

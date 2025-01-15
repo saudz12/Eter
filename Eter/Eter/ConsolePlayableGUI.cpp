@@ -226,16 +226,16 @@ bool GameView::PlaceCard(const int16_t x, const uint16_t y, const uint16_t val)
     }
 }
 
-bool GameView::PlaceIllusion(const int16_t x, const uint16_t y, const uint16_t val)
+IllusionErrors GameView::PlaceIllusion(const int16_t x, const uint16_t y, const uint16_t val)
 {
-    if (m_game->PlaceIllusion(x, y, val))
+    if (m_game->PlaceIllusion(x, y, val)==IllusionErrors::_NO_ERRORS)
     {
         m_game->PrintBoard();
-        return true;
+        return IllusionErrors::_NO_ERRORS;
     }
-    else
+    else 
     {
-        return false;
+        return m_game->PlaceIllusion(x, y, val);
     }
 }
 
