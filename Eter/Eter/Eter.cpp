@@ -75,21 +75,9 @@ void Eter::initializeRadioButtons()
         radioButtonPlayIllusion = new QRadioButton("Play Illusion", this);
     radioButtonPlayIllusion->setGeometry(pushButtonStartTimed->x(), pushButtonStartTimed->y() + 50, 130, 30);
     radioButtonPlayIllusion->setVisible(true);
-    if (QObject::connect(widgetBoard, &qGameBoardWidget::isRadioButtonToggledIllusions,
-        this, &Eter::IllusionHandler))
-    {
-        qDebug() << "Connection established successfully";
-    }
-    else {
-        qDebug() << "Connection failed";
-    }
-    if (QObject::connect(this, &Eter::signalRemoveCard, widgetBoard, &qGameBoardWidget::removeCard))
-    {
-        qDebug() << "Connection established successfully";
-    }
-    else {
-        qDebug() << "Connection failed";
-    }
+    QObject::connect(widgetBoard, &qGameBoardWidget::isRadioButtonToggledIllusions,
+        this, &Eter::IllusionHandler);
+    QObject::connect(this, &Eter::signalRemoveCard, widgetBoard, &qGameBoardWidget::removeCardIllusion);
 }
 
 void Eter::initializeHandCardLayouts()
@@ -428,6 +416,7 @@ void Eter::onPushButtonStartTrainingClicked()
     resizeGameLogo();
     placeHorizontalLayout();
     initializeGridLayoutBoard();
+    initializeRadioButtons();
 }
 
 void Eter::onPushButtonStartElementalClicked()

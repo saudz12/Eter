@@ -49,6 +49,7 @@ private:
 	bool wasFixedBoardCreated;
 	bool wasIllusionChecked;
 	bool isCurrentCardIllusion;
+	bool isEterCard;
 public:
 	qGameBoardWidget(QWidget* parent = nullptr,int board_max_size=0,int card_width=0,int card_heigth=0,int spacing=0);
 	
@@ -86,6 +87,10 @@ private:
 	void addCardsToRedrawnBoard(QGridLayout*& gridLayout);
 	void loadIllusion(Colours color);
 	void scaleCoordinates(int& row, int& col);
+	QLabel* setupCurrentCard(QDropEvent* dropEvent,int row,int col);
+	void coverIllusion(QGridLayout* girdLaout, QLabel* label, int& row, int& col);
+	void handleMinionCardPlaceOnTop(QGridLayout* gridLayout, QLabel* label, QLabel* newCardLabel, int& row, int& col);
+	void handleMinionCardPlaceOnEmptySpace(QGridLayout* gridlayout, QLabel* newCardLabel, QLabel* labelOnBoard, int& row, int& col);
 public:
 	void setBoardPosition(const int x,const int y,const int card_width,const int card_height);
 	void addWidgetOnBoard(QPointer<qDraggableLabel>& card,int row,int column);
@@ -96,6 +101,6 @@ signals:
 	void cardDropAccepted(const QMimeData* mimeData,int row,int column);
 	void isRadioButtonToggledIllusions(bool* toggled);
 public slots:
-	void removeCard(int row,int col, IllusionErrors error);
+	void removeCardIllusion(int row,int col, IllusionErrors error);
 };
 

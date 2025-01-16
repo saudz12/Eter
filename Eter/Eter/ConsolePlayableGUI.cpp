@@ -122,7 +122,7 @@ void GameView::GetPlayingFormat()
     case LaunchOptions::TRAINING:
         boardSize = 3;
         Eter = GameOptions::DisabledEter;
-        Illusion = GameOptions::DisabledIllusion;
+        Illusion = GameOptions::EnabledIllusion;
         break;
     case LaunchOptions::ELEMENTAL:
         Elemental = GameOptions::EnabledElemental;

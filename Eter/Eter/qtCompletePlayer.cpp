@@ -55,6 +55,14 @@ void qtCompletePlayer::loadCards()
 
             currDragLabel->setColor(m_player->GetPlayerColor());
             currDragLabel->setValue(cardValue);
+            if (cardValue == 0)//eter card conditon
+            {
+                currDragLabel->setIsEter(true);
+            }
+            else
+            {
+                currDragLabel->setIsEter(false);
+            }
             m_labelsCards.emplace_back(currDragLabel);
             auxRemainingCards--;
         }

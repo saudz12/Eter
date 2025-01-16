@@ -178,8 +178,8 @@ GameFinal::GameFinal(int16_t _maxBoardSize,
 	m_powerUsed{ false },
 	m_tieBraker{ false },
 	m_board{ std::make_unique<Board>(_maxBoardSize) },
-	m_player1{ std::make_shared<Player>(Colours::RED, false) },
-	m_player2{ std::make_shared<Player>(Colours::BLUE, false) },
+	m_player1{ std::make_shared<Player>(Colours::RED, _maxBoardSize==3?true:false) },
+	m_player2{ std::make_shared<Player>(Colours::BLUE, _maxBoardSize == 3 ? true : false) },
 	m_activePlayer{ std::shared_ptr<Player>(m_player1) }
 {
 	m_activeCoveredSet = m_player1->getCovered();
@@ -225,7 +225,7 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 	if (tryPlace != BoardErrors::_NO_ERRORS && tryPlace != BoardErrors::ILLUSION_PROPERTY)
 		return false;
 	
-	bool canCoverIllusion = m_board->canCoverIllusion(_x, _y, _val);
+	bool canCoverIllusion = m_board->CanCoverIllusion(_x, _y, _val);
 	if (canCoverIllusion)
 	{
 		if (m_board->getCardOnPos(_x, _y).GetValue() < _val)
@@ -236,7 +236,7 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 		}
 		else
 		{
-			m_board->revealIllusion(_x, _y);
+			m_board->RevealIllusion(_x, _y);
 			m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
 		}
 		return true;

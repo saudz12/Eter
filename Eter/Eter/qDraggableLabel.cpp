@@ -26,6 +26,7 @@ void qDraggableLabel::mousePressEvent(QMouseEvent* event)
         QDataStream stream(&pixmapData, QIODevice::WriteOnly);
         mimeData->setText("minion");
         mimeData->setProperty("type", QString("minion"));
+       
         mimeData->setProperty("value", m_value);
 
         if (m_color == Colours::RED)
@@ -33,6 +34,7 @@ void qDraggableLabel::mousePressEvent(QMouseEvent* event)
         else if (m_color == Colours::BLUE)
             mimeData->setProperty("color", QString("B"));
 
+        mimeData->setProperty("isEter", m_isEter);
         stream << m_cardPixmap;
         mimeData->setData("application/x-card-pixmap", pixmapData);
         QDrag* drag = new QDrag(this);

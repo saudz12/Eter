@@ -1395,7 +1395,7 @@ void Board::PlaceIllusion(MinionCard&& _toPlace, int16_t _x, int16_t _y)
 	m_matrix[_x][_y].push_back(_toPlace);
 }
 
-bool Board::canCoverIllusion(uint16_t _x, uint16_t _y, uint16_t _val)
+bool Board::CanCoverIllusion(uint16_t _x, uint16_t _y, uint16_t _val)
 {
 	if (_x >= 0 && _x < getRowCount() && _y >= 0 && _y < getColCount())
 	{
@@ -1405,7 +1405,7 @@ bool Board::canCoverIllusion(uint16_t _x, uint16_t _y, uint16_t _val)
 	return false;
 }
 
-void Board::revealIllusion(int16_t _x, int16_t _y)
+void Board::RevealIllusion(int16_t _x, int16_t _y)
 {
 	m_matrix[_x][_y].back().SetCardType(CardType::MinionCard);
 	m_matrix[_x][_y].back().SetIsIllusionCard(false);

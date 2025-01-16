@@ -163,8 +163,8 @@ public:
 	void SetEmptyBoard(Colours color);
 
 	void PlaceIllusion(MinionCard&& _toPlace,int16_t _x,int16_t _y);//illusionCard
-	bool canCoverIllusion(uint16_t _x,uint16_t _y,uint16_t _val);
-	void revealIllusion(int16_t _x, int16_t _y);
+	bool CanCoverIllusion(uint16_t _x,uint16_t _y,uint16_t _val);
+	void RevealIllusion(int16_t _x, int16_t _y);
 #pragma endregion
 
 	//use it only when placing cards
