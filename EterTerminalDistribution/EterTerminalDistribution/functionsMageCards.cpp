@@ -6,10 +6,10 @@ void funcFireMage1(Board& _board, Player& _user, int16_t _x, int16_t _y, int16_t
 	_board.RemoveCard(_x, _y, _pos);
 }
 
-void funcFireMage2(Board& _board, Player& _player, int16_t _line, char _type) //does not update players covered and removed :/
+void funcFireMage2(Board& _board, Player& _player, int16_t _line, LineType _type) //does not update players covered and removed :/
 {
-	_board.RemoveLine(_line, GetLineType(_type));
-	//do sum like returnStackToHand or returnLineToHand care se foloseste de ala sa fie mai modular codu yhu feel me????
+	_board.RemoveLine(_line, _type);
+	//do sum like returnStackToHand or returnLineToHand care se foloseste de ala sa fie mai modular codu yhu feel me???? bleeeehhhh > U < skitzo rant
 }
 
 void funcEarthMage1(Board& _board,Player& _user, Player& _affected, int16_t _x , int16_t _y, int16_t _val) //don;t know if it works.

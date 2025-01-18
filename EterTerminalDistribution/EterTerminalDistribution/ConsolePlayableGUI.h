@@ -29,6 +29,7 @@ class GameView {
 
 	void LaunchMenu();
 	void GetPlayingFormat();
+	std::vector<int16_t> GetInput(ActionCard _action); //;-; broo
 
 	/*static const int UP{ 72 };
 	static const int DOWN{ 80 };

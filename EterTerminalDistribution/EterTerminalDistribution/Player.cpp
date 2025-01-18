@@ -248,20 +248,19 @@ MinionCard&& Player::PlayCard(int16_t _val)
 {
 	m_lastPlayedCard.push_back(&m_remainingCards[_val].back());
 
-	UpdateCard(_val, CardAction::REMOVE);
 
 	return std::move(m_remainingCards[_val].back());
 }
 
 MinionCard&& Player::ReplayCard(int16_t _val)
 {
-	m_lastPlayedCard.push_back(&m_removed_Cards[_val].back());
+	MinionCard aux = m_removed_Cards[_val].back();
 
-	MinionCard toMove = std::move(m_removed_Cards[_val].back());
+	m_lastPlayedCard.push_back(&m_removed_Cards[_val].back());
 
 	UpdateCard(_val, CardAction::FORGET);
 
-	return std::move(toMove);
+	return  std::move(aux);
 }
 
 void Player::ReturnCard(MinionCard&& _toMove)
@@ -280,7 +279,6 @@ void Player::KillCard(MinionCard&& _toMove)
 			m_lastPlayedCard.erase(m_lastPlayedCard.begin() + i);
 			break;
 		}*/
-
 	UpdateCard(_toMove.GetValue(), CardAction::REMEMBER);
 
 	m_removed_Cards[_toMove.GetValue()].push_back(_toMove);

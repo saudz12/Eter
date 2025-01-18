@@ -29,6 +29,13 @@ int main()
 {
 	GameView test;
 	test.Loop();
+	
+	/*char x = 'a';
+
+	int16_t b = int16_t(x);
+
+	std::cout << b;*/
+	
 	//int a = 3;
 	//int b = 1;
 	/*int a = 100;

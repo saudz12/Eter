@@ -49,6 +49,8 @@ CommonErrors checkFuncAvalanche(Board& _board, int16_t _x1, int16_t _y1, int16_t
 
 CommonErrors checkFuncRock(Board&, int16_t, int16_t, MinionCard&);
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 CommonErrors checkFuncFireMage1(Board& _board, Player& _player, int16_t _x, int16_t _y, int16_t _pos);
 
 CommonErrors checkFuncFireMage2(Board& _board, Player& _player, int16_t _line, LineType _type);
@@ -59,8 +61,8 @@ CommonErrors checkFuncEarthMage2(Board& _board, int16_t _x, int16_t _y);
 
 CommonErrors checkFuncAirMage1(Board& _board, Colours _color, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 
-CommonErrors checkFuncAirMage2(Board&, int16_t, int16_t,Colours _color);
+CommonErrors checkFuncAirMage2(Board& _board, int16_t _x, int16_t _y, Colours _color);
 
 CommonErrors checkFuncWaterMage1(Board& _board, Colours _color, int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 
-CommonErrors checkFuncWaterMage2(Board& _board, char _margin);
+CommonErrors checkFuncWaterMage2(Board& _board, MarginType _margin);

@@ -58,81 +58,6 @@ void GameFinal::ResetRound()
 	m_elemental2 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd)) });
 }
 
-void GameFinal::FindPower(ActionCard identif)
-{
-	switch (identif)
-	{
-	case ActionCard::ControlledExplosion:
-		break;
-	case ActionCard::Destruction:
-		break;
-	case ActionCard::Flame:
-		break;
-	case ActionCard::Fire:
-		break;
-	case ActionCard::Ash:
-		break;
-	case ActionCard::Spark:
-		break;
-	case ActionCard::Squall:
-		break;
-	case ActionCard::Gale:
-		break;
-	case ActionCard::Hurricane:
-		break;
-	case ActionCard::Gust:
-		break;
-	case ActionCard::Mirage:
-		break;
-	case ActionCard::Storm:
-		break;
-	case ActionCard::Tide:
-		break;
-	case ActionCard::Mist:
-		break;
-	case ActionCard::Wave:
-		break;
-	case ActionCard::Whirlpool:
-		break;
-	case ActionCard::Blizzard:
-		break;
-	case ActionCard::Waterfall:
-		break;
-	case ActionCard::Support:
-		break;
-	case ActionCard::Earthquake:
-		break;
-	case ActionCard::Crumble:
-		break;
-	case ActionCard::Border:
-		break;
-	case ActionCard::Avalanche:
-		break;
-	case ActionCard::Rock:
-		break;
-	case ActionCard::Default:
-		break;
-	case ActionCard::FireMage1:
-		break;
-	case ActionCard::FireMage2:
-		break;
-	case ActionCard::EarthMage1:
-		break;
-	case ActionCard::EarthMage2:
-		break;
-	case ActionCard::AirMage1:
-		break;
-	case ActionCard::AirMage2:
-		break;
-	case ActionCard::WaterMage1:
-		break;
-	case ActionCard::WaterMage2:
-		break;
-	default:
-		break;
-	}
-}
-
 GameFinal::GameFinal()
 	:
 	m_enabledEter		{ GameOptions::EnabledEter },
@@ -185,55 +110,223 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	std::uniform_int_distribution<int16_t> elementalrange(1, 24);
 	m_elemental1 = std::move(PowerUsage{ false, GetElementalCard(elementalrange(rd))});
 	m_elemental2 = std::move(PowerUsage{ false, GetElementalCard(elementalrange(rd))});
+
+	//REMOVE THIS LATER: !!
+	m_redMage.second = ActionCard::FireMage1;
+	m_blueMage.second = ActionCard::FireMage2;
+}
+
+ActionCard GameFinal::GetCurrentPlayerMage()
+{
+	switch (m_activeColor)
+	{
+	case Colours::RED:
+		return m_redMage.second;
+	case Colours::BLUE:
+		return m_blueMage.second;
+	default:
+		return ActionCard::Default;
+	}
+}
+
+CommonErrors GameFinal::CheckInput(ActionCard _action, std::vector<int16_t> _inputData)
+{
+	switch (_action)
+	{
+	case ActionCard::FireMage1: 
+	{
+		int16_t x = _inputData[0];
+		int16_t y = _inputData[1];
+		return checkFuncFireMage1(*m_board, *m_activePlayer, x, y, m_board->GetStackSize(x, y) - 1);
+	}
+	case ActionCard::FireMage2: 
+	{
+		int16_t line = _inputData[0];
+		LineType type = GetLineType(char(_inputData[1]));
+		return checkFuncFireMage2(*m_board, *m_activePlayer, line, type);
+	}
+	case ActionCard::EarthMage1:
+	{
+		int16_t x = _inputData[0];
+		int16_t y = _inputData[1];
+		int16_t val = _inputData[2];
+		return checkFuncEarthMage1(*m_board, *m_activePlayer, x, y, val);
+	}
+	case ActionCard::EarthMage2:
+	{
+		int16_t x = _inputData[0];
+		int16_t y = _inputData[1];
+		return checkFuncEarthMage2(*m_board, x, y);
+	}
+	case ActionCard::AirMage1:
+	{
+		int16_t xS = _inputData[0];
+		int16_t yS = _inputData[1];
+		int16_t xD = _inputData[2];
+		int16_t yD = _inputData[3];
+		return checkFuncAirMage1(*m_board, m_activeColor, xS, yS, xD, yD);
+	}
+	case ActionCard::AirMage2:
+	{
+		int16_t x = _inputData[0];
+		int16_t y = _inputData[1];
+		return checkFuncAirMage2(*m_board, x, y, m_activeColor);
+	}
+	case ActionCard::WaterMage1:
+	{
+		int16_t xS = _inputData[0];
+		int16_t yS = _inputData[1];
+		int16_t xD = _inputData[2];
+		int16_t yD = _inputData[3];
+		return checkFuncWaterMage1(*m_board, m_activeColor, xS, yS, xD, yD);
+	}
+	case ActionCard::WaterMage2:
+	{
+		MarginType margin = GetMargin(char(_inputData[0]));
+		return checkFuncWaterMage2(*m_board, margin);
+	}
+	default:
+	{
+		return CommonErrors::_INVALID_CARD_TYPE;
+	}
+	}
+
+	return CommonErrors::_INVALID_CARD_TYPE;
 }
 
 bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 {
-	if (!m_activePlayer->HasCardOfValue(_val)) {
-		return false;
-	}
 	if (m_board->isBoardEmpty()) {
+		if (!m_activePlayer->HasCardOfValue(_val)) {
+			return false;
+		}
 		m_board->PlaceCard(m_activePlayer->PlayCard(_val), 0, 0);
 		PrintActiveHand();
 		return true;
 	}
+
+	if (m_board->CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
+		return false;
+
+	if (!m_activePlayer->HasCardOfValue(_val)) {
+		return false;
+	}
+
 	BoardErrors tryPlace = m_board->CanPlace(_x, _y, _val);
 	if (tryPlace != BoardErrors::_NO_ERRORS && tryPlace != BoardErrors::ILLUSION_PROPERTY)
 		return false;
 
 	m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
+	m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
 	PrintActiveHand();
 	return true;
 }
 
-void GameFinal::PlayElemental(PowerSelect select)
+void GameFinal::PlayElemental(PowerSelect select, std::vector<int16_t> positions)
 {
-	if (m_powerUsed) return;
-	m_powerUsed = true;
+	/*if (m_powerUsed) return;
+	m_powerUsed = true;*/
+	ActionCard toSearch = ActionCard::Default;
 	if (select == PowerSelect::First && m_elemental1.first == false)
 	{
 		m_elemental1.first = true;
-		FindPower(m_elemental1.second);
+		toSearch = m_elemental1.second;
 	}
 	else if (select == PowerSelect::Second && m_elemental2.first == false)
 	{
 		m_elemental2.first = true;
-		FindPower(m_elemental2.second);
+		toSearch = m_elemental2.second;
+	}
+
+	switch (toSearch)
+	{
+	case ActionCard::ControlledExplosion:
+		break;
+	case ActionCard::Destruction:
+		break;
+	case ActionCard::Flame:
+		break;
+	case ActionCard::Fire:
+		break;
+	case ActionCard::Ash:
+		break;
+	case ActionCard::Spark:
+		break;
+	case ActionCard::Squall:
+		break;
+	case ActionCard::Gale:
+		break;
+	case ActionCard::Hurricane:
+		break;
+	case ActionCard::Gust:
+		break;
+	case ActionCard::Mirage:
+		break;
+	case ActionCard::Storm:
+		break;
+	case ActionCard::Tide:
+		break;
+	case ActionCard::Mist:
+		break;
+	case ActionCard::Wave:
+		break;
+	case ActionCard::Whirlpool:
+		break;
+	case ActionCard::Blizzard:
+		break;
+	case ActionCard::Waterfall:
+		break;
+	case ActionCard::Support:
+		break;
+	case ActionCard::Earthquake:
+		break;
+	case ActionCard::Crumble:
+		break;
+	case ActionCard::Border:
+		break;
+	case ActionCard::Avalanche:
+		break;
+	case ActionCard::Rock:
+		break;
+	default:
+		break;
 	}
 }
 
-void GameFinal::PlayMage()
+void GameFinal::PlayMage(std::vector<int16_t> inputData)
 {
-	if (m_powerUsed) return;
-	m_powerUsed = true;
+	/*if (m_powerUsed) return;
+	m_powerUsed = true;*/
+	ActionCard toSearch = ActionCard::Default;
 	if (m_activeColor == Colours::RED && m_redMage.first == false) {
 		m_redMage.first = true;
-		FindPower(m_redMage.second);
+		toSearch = m_redMage.second;
 	}
 	else if (m_activeColor == Colours::BLUE && m_blueMage.first == false)
 	{
 		m_blueMage.first = true;
-		FindPower(m_blueMage.second);
+		toSearch = m_blueMage.second;
+	}
+	switch (toSearch)
+	{
+	case ActionCard::FireMage1:
+		break;
+	case ActionCard::FireMage2:
+		break;
+	case ActionCard::EarthMage1:
+		break;
+	case ActionCard::EarthMage2:
+		break;
+	case ActionCard::AirMage1:
+		break;
+	case ActionCard::AirMage2:
+		break;
+	case ActionCard::WaterMage1:
+		break;
+	case ActionCard::WaterMage2:
+		break;
+	default:
+		break;
 	}
 
 }

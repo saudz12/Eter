@@ -304,7 +304,7 @@ BoardErrors Board::CanPlace(int16_t _x, int16_t _y, int16_t _val)
 	if (CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
 		return BoardErrors::_OUTSIDE_BOUND;
 
-	if (_x == -1 || _y == -1 || _x == getRowCount() || _y == getColCount())
+	if (_x == -1 || _y == -1 || (_x == getRowCount() - 1 && getRowCount()) < m_max_size || (_y == getColCount() - 1 && getColCount() < m_max_size))
 		return BoardErrors::_NO_ERRORS;
 
 	StackConditions tryPlaceOnStack = CheckStackCondition(_x, _y);
@@ -795,6 +795,13 @@ const MinionCard& Board::ViewTop(int16_t _x, int16_t _y)
 	if (m_matrix[_x][_y].empty())
 		return MinionCard::CreateHoleCard();
 	return m_matrix[_x][_y].back();
+}
+
+int Board::GetStackSize(int16_t _x, int16_t _y)
+{
+	if (CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
+		return -1;
+	return m_matrix[_x][_y].size();
 }
 
 AdjacentType Board::CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
@@ -1436,13 +1443,13 @@ MarginType GetMargin(char _type)
 {
 	switch (_type)
 	{
-	case 'U':
+	case 't':
 		return MarginType::MARGIN_TOP;
-	case 'B':
+	case 'b':
 		return MarginType::MARGIN_BOT;
-	case 'L':
+	case 'l':
 		return MarginType::MARGIN_LEFT;
-	case 'R':
+	case 'r':
 		return MarginType::MARGIN_RIGHT;
 	default:
 		return MarginType::INVALID_MARGIN;

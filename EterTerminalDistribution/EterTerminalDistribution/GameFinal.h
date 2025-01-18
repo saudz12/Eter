@@ -42,14 +42,15 @@ private:
 	PowerUsage m_elemental1;
 	PowerUsage m_elemental2;
 
-	void FindPower(ActionCard identif);
-
 public:
 	GameFinal();
 	GameFinal(	int16_t _maxBoardSize,	
 				GameOptions _enabledEter,		GameOptions _enabledIllusion,
 				GameOptions _enabledMage,		GameOptions _enabledElemental,
 				GameOptions _enabledTournament,	GameOptions _enabledTimed);
+
+	ActionCard GetCurrentPlayerMage();
+	CommonErrors CheckInput(ActionCard _action, std::vector<int16_t> _inputData);
 
 #pragma region turn_logic
 	void AdvanceAction();
@@ -59,8 +60,8 @@ public:
 
 #pragma region action_logic
 	bool PlaceCard(int16_t _x, int16_t _y, int16_t _val);
-	void PlayElemental(PowerSelect select);
-	void PlayMage();
+	void PlayElemental(PowerSelect select, std::vector<int16_t> positions);
+	void PlayMage(std::vector<int16_t> inputData);
 	bool CheckWin(); //cheking everything
 	bool CheckWin(int16_t _x, int16_t _y); //singlechecking
 #pragma endregion

@@ -149,6 +149,7 @@ public:
 	bool CheckTopIsEter(int16_t _x, int16_t _y);
 	void RemoveIllusionProperty(int16_t _x, int16_t _y);
 	const MinionCard& ViewTop(int16_t _x, int16_t _y); //wierd??
+	int GetStackSize(int16_t _x, int16_t _y);
 
 	//checks if the coordonates of 2 stacks ar adjacent
 	static AdjacentType CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
@@ -159,7 +160,7 @@ public:
 	void AddLineToRight();
 	void AddLineOnTop();
 	void AddLineOnBottom();
-	void SetEmptyBoard(Colours color);
+	void SetEmptyBoard(Colours color); //?
 #pragma endregion
 
 	//use it only when placing cards
@@ -202,7 +203,7 @@ public:
 	void updateSeconDiagChecker(uint16_t option);
 	void updateColChecker(uint16_t y, uint16_t option);
 	void updateRowChecker(uint16_t x, uint16_t option);
-
+	
 	bool isBoardFilled();
 	bool isBoardEmpty();
 
