@@ -37,6 +37,8 @@ private:
 	bool m_wasPlaced;
 	bool m_powerUsed;
 	bool m_tieBraker;
+	bool m_canPlayExplosion;
+	bool m_wasExplosionPlayed;
 
 	PowerUsage m_redMage;
 	PowerUsage m_blueMage;
@@ -71,10 +73,16 @@ public:
 	void PrintBoard(bool _debug = false);
 	void PrintActiveHand();
 #pragma endregion
+	ExplosionCard generateNewExplosionCard();
 
 	std::shared_ptr<Player> getPlayer1() const;
 	std::shared_ptr<Player> getPlayer2() const;
-
 	int16_t getFirstElementalCardId() const;
 	int16_t getSecondElementalCardId() const;
+	Board& GetBoard() { return *m_board; }
+	bool GetCanPlayExplosion() const { return m_canPlayExplosion; }
+	bool GetWasExplosionPlayed() const { return m_wasExplosionPlayed; }
+	
+	bool tryToApplyExplosionOnBoard(ExplosionCard& card);
+	void applyExplosionOnBoard(const ExplosionCard& card);
 };

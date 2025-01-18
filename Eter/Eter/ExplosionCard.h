@@ -22,11 +22,11 @@ private:
 public:
 	ExplosionCard(const explMap& explosionMap);
 	ExplosionCard(uint16_t);
-	explMap GetExplosionMap() const;	
+	const explMap& GetExplosionMap() const;	
 
 	void SetCardType(CardType type) override;
 	void SetExplosionMap(const explMap& Map);
-	
+
 	CardType GetCardType() const override;
 		
 	void RotateToRight(uint16_t);

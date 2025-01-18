@@ -44,7 +44,6 @@ private:
 	void PrintPlayerOptions();
 
 public:
-
 	GameView();
 	GameView(GameOptions illusion,
 		GameOptions mage,
@@ -57,13 +56,19 @@ public:
 	bool PlaceCard(const int16_t x,const uint16_t y,const uint16_t val);
 	IllusionErrors PlaceIllusion(const int16_t x, const uint16_t y, const uint16_t val);
 	void EndTurn();
-    GameFinal& GetGameFinal()  { return *m_game; }
 
+	ExplosionCard GenerateNewExplosionCard();
+	bool tryToApplyExplosionOnBoard(ExplosionCard& card);
+	void applyExplosionOnBoard(const ExplosionCard& card) const;
+
+    GameFinal& GetGameFinal()  { return *m_game; }
 	std::shared_ptr<Player> GetRedPlayer() const { return m_game->getPlayer1(); }
 	std::shared_ptr<Player> GetBluePlayer() const  { return m_game->getPlayer2(); }
 	int16_t firstElementalCardId() const { return m_game->getFirstElementalCardId(); }
 	int16_t secondElementalCardId() const { return m_game->getSecondElementalCardId(); }
-
+	Board& GetBoard() { return m_game->GetBoard(); }
 	int GetBoardSize() const { return boardSize; }
+	bool GetCanPlayExplosion() const { return m_game->GetCanPlayExplosion(); }
+	bool GetWasExplosionPlayed() const { return m_game->GetWasExplosionPlayed(); }
 };
 

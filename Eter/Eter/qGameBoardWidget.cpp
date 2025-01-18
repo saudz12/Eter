@@ -801,7 +801,6 @@ QLabel* qGameBoardWidget::setupCurrentCard(QDropEvent* event, int row, int col)
     currentCardValue = event->mimeData()->property("value").toInt();
     currentCardColor = event->mimeData()->property("color").toString();
     isEterCard = event->mimeData()->property("isEter").toBool();
-    qDebug() << "isiteter"<<isEterCard;
     return newCardLabel;
 }
 

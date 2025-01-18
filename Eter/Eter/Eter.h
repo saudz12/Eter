@@ -20,11 +20,13 @@
 #include <qdir.h>
 #include "qmessagebox.h"
 #include "qradiobutton.h"
+#include "qdialog.h"
 
 #include "qtCompletePlayer.h"
 
 #include "qDraggableLabel.h"
 #include "qGameBoardWidget.h"
+#include "qDialogExplosionCard.h"
 
 #include "ConsolePlayableGUI.h"
 
@@ -87,6 +89,9 @@ private:
     QPointer<QLabel> labelRedIllusion;
     QPointer<QLabel> labelBlueIllusion;
 
+    //explosions
+    QPointer<qDialogExplosionCard> dialogExplosion;
+
     GameView::LaunchOptions m_activeGamemode;
 
     //object placement details
@@ -130,8 +135,12 @@ private:
     void checkWin();
     void resetUItoNormal();
     void resetElements();
-
+    void changeLabelMessageBox(const QMimeData* mimeData);
     void initializeGameMessage();
+
+    ///explosions
+    void showExplosionCard(ExplosionCard explCard);
+    void initializeExplosionDialog(std::shared_ptr<ExplosionCard>& card);
 public:
     static const int CARD_WIDTH=80;
     static const int CARD_HEIGHT=80;
@@ -158,6 +167,8 @@ private slots:
     void onBoardResized();
     void cardDropHandler(const QMimeData* mimeData,int row,int column);
     void IllusionHandler(bool* toogled);
+    void handlerExplCardAccept(ExplosionCard card);
+    void handlerExplCardReject(ExplosionCard card);
 signals:
     void signalRemoveCard(int row, int col, IllusionErrors error);
 };

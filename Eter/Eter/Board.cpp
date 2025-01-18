@@ -1492,7 +1492,7 @@ void Board::cloneMatrix(const Board& from, Board& to)
 	}
 }
 
-void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& pl2)
+void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& pl2,bool isForTest)
 {
 	explMap currExlpMap = explCard.GetExplosionMap();
 	for (const auto& elem : currExlpMap)
@@ -1507,12 +1507,15 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Pl
 			{
 				MinionCard lastCard = m_matrix[positionX][positionY].back();
 				lastCard.SetIsIllusionCard(false);
-				removePos(positionX, positionY);
-				if (lastCard.GetColor() == pl1.GetPlayerColor())
-					pl1.addToRemovedCards(lastCard);
-				else
-					pl2.addToRemovedCards(lastCard);
 
+				if (!isForTest)
+				{
+					removePos(positionX, positionY);
+					if (lastCard.GetColor() == pl1.GetPlayerColor())
+						pl1.addToRemovedCards(lastCard);
+					else
+						pl2.addToRemovedCards(lastCard);
+				}
 			}
 			break;
 		case ReturnRemoveOrHoleCard::ReturnCard:
@@ -1520,18 +1523,24 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Pl
 			{
 				MinionCard lastCard = m_matrix[positionX][positionY].back();
 				lastCard.SetIsIllusionCard(false);
-				removePos(positionX, positionY);
-				if (lastCard.GetColor() == pl1.GetPlayerColor())
-					pl1.returnMinionCardToHand(lastCard);
-				else
-					pl2.returnMinionCardToHand(lastCard);
+
+				if (!isForTest)
+				{
+					removePos(positionX, positionY);
+					if (lastCard.GetColor() == pl1.GetPlayerColor())
+						pl1.returnMinionCardToHand(lastCard);
+					else
+						pl2.returnMinionCardToHand(lastCard);
+				}
 			}
 			break;
 		case ReturnRemoveOrHoleCard::HoleCard:
 			if (!m_matrix[positionX][positionY].empty() && !m_matrix[positionX][positionY].back().GetIsEterCard())
 			{
-				removeStack(positionX, positionY);
-
+				if (!isForTest)
+				{
+					removeStack(positionX, positionY);
+				}
 				MinionCard holeCard(0, Colours::INVALID_COL, false);
 				holeCard.SetCardType(CardType::HoleCard);
 
@@ -1545,6 +1554,42 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Pl
 		}	
 	}
 	checkForUpdates();
+	if (!isForTest)
+		printBoard(true);
+}
+
+bool Board::tryApplyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1,Player& pl2)
+{
+	ResizeableMatrix boardToTest = m_matrix;
+	applyExplosionOnBoard(explCard, pl1, pl2, true);
+	std::vector<std::pair<int, int>> m_adjiaceny = {
+		{-1,-1},{-1,0},{-1,1},{0,1},
+		{1,1},{1,0},{1,-1},{0,-1}
+	};
+	bool isDisconnecting = true;
+	for (int i = 0; i < m_max_size; ++i)
+	{
+		for (int j = 0; j < m_max_size; ++j)
+		{
+			bool isAdj = false;
+			for (auto& position : m_adjiaceny)
+			{
+				auto& [row, col] = position;
+				if (row + i >= 0 && row + i < m_max_size && col + j >= 0 && col + j < m_max_size && !m_matrix[row + i][col + j].empty())
+				{
+					isAdj = true;
+					break;
+				}
+			}
+			if (isAdj == false)
+			{
+				isDisconnecting = false;
+				break;
+			}
+		}
+	}
+	m_matrix = boardToTest;
+	return isDisconnecting;
 }
 
 MarginType GetMargin(char _type)

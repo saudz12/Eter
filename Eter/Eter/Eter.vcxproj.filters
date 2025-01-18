@@ -112,6 +112,9 @@
     <ClCompile Include="ActionType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qDialogExplosionCard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card.h">
@@ -195,6 +198,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="qDraggableLabel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="qDialogExplosionCard.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
