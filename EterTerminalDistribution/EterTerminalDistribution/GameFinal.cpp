@@ -42,9 +42,15 @@ void GameFinal::ResetRound()
 	m_powerUsed = false;
 	m_tieBraker = false;
 
-	m_board = std::move(std::make_unique<Board>(m_board->getMaxSize()));
-	m_player1 = std::move(std::make_unique<Player>(Colours::RED, false));
-	m_player2 = std::move(std::make_unique<Player>(Colours::BLUE, false));
+	/*m_board.reset();
+	m_player1.reset();
+	m_player2.reset();*/
+
+	m_board = std::make_unique<Board>(m_board->getMaxSize());
+	m_player1 = std::make_unique<Player>(Colours::RED, false);
+	m_player2 = std::make_unique<Player>(Colours::BLUE, false);
+
+	m_activePlayer = std::shared_ptr<Player>(m_player1);
 
 	m_activeColor = Colours::RED;
 
@@ -194,6 +200,11 @@ CommonErrors GameFinal::CheckInput(ActionCard _action, std::vector<int16_t> _inp
 	return CommonErrors::_INVALID_CARD_TYPE;
 }
 
+Colours GameFinal::GetActiveColour()
+{
+	return m_activeColor;
+}
+
 bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 {
 	if (m_board->isBoardEmpty()) {
@@ -201,7 +212,6 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 			return false;
 		}
 		m_board->PlaceCard(m_activePlayer->PlayCard(_val), 0, 0);
-		PrintActiveHand();
 		return true;
 	}
 
@@ -218,7 +228,6 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 
 	m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
 	m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
-	PrintActiveHand();
 	return true;
 }
 
@@ -331,9 +340,11 @@ void GameFinal::PlayMage(std::vector<int16_t> inputData)
 
 }
 
-bool GameFinal::CheckWin()
+Colours GameFinal::CheckWinner()
 {
-	return (m_winnerStatus = m_board->checkWin()) != Colours::INVALID_COL;
+	m_winnerStatus = m_board->checkWin();
+
+	return m_winnerStatus;
 }
 
 void GameFinal::PrintBoard(bool _debug)

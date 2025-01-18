@@ -262,7 +262,11 @@ void GameView::PrintGameOptions()
 
 void GameView::PrintPlayerOptions()
 {
-    std::cout << "Chose an action: " << std::endl << std::endl;
+    if (m_game->GetActiveColour() == Colours::RED)
+        std::cout << "Red's ";
+    else
+        std::cout << "Blue's ";
+    std::cout << "Turn.\n\nChose an action: " << std::endl << std::endl;
     std::cout << "0. Exit" << std::endl;
     std::cout << "1. Place a card from hand" << std::endl;
     std::cout << "2. Use a special power" << std::endl;
@@ -301,11 +305,11 @@ void GameView::Loop()
         switch (option)
         {
         case 1:
+            m_game->PrintActiveHand();
             std::cout << "Where(x, y) and Card: " << std::endl;
             std::cin >> x >> y >> val;
-            if (m_game->PlaceCard(x, y, val)) {
+                if (m_game->PlaceCard(x, y, val)) {
                 goNext = true;
-                
             }
             break;
         case 2:
@@ -336,8 +340,14 @@ void GameView::Loop()
 
         if (goNext) {
             m_game->EndTurn();
-            if (m_game->CheckWin())
+            Colours winner;
+            if ((winner = m_game->CheckWinner()) != Colours::INVALID_COL) {
+                if (winner == Colours::RED)
+                    std::cout << "RED WON!@!@!!@@!" << std::endl;
+                else
+                    std::cout << "BLUEWONONOWNON" << std::endl;
                 m_game->ResetRound();
+            }
         }
             
     }

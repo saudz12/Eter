@@ -934,16 +934,23 @@ Colours Board::checkWin()
 {
 	for (const auto& diff : m_colChecker)
 	{
-		if (diff.first == 3)
+		if (diff.first == m_max_size)
 			return Colours::RED;
-		if (diff.second == 3)
+		if (diff.second == m_max_size)
 			return Colours::BLUE;
 	}
 	for (const auto& diff : m_rowChecker)
 	{
-		if (diff.first == 3)
+		if (diff.first == m_max_size)
 			return Colours::RED;
-		if (diff.second == 3)
+		if (diff.second == m_max_size)
+			return Colours::BLUE;
+	}
+
+	if (isMatMaxSize()) {
+		if (m_firstDiag.first == m_max_size || m_seconDiag.first == m_max_size)
+			return Colours::RED;
+		else if (m_firstDiag.second == m_max_size || m_seconDiag.second == m_max_size)
 			return Colours::BLUE;
 	}
 

@@ -51,6 +51,7 @@ public:
 
 	ActionCard GetCurrentPlayerMage();
 	CommonErrors CheckInput(ActionCard _action, std::vector<int16_t> _inputData);
+	Colours GetActiveColour();
 
 #pragma region turn_logic
 	void AdvanceAction();
@@ -62,7 +63,7 @@ public:
 	bool PlaceCard(int16_t _x, int16_t _y, int16_t _val);
 	void PlayElemental(PowerSelect select, std::vector<int16_t> positions);
 	void PlayMage(std::vector<int16_t> inputData);
-	bool CheckWin(); //cheking everything
+	Colours CheckWinner(); //cheking everything
 	bool CheckWin(int16_t _x, int16_t _y); //singlechecking
 #pragma endregion
 
