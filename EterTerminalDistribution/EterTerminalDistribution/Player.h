@@ -62,16 +62,16 @@ private:
 
 	MinionCard* m_illusionCard;
 
-	void generateTrainingModeHand(); 
-	void generateHand(); 
+	/*void generateTrainingModeHand(); 
+	void generateHand(); */
 	void GenerateHand(bool training); //new
 
 public:
 	//constructor
-	Player(Colours playerColor);
+	//Player(Colours playerColor);
 	Player(Colours _playerColor, bool _training); //new
 	Player();
-	Player(Colours playerColor, GameOptions elementalDuelOption, GameOptions mageDuelOption);
+	//Player(Colours playerColor, GameOptions elementalDuelOption, GameOptions mageDuelOption);
 
 	//getters
 	Colours GetPlayerColor() const;

@@ -331,15 +331,14 @@ CommonErrors checkFuncFireMage1(Board& _board, Player& _player, int16_t _x, int1
 	return CommonErrors::_NO_ERRORS;
 }	
 
-CommonErrors checkFuncFireMage2(Board& _board, Player& _player, int16_t _line, char _type) {
-	LineType type = GetLineType(_type);
-	if (type != LineType::TYPE_ROW && type != LineType::TYPE_COLUMN)
+CommonErrors checkFuncFireMage2(Board& _board, Player& _player, int16_t _line, LineType _type) {
+	if (_type != LineType::TYPE_ROW && _type != LineType::TYPE_COLUMN)
 		return CommonErrors::_INVALID_LINE_TYPE;
-	if (_line < 0 || (type == LineType::TYPE_ROW && _line >= _board.getRowCount()) || (type == LineType::TYPE_COLUMN && _line >= _board.getColCount()))
+	if (_line < 0 || (_type == LineType::TYPE_ROW && _line >= _board.getRowCount()) || (_type == LineType::TYPE_COLUMN && _line >= _board.getColCount()))
 		return CommonErrors::_OUTSIDE_BOUND;
-	if (_board.GetNrOfCardsOnLine(_line, type) < 3)
+	if (_board.GetNrOfCardsOnLine(_line, _type) < 3)
 		return CommonErrors::_INCOMPLETE_LINE_STRUCTURE;
-	if (_board.LineContainsColour(_line, GetLineType(_type), _player.GetPlayerColor()) == false)
+	if (_board.LineContainsColour(_line, _type, _player.GetPlayerColor()) == false)
 		return CommonErrors::_LINE_DOES_NOT_CONTAIN_COLOR;
 
 	return CommonErrors::_NO_ERRORS;
@@ -415,17 +414,15 @@ CommonErrors checkFuncWaterMage1(Board& _board, Colours _color, int16_t _xS, int
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncWaterMage2(Board& _board, char _margin)
+CommonErrors checkFuncWaterMage2(Board& _board, MarginType _margin)
 {
 	int16_t finish;
 	int16_t count = 0;
 
-	MarginType marginType = GetMargin(_margin);
-
-	if (marginType == MarginType::INVALID_MARGIN)
+	if (_margin == MarginType::INVALID_MARGIN)
 		return CommonErrors::_INVALID_LINE_TYPE;
 
-	if (marginType == MarginType::MARGIN_TOP || marginType == MarginType::MARGIN_BOT) {
+	if (_margin == MarginType::MARGIN_TOP || _margin == MarginType::MARGIN_BOT) {
 		finish = _board.getColCount();
 	}
 	else {
@@ -433,15 +430,15 @@ CommonErrors checkFuncWaterMage2(Board& _board, char _margin)
 	}
 
 	auto quickCheck = [&](int16_t& x, int16_t& y, int16_t i) {
-		if (marginType == MarginType::MARGIN_TOP) {
+		if (_margin == MarginType::MARGIN_TOP) {
 			x = 0;
 			y = i;
 		}
-		else if (marginType == MarginType::MARGIN_BOT) {
+		else if (_margin == MarginType::MARGIN_BOT) {
 			x = _board.getRowCount() - 1;
 			y = i;
 		}
-		else if (marginType == MarginType::MARGIN_LEFT) {
+		else if (_margin == MarginType::MARGIN_LEFT) {
 			x = i;
 			y = 0;
 		}

@@ -4,15 +4,15 @@ GameView::LaunchOptions GameView::GetMode(int16_t _m)
 {
     switch (_m)
     {
-    case 0:
-        return LaunchOptions::TRAINING;
     case 1:
-        return LaunchOptions::ELEMENTAL;
+        return LaunchOptions::TRAINING;
     case 2:
-        return LaunchOptions::MAGE_DUEL;
+        return LaunchOptions::ELEMENTAL;
     case 3:
-        return LaunchOptions::TOURNAMENT;
+        return LaunchOptions::MAGE_DUEL;
     case 4:
+        return LaunchOptions::TOURNAMENT;
+    case 5:
         return LaunchOptions::TIMED;
     default:
         return LaunchOptions::INVALID_GAME_MODE;
@@ -81,15 +81,19 @@ void GameView::LaunchMenu()
         case 0:
             exit(0);
         case 1:
-            ;
+            m_activeMode = GetMode(1);
             return;
         case 2:
+            m_activeMode = GetMode(2);
             return;
         case 3:
+            m_activeMode = GetMode(3);
             return;
         case 4:
+            m_activeMode = GetMode(4);
             return;
         case 5:
+            m_activeMode = GetMode(5);
             return;
         default:
             std::cout << "Invalid option..";
@@ -120,6 +124,8 @@ void GameView::GetPlayingFormat()
         //pick random
         Elemental = GameOptions::EnabledElemental;
         Mage = GameOptions::EnabledMage;
+        Tournament = GameOptions::EnabledTournament;
+
         break;
     case LaunchOptions::TIMED:
         //pick random?
@@ -157,7 +163,7 @@ void GameView::PrintPlayerOptions()
 
 GameView::GameView() :
     Illusion    { GameOptions::EnabledIllusion },
-    Mage        { GameOptions::EnabledMage },
+    Mage        { GameOptions::DisabledMage },
     Elemental   { GameOptions::DisabledElemental },
     Tournament  { GameOptions::DisabledTournament },
     Timed       { GameOptions::DisabledTimed },
