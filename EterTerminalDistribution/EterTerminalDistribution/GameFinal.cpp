@@ -148,8 +148,8 @@ GameFinal::GameFinal()
 	m_tieBraker			{ false }
 {
 	m_board = std::make_unique<Board>(3);
-	m_player1 = std::make_shared<Player>(Colours::RED, m_enabledElemental, m_enabledMage);
-	m_player2 = std::make_shared<Player>(Colours::BLUE, m_enabledElemental, m_enabledMage);
+	m_player1 = std::make_shared<Player>(Colours::RED, true);
+	m_player2 = std::make_shared<Player>(Colours::BLUE, true);
 	m_activeCoveredSet =  m_player1->getCovered();
 	m_activePlayingHand = m_player1->GetHandCards();
 	m_activeRemovedHand = m_player1->GetRemovedCards();
@@ -171,8 +171,8 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	m_powerUsed			{ false },
 	m_tieBraker			{ false },
 	m_board				{ std::make_unique<Board>(_maxBoardSize) },
-	m_player1			{ std::make_shared<Player>(Colours::RED, false) },
-	m_player2			{ std::make_shared<Player>(Colours::BLUE, false) },
+	m_player1			{ std::make_shared<Player>(Colours::RED, _enabledEter != GameOptions::EnabledEter) },
+	m_player2			{ std::make_shared<Player>(Colours::BLUE, _enabledEter != GameOptions::EnabledEter) },
 	m_activePlayer		{ std::shared_ptr<Player>(m_player1)}
 {
 	m_activeCoveredSet = m_player1->getCovered();
@@ -183,8 +183,8 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	m_redMage = std::move(PowerUsage{false, GetMageCard(magerange(rd))});
 	m_blueMage = std::move(PowerUsage{ false, GetMageCard(magerange(rd))});
 	std::uniform_int_distribution<int16_t> elementalrange(1, 24);
-	m_elemental1 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd))});
-	m_elemental2 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd))});
+	m_elemental1 = std::move(PowerUsage{ false, GetElementalCard(elementalrange(rd))});
+	m_elemental2 = std::move(PowerUsage{ false, GetElementalCard(elementalrange(rd))});
 }
 
 bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)

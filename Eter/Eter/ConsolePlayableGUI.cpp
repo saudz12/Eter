@@ -122,7 +122,7 @@ void GameView::GetPlayingFormat()
     case LaunchOptions::TRAINING:
         boardSize = 3;
         Eter = GameOptions::DisabledEter;
-        Illusion = GameOptions::DisabledIllusion;
+        Illusion = GameOptions::EnabledIllusion;
         break;
     case LaunchOptions::ELEMENTAL:
         Elemental = GameOptions::EnabledElemental;
@@ -244,4 +244,17 @@ void GameView::EndTurn()
     m_game->EndTurn();
 }
 
-//bool canPlayElementalCard
+ExplosionCard GameView::GenerateNewExplosionCard()
+{
+    return m_game->generateNewExplosionCard();
+}
+
+bool GameView::tryToApplyExplosionOnBoard(ExplosionCard& card)
+{
+    return m_game->tryToApplyExplosionOnBoard(card);
+}
+
+void GameView::applyExplosionOnBoard(const ExplosionCard& card) const
+{
+    m_game->applyExplosionOnBoard(card);
+}

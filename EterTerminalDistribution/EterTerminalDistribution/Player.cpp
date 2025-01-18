@@ -1,16 +1,16 @@
 #include "Player.h"
 
-Player::Player(Colours playerColor)
-	:	m_playerColor{ playerColor }, m_illusionUsage{ false }, m_eterCardUsage{ false }/*, m_remainingCounter{}, m_remainingCards{5}*/
-		
-{
-	/*if (training)
-		generateTrainingModeHand();
-	else*/
-		generateHand();
-
-	//new
-}
+//Player::Player(Colours playerColor)
+//	:	m_playerColor{ playerColor }, m_illusionUsage{ false }, m_eterCardUsage{ false }/*, m_remainingCounter{}, m_remainingCards{5}*/
+//		
+//{
+//	/*if (training)
+//		generateTrainingModeHand();
+//	else*/
+//		generateHand();
+//
+//	//new
+//}
 
 Player::Player(Colours _playerColor, bool _training)
 	:	m_playerColor{ _playerColor },
@@ -26,24 +26,26 @@ Player::Player(Colours _playerColor, bool _training)
 Player::Player()
 	: m_playerColor{ Colours::RED }, m_illusionUsage{ false }, m_eterCardUsage{ false }
 {
-	generateTrainingModeHand();
+	GenerateHand(true);
 }
 
-Player::Player(Colours playerColor, GameOptions elementalDuelOption, GameOptions mageDuelOption):
-	m_playerColor{ playerColor }, m_illusionUsage{ false }, m_eterCardUsage{ false }/*, m_remainingCounter{}, m_remainingCards{5}*/
-{
-	generateHand();
+//
+//Player::Player(Colours playerColor, GameOptions elementalDuelOption, GameOptions mageDuelOption):
+//	m_playerColor{ playerColor }, m_illusionUsage{ false }, m_eterCardUsage{ false }/*, m_remainingCounter{}, m_remainingCards{5}*/
+//{
+//	generateHand();
+//
+//	if (elementalDuelOption == GameOptions::EnabledElemental) 
+//		m_elementalCard = ElementalCard();
+//	else 
+//		m_elementalCard = std::nullopt;   
+//
+//	if (mageDuelOption == GameOptions::EnabledMage)
+//		m_mageCard = MageCard();
+//	else
+//		m_mageCard = std::nullopt;
+//}
 
-	if (elementalDuelOption == GameOptions::EnabledElemental) 
-		m_elementalCard = ElementalCard();
-	else 
-		m_elementalCard = std::nullopt;   
-
-	if (mageDuelOption == GameOptions::EnabledMage)
-		m_mageCard = MageCard();
-	else
-		m_mageCard = std::nullopt;
-}
 Colours Player::GetPlayerColor() const
 {
 	return m_playerColor;
@@ -165,32 +167,32 @@ void Player::ReturnStackToHand(Hand& h1, Hand& h2, CardStack& stack)
 	}
 }
 
-void Player::generateTrainingModeHand()
-{
-	m_handCards.clear();
-
-	//creating minion cards with their value and color
-	MinionCard combatCard1(1, m_playerColor, false);
-	MinionCard combatCard2(2, m_playerColor, false);
-	MinionCard combatCard3(3, m_playerColor, false);
-	MinionCard combatCard4(4, m_playerColor, false);
-
-	m_handCards.emplace(combatCard1, 2);
-	m_handCards.emplace(combatCard2, 2);
-	m_handCards.emplace(combatCard3, 2);
-	m_handCards.emplace(combatCard4, 1);
-}
-
-void Player::generateHand()
-{
-	m_handCards.clear();
-
-	m_handCards.emplace(MinionCard{ 1, m_playerColor, false }, 2);
-	m_handCards.emplace(MinionCard{ 2, m_playerColor, false }, 3);
-	m_handCards.emplace(MinionCard{ 3, m_playerColor, false }, 3);
-	m_handCards.emplace(MinionCard{ 4, m_playerColor, false }, 1);
-	m_handCards.emplace(MinionCard{ 1, m_playerColor, true }, 1); //eter card has the value 1 
-}
+//void Player::generateTrainingModeHand()
+//{
+//	m_handCards.clear();
+//
+//	//creating minion cards with their value and color
+//	MinionCard combatCard1(1, m_playerColor, false);
+//	MinionCard combatCard2(2, m_playerColor, false);
+//	MinionCard combatCard3(3, m_playerColor, false);
+//	MinionCard combatCard4(4, m_playerColor, false);
+//
+//	m_handCards.emplace(combatCard1, 2);
+//	m_handCards.emplace(combatCard2, 2);
+//	m_handCards.emplace(combatCard3, 2);
+//	m_handCards.emplace(combatCard4, 1);
+//}
+//
+//void Player::generateHand()
+//{
+//	m_handCards.clear();
+//
+//	m_handCards.emplace(MinionCard{ 1, m_playerColor, false }, 2);
+//	m_handCards.emplace(MinionCard{ 2, m_playerColor, false }, 3);
+//	m_handCards.emplace(MinionCard{ 3, m_playerColor, false }, 3);
+//	m_handCards.emplace(MinionCard{ 4, m_playerColor, false }, 1);
+//	m_handCards.emplace(MinionCard{ 1, m_playerColor, true }, 1); //eter card has the value 1 
+//}
 
 void Player::GenerateHand(bool training)
 {
@@ -353,10 +355,16 @@ bool Player::placeMinionCardFromHand(MinionCard& card)
 
 void Player::returnMinionCardToHand(const MinionCard& card)
 {
-	if (m_handCards.find(card) != m_handCards.end())
+	/*if (m_handCards.find(card) != m_handCards.end())
 		m_handCards[card]++;
 	else
-		m_handCards.emplace(card, 1);
+		m_handCards.emplace(card, 1);*/
+
+	m_remainingCounter[card.GetValue()]++;
+	if(card.GetIsEterCard())
+		m_remainingCards[0].push_back(card);
+	else
+		m_remainingCards[card.GetValue()].push_back(card);
 }
 
 void Player::returnLastMinionCardToHand()

@@ -116,7 +116,8 @@ static enum class CommonErrors : int16_t {
 enum class IllusionErrors : int16_t {
 	_NO_ERRORS,
 	_INVALID_SPACE,
-	_ILLUSION_ALREADY_USED
+	_ILLUSION_ALREADY_USED,
+	_ILLUSION_COVERING_ILLUSION
 };
 
 Directions GetDirection(char d);

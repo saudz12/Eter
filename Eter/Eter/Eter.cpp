@@ -6,11 +6,12 @@ Eter::Eter(QWidget *parent)
      m_wasFirstCardPlaced{false}
 {
     ui->setupUi(this);
-
+    
     initializeEterLogo();
     initializeGameWindow();
     initializePushButtons();
     initializeHandCardLayouts();
+
     BLUE_CARDS_OFFSET_WINDOW_HEIGHT = WINDOW_HEIGTH - 30;
 }
 
@@ -75,21 +76,9 @@ void Eter::initializeRadioButtons()
         radioButtonPlayIllusion = new QRadioButton("Play Illusion", this);
     radioButtonPlayIllusion->setGeometry(pushButtonStartTimed->x(), pushButtonStartTimed->y() + 50, 130, 30);
     radioButtonPlayIllusion->setVisible(true);
-    if (QObject::connect(widgetBoard, &qGameBoardWidget::isRadioButtonToggledIllusions,
-        this, &Eter::IllusionHandler))
-    {
-        qDebug() << "Connection established successfully";
-    }
-    else {
-        qDebug() << "Connection failed";
-    }
-    if (QObject::connect(this, &Eter::signalRemoveCard, widgetBoard, &qGameBoardWidget::removeCard))
-    {
-        qDebug() << "Connection established successfully";
-    }
-    else {
-        qDebug() << "Connection failed";
-    }
+    QObject::connect(widgetBoard, &qGameBoardWidget::isRadioButtonToggledIllusions,
+        this, &Eter::IllusionHandler);
+    QObject::connect(this, &Eter::signalRemoveCard, widgetBoard, &qGameBoardWidget::removeCardIllusion);
 }
 
 void Eter::initializeHandCardLayouts()
@@ -189,11 +178,6 @@ void Eter::loadElementalCardsFromJSON()
     }
 }
 
-void Eter::loadIllusion(QPointer<QLabel>& label,QString path)
-{
-
-}
-
 void Eter::initializeElementalCards()
 {
     int16_t firstCardNumber = m_gameview->firstElementalCardId();
@@ -236,26 +220,17 @@ void Eter::handleMinionCard(const QMimeData* mimeData, int row, int column)
     else
     {
         m_gameview->EndTurn();
+        if (m_gameview->GetCanPlayExplosion() && m_gameview->GetWasExplosionPlayed())
+        {
+            std::shared_ptr<ExplosionCard> card = std::make_shared< ExplosionCard>(m_gameview->GenerateNewExplosionCard());
+
+            initializeExplosionDialog(card);
+            
+            m_gameview->GetCanPlayExplosion();
+        }
         char color = mimeData->property("color").toString().toLatin1().at(0);
         m_activeColor = GetColour(color);
-        if (mimeData->property("color").toString() == QString('R'))
-        {
-            labelGameMessage->setText("It's blue player's turn");
-            labelGameMessage->setStyleSheet("QLabel { border: 2px solid blue; }");
-            changeDraggabilityHBoxLayout(hboxLayoutRedCards, false);
-            changeDraggabilityHBoxLayout(hboxLayoutBlueCards, true);
-            removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
-        }
-        else
-        {
-            labelGameMessage->setText("It's red player's turn");
-            labelGameMessage->setStyleSheet("QLabel { border: 2px solid red; }");
-            changeDraggabilityHBoxLayout(hboxLayoutBlueCards, false);
-            changeDraggabilityHBoxLayout(hboxLayoutRedCards, true);
-            removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
-        }
-        labelGameMessage->setAlignment(Qt::AlignCenter);
-        labelGameMessage->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        changeLabelMessageBox(mimeData);
     }
     checkWin();
 }
@@ -288,24 +263,7 @@ void Eter::handleIllusionCard(const QMimeData* mimeData, int row, int column)
         m_gameview->EndTurn();
         char color = mimeData->property("color").toString().toLatin1().at(0);
         m_activeColor = GetColour(color);
-        if (mimeData->property("color").toString() == QString('R'))
-        {
-            labelGameMessage->clear();
-            labelGameMessage->setText("It's blue player's turn");
-            labelGameMessage->setStyleSheet("QLabel { border: 2px solid blue; }");
-            changeDraggabilityHBoxLayout(hboxLayoutRedCards, false);
-            changeDraggabilityHBoxLayout(hboxLayoutBlueCards, true);
-            removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
-        }
-        else
-        {
-            labelGameMessage->clear();
-            labelGameMessage->setText("It's red player's turn");
-            labelGameMessage->setStyleSheet("QLabel { border: 2px solid red; }");
-            changeDraggabilityHBoxLayout(hboxLayoutBlueCards, false);
-            changeDraggabilityHBoxLayout(hboxLayoutRedCards, true);
-            removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
-        }
+        changeLabelMessageBox(mimeData);
     }
     checkWin();
 }
@@ -329,6 +287,28 @@ void Eter::resetElements()
     labelBlueElementalCard->hide();
 }
 
+void Eter::changeLabelMessageBox(const QMimeData* mimeData)
+{
+    if (mimeData->property("color").toString() == QString('R'))
+    {
+        labelGameMessage->setText("It's blue player's turn");
+        labelGameMessage->setStyleSheet("QLabel { border: 2px solid blue; }");
+        changeDraggabilityHBoxLayout(hboxLayoutRedCards, false);
+        changeDraggabilityHBoxLayout(hboxLayoutBlueCards, true);
+        removeCardFromHorizontalLayout(hboxLayoutRedCards, mimeData->property("value").toInt());
+    }
+    else
+    {
+        labelGameMessage->setText("It's red player's turn");
+        labelGameMessage->setStyleSheet("QLabel { border: 2px solid red; }");
+        changeDraggabilityHBoxLayout(hboxLayoutBlueCards, false);
+        changeDraggabilityHBoxLayout(hboxLayoutRedCards, true);
+        removeCardFromHorizontalLayout(hboxLayoutBlueCards, mimeData->property("value").toInt());
+    }
+    labelGameMessage->setAlignment(Qt::AlignCenter);
+    labelGameMessage->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+}
+
 void Eter::initializeGameMessage()
 {
     labelGameMessage = new QLabel(this);
@@ -338,6 +318,20 @@ void Eter::initializeGameMessage()
     labelGameMessage->setAlignment(Qt::AlignCenter);
     labelGameMessage->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     labelGameMessage->show();
+}
+
+void Eter::showExplosionCard(ExplosionCard card)
+{
+
+}
+
+void Eter::initializeExplosionDialog(std::shared_ptr<ExplosionCard>& card)
+{
+
+    dialogExplosion = new qDialogExplosionCard(this,card,m_gameview->GetBoardSize());
+    dialogExplosion->show();
+    connect(dialogExplosion, &qDialogExplosionCard::acceptExplCard, this, &Eter::handlerExplCardAccept);
+    connect(dialogExplosion, &qDialogExplosionCard::rejectExlpCard, this, &Eter::handlerExplCardReject);
 }
 
 void Eter::resetUItoNormal()
@@ -428,6 +422,7 @@ void Eter::onPushButtonStartTrainingClicked()
     resizeGameLogo();
     placeHorizontalLayout();
     initializeGridLayoutBoard();
+    initializeRadioButtons();
 }
 
 void Eter::onPushButtonStartElementalClicked()
@@ -490,5 +485,21 @@ void Eter::cardDropHandler(const QMimeData* mimeData, int row, int column)
 void Eter::IllusionHandler(bool* toogled)
 {
     *toogled = radioButtonPlayIllusion->isChecked();
+}
+
+void Eter::handlerExplCardAccept(ExplosionCard card)
+{
+    if (m_gameview->tryToApplyExplosionOnBoard(card))
+    {
+        m_gameview->applyExplosionOnBoard(card);
+    }
+    else
+    {
+        QMessageBox::warning(nullptr, "Warning", "Cannot use the explosion card because the cards are no longer adjacent");
+    }
+}
+
+void Eter::handlerExplCardReject(ExplosionCard card)
+{
 }
 

@@ -152,7 +152,8 @@ GameFinal::GameFinal()
 	m_winnerStatus{ Colours::INVALID_COL },
 	m_wasPlaced{ false },
 	m_powerUsed{ false },
-	m_tieBraker{ false }
+	m_tieBraker{ false },
+	m_wasExplosionPlayed{false}
 {
 	m_board = std::make_unique<Board>(3);
 	m_player1 = std::make_shared<Player>(Colours::RED, m_enabledElemental, m_enabledMage);
@@ -178,9 +179,11 @@ GameFinal::GameFinal(int16_t _maxBoardSize,
 	m_powerUsed{ false },
 	m_tieBraker{ false },
 	m_board{ std::make_unique<Board>(_maxBoardSize) },
-	m_player1{ std::make_shared<Player>(Colours::RED, false) },
-	m_player2{ std::make_shared<Player>(Colours::BLUE, false) },
-	m_activePlayer{ std::shared_ptr<Player>(m_player1) }
+	m_player1{ std::make_shared<Player>(Colours::RED, _maxBoardSize==3?true:false) },
+	m_player2{ std::make_shared<Player>(Colours::BLUE, _maxBoardSize == 3 ? true : false) },
+	m_activePlayer{ std::shared_ptr<Player>(m_player1) },
+	m_canPlayExplosion{false},
+	m_wasExplosionPlayed{false}
 {
 	m_activeCoveredSet = m_player1->getCovered();
 	m_activePlayingHand = m_player1->GetHandCards();
@@ -225,7 +228,7 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 	if (tryPlace != BoardErrors::_NO_ERRORS && tryPlace != BoardErrors::ILLUSION_PROPERTY)
 		return false;
 	
-	bool canCoverIllusion = m_board->canCoverIllusion(_x, _y, _val);
+	bool canCoverIllusion = m_board->CanCoverIllusion(_x, _y, _val);
 	if (canCoverIllusion)
 	{
 		if (m_board->getCardOnPos(_x, _y).GetValue() < _val)
@@ -236,7 +239,7 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 		}
 		else
 		{
-			m_board->revealIllusion(_x, _y);
+			m_board->RevealIllusion(_x, _y);
 			m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
 		}
 		return true;
@@ -244,6 +247,11 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 
 	m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
 	m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
+	if (m_board->getRowCount() == m_board->getMaxSize() && m_board->getColCount() == m_board->getMaxSize() && !m_canPlayExplosion)
+	{
+		m_canPlayExplosion = true;
+		m_wasExplosionPlayed = true;
+	}
 	PrintBoard();
 	return true;
 }
@@ -307,7 +315,11 @@ IllusionErrors GameFinal::PlaceIllusion(int16_t _x, int16_t _y, int16_t _val)
 	m_activePlayer->PlayCard(0);
 	m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
 	m_activePlayer->UpdateCard(0, CardAction::REMOVE);
-
+	if (m_board->getRowCount() == m_board->getMaxSize() && m_board->getColCount() && !m_canPlayExplosion)
+	{
+		m_canPlayExplosion = true;
+		m_wasExplosionPlayed = true;
+	}
 	return IllusionErrors::_NO_ERRORS;
 }
 
@@ -320,6 +332,11 @@ void GameFinal::PrintActiveHand()
 {
 	auto& seekHand = m_activePlayer->GetRemaningCounter();
 	std::for_each(seekHand.begin(), seekHand.end(), [&seekHand](const auto& key) {std::cout << key.first << ": " << key.second << "copies left\n"; });
+}
+
+ExplosionCard GameFinal::generateNewExplosionCard()
+{
+	return ExplosionCard(m_board->getMaxSize());
 }
 
 std::shared_ptr<Player> GameFinal::getPlayer1() const {
@@ -338,5 +355,15 @@ int16_t GameFinal::getFirstElementalCardId() const
 int16_t GameFinal::getSecondElementalCardId() const
 {
 	return std::get<2>(m_elemental2);
+}
+
+bool GameFinal::tryToApplyExplosionOnBoard(ExplosionCard& card)
+{
+	return m_board->tryApplyExplosionOnBoard(card,*m_player1,*m_player2);
+}
+
+void GameFinal::applyExplosionOnBoard(const ExplosionCard& card)
+{
+	m_board->applyExplosionOnBoard(card,*m_player1,*m_player2,false);
 }
 

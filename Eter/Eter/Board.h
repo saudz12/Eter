@@ -163,8 +163,8 @@ public:
 	void SetEmptyBoard(Colours color);
 
 	void PlaceIllusion(MinionCard&& _toPlace,int16_t _x,int16_t _y);//illusionCard
-	bool canCoverIllusion(uint16_t _x,uint16_t _y,uint16_t _val);
-	void revealIllusion(int16_t _x, int16_t _y);
+	bool CanCoverIllusion(uint16_t _x,uint16_t _y,uint16_t _val);
+	void RevealIllusion(int16_t _x, int16_t _y);
 #pragma endregion
 
 	//use it only when placing cards
@@ -217,6 +217,7 @@ public:
 
 	static void cloneMatrix(const Board& from, Board& to);
 
-	void applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& p2);
+	void applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& p2,bool isForTest);
+	bool tryApplyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1,Player& pl2);
 };
 

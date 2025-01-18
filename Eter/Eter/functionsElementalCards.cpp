@@ -18,7 +18,7 @@ uint16_t funcControlledExplosion(Board& board, Player& pl1, Player& pl2)
 		return 1;
 	}
 	ExplosionCard explCard(board.getMaxSize());
-	board.applyExplosionOnBoard(explCard, pl1, pl2);
+	//board.applyExplosionOnBoard(explCard, pl1, pl2);
 	if (isolatedSpaces(board)) {
 		Board::cloneMatrix(copyBoard, board);
 		pl1 = copyPl1;

@@ -55,7 +55,7 @@ ExplosionCard::ExplosionCard(uint16_t size):Card{ CardType::ExplosionCard }
 	showExpl(size);
 }
 
-explMap ExplosionCard::GetExplosionMap() const
+const explMap& ExplosionCard::GetExplosionMap() const
 {
 	return this->m_explosionMap;
 }
