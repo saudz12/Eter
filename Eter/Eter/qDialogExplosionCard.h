@@ -44,7 +44,7 @@ private:
 	QPixmap m_pixmapHole;
 	QPixmap m_nothingLabel;
 
-	const int m_WIDTH = 240, m_HEIGTH = 240;
+	const int m_WIDTH = 250, m_HEIGTH = 250;
 	const int m_size;
 	const int m_CELL_WIDTH;
 	const int m_CELL_HEIGTH;

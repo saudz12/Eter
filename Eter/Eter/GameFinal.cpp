@@ -214,6 +214,7 @@ GameFinal::GameFinal(int16_t _maxBoardSize,
 
 bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 {
+	qDebug() << "the value" << _val << '\n';
 	if (!m_activePlayer->HasCardOfValue(_val)) {
 		return false;
 	}
@@ -228,23 +229,26 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 	if (tryPlace != BoardErrors::_NO_ERRORS && tryPlace != BoardErrors::ILLUSION_PROPERTY)
 		return false;
 	
-	bool canCoverIllusion = m_board->CanCoverIllusion(_x, _y, _val);
-	if (canCoverIllusion)
+	if (m_board->isValidPosition(_x, _y) && m_board->isIllusionOnPos(_x,_y))
 	{
-		if (m_board->getCardOnPos(_x, _y).GetValue() < _val)
+		bool canCoverIllusion = m_board->CanCoverIllusion(_x, _y, _val);
+		if (canCoverIllusion)
 		{
-			m_board->RemoveTop(_x, _y);
-			m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
-			m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
+			if (m_board->getCardOnPos(_x, _y).GetValue() < _val)
+			{
+				m_board->RemoveTop(_x, _y);
+				m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
+				m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
+			}
+			else
+			{
+				m_board->RevealIllusion(_x, _y);
+				m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
+			}
+			return true;
 		}
-		else
-		{
-			m_board->RevealIllusion(_x, _y);
-			m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
-		}
-		return true;
+		else return false;
 	}
-
 	m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
 	m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
 	if (m_board->getRowCount() == m_board->getMaxSize() && m_board->getColCount() == m_board->getMaxSize() && !m_canPlayExplosion)
@@ -255,6 +259,7 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 	PrintBoard();
 	return true;
 }
+
 void GameFinal::PlayElemental(PowerSelect select)
 {
 	if (m_powerUsed) return;
@@ -362,8 +367,8 @@ bool GameFinal::tryToApplyExplosionOnBoard(ExplosionCard& card)
 	return m_board->tryApplyExplosionOnBoard(card,*m_player1,*m_player2);
 }
 
-void GameFinal::applyExplosionOnBoard(const ExplosionCard& card)
+std::vector<MarginType> GameFinal::applyExplosionOnBoard(const ExplosionCard& card)
 {
-	m_board->applyExplosionOnBoard(card,*m_player1,*m_player2,false);
+	return m_board->applyExplosionOnBoard(card,*m_player1,*m_player2,false);
 }
 

@@ -254,7 +254,7 @@ bool GameView::tryToApplyExplosionOnBoard(ExplosionCard& card)
     return m_game->tryToApplyExplosionOnBoard(card);
 }
 
-void GameView::applyExplosionOnBoard(const ExplosionCard& card) const
+std::vector<MarginType> GameView::applyExplosionOnBoard(const ExplosionCard& card) const
 {
-    m_game->applyExplosionOnBoard(card);
+    return m_game->applyExplosionOnBoard(card);
 }

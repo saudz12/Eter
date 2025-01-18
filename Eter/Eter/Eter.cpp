@@ -78,7 +78,7 @@ void Eter::initializeRadioButtons()
     radioButtonPlayIllusion->setVisible(true);
     QObject::connect(widgetBoard, &qGameBoardWidget::isRadioButtonToggledIllusions,
         this, &Eter::IllusionHandler);
-    QObject::connect(this, &Eter::signalRemoveCard, widgetBoard, &qGameBoardWidget::removeCardIllusion);
+    QObject::connect(this, &Eter::signalRemoveIllusionCard, widgetBoard, &qGameBoardWidget::removeCardIllusion);
 }
 
 void Eter::initializeHandCardLayouts()
@@ -131,6 +131,11 @@ void Eter::removeCardFromHorizontalLayout(QPointer<QHBoxLayout> hboxLayout,int v
             }
         }
     }
+}
+
+void Eter::addCardToHorizontalLayout(QPointer<QHBoxLayout> hboxLayout, QPointer<qDraggableLabel> labeltoAdd)
+{
+    hboxLayout->addWidget(labeltoAdd);
 }
 
 void Eter::resizeGameLogo()
@@ -222,11 +227,8 @@ void Eter::handleMinionCard(const QMimeData* mimeData, int row, int column)
         m_gameview->EndTurn();
         if (m_gameview->GetCanPlayExplosion() && m_gameview->GetWasExplosionPlayed())
         {
-            std::shared_ptr<ExplosionCard> card = std::make_shared< ExplosionCard>(m_gameview->GenerateNewExplosionCard());
-
+            std::shared_ptr<ExplosionCard> card = std::make_shared<ExplosionCard>(m_gameview->GenerateNewExplosionCard());
             initializeExplosionDialog(card);
-            
-            m_gameview->GetCanPlayExplosion();
         }
         char color = mimeData->property("color").toString().toLatin1().at(0);
         m_activeColor = GetColour(color);
@@ -254,7 +256,7 @@ void Eter::handleIllusionCard(const QMimeData* mimeData, int row, int column)
     }
     else if (placeIllusionResult==IllusionErrors::_ILLUSION_ALREADY_USED)
     {
-        emit signalRemoveCard(row, column, IllusionErrors::_ILLUSION_ALREADY_USED);
+        emit signalRemoveIllusionCard(row, column, IllusionErrors::_ILLUSION_ALREADY_USED);
         QMessageBox::warning(nullptr, "Warning", "Player "+QString(GetColour(GetOppositeColour(m_activeColor)))+" already used the illusion");
     }
     else
@@ -327,7 +329,6 @@ void Eter::showExplosionCard(ExplosionCard card)
 
 void Eter::initializeExplosionDialog(std::shared_ptr<ExplosionCard>& card)
 {
-
     dialogExplosion = new qDialogExplosionCard(this,card,m_gameview->GetBoardSize());
     dialogExplosion->show();
     connect(dialogExplosion, &qDialogExplosionCard::acceptExplCard, this, &Eter::handlerExplCardAccept);
@@ -388,6 +389,7 @@ void Eter::initializeGridLayoutBoard()
                                 CARD_WIDTH,CARD_HEIGHT);
     widgetBoard->show();
     connect(widgetBoard, &qGameBoardWidget::cardDropAccepted, this, &Eter::cardDropHandler);
+    connect(this, &Eter::signalRemoveCard, widgetBoard, &qGameBoardWidget::removeCard);
 }
 
 void Eter::initializeEterLogo()
@@ -489,9 +491,66 @@ void Eter::IllusionHandler(bool* toogled)
 
 void Eter::handlerExplCardAccept(ExplosionCard card)
 {
+    connect(this, &Eter::signalReturnCard, widgetBoard, &qGameBoardWidget::returnCard);
+    connect(this, &Eter::signalRemoveCard, widgetBoard, &qGameBoardWidget::removeCard);
+    connect(this, &Eter::signalRemoveMargins, widgetBoard, &qGameBoardWidget::removeMargins);
     if (m_gameview->tryToApplyExplosionOnBoard(card))
     {
-        m_gameview->applyExplosionOnBoard(card);
+        std::vector<MarginType> marginsToRemove=m_gameview->applyExplosionOnBoard(card);
+        for (const auto& action : card.GetExplosionMap())
+        {
+            const auto& [position, type] = action;
+            const auto& [row, col] = position;
+
+            switch (type)
+            {   
+            case ReturnRemoveOrHoleCard::RemoveCard :
+                emit signalRemoveCard(row, col);
+                break;
+            case ReturnRemoveOrHoleCard::ReturnCard : 
+                int value = -1;
+                Colours color = Colours::INVALID_COL; 
+                bool isEter = false;
+                bool isIllusion = false;
+                emit signalReturnCard(row, col,value,color,isEter,isIllusion);
+                QString path;
+                if (value != -1)
+                {
+                    if (color == Colours::RED)
+                    {
+                        path = QDir::currentPath() + QString("/textures/red_") + QString::number(value) + QString(".jpg");
+                    }
+                    else if (color == Colours::BLUE)
+                    {
+                        path = QDir::currentPath() + QString("/textures/blue_") + QString::number(value) + QString(".jpg");
+                    }
+                }
+                QPixmap image(path);
+                image=image.scaled(CARD_WIDTH,CARD_HEIGHT, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                QPointer<qDraggableLabel> labelToadd = new qDraggableLabel(image, CARD_WIDTH, CARD_HEIGHT, true);
+                if (value != -1)
+                {
+                    if (color == Colours::RED)
+                    {
+                        addCardToHorizontalLayout(hboxLayoutRedCards, labelToadd);
+                    }
+                    else if (color == Colours::BLUE)
+                    {
+                        addCardToHorizontalLayout(hboxLayoutBlueCards, labelToadd);
+                    }
+                }
+                break;
+            //case ReturnRemoveOrHoleCard::HoleCard:
+            //    break;
+            //case ReturnRemoveOrHoleCard::Default:
+            //    break;
+            }
+        }
+        widgetBoard->updateMinMaxRowCol();
+        widgetBoard->createBoard();
+
+        if(!marginsToRemove.empty())
+            emit signalRemoveMargins(marginsToRemove);
     }
     else
     {

@@ -119,6 +119,7 @@ private:
     void placeHorizontalLayoutBlueSide();
 
     void removeCardFromHorizontalLayout(QPointer<QHBoxLayout> hboxLayout,int valueToRemove);
+    void addCardToHorizontalLayout(QPointer<QHBoxLayout> hboxLayout, QPointer<qDraggableLabel> labeltoAdd);
 
     void resizeGameLogo();
 
@@ -158,6 +159,7 @@ public:
 
     void scaleCoordinates(int& row, int& column);
 
+
 private slots:
     void onPushButtonStartTrainingClicked();
     void onPushButtonStartElementalClicked();
@@ -170,5 +172,8 @@ private slots:
     void handlerExplCardAccept(ExplosionCard card);
     void handlerExplCardReject(ExplosionCard card);
 signals:
-    void signalRemoveCard(int row, int col, IllusionErrors error);
+    void signalRemoveIllusionCard(int row, int col, IllusionErrors error);
+    void signalRemoveCard(int row, int col);
+    void signalReturnCard(int row, int col, int& value, Colours& color, bool& isEter, bool& isIllusion);
+    void signalRemoveMargins(std::vector<MarginType> marginsToRemove);
 };

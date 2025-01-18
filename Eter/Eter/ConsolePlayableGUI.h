@@ -59,7 +59,7 @@ public:
 
 	ExplosionCard GenerateNewExplosionCard();
 	bool tryToApplyExplosionOnBoard(ExplosionCard& card);
-	void applyExplosionOnBoard(const ExplosionCard& card) const;
+	std::vector<MarginType> applyExplosionOnBoard(const ExplosionCard& card) const;
 
     GameFinal& GetGameFinal()  { return *m_game; }
 	std::shared_ptr<Player> GetRedPlayer() const { return m_game->getPlayer1(); }

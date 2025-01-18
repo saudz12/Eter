@@ -196,13 +196,13 @@ void Player::GenerateHand(bool training)
 {
 	int offset = int16_t(!training);
 
-	m_remainingCounter.emplace(0, offset);
+	m_remainingCounter.emplace(0, 1);
 	m_remainingCounter.emplace(1, 2);
 	m_remainingCounter.emplace(2, 2 + offset);
 	m_remainingCounter.emplace(3, 2 + offset);
 	m_remainingCounter.emplace(4, 1);
 
-	m_remainingCards[0].resize(offset);
+	m_remainingCards[0].resize(1);
 	m_remainingCards[1].resize(2);
 	m_remainingCards[2].resize(2 + offset);
 	m_remainingCards[3].resize(2 + offset);
@@ -244,7 +244,6 @@ bool Player::CheckCoveredProperty(int16_t _x, int16_t _y, int16_t _pos)
 
 MinionCard&& Player::PlayCard(int16_t _val) 
 {
-
 	m_lastPlayedCard.push_back(&m_remainingCards[_val].back());
 
 	return std::move(m_remainingCards[_val].back());

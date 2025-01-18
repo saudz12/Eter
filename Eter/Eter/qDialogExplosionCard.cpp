@@ -2,8 +2,9 @@
 
 qDialogExplosionCard::qDialogExplosionCard(QWidget* parent, std::shared_ptr<ExplosionCard>& explCard, int boardSize) :
     QDialog(parent), m_explCard{ explCard },
-    m_pixmapEmptyExplosion{ QDir::currentPath() + QString("/textures/explosion_blank.jpg") },
     m_size{ boardSize },
+    m_pixmapEmptyExplosion{ QDir::currentPath() + QString("/textures/explosion_blank")+
+    QString::number(boardSize==3?0:1)+QString(".jpg")},
     m_pixmapRemove{ QDir::currentPath() + QString("/textures/explosionSprite_0.png") },
     m_pixmapReturn{ QDir::currentPath() + QString("/textures/explosionSprite_1.png") },
     m_pixmapHole{ QDir::currentPath() + QString("/textures/hole_sprite.png") },

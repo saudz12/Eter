@@ -162,9 +162,11 @@ public:
 	void AddLineOnBottom();
 	void SetEmptyBoard(Colours color);
 
+	bool isValidPosition(int16_t _x, int16_t _y);
 	void PlaceIllusion(MinionCard&& _toPlace,int16_t _x,int16_t _y);//illusionCard
 	bool CanCoverIllusion(uint16_t _x,uint16_t _y,uint16_t _val);
 	void RevealIllusion(int16_t _x, int16_t _y);
+	bool isIllusionOnPos(int16_t _x, int16_t _y);
 #pragma endregion
 
 	//use it only when placing cards
@@ -213,11 +215,11 @@ public:
 	bool isBoardFilled();
 	bool isBoardEmpty();
 
-	void checkForUpdates();
+	std::vector<MarginType> checkForUpdates();
 
 	static void cloneMatrix(const Board& from, Board& to);
 
-	void applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& p2,bool isForTest);
+	std::vector<MarginType> applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& p2,bool isForTest);
 	bool tryApplyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1,Player& pl2);
 };
 

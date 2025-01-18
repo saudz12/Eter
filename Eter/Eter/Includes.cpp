@@ -12,6 +12,8 @@ Colours GetColour(char c)
 		return Colours::INVALID_COL;
 	}
 }
+
+
 char GetColour(Colours c)
 {
 	switch (c)

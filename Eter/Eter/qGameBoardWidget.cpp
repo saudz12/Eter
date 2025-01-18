@@ -16,8 +16,7 @@ qGameBoardWidget::qGameBoardWidget(QWidget* parent, int board_max_size, int card
 
     minRow = minColumn = 10;
 
-    QGridLayout* gridLayout = new QGridLayout(this);
-
+    gridLayout = new QGridLayout(this);
     setLayout(gridLayout);
 }
 
@@ -58,7 +57,6 @@ void qGameBoardWidget::handleMinionCardDrop(QDropEvent* event)
         newCardLabel = setupCurrentCard(event, row, col);
     }
     const int originalRow = row, originalCol = col;
-    QGridLayout* gridLayout = qobject_cast<QGridLayout*>(this->layout());
     if (gridLayout)
     {
         QLayoutItem* item = gridLayout->itemAtPosition(row, col);
@@ -68,24 +66,28 @@ void qGameBoardWidget::handleMinionCardDrop(QDropEvent* event)
             QLabel* label = qobject_cast<QLabel*>(item->widget());
             if (label->property("type") == QString("empty"))
             {
-                handleMinionCardPlaceOnEmptySpace(gridLayout,newCardLabel,label,row,col);
+                handleMinionCardPlaceOnEmptySpace(newCardLabel,label,row,col);
             }
-            else if (m_cardPosition[{row, col}].back()->property("isIllusion").toString()==QString("yes")
-                && currentCardValue < m_cardPosition[{row, col}].back()->property("value").toInt())
+            else if (m_cardPosition[{row, col}].back()->property("isIllusion").toBool()==true
+                && currentCardValue < m_cardPosition[{row, col}].back()->property("value").toInt() && !isEterCard)
             {
-                coverIllusion(gridLayout, label, row, col);
+                coverIllusion( label, row, col);
             }
             else if (label->property("type") == QString("minion"))
             {
-                qDebug() <<"iseter"<< m_cardPosition[{row, col}].back()->property("isEter").toBool();
-                qDebug() << "value" << m_cardPosition[{row, col}].back()->property("value").toInt();
-                if (m_cardPosition[{row, col}].back()->property("isEter").toBool() == true)
+
+                qDebug() << m_cardPosition[{row, col}].back()->property("isIllusion").toBool() << " " << isCurrentCardIllusion << '\n';;
+                if (m_cardPosition[{row, col}].back()->property("isEter").toBool() == true)// ceva peste eter
                 {
-                    
+
+                }
+                else if (isCurrentCardIllusion) // iluzie peste card
+                {
+
                 }
                 else if (currentCardValue > m_cardPosition[{row, col}].back()->property("value").toInt())
                 {
-                    handleMinionCardPlaceOnTop(gridLayout, label, newCardLabel, row, col);
+                    handleMinionCardPlaceOnTop(label, newCardLabel, row, col);
                 }
             }
         }
@@ -112,25 +114,24 @@ void qGameBoardWidget::resizeEvent(QResizeEvent* event)
 
 void qGameBoardWidget::expandBoard(int& row, int& column)
 {
-    QGridLayout* gridLayout = qobject_cast<QGridLayout*>(this->layout());
 
     if (wasFirstCardPlaced==false)
     {
         wasFirstCardPlaced = true;
-        placeFirstCard(gridLayout, row, column);
+        placeFirstCard( row, column);
         QLabel* newCard = createNewMinionCard();
 
         return;
     }
 
-    std::vector<std::function<void(QGridLayout*& , int&, int&)>> functionCalls = createFunctionCallsVector(gridLayout,row,column);
+    std::vector<std::function<void(int&, int&)>> functionCalls = createFunctionCallsVector(row,column);
 
     for (int i = 0; i < functionCalls.size(); ++i)
     {
-        functionCalls[i](gridLayout, row, column);
+        functionCalls[i]( row, column);
     }
     QLabel* newCard = createNewMinionCard();
-    addNewMinionCardToGrid(newCard, gridLayout, row, column);
+    addNewMinionCardToGrid(newCard,row, column);
 }
 
 void qGameBoardWidget::setBoardPosition(const int x, const int y, const int card_width, const int card_height)
@@ -141,13 +142,11 @@ void qGameBoardWidget::setBoardPosition(const int x, const int y, const int card
 
 void qGameBoardWidget::addWidgetOnBoard(QPointer<qDraggableLabel>& card, int row, int column)
 {
-    QGridLayout* gridLayout = qobject_cast<QGridLayout*>(this->layout());
     gridLayout->addWidget(card, row, column);
 }
 
 void qGameBoardWidget::setupEmptyBoard()
 {
-    QGridLayout* gridLayout = qobject_cast<QGridLayout*>(this->layout());
     this->resize(CARD_WIDTH, CARD_HEIGTH);
     QLabel* emptySpace = createWhiteSpace();
     gridLayout->addWidget(emptySpace, 0, 0);
@@ -165,7 +164,7 @@ QLabel* qGameBoardWidget::createWhiteSpace()
     return emptySpace;
 }
 
-int16_t qGameBoardWidget::verifyTopCardsExist(QGridLayout*&  gridLayout,const int& row,const int& column)
+int16_t qGameBoardWidget::verifyTopCardsExist(const int& row,const int& column)
 {
     bool existsCards = false;
     bool isRowEmpty = false;
@@ -196,7 +195,7 @@ int16_t qGameBoardWidget::verifyTopCardsExist(QGridLayout*&  gridLayout,const in
     return addRow;
 }
 
-int16_t qGameBoardWidget::verifyLeftCardsExist(QGridLayout*&  gridLayout, const int& row, const int& column)
+int16_t qGameBoardWidget::verifyLeftCardsExist( const int& row, const int& column)
 {
     bool existsCards = false;
     bool isColEmpty = false;
@@ -226,7 +225,7 @@ int16_t qGameBoardWidget::verifyLeftCardsExist(QGridLayout*&  gridLayout, const 
     return addColumn;
 }
 
-int16_t qGameBoardWidget::verifyBottomCardsExist(QGridLayout*&  gridLayout, const int& row, const int& column)
+int16_t qGameBoardWidget::verifyBottomCardsExist( const int& row, const int& column)
 {
     bool existsCards = false;
     bool isRowEmpty = false;
@@ -257,7 +256,7 @@ int16_t qGameBoardWidget::verifyBottomCardsExist(QGridLayout*&  gridLayout, cons
     return addRow;
 }
 
-int16_t qGameBoardWidget::verifyRightCardsExist(QGridLayout*&  gridLayout, const int& row, const int& column)
+int16_t qGameBoardWidget::verifyRightCardsExist( const int& row, const int& column)
 {
     bool existsCards = false;
     bool isColEmpty = false;
@@ -287,7 +286,7 @@ int16_t qGameBoardWidget::verifyRightCardsExist(QGridLayout*&  gridLayout, const
     return addColumn;
 }
 
-void qGameBoardWidget::updateCardsForTopRow(QGridLayout*&  gridLayout, const int& row, const int& column,const int& addRow)
+void qGameBoardWidget::updateCardsForTopRow( const int& row, const int& column,const int& addRow)
 {
     std::unordered_set<std::pair<int, int>, PairHash1> updatedEmptyPositions;
     for (auto it = m_emptyPositions.begin(); it != m_emptyPositions.end(); ++it)
@@ -317,7 +316,7 @@ void qGameBoardWidget::updateCardsForTopRow(QGridLayout*&  gridLayout, const int
     m_pixmapPosition = std::move(updatedPixmapPosition);
 }
 
-void qGameBoardWidget::updateCardsForLeftCol(QGridLayout*&  gridLayout, const int& row, const int& column, const int& addColumn)
+void qGameBoardWidget::updateCardsForLeftCol( const int& row, const int& column, const int& addColumn)
 {
     std::unordered_set<std::pair<int, int>, PairHash1> updatedEmptyPositions;
     for (auto it = m_emptyPositions.begin(); it != m_emptyPositions.end(); ++it)
@@ -349,12 +348,12 @@ void qGameBoardWidget::updateCardsForLeftCol(QGridLayout*&  gridLayout, const in
     m_pixmapPosition = std::move(updatedPixmapPosition);
 }
 
-bool qGameBoardWidget::checkPosition(QGridLayout*&  gridLayout, int i, int j)
+bool qGameBoardWidget::checkPosition( int i, int j)
 {
     return (m_cardPosition.find({ i,j }) == m_cardPosition.end());
 }
 
-void qGameBoardWidget::addRowBelow(QGridLayout*&  gridLayout, int& row, int& column)
+void qGameBoardWidget::addRowBelow( int& row, int& column)
 {
     qDebug() << "added row below\n";
     if (maxRow-minRow+1 == BOARD_MAX_SIZE)
@@ -365,7 +364,7 @@ void qGameBoardWidget::addRowBelow(QGridLayout*&  gridLayout, int& row, int& col
     }
 }
 
-void qGameBoardWidget::addColumnRight(QGridLayout*&  gridLayout, int& row, int& column)
+void qGameBoardWidget::addColumnRight( int& row, int& column)
 {
     qDebug() << "added column right\n";
     if (maxColumn-minRow+1 == BOARD_MAX_SIZE)
@@ -376,17 +375,17 @@ void qGameBoardWidget::addColumnRight(QGridLayout*&  gridLayout, int& row, int& 
     }
 }
 
-void qGameBoardWidget::addRowTop(QGridLayout*&  gridLayout, int& row, int& column)
+void qGameBoardWidget::addRowTop( int& row, int& column)
 {
     qDebug() << "added row top";
 
-    int addRow = verifyTopCardsExist(gridLayout,row,column);
+    int addRow = verifyTopCardsExist(row,column);
 
     if (maxRow-minRow+1 == BOARD_MAX_SIZE)
         return;
     if (addRow == 1)
     {
-        updateCardsForTopRow(gridLayout, row, column,addRow);
+        updateCardsForTopRow( row, column,addRow);
     }
     for (int j = column - 1; j <= column + 1; ++j)
     {
@@ -396,18 +395,18 @@ void qGameBoardWidget::addRowTop(QGridLayout*&  gridLayout, int& row, int& colum
     row+=addRow;
 }
 
-void qGameBoardWidget::addColumnLeft(QGridLayout*&  gridLayout, int& row, int& column)
+void qGameBoardWidget::addColumnLeft( int& row, int& column)
 {
     qDebug() << "added column left\n";
 
-    int addColumn = verifyLeftCardsExist(gridLayout, row, column);
+    int addColumn = verifyLeftCardsExist( row, column);
 
     if (maxColumn-minColumn+1 == BOARD_MAX_SIZE)
         return;
 
     if (addColumn == 1)
     {
-        updateCardsForLeftCol(gridLayout, row, column, addColumn);
+        updateCardsForLeftCol( row, column, addColumn);
     }
     for (int i = row - 1; i <= row + 1; ++i)
     {
@@ -417,30 +416,7 @@ void qGameBoardWidget::addColumnLeft(QGridLayout*&  gridLayout, int& row, int& c
     column+=addColumn;
 }
 
-void qGameBoardWidget::redrawBoard(QGridLayout*& gridLayout)
-{
-    clearBoard(gridLayout);
-    
-    createEmptySpacesForRedrawnBoard();
-
-    stretchGridLayout(gridLayout);
-
-    addEmptySpacesToRedrawnBoard(gridLayout);
-
-    addCardsToRedrawnBoard(gridLayout);
-
-    int newHeight = (gridLayout->rowCount() * CARD_HEIGTH);
-
-    int newWidth = (gridLayout->columnCount() * CARD_WIDTH);
-    
-    QWidget* parentWidget = gridLayout->parentWidget();
-    if (parentWidget) 
-    {
-        parentWidget->resize(newWidth, newHeight);
-    }
-}
-
-void qGameBoardWidget::clearBoard(QGridLayout*&  gridLayout) {
+void qGameBoardWidget::clearBoard() {
     if (!gridLayout) return;
     while (QLayoutItem* item = gridLayout->takeAt(0)) {
         if (QWidget* widget = item->widget()) {
@@ -450,7 +426,7 @@ void qGameBoardWidget::clearBoard(QGridLayout*&  gridLayout) {
     }
 }
 
-void qGameBoardWidget::placeFirstCard(QGridLayout*&  gridLayout, int& row, int& column)
+void qGameBoardWidget::placeFirstCard( int& row, int& column)
 {
     row = column = 1;
     maxColumn = maxRow = 1;
@@ -471,7 +447,7 @@ void qGameBoardWidget::placeFirstCard(QGridLayout*&  gridLayout, int& row, int& 
             }
         }
     }
-    removeWidgetFromGrid(gridLayout, 0, 0);
+    removeWidgetFromGrid( 0, 0);
     for (size_t i = 0; i < 3; ++i)
     {
         for (size_t j = 0; j < 3; ++j)
@@ -488,7 +464,7 @@ void qGameBoardWidget::placeFirstCard(QGridLayout*&  gridLayout, int& row, int& 
 
     QLabel* label = createNewMinionCard();
     label->setPixmap(currCardPixmap);
-    addNewMinionCardToGrid(label, gridLayout, row, column);
+    addNewMinionCardToGrid(label, row, column);
 
     m_cardPosition.erase(std::make_pair(0, 0));
     m_pixmapPosition.erase(std::make_pair(0, 0));
@@ -504,18 +480,18 @@ QLabel* qGameBoardWidget::createNewMinionCard()
     return newCard;
 }
 
-void qGameBoardWidget::addNewMinionCardToGrid(QLabel*& newCard, QGridLayout*&  gridLayout, int& row, int& column)
+void qGameBoardWidget::addNewMinionCardToGrid(QLabel*& newCard, int& row, int& column)
 {
     newCard->setProperty("value", currentCardValue);
     newCard->setProperty("color", currentCardColor);
-    newCard->setProperty("isIllusion", isCurrentCardIllusion == true ? QString("yes"):QString("no"));
+    newCard->setProperty("isIllusion", isCurrentCardIllusion);
     newCard->setProperty("isEter", isEterCard);
     m_cardPosition[{row, column}].emplace_back(newCard);
     m_pixmapPosition[{row, column}].emplace_back(newCard->pixmap());
     gridLayout->addWidget(newCard, row, column);
 }
 
-void qGameBoardWidget::removeWidgetFromGrid(QGridLayout*&  gridLayout, int row, int column)
+void qGameBoardWidget::removeWidgetFromGrid( int row, int column)
 {
     QLayoutItem* item = gridLayout->itemAtPosition(row, column);
     if (item) {
@@ -532,38 +508,39 @@ void qGameBoardWidget::removeWidgetFromGrid(QGridLayout*&  gridLayout, int row, 
             //delete item; // Delete the layout item
         }
     }
+    updateMinMaxRowCol();
 }
 
-std::vector<std::function<void(QGridLayout*& , int&, int&)>> qGameBoardWidget::createFunctionCallsVector(QGridLayout*&  gridLayout, int& row,int& column)
+std::vector<std::function<void(int&, int&)>> qGameBoardWidget::createFunctionCallsVector( int& row,int& column)
 {
-    std::vector<std::function<void(QGridLayout*& , int&, int&)>> functionCalls;
+    std::vector<std::function<void(int&, int&) >> functionCalls;
     QLayoutItem* item;
     item = gridLayout->itemAtPosition(row - 1, column);
-    if (item == nullptr || item!=nullptr && verifyTopCardsExist(gridLayout,row,column)==0) {
-        functionCalls.push_back([this](QGridLayout*&  gridLayout, int& row, int& column) {
-            addRowTop(gridLayout, row, column);
+    if (item == nullptr || item!=nullptr && verifyTopCardsExist(row,column)==0) {
+        functionCalls.push_back([this]( int& row, int& column) {
+            addRowTop( row, column);
             });
     };
     item = gridLayout->itemAtPosition(row, column - 1);
-    if (item == nullptr || item != nullptr && verifyLeftCardsExist(gridLayout, row, column) == 0) {
-        functionCalls.push_back([this](QGridLayout*&  gridLayout, int& row, int& column) {
-            addColumnLeft(gridLayout, row, column);
+    if (item == nullptr || item != nullptr && verifyLeftCardsExist( row, column) == 0) {
+        functionCalls.push_back([this]( int& row, int& column) {
+            addColumnLeft( row, column);
             });
     }
     item =gridLayout->itemAtPosition(row, column + 1);
-    if(item == nullptr || item!=nullptr && verifyRightCardsExist(gridLayout,row,column)==0)
-        functionCalls.push_back([this](QGridLayout*&  gridLayout, int& row, int& column) {
-            addColumnRight(gridLayout, row, column);
+    if(item == nullptr || item!=nullptr && verifyRightCardsExist(row,column)==0)
+        functionCalls.push_back([this]( int& row, int& column) {
+            addColumnRight( row, column);
             });
     item = gridLayout->itemAtPosition(row + 1, column);
-    if (item == nullptr || item != nullptr && verifyBottomCardsExist(gridLayout, row, column) == 0)
-        functionCalls.push_back([this](QGridLayout*&  gridLayout, int& row, int& column) {
-            addRowBelow(gridLayout, row, column);
+    if (item == nullptr || item != nullptr && verifyBottomCardsExist( row, column) == 0)
+        functionCalls.push_back([this]( int& row, int& column) {
+            addRowBelow( row, column);
             });
     return functionCalls;
 }
 
-void qGameBoardWidget::stretchGridLayout(QGridLayout*&  gridLayout)
+void qGameBoardWidget::stretchGridLayout()
 {
     for (int i = 0; i < gridLayout->rowCount(); ++i)
         gridLayout->setRowStretch(i, 1);
@@ -575,13 +552,13 @@ void qGameBoardWidget::stretchGridLayout(QGridLayout*&  gridLayout)
     gridLayout->setContentsMargins(0, 0, 0, 0);
 }
 
-void qGameBoardWidget::createFixedSizeBoard(QGridLayout*&  gridLayout)
+void qGameBoardWidget::createBoard()
 {
-    clearBoard(gridLayout);
+    clearBoard();
 
     m_emptyPositions.clear();
 
-    stretchGridLayout(gridLayout);
+    stretchGridLayout();
 
     for (auto& card : m_cardPosition)
     {
@@ -599,44 +576,48 @@ void qGameBoardWidget::createFixedSizeBoard(QGridLayout*&  gridLayout)
             {row + 1, column - 1},
             {row + 1, column + 1}
         };
-
-        for (const auto& [adjRow, adjCol] : adjacentPositions)
+        if (!cardLabel.empty())
         {
-            if (adjRow >= minRow && adjRow <= BOARD_MAX_SIZE && adjCol >= minRow && adjCol <= BOARD_MAX_SIZE
-                && m_cardPosition.find({ adjRow, adjCol }) == m_cardPosition.end())
+            for (const auto& [adjRow, adjCol] : adjacentPositions)
             {
-                m_emptyPositions.insert(std::make_pair(adjRow, adjCol));
-
-                QLayoutItem* existingItem = gridLayout->itemAtPosition(adjRow, adjCol);
-                if (existingItem)
+                if (m_cardPosition.find({ adjRow, adjCol }) == m_cardPosition.end())
                 {
-                    QWidget* existingWidget = existingItem->widget();
-                    if (existingWidget)
+                    if (BOARD_MAX_SIZE == maxColumn - minColumn + 1 &&
+                        maxRow - minRow + 1 == BOARD_MAX_SIZE)
                     {
-                        delete existingWidget;
+                        if (adjRow >= minRow && adjRow <= BOARD_MAX_SIZE && adjCol >= minColumn && adjCol <= BOARD_MAX_SIZE)
+                        {
+                            m_emptyPositions.insert({ adjRow,adjCol });
+                        }
+                        else
+                            continue;
                     }
+                    else if (BOARD_MAX_SIZE == maxColumn - minColumn + 1)
+                    {
+                        if (adjCol >= minColumn && adjCol <= BOARD_MAX_SIZE)
+                        {
+                            m_emptyPositions.insert({ adjRow,adjCol });
+                        }
+                    }
+                    else if (maxRow - minRow + 1 == BOARD_MAX_SIZE)
+                    {
+                        if (adjRow >= minRow && adjRow <= BOARD_MAX_SIZE)
+                        {
+                            m_emptyPositions.insert({ adjRow,adjCol });
+                        }
+                    }
+                    else
+                        m_emptyPositions.insert({ adjRow,adjCol });
                 }
-
-                QLabel* whiteSpace = createWhiteSpace();
-                gridLayout->addWidget(whiteSpace, adjRow, adjCol);
             }
         }
-
-        if (m_pixmapPosition.find({ row, column }) != m_pixmapPosition.end())
-        {
-            qDebug() << "Found pixmap for position:" << row << "," << column;
-            qDebug() << "Pixmap:" << m_pixmapPosition[{row, column}].back();
-            cardLabel.back()->setPixmap(m_pixmapPosition[{row, column}].back());
-        }
-
-        cardLabel.back()->setProperty("type", "minion");
-        cardLabel.back()->setFixedSize(CARD_WIDTH, CARD_HEIGTH);
-        cardLabel.back()->setAlignment(Qt::AlignCenter);
-        cardLabel.back()->show();
-        int toAddRow = row, toAddColumn = column;
-        gridLayout->addWidget(m_cardPosition[{toAddRow, toAddColumn}].back(), toAddRow, toAddColumn);
-        qDebug() << "Card placed at:" << row << "," << column << '\n';
+        else
+            m_emptyPositions.insert({ row,column });
     }
+
+    addCardsToRedrawnBoard();
+
+    addEmptySpacesToRedrawnBoard();
 
     int newHeight = (gridLayout->rowCount() * CARD_HEIGTH) +
         gridLayout->contentsMargins().top() +
@@ -655,18 +636,24 @@ void qGameBoardWidget::createFixedSizeBoard(QGridLayout*&  gridLayout)
 
 void qGameBoardWidget::updateMinMaxRowCol()
 {
+    minRow = minColumn = 10;
+    maxRow = maxColumn = -1;
     for (auto& card : m_cardPosition)
     {
         auto& [position, cardLabel] = card;
         auto& [row, column] = position;
-        if (row > maxRow)
-            maxRow = row;
-        if (column > maxColumn)
-        maxColumn = column;
-        if (row < minRow)
-            minRow = row;
-        if (column < minColumn)
-            minColumn = column;
+        if (!cardLabel.empty())
+        {
+            if (row > maxRow)
+                maxRow = row;
+            if (column > maxColumn)
+                maxColumn = column;
+            if (row < minRow)
+                minRow = row;
+            if (column < minColumn)
+                minColumn = column;
+
+        }
     }
 }
 
@@ -674,56 +661,53 @@ void qGameBoardWidget::createEmptySpacesForRedrawnBoard()
 {
     std::unordered_set<std::pair<int, int>, PairHash1> validEmptySpaces;
 
-    for (const auto& emptySpace : m_emptyPositions)
+    for (const auto& cardPositon : m_cardPosition)
     {
-        const auto& [row, column] = emptySpace;
-
-        bool hasAdjacentCard = false;
-        std::vector<std::pair<int, int>> adjacentPositions = {
-            {row - 1, column},
-            {row + 1, column},
-            {row, column - 1},
-            {row, column + 1},
-            {row - 1, column - 1},
-            {row - 1, column + 1},
-            {row + 1, column - 1},
-            {row + 1, column + 1}
-        };
-
-        for (const auto& [adjRow, adjCol] : adjacentPositions)
+        const auto& [position, labelCard] = cardPositon;
+        const auto& [row, column] = position;
+        qDebug() << "size:"<<labelCard.size() << '\n';
+        if (!labelCard.empty() && labelCard.size())
         {
-            if (m_cardPosition.find({ adjRow, adjCol }) != m_cardPosition.end() && !m_cardPosition[{adjRow, adjCol}].empty())
+            std::vector<std::pair<int, int>> adjacentPositions = {
+               {row - 1, column},
+               {row + 1, column},
+               {row, column - 1},
+               {row, column + 1},
+               {row - 1, column - 1},
+               {row - 1, column + 1},
+               {row + 1, column - 1},
+               {row + 1, column + 1}
+            };
+            for (const auto& [adjRow, adjCol] : adjacentPositions)
             {
-                hasAdjacentCard = true;
-                break;
-            }
-        }
-
-        if (hasAdjacentCard)
-        {
-            if (BOARD_MAX_SIZE == maxColumn - minColumn + 1)
-            {
-                if (column >= minColumn && column <= BOARD_MAX_SIZE)
+                if (/*adjRow >= minRow && adjRow <= BOARD_MAX_SIZE && adjCol >= minColumn && adjCol <= BOARD_MAX_SIZE && */
+                    m_cardPosition.find({ adjRow, adjCol }) == m_cardPosition.end() || m_cardPosition[{adjRow, adjCol}].empty())
                 {
-                    validEmptySpaces.insert(emptySpace);
+                    if (BOARD_MAX_SIZE == maxColumn - minColumn + 1)
+                    {
+                        if (adjCol >= minColumn && adjCol <= BOARD_MAX_SIZE)
+                        {
+                            validEmptySpaces.insert({ adjRow,adjCol });
+                        }
+                    }
+                    else if (maxRow - minRow + 1 == BOARD_MAX_SIZE)
+                    {
+                        if (adjRow >= minRow && adjRow <= BOARD_MAX_SIZE)
+                        {
+                            validEmptySpaces.insert({ adjRow,adjCol });
+                        }
+                    }
+                    else
+                        validEmptySpaces.insert({ adjRow,adjCol });
                 }
             }
-            else if (maxRow - minRow + 1 == BOARD_MAX_SIZE)
-            {
-                if (row >= minRow && row <= BOARD_MAX_SIZE)
-                {
-                    validEmptySpaces.insert(emptySpace);
-                }
-            }
-            else
-                validEmptySpaces.insert(emptySpace);
         }
     }
 
     m_emptyPositions = std::move(validEmptySpaces);
 }
 
-void qGameBoardWidget::addCardsToRedrawnBoard(QGridLayout*&  gridLayout)
+void qGameBoardWidget::addCardsToRedrawnBoard()
 {
     for (auto& card : m_cardPosition)
     {
@@ -804,7 +788,7 @@ QLabel* qGameBoardWidget::setupCurrentCard(QDropEvent* event, int row, int col)
     return newCardLabel;
 }
 
-void qGameBoardWidget::coverIllusion(QGridLayout* gridLayout,QLabel* label,int& row,int& col)
+void qGameBoardWidget::coverIllusion(QLabel* label,int& row,int& col)
 {
     label = createNewMinionCard();
     QString dir = QDir::currentPath() + "/textures/";
@@ -826,18 +810,18 @@ void qGameBoardWidget::coverIllusion(QGridLayout* gridLayout,QLabel* label,int& 
     }
     currentCardValue = m_cardPosition[{row, col}].back()->property("value").toInt();
     currentCardColor = m_cardPosition[{row, col}].back()->property("color").toString().toLatin1().at(0);
-    removeWidgetFromGrid(gridLayout, row, col);
-    addNewMinionCardToGrid(label, gridLayout, row, col);
+    removeWidgetFromGrid( row, col);
+    addNewMinionCardToGrid(label, row, col);
 }
 
-void qGameBoardWidget::handleMinionCardPlaceOnTop(QGridLayout* gridLayout,QLabel* label,QLabel* newCardLabel,int& row,int& col)
+void qGameBoardWidget::handleMinionCardPlaceOnTop(QLabel* label, QLabel* newCardLabel, int& row, int& col)
 {
     currCardPixmap = newCardLabel->pixmap();
     label = createNewMinionCard();
-    addNewMinionCardToGrid(label, gridLayout, row, col);
+    addNewMinionCardToGrid(label, row, col);
 }
 
-void qGameBoardWidget::handleMinionCardPlaceOnEmptySpace(QGridLayout* gridLayout,QLabel* newCardLabel,QLabel* labelOnBoard,int& row,int& col)
+void qGameBoardWidget::handleMinionCardPlaceOnEmptySpace(QLabel* newCardLabel,QLabel* labelOnBoard,int& row,int& col)
 {
     currCardPixmap = newCardLabel->pixmap();
     labelOnBoard = createNewMinionCard();
@@ -846,18 +830,112 @@ void qGameBoardWidget::handleMinionCardPlaceOnEmptySpace(QGridLayout* gridLayout
     updateMinMaxRowCol();
     if (wasFirstCardPlaced)
     {
-        if (!(BOARD_MAX_SIZE == maxRow - minRow + 1 && BOARD_MAX_SIZE == maxColumn - minColumn + 1))
-        {
-            redrawBoard(gridLayout);
-        }
-        else
-        {
-            createFixedSizeBoard(gridLayout);
-        }
+        createBoard();
     }
 }
 
-void qGameBoardWidget::addEmptySpacesToRedrawnBoard(QGridLayout*&  gridLayout)
+void qGameBoardWidget::removeTopMargin()
+{
+    // New containers to store updated positions
+    std::unordered_map<std::pair<int, int>, std::deque<QLabel*>, PairHash1> updatedCardPosition;
+    std::unordered_map<std::pair<int, int>, std::deque<QPixmap>, PairHash1> updatedPixmapPosition;
+
+    // Adjust card positions
+    for (const auto& [position, labels] : m_cardPosition)
+    {
+        auto [row, col] = position;  // Extract row and column
+        updatedCardPosition.emplace(std::make_pair(row - 1, col), labels);
+    }
+
+    // Adjust pixmap positions
+    for (const auto& [position, pixmaps] : m_pixmapPosition)
+    {
+        auto [row, col] = position;  // Extract row and column
+        updatedPixmapPosition.emplace(std::make_pair(row - 1, col), pixmaps);
+    }
+
+    // Replace the original maps with the updated maps
+    m_cardPosition = std::move(updatedCardPosition);
+    m_pixmapPosition = std::move(updatedPixmapPosition);
+}
+
+
+void qGameBoardWidget::removeLeftMargin()
+{
+    // New containers to store updated positions
+    std::unordered_map<std::pair<int, int>, std::deque<QLabel*>, PairHash1> updatedCardPosition;
+    std::unordered_map<std::pair<int, int>, std::deque<QPixmap>, PairHash1> updatedPixmapPosition;
+
+    // Adjust card positions
+    for (const auto& [position, labels] : m_cardPosition)
+    {
+        auto [row, col] = position;  // Extract row and column
+        updatedCardPosition.emplace(std::make_pair(row, col - 1), labels);
+    }
+
+    // Adjust pixmap positions
+    for (const auto& [position, pixmaps] : m_pixmapPosition)
+    {
+        auto [row, col] = position;  // Extract row and column
+        updatedPixmapPosition.emplace(std::make_pair(row, col - 1), pixmaps);
+    }
+
+    // Replace the original maps with the updated maps
+    m_cardPosition = std::move(updatedCardPosition);
+    m_pixmapPosition = std::move(updatedPixmapPosition);
+}
+
+void qGameBoardWidget::removeBottomMargin()
+{
+    // New containers to store updated positions
+    std::unordered_map<std::pair<int, int>, std::deque<QLabel*>, PairHash1> updatedCardPosition;
+    std::unordered_map<std::pair<int, int>, std::deque<QPixmap>, PairHash1> updatedPixmapPosition;
+
+    // Adjust card positions
+    for (const auto& [position, labels] : m_cardPosition)
+    {
+        auto [row, col] = position;  // Extract row and column
+        updatedCardPosition.emplace(std::make_pair(row + 1, col), labels);
+    }
+
+    // Adjust pixmap positions
+    for (const auto& [position, pixmaps] : m_pixmapPosition)
+    {
+        auto [row, col] = position;  // Extract row and column
+        updatedPixmapPosition.emplace(std::make_pair(row + 1, col), pixmaps);
+    }
+
+    // Replace the original maps with the updated maps
+    m_cardPosition = std::move(updatedCardPosition);
+    m_pixmapPosition = std::move(updatedPixmapPosition);
+}
+
+void qGameBoardWidget::removeRightMargin()
+{
+    // New containers to store updated positions
+    std::unordered_map<std::pair<int, int>, std::deque<QLabel*>, PairHash1> updatedCardPosition;
+    std::unordered_map<std::pair<int, int>, std::deque<QPixmap>, PairHash1> updatedPixmapPosition;
+
+    // Adjust card positions
+    for (const auto& [position, labels] : m_cardPosition)
+    {
+        auto [row, col] = position;  // Extract row and column
+        updatedCardPosition.emplace(std::make_pair(row, col + 1), labels);
+    }
+
+    // Adjust pixmap positions
+    for (const auto& [position, pixmaps] : m_pixmapPosition)
+    {
+        auto [row, col] = position;  // Extract row and column
+        updatedPixmapPosition.emplace(std::make_pair(row, col + 1), pixmaps);
+    }
+
+    // Replace the original maps with the updated maps
+    m_cardPosition = std::move(updatedCardPosition);
+    m_pixmapPosition = std::move(updatedPixmapPosition);
+}
+
+void qGameBoardWidget::addEmptySpacesToRedrawnBoard()
 {
     for (const auto& emptySpace : m_emptyPositions)
     {
@@ -869,22 +947,81 @@ void qGameBoardWidget::addEmptySpacesToRedrawnBoard(QGridLayout*&  gridLayout)
 
 void qGameBoardWidget::removeCardIllusion(int row,int col, IllusionErrors error)
 {
-    QGridLayout* gridLayout = qobject_cast<QGridLayout*>(this->layout());
     scaleCoordinates(row, col);
     if (error == IllusionErrors::_ILLUSION_ALREADY_USED)
     {
         qDebug() << "row:" << row << "col:" << col << '\n';
-        removeWidgetFromGrid(gridLayout, row, col);
-        redrawBoard(gridLayout);
+        removeWidgetFromGrid( row, col);
+        createBoard();
         QLabel* emptySpace = createWhiteSpace();
         gridLayout->addWidget(emptySpace, row, col);
         m_emptyPositions.emplace(std::make_pair(row, col));
     }
-    //else if (error == IllusionErrors::_INVALID_SPACE)
-    //{
-    //    removeWidgetFromGrid(gridLayout, row, col);
-    //    redrawBoard(gridLayout);
-    //}
+}
+
+void qGameBoardWidget::removeCard(int row, int col)
+{
+    scaleCoordinates(row, col);
+    if (!m_cardPosition[{row, col}].empty())
+    {
+        removeWidgetFromGrid(row, col);
+    }
+}
+
+void qGameBoardWidget::returnCard(int row, int col, int& value, Colours& color, bool& isEter, bool& isIllusion)
+{
+    scaleCoordinates(row, col);
+    if (!m_cardPosition[{row, col}].empty())
+    {
+        if (gridLayout)
+        {
+            QLayoutItem* item = gridLayout->itemAtPosition(row, col);
+
+            if (item)
+            {
+                QLabel* label = qobject_cast<QLabel*>(item->widget());
+                value = label->property("value").toInt();
+                color = GetColour(label->property("color").toString().toLatin1()[0]);
+                isEter = label->property("isEter").toBool();
+                isIllusion = label->property("isIllusion").toBool();
+
+                removeWidgetFromGrid(row, col);
+            }
+        }
+    }
+}
+
+void qGameBoardWidget::removeMargins(std::vector<MarginType> marginsToRemove)
+{
+    for (int i = 0; i < marginsToRemove.size(); i++)
+    {
+        switch (marginsToRemove[i])
+        {
+            case MarginType::MARGIN_TOP:
+                qDebug() << "top";
+                removeTopMargin();
+                break;
+            case MarginType::MARGIN_BOT:
+                qDebug() << "bot";
+                removeBottomMargin();
+                break;
+            case MarginType::MARGIN_LEFT:
+                qDebug() << "left";
+                removeLeftMargin();
+                break;
+            case MarginType::MARGIN_RIGHT:
+                qDebug() << "right";
+                removeRightMargin();
+                break;
+            default:
+                break;
+        }
+    }
+    for (auto& card : m_cardPosition)
+    {
+        qDebug() << card.first.first << " " << card.first.second<<'\n';
+    }
+    createBoard();
 }
 
 

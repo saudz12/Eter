@@ -84,5 +84,5 @@ public:
 	bool GetWasExplosionPlayed() const { return m_wasExplosionPlayed; }
 	
 	bool tryToApplyExplosionOnBoard(ExplosionCard& card);
-	void applyExplosionOnBoard(const ExplosionCard& card);
+	std::vector<MarginType> applyExplosionOnBoard(const ExplosionCard& card);
 };

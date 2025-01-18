@@ -1194,22 +1194,27 @@ void Board::updateRowChecker(uint16_t x, uint16_t option)
 	}
 }
 
-void Board::checkForUpdates()
+std::vector<MarginType> Board::checkForUpdates()
 {
+	std::vector<MarginType> marginsToRemove;
 	while (!m_colChecker.empty() && m_colChecker.front().first == 0 && m_colChecker.front().second == 0) {
 		removeLeftMargin();
+		marginsToRemove.push_back(MarginType::MARGIN_LEFT);
 	}
 
 	while (!m_colChecker.empty() && m_colChecker.back().first == 0 && m_colChecker.back().second == 0) {
 		removeRightMargin();
+		marginsToRemove.push_back(MarginType::MARGIN_RIGHT);
 	}
 
 	while (!m_rowChecker.empty() && m_rowChecker.front().first == 0 && m_rowChecker.front().second == 0) {
 		removeTopMargin();
+		marginsToRemove.push_back(MarginType::MARGIN_TOP);
 	}
 
 	while (!m_rowChecker.empty() && m_rowChecker.back().first == 0 && m_rowChecker.back().second == 0) {
 		removeBottomMargin();
+		marginsToRemove.push_back(MarginType::MARGIN_BOT);
 	}
 
 	if (m_colChecker.size() + m_rowChecker.size() == 0) {
@@ -1218,6 +1223,8 @@ void Board::checkForUpdates()
 		m_matrix.push_back(Line());
 		m_matrix[0].push_back(CardStack());
 	}
+
+	return marginsToRemove;
 }
 
 bool Board::isBoardFilled()
@@ -1355,6 +1362,11 @@ void Board::AddLineOnBottom()
 	m_rowChecker.emplace_back(0, 0);
 }
 
+bool Board::isValidPosition(int16_t _x, int16_t _y)
+{
+	return _x >= 0 && _x < m_rowChecker.size() && _y >= 0 && _y < m_colChecker.size();
+}
+
 void Board::PlaceIllusion(MinionCard&& _toPlace, int16_t _x, int16_t _y)
 {
 	_toPlace.SetIsIllusionCard(true);
@@ -1397,11 +1409,10 @@ void Board::PlaceIllusion(MinionCard&& _toPlace, int16_t _x, int16_t _y)
 
 bool Board::CanCoverIllusion(uint16_t _x, uint16_t _y, uint16_t _val)
 {
-	if (_x >= 0 && _x < getRowCount() && _y >= 0 && _y < getColCount())
-	{
-		if (!m_matrix[_x][_y].empty() && m_matrix[_x][_y].back().GetIsIllusionCard())
-			return true;
-	}
+
+	if (!m_matrix[_x][_y].empty() && m_matrix[_x][_y].back().GetIsIllusionCard() && _val!=0)
+		return true;
+
 	return false;
 }
 
@@ -1409,6 +1420,13 @@ void Board::RevealIllusion(int16_t _x, int16_t _y)
 {
 	m_matrix[_x][_y].back().SetCardType(CardType::MinionCard);
 	m_matrix[_x][_y].back().SetIsIllusionCard(false);
+}
+
+bool Board::isIllusionOnPos(int16_t _x, int16_t _y)
+{
+	if (!m_matrix[_x][_y].empty())
+		return m_matrix[_x][_y].back().GetIsIllusionCard();
+	return false;
 }
 
 void Board::removeLeftMargin()
@@ -1492,7 +1510,7 @@ void Board::cloneMatrix(const Board& from, Board& to)
 	}
 }
 
-void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& pl2,bool isForTest)
+std::vector<MarginType> Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& pl2,bool isForTest)
 {
 	explMap currExlpMap = explCard.GetExplosionMap();
 	for (const auto& elem : currExlpMap)
@@ -1553,9 +1571,12 @@ void Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Pl
 			break;
 		}	
 	}
-	checkForUpdates();
+	std::vector<MarginType> margins = checkForUpdates();
 	if (!isForTest)
+	{
 		printBoard(true);
+	}
+	return margins;
 }
 
 bool Board::tryApplyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1,Player& pl2)
