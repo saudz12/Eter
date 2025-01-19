@@ -34,7 +34,7 @@ CommonErrors checkFuncMist(Board&, Player&, int16_t, int16_t, MinionCard&);
 
 CommonErrors checkFuncWave(Board&, int16_t, int16_t, MinionCard);
 
-CommonErrors checkFuncBlizzard(Line&);
+CommonErrors checkFuncBlizzard();
 
 CommonErrors checkFuncWaterfall(Board&, int16_t);
 

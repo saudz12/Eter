@@ -224,6 +224,18 @@ CommonErrors GameFinal::CheckInput(ActionCard _action, std::vector<int16_t> _inp
 		return checkFuncEarthquake(*m_board);
 	case ActionCard::Border:
 		return checkFuncBorder(*m_board, _inputData[0], _inputData[1]);
+	case ActionCard::Avalanche:
+	{
+		int16_t x1 = _inputData[0];
+		int16_t y1 = _inputData[1];
+		int16_t x2 = _inputData[2];
+		int16_t y2 = _inputData[3];
+		return checkFuncAvalanche(*m_board, x1, y1, x2, y2, Directions::DIR_RIGHT);
+	}
+	case ActionCard::Blizzard:
+		return checkFuncBlizzard();
+	case ActionCard::Rock:
+		return CommonErrors::_NO_ERRORS;
 	default:
 	{
 		return CommonErrors::_INVALID_CARD_TYPE;

@@ -209,7 +209,7 @@ CommonErrors checkFuncWave(Board& _board, int16_t _x1, int16_t _y1, MinionCard) 
 	return CommonErrors::_NO_ERRORS;
 }
 
-CommonErrors checkFuncBlizzard(Line&) {
+CommonErrors checkFuncBlizzard() {
 	//nothing to add
 	return CommonErrors::_NO_ERRORS;
 }
