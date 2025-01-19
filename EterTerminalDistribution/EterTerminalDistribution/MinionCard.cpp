@@ -2,12 +2,12 @@
 
 MinionCard&& MinionCard::CreateHoleCard()
 {
-    return { 0, Colours::INVALID_COL, false, true };
+    return MinionCard{ 0, Colours::INVALID_COL, false, true };
 }
 
 MinionCard&& MinionCard::CreateEterCard(Colours _colour)
 {
-    return { 1, _colour, true, false };
+    return MinionCard{ 1, _colour, true, false };
 }
 
 MinionCard::MinionCard(MinionCard&& other) noexcept : Card{ CardType::MinionCard },
