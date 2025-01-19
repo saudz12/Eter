@@ -65,6 +65,7 @@ public:
 
 	void SetBelongsTo(Colours belongsTo);
 	void SetIsHole(bool isHole);
+
 };
 
 namespace std

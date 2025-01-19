@@ -95,6 +95,8 @@ private:
 	void removeLeftMargin();
 	void removeBottomMargin();
 	void removeRightMargin();
+	
+	void scaleCoordinatesForBoard();
 public:
 	void setBoardPosition(const int x,const int y,const int card_width,const int card_height);
 	void addWidgetOnBoard(QPointer<qDraggableLabel>& card,int row,int column);
@@ -102,7 +104,7 @@ public:
 	QLabel* createWhiteSpace();
 	void updateMinMaxRowCol();
 	void createBoard();
-
+	void placeCardsOnBoard(ResizeableMatrix matrix);
 signals:
 	void boardResized();
 	void cardDropAccepted(const QMimeData* mimeData,int row,int column);

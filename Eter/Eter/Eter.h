@@ -162,7 +162,7 @@ public:
 
     void scaleCoordinates(int& row, int& column);
 
-
+    void loadElementsFromJSON();
 private slots:
     void onPushButtonStartTrainingClicked();
     void onPushButtonStartElementalClicked();

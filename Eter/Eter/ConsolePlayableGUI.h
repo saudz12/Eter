@@ -57,6 +57,9 @@ public:
 	IllusionErrors PlaceIllusion(const int16_t x, const uint16_t y, const uint16_t val);
 	void EndTurn();
 
+	GameOptions GetIsEnabledElemental() const { return Elemental; }
+	GameOptions GetIsEnabledMage() const { return Mage; }
+
 	ExplosionCard GenerateNewExplosionCard();
 	bool tryToApplyExplosionOnBoard(ExplosionCard& card);
 	std::vector<MarginType> applyExplosionOnBoard(const ExplosionCard& card) const;

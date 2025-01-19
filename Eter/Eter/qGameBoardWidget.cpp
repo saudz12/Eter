@@ -102,7 +102,7 @@ void qGameBoardWidget::handleMinionCardDrop(QDropEvent* event)
         qDebug() << '\n';
     }
     event->acceptProposedAction();
-    emit cardDropAccepted(event->mimeData(), originalRow, originalCol);
+    emit cardDropAccepted(event->mimeData(), originalRow,originalCol);
 }
 
 
@@ -515,17 +515,22 @@ std::vector<std::function<void(int&, int&)>> qGameBoardWidget::createFunctionCal
 {
     std::vector<std::function<void(int&, int&) >> functionCalls;
     QLayoutItem* item;
-    item = gridLayout->itemAtPosition(row - 1, column);
-    if (item == nullptr || item!=nullptr && verifyTopCardsExist(row,column)==0) {
-        functionCalls.push_back([this]( int& row, int& column) {
-            addRowTop( row, column);
-            });
-    };
+    bool enteredHere = false;
     item = gridLayout->itemAtPosition(row, column - 1);
-    if (item == nullptr || item != nullptr && verifyLeftCardsExist( row, column) == 0) {
-        functionCalls.push_back([this]( int& row, int& column) {
-            addColumnLeft( row, column);
+    if (item == nullptr || item != nullptr && verifyLeftCardsExist(row, column) == 0) {
+        functionCalls.push_back([&enteredHere,this](int& row, int& column) {
+            addColumnLeft(row, column);
             });
+    }
+    
+    if (!enteredHere)
+    {
+        item = gridLayout->itemAtPosition(row - 1, column);
+        if (item == nullptr || item != nullptr && verifyTopCardsExist(row, column) == 0) {
+            functionCalls.push_back([this](int& row, int& column) {
+                addRowTop(row, column);
+                });
+        };
     }
     item =gridLayout->itemAtPosition(row, column + 1);
     if(item == nullptr || item!=nullptr && verifyRightCardsExist(row,column)==0)
@@ -935,6 +940,24 @@ void qGameBoardWidget::removeRightMargin()
     m_pixmapPosition = std::move(updatedPixmapPosition);
 }
 
+void qGameBoardWidget::scaleCoordinatesForBoard()
+{
+    std::unordered_map<std::pair<int, int>, std::deque<QLabel*>, PairHash1> cardPosition;
+    std::unordered_map<std::pair<int, int>, std::deque<QPixmap>, PairHash1> pixmapPosition;
+    for (auto& card : m_cardPosition)
+    {
+        auto& [row, col] = card.first;
+        cardPosition.emplace(std::make_pair(row - 1, col - 1), card.second);
+    }
+    for (auto& pixmap : m_pixmapPosition)
+    {
+        auto& [row, col] = pixmap.first;
+        pixmapPosition.emplace(std::make_pair(row-1, col - 1), pixmap.second);
+    }
+    m_cardPosition = std::move(cardPosition);
+    m_pixmapPosition = std::move(pixmapPosition);
+}
+
 void qGameBoardWidget::addEmptySpacesToRedrawnBoard()
 {
     for (const auto& emptySpace : m_emptyPositions)
@@ -1045,6 +1068,58 @@ void qGameBoardWidget::placeHoleCard(int row, int col, QPixmap pixmapHole)
     m_cardPosition[{row, col}].emplace_back(holeLabel);
     m_pixmapPosition[{row, col}].emplace_back(holeLabel->pixmap());
     gridLayout->addWidget(holeLabel, row, col);
+}
+
+void qGameBoardWidget::placeCardsOnBoard(ResizeableMatrix matrix)
+{
+    m_cardPosition.clear();
+    m_emptyPositions.clear();
+    m_pixmapPosition.clear();
+
+    for (int i = 0; i < matrix.size(); ++i)
+    {
+        for (int j = 0; j < matrix[i].size(); ++j)
+        {
+            while (!matrix[i][j].empty())
+            {
+                QLabel* newCard = new QLabel(this);
+                QString currentCardPath = QDir::currentPath() + QString("/textures/");
+                if (matrix[i][j].back().GetIsIllusionCard())
+                {
+                    if(matrix[i][j].back().GetColor()==Colours::RED)
+                        currentCardPath=currentCardPath+ QString("/red_back.jpg");
+                    else if(matrix[i][j].back().GetColor() == Colours::BLUE)
+                        currentCardPath = currentCardPath + QString("/blue_back.jpg");
+                }
+                else if (matrix[i][j].back().GetCardType() == CardType::HoleCard)
+                {
+                    currentCardPath = currentCardPath + QString("/hole_sprite.png");
+                }
+                else
+                {
+                    if (matrix[i][j].back().GetColor() == Colours::RED)
+                        currentCardPath = currentCardPath + QString("/red_")+QString::number(matrix[i][j].back().GetValue())
+                        +QString(".jpg");
+                    else if (matrix[i][j].back().GetColor() == Colours::BLUE)
+                        currentCardPath = currentCardPath + QString("/blue_") + QString::number(matrix[i][j].back().GetValue())
+                        + QString(".jpg");
+                }
+                QPixmap pixmapCard(currentCardPath);
+                pixmapCard = pixmapCard.scaled(CARD_WIDTH, CARD_HEIGTH, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                newCard->setPixmap(pixmapCard);
+                newCard->setProperty("isHole", matrix[i][j].back().GetIsIllusionCard());
+                newCard->setProperty("value", matrix[i][j].back().GetValue());
+                newCard->setProperty("color", QString(GetColour(matrix[i][j].back().GetColor())));
+                newCard->setProperty("isEter", matrix[i][j].back().GetIsEterCard());
+                newCard->setProperty("isIllusion", matrix[i][j].back().GetIsIllusionCard());
+                m_cardPosition[{i+1, j+1}].emplace_front( newCard);
+                m_pixmapPosition[{i+1, j+1}].emplace_front(pixmapCard);
+                matrix[i][j].pop_back();
+            }
+        }
+    }
+    updateMinMaxRowCol();
+    createBoard();
 }
 
 

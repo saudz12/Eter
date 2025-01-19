@@ -309,8 +309,6 @@ IllusionErrors GameFinal::PlaceIllusion(int16_t _x, int16_t _y, int16_t _val)
 	{
 		m_board->PlaceIllusion(m_activePlayer->PlayCard(_val), 0, 0);
 		m_activePlayer->SetIllusionUsage(true);
-		m_activePlayer->PlayCard(0);
-		m_activePlayer->UpdateCard(0, CardAction::REMOVE);
 		m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
 		return IllusionErrors::_NO_ERRORS;
 	}
@@ -326,9 +324,7 @@ IllusionErrors GameFinal::PlaceIllusion(int16_t _x, int16_t _y, int16_t _val)
 	}
 	m_board->PlaceIllusion(m_activePlayer->PlayCard(_val), _x, _y);
 	m_activePlayer->SetIllusionUsage(true);
-	m_activePlayer->PlayCard(0);
 	m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
-	m_activePlayer->UpdateCard(0, CardAction::REMOVE);
 	if (m_board->canPlayExplosion() && m_canPlayExplosion == false)
 	{
 		m_canPlayExplosion = true;
@@ -463,8 +459,8 @@ void GameFinal::LoadFromJson() {
 	m_redMage = deserializeTuple<int, ActionCard, uint16_t>(jsonObject["red_mage"]);
 	m_blueMage = deserializeTuple<int, ActionCard, uint16_t>(jsonObject["blue_mage"]);
 
-	m_elemental1 = deserializeTuple<int, ActionCard, uint16_t>(jsonObject["elemental_1"]);
-	m_elemental2 = deserializeTuple<int, ActionCard, uint16_t>(jsonObject["elemental_2"]);
+	m_elemental1 = deserializeTuple<int, ActionCard, uint16_t>(jsonObject["element_1"]);
+	m_elemental2 = deserializeTuple<int, ActionCard, uint16_t>(jsonObject["element_2"]);
 	
 	m_board->updateRowCheckerDeserialize();
 	m_board->updateColCheckerDeserialize();
@@ -472,6 +468,7 @@ void GameFinal::LoadFromJson() {
 	m_board->printBoard(true);
 	m_player1->printRemainingCards();
 	m_player2->printRemainingCards();
+	m_activePlayer = m_activeColor == Colours::RED ? m_player1 : m_player2;
 }
 
 

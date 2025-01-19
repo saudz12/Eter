@@ -224,6 +224,7 @@ void Eter::handleMinionCard(const QMimeData* mimeData, int row, int column)
     {
         scaleCoordinates(row, column);
     }
+    qDebug() << "detrow:" << row << " detcol:" << column;
     if (!m_gameview->PlaceCard(row, column, value))
     {
         QMessageBox::warning(nullptr, "Warning", "Cannot place that card there");
@@ -290,7 +291,7 @@ bool Eter::checkWin()
 {
     if (m_gameview->CheckWin())
     {
-        QMessageBox::information(nullptr,"Information",QString(GetColour(m_activeColor)) + QString(" player won the game"));
+        QMessageBox::information(nullptr,"Information",QString(GetColour(GetOppositeColour(m_activeColor))) + QString(" player won the game"));
         resetUItoNormal();
         if (m_activeGamemode == GameView::LaunchOptions::ELEMENTAL)
         {
@@ -425,6 +426,19 @@ void Eter::scaleCoordinates(int& row, int& column)
 {
     row--;
     column--;
+}
+
+void Eter::loadElementsFromJSON()
+{
+    if (m_gameview->GetIsEnabledElemental()==GameOptions::EnabledElemental)
+    {
+        labelRedElementalCard = new QLabel(this);
+        labelBlueElementalCard = new QLabel(this);
+    }
+    else if (m_gameview->GetIsEnabledElemental() == GameOptions::EnabledMage)
+    {
+
+    }
 }
 
 void Eter::onPushButtonStartTrainingClicked()
@@ -565,6 +579,18 @@ void Eter::onPushButtonLoadGame()
 {
     m_gameview = std::make_unique<GameView>();
     m_gameview->loadGame();
+
+    plRed = std::make_unique<qtCompletePlayer>(m_gameview->GetRedPlayer(), CARD_WIDTH, CARD_HEIGHT, true);//red starts first
+    plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
+
+    initializeGameMessage();
+    resizeGameLogo();
+    placeHorizontalLayout();
+    initializeGridLayoutBoard();
+    initializeRadioButtons();
+    //initializeElementalCards();
+    widgetBoard->placeCardsOnBoard(m_gameview->GetBoard().getMatrix());
+    m_wasFirstCardPlaced = true;
 }
 
 void Eter::onBoardResized()

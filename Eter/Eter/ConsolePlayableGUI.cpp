@@ -268,4 +268,5 @@ void GameView::loadGame()
 {
     m_game = std::make_unique<GameFinal>();
     m_game->LoadFromJson();
+    
 }

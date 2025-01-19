@@ -216,5 +216,10 @@ public:
 	static void cloneMatrix(const Board& from, Board& to);
 
 	void applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& p2);
+
+	template <typename T1, typename T2>
+	json serializePairAsObject(const std::pair<T1, T2>& pair) {
+		return { {"first", pair.first}, {"second", pair.second} };
+	}
 };
 
