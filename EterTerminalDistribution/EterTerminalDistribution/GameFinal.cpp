@@ -215,6 +215,15 @@ CommonErrors GameFinal::CheckInput(ActionCard _action, std::vector<int16_t> _inp
 		return CommonErrors::_NO_ERRORS;
 	case ActionCard::Support:
 		return checkFuncSupport(*m_board, _inputData[0], _inputData[1]);
+	case ActionCard::Fire:
+	{
+		int16_t inp = _inputData[0];
+		return checkFuncFire(*m_board, inp);
+	}
+	case ActionCard::Earthquake:
+		return checkFuncEarthquake(*m_board);
+	case ActionCard::Border:
+		return checkFuncBorder(*m_board, _inputData[0], _inputData[1]);
 	default:
 	{
 		return CommonErrors::_INVALID_CARD_TYPE;
