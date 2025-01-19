@@ -24,10 +24,41 @@ Player::Player(Colours _playerColor, bool _training)
 }
 
 Player::Player()
-	: m_playerColor{ Colours::RED }, m_illusionUsage{ false }, m_eterCardUsage{ false }
+	: m_playerColor{ Colours::RED }, 
+	m_illusionUsage{ false }, 
+	m_eterCardUsage{ false }, 
+	m_illusionCard{ nullptr },
+	m_lastMinionCardPlayed{ nullptr },
+	m_remainingCards{5}
 {
 	GenerateHand(true);
 }
+
+json Player::SerialiseCardCounter()
+{
+	json serialisedCardCounter;
+
+	serialisedCardCounter["val0"] = m_remainingCounter[0];
+	serialisedCardCounter["val1"] = m_remainingCounter[1];
+	serialisedCardCounter["val2"] = m_remainingCounter[2];
+	serialisedCardCounter["val3"] = m_remainingCounter[3];
+	serialisedCardCounter["val4"] = m_remainingCounter[4];
+
+	return serialisedCardCounter;
+}
+
+json Player::SerialisePlayer()
+{
+	json serialisedPlayer;
+
+	serialisedPlayer["counter"] = SerialiseCardCounter();
+	serialisedPlayer["color"] = m_playerColor;
+	serialisedPlayer["illusion_usage"] = m_illusionUsage;
+	serialisedPlayer["eter_usage"] = m_eterCardUsage;
+
+	return serialisedPlayer;
+}
+
 
 //
 //Player::Player(Colours playerColor, GameOptions elementalDuelOption, GameOptions mageDuelOption):

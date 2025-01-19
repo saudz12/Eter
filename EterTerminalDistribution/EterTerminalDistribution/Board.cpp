@@ -21,7 +21,7 @@ Board::Board()
 //true if yes, false if no
 bool Board::isMatMaxSize()
 {
-	return getColCount() == m_max_size && getRowCount() == m_max_size;
+	return GetColCount() == m_max_size && GetRowCount() == m_max_size;
 }
 
 //update 
@@ -289,11 +289,11 @@ StackConditions Board::CheckStackCondition(int16_t _x, int16_t _y)
 
 BoardErrors Board::CheckPos(int16_t _x, int16_t _y)
 {
-	if (_x < -1 || _y < -1 || _x > getRowCount() || _y > getColCount())
+	if (_x < -1 || _y < -1 || _x > GetRowCount() || _y > GetColCount())
 		return BoardErrors::_OUTSIDE_BOUND;
-	if (getRowCount() == m_max_size && (_x == -1 || _x == getRowCount()))
+	if (GetRowCount() == m_max_size && (_x == -1 || _x == GetRowCount()))
 		return BoardErrors::_OUTSIDE_BOUND;
-	if (getColCount() == m_max_size && (_y == -1 || _y == getColCount()))
+	if (GetColCount() == m_max_size && (_y == -1 || _y == GetColCount()))
 		return BoardErrors::_OUTSIDE_BOUND;
 
 	return BoardErrors::_INSIDE_BOUND;
@@ -304,7 +304,7 @@ BoardErrors Board::CanPlace(int16_t _x, int16_t _y, int16_t _val)
 	if (CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
 		return BoardErrors::_OUTSIDE_BOUND;
 
-	if (_x == -1 || _y == -1 || (_x == getRowCount() - 1 && getRowCount()) < m_max_size || (_y == getColCount() - 1 && getColCount() < m_max_size))
+	if (_x == -1 || _y == -1 || (_x == GetRowCount() - 1 && GetRowCount()) < m_max_size || (_y == GetColCount() - 1 && GetColCount() < m_max_size))
 		return BoardErrors::_NO_ERRORS;
 
 	StackConditions tryPlaceOnStack = CheckStackCondition(_x, _y);
@@ -334,20 +334,20 @@ BoardChanges Board::GetChangeFlag(int16_t _x, int16_t _y)
 
 	if (_x == -1 && _y == -1)
 		return BoardChanges::_TOP_LEFT_BOUND;
-	if (_x == -1 && _y == getColCount())
+	if (_x == -1 && _y == GetColCount())
 		return BoardChanges::_TOP_RIGHT_BOUND;
-	if (_x == getRowCount() && _y == -1)
+	if (_x == GetRowCount() && _y == -1)
 		return BoardChanges::_BOT_LEFT_BOUND;
-	if (_x == getRowCount() && _y == getColCount())
+	if (_x == GetRowCount() && _y == GetColCount())
 		return BoardChanges::_BOT_RIGHT_BOUND;
 
 	if (_x == -1)
 		return BoardChanges::_TOP_BOUND;
-	if (_x == getRowCount())
+	if (_x == GetRowCount())
 		return BoardChanges::_BOT_BOUND;
 	if (_y == -1)
 		return BoardChanges::_LEFT_BOUND;
-	if (_y == getColCount())
+	if (_y == GetColCount())
 		return BoardChanges::_RIGHT_BOUND;
 
 	return BoardChanges::_NO_CHANGES;
@@ -475,10 +475,10 @@ void Board::RemoveRow(int16_t _line)
 {
 	if (_line == 0)
 		RemoveTopMargin();
-	else if (_line == getRowCount() - 1)
+	else if (_line == GetRowCount() - 1)
 		RemoveBottomMargin();
 	else{
-		for (int i = 0; i < getColCount(); i++)
+		for (int i = 0; i < GetColCount(); i++)
 			m_matrix[_line][i].clear();
 		m_rowChecker[_line] = {0, 0};
 	}
@@ -489,10 +489,10 @@ void Board::RemoveColumn(int16_t _line)
 {
 	if (_line == 0)
 		RemoveLeftMargin();
-	else if (_line == getColCount() - 1)
+	else if (_line == GetColCount() - 1)
 		RemoveRightMargin();
 	else {
-		for (int i = 0; i < getRowCount(); i++)
+		for (int i = 0; i < GetRowCount(); i++)
 			m_matrix[i][_line].clear();
 		m_colChecker[_line] = { 0, 0 };
 	}
@@ -506,7 +506,7 @@ bool Board::ShiftLine(int16_t _line, LineType _type, Directions _direction)
 	if (_direction == Directions::INVALID_DIR)
 		return false;
 
-	if (_line < 0 || _line >= std::max(getColCount(), getLineCount()))
+	if (_line < 0 || _line >= std::max(GetColCount(), getLineCount()))
 		return false;
 
 	if (_type == LineType::TYPE_ROW && _direction != Directions::DIR_LEFT && _direction != Directions::DIR_RIGHT)
@@ -531,24 +531,24 @@ bool Board::ShiftLine(int16_t _line, LineType _type, Directions _direction)
 	{
 	case Directions::DIR_LEFT:
 		start = 0;
-		end = getColCount() - 1;
+		end = GetColCount() - 1;
 		ratio = +1;
 		orientation = true;
 		break;
 	case Directions::DIR_RIGHT:
-		start = getColCount() - 1;
+		start = GetColCount() - 1;
 		end = 0;
 		ratio = -1;
 		orientation = true;
 		break;
 	case Directions::DIR_UP:
 		start = 0;
-		end = getRowCount() - 1;
+		end = GetRowCount() - 1;
 		ratio = +1;
 		orientation = false;
 		break;
 	case Directions::DIR_DOWN:
-		start = getRowCount() - 1;
+		start = GetRowCount() - 1;
 		end = 0;
 		ratio = -1;
 		orientation = false;
@@ -753,7 +753,7 @@ void Board::MirrorEdge(MarginType _margin)
 
 		break;
 	case MarginType::MARGIN_BOT:
-		m_matrix.push_front(std::move(m_matrix[getRowCount() - 1]));
+		m_matrix.push_front(std::move(m_matrix[GetRowCount() - 1]));
 		m_matrix.pop_back();
 		
 		m_rowChecker.emplace_front(m_rowChecker.back().first, m_rowChecker.back().second);
@@ -761,7 +761,7 @@ void Board::MirrorEdge(MarginType _margin)
 
 		break;
 	case MarginType::MARGIN_LEFT:
-		for (int i = 0; i < getRowCount(); i++) {
+		for (int i = 0; i < GetRowCount(); i++) {
 			m_matrix[i].push_back(std::move(m_matrix[i][0]));
 			m_matrix[i].pop_front();
 		}
@@ -770,8 +770,8 @@ void Board::MirrorEdge(MarginType _margin)
 		m_colChecker.pop_front();
 		break;
 	case MarginType::MARGIN_RIGHT:
-		for (int i = 0; i < getRowCount(); i++) {
-			m_matrix[i].push_front(std::move(m_matrix[i][getColCount() - 1]));
+		for (int i = 0; i < GetRowCount(); i++) {
+			m_matrix[i].push_front(std::move(m_matrix[i][GetColCount() - 1]));
 			m_matrix[i].pop_back();
 		}
 
@@ -809,6 +809,29 @@ int Board::GetStackSize(int16_t _x, int16_t _y)
 	if (CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
 		return -1;
 	return m_matrix[_x][_y].size();
+}
+
+json Board::SerialiseMatrix()
+{
+	json serialisedMatrix;
+
+	serialisedMatrix["matrix_size"] = m_max_size;
+	serialisedMatrix["nr_rows"] = GetRowCount();
+	serialisedMatrix["nr_cols"] = GetColCount();
+	//serialisedMatrix["explosion_countdown"] = m_lineCnt; //?
+
+	for(int i = 0; i < GetRowCount(); i++)
+		for (int j = 0; j < GetColCount(); j++)
+		{
+			json serialisedStack = json::array();
+			for (int k = 0; k < m_matrix[i][j].size(); k++)
+			{
+				serialisedStack.push_back(m_matrix[i][j][k].SerialiseCard());
+			}
+			serialisedMatrix[FormatPair(i, j)] = serialisedStack;
+		}
+
+	return serialisedMatrix;
 }
 
 AdjacentType Board::CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
@@ -979,12 +1002,12 @@ Colours Board::checkWin(int16_t x, int16_t y, Colours col)
 	return Colours::INVALID_COL;
 }
 
-uint16_t Board::getRowCount()
+uint16_t Board::GetRowCount()
 {
 	return uint16_t(m_rowChecker.size());
 }
 
-uint16_t Board::getColCount()
+uint16_t Board::GetColCount()
 {
 	return uint16_t(m_colChecker.size());
 }
@@ -1197,31 +1220,31 @@ bool Board::isBoardFilled()
 //true if it is, false if not
 bool Board::isBoardEmpty()
 {
-	return getColCount() == 1 && getRowCount() == 1 && m_matrix[0][0].empty();
+	return GetColCount() == 1 && GetRowCount() == 1 && m_matrix[0][0].empty();
 }
 
 //false good, true not good - sorry
 bool Board::checkPosition(uint16_t x, uint16_t y)
 {
-	return x < 0 || x >= getRowCount() || y < 0 || y >= getColCount();
+	return x < 0 || x >= GetRowCount() || y < 0 || y >= GetColCount();
 }
 
 //false good, true not good - sorry
 bool Board::checkPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
-	return x1 < 0 || x1 >= getRowCount() || x2 < 0 || x2 >= getRowCount() || y1 < 0 || y1 >= getColCount() || y2 < 0 || y2 >= getColCount();
+	return x1 < 0 || x1 >= GetRowCount() || x2 < 0 || x2 >= GetRowCount() || y1 < 0 || y1 >= GetColCount() || y2 < 0 || y2 >= GetColCount();
 }
 
 //rewrtie it
 void Board::printBoard(bool _debug)
 {
 	std::cout << "R\\B ";
-	for (int i = 0; i < getColCount(); i++)
+	for (int i = 0; i < GetColCount(); i++)
 		std::cout << int(m_colChecker[i].first) << "|" << m_colChecker[i].second << " ";
 
-	for (int i = 0; i < getRowCount(); i++) {
+	for (int i = 0; i < GetRowCount(); i++) {
 		std::cout << "\n" << m_rowChecker[i].first << "|" << m_rowChecker[i].second << " ";
-		for (int j = 0; j < getColCount(); j++)
+		for (int j = 0; j < GetColCount(); j++)
 		{
 			if (!m_matrix[i][j].empty())
 			{
@@ -1248,11 +1271,11 @@ void Board::printBoard(bool _debug)
 //0 inside, -1 left margin, 1 right margin, 2 outside
 int16_t Board::XBoundTest(int16_t x)
 {
-	if (x >= 0 && x < getRowCount()) return INSIDE_BOUND;
+	if (x >= 0 && x < GetRowCount()) return INSIDE_BOUND;
 
-	if (x == -1 && getRowCount() < m_max_size) return TOP_BOUND;
+	if (x == -1 && GetRowCount() < m_max_size) return TOP_BOUND;
 
-	if (x == getRowCount() && getRowCount() < m_max_size) return BOTTOM_BOUND;
+	if (x == GetRowCount() && GetRowCount() < m_max_size) return BOTTOM_BOUND;
 
 	return OUTSIDE_BOUND;
 }
@@ -1260,11 +1283,11 @@ int16_t Board::XBoundTest(int16_t x)
 //0 inside, -1 top margin, 1 buttom margin, 2 outside
 int16_t Board::YBoundTest(int16_t y)
 {
-	if (y >= 0 && y < getColCount()) return INSIDE_BOUND;
+	if (y >= 0 && y < GetColCount()) return INSIDE_BOUND;
 
-	if (y == -1 && getColCount() < m_max_size) return LEFT_BOUND;
+	if (y == -1 && GetColCount() < m_max_size) return LEFT_BOUND;
 
-	if (y == getColCount() && getColCount() < m_max_size) return RIGHT_BOUND;
+	if (y == GetColCount() && GetColCount() < m_max_size) return RIGHT_BOUND;
 
 	return OUTSIDE_BOUND;
 }
@@ -1291,7 +1314,7 @@ bool Board::posPlaceTest(int16_t x, int16_t y, const MinionCard& card)
 
 void Board::AddLineToLeft()
 {
-	for (int i = 0; i < getRowCount(); i++) {
+	for (int i = 0; i < GetRowCount(); i++) {
 		m_matrix[i].push_front(CardStack());
 	}
 	m_colChecker.emplace_front(0, 0);
@@ -1299,7 +1322,7 @@ void Board::AddLineToLeft()
 
 void Board::AddLineToRight()
 {
-	for (int i = 0; i < getRowCount(); i++) {
+	for (int i = 0; i < GetRowCount(); i++) {
 		m_matrix[i].push_back(CardStack());
 	}
 	m_colChecker.emplace_back(0, 0);
@@ -1307,19 +1330,19 @@ void Board::AddLineToRight()
 
 void Board::AddLineOnTop()
 {
-	m_matrix.push_front(Line(getColCount()));
+	m_matrix.push_front(Line(GetColCount()));
 	m_rowChecker.emplace_front(0, 0);
 }
 
 void Board::AddLineOnBottom()
 {
-	m_matrix.push_back(Line(getColCount()));
+	m_matrix.push_back(Line(GetColCount()));
 	m_rowChecker.emplace_back(0, 0);
 }
 
 void Board::RemoveLeftMargin()
 {
-	for (int i = 0; i < getRowCount(); i++)
+	for (int i = 0; i < GetRowCount(); i++)
 		m_matrix[i].pop_front();
 	m_colChecker.pop_front();
 	if (m_colChecker.empty())
@@ -1334,7 +1357,7 @@ void Board::RemoveLeftMargin()
 
 void Board::RemoveRightMargin()
 {
-	for (int i = 0; i < getRowCount(); i++)
+	for (int i = 0; i < GetRowCount(); i++)
 			m_matrix[i].pop_back();
 	m_colChecker.pop_back();
 	if (m_colChecker.empty())
@@ -1375,11 +1398,16 @@ void Board::RemoveBottomMargin()
 	}
 }
 
+std::string Board::FormatPair(int integer1, int integer2)
+{
+	return std::to_string(integer1) + "-" + std::to_string(integer2);
+}
+
 bool Board::RemoveRow(uint16_t x)
 {
-	if (x < 0 || x > getRowCount() - 1 || isBoardEmpty())
+	if (x < 0 || x > GetRowCount() - 1 || isBoardEmpty())
 		return 1;
-	for (int16_t i = 0; i < getColCount(); ++i)
+	for (int16_t i = 0; i < GetColCount(); ++i)
 	{
 		if (m_matrix[x][i].back().GetColor() == Colours::RED)
 			m_colChecker[i].first -= 1;
@@ -1394,16 +1422,16 @@ bool Board::RemoveRow(uint16_t x)
 
 bool Board::RemoveColumn(uint16_t y)
 {
-	if (y < 0 || y > getColCount() - 1 || isBoardEmpty())
+	if (y < 0 || y > GetColCount() - 1 || isBoardEmpty())
 		return 1;
-	for (int16_t i = 0; i < getRowCount(); ++i)
+	for (int16_t i = 0; i < GetRowCount(); ++i)
 	{
 		if (m_matrix[i][y].back().GetColor() == Colours::RED)
 			m_rowChecker[i].first -= 1;
 		else
 			m_rowChecker[i].second -= 1;
 	}
-	for (int16_t i = 0; i < getRowCount(); i++)
+	for (int16_t i = 0; i < GetRowCount(); i++)
 		m_matrix[i].erase(m_matrix[i].begin() + y);
 	m_colChecker.erase(m_colChecker.begin() + y);
 	return 0;

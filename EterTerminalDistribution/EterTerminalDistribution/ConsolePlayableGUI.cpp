@@ -267,7 +267,7 @@ void GameView::PrintPlayerOptions()
     else
         std::cout << "Blue's ";
     std::cout << "Turn.\n\nChose an action: " << std::endl << std::endl;
-    std::cout << "0. Exit" << std::endl;
+    std::cout << "0. Save" << std::endl;
     std::cout << "1. Place a card from hand" << std::endl;
     if(m_game->CanPlayMage())
         std::cout << "2. Use a special power" << std::endl;
@@ -305,6 +305,10 @@ void GameView::Loop()
         
         switch (option)
         {
+        case 0: {
+            m_game->SaveCurrentToJson();
+            break;
+        }
         case 1:
             m_game->PrintActiveHand();
             std::cout << "Where(x, y) and Card: " << std::endl;

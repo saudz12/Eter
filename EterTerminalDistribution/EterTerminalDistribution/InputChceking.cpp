@@ -10,7 +10,7 @@ CommonErrors CheckHurricaneInput(Board& _board, uint16_t _lineCnt, LineType _typ
 	}
 
 	//inside bounds
-	if (_lineCnt < 0 || _type == LineType::TYPE_ROW && _lineCnt > _board.getLineCount() - 1 || _type == LineType::TYPE_COLUMN && _lineCnt > _board.getColCount() - 1) {
+	if (_lineCnt < 0 || _type == LineType::TYPE_ROW && _lineCnt > _board.getLineCount() - 1 || _type == LineType::TYPE_COLUMN && _lineCnt > _board.GetColCount() - 1) {
 		return CommonErrors::_OUTSIDE_BOUND;
 	}
 
@@ -334,7 +334,7 @@ CommonErrors checkFuncFireMage1(Board& _board, Player& _player, int16_t _x, int1
 CommonErrors checkFuncFireMage2(Board& _board, Player& _player, int16_t _line, LineType _type) {
 	if (_type != LineType::TYPE_ROW && _type != LineType::TYPE_COLUMN)
 		return CommonErrors::_INVALID_LINE_TYPE;
-	if (_line < 0 || (_type == LineType::TYPE_ROW && _line >= _board.getRowCount()) || (_type == LineType::TYPE_COLUMN && _line >= _board.getColCount()))
+	if (_line < 0 || (_type == LineType::TYPE_ROW && _line >= _board.GetRowCount()) || (_type == LineType::TYPE_COLUMN && _line >= _board.GetColCount()))
 		return CommonErrors::_OUTSIDE_BOUND;
 	if (_board.GetNrOfCardsOnLine(_line, _type) < 3)
 		return CommonErrors::_INCOMPLETE_LINE_STRUCTURE;
@@ -423,10 +423,10 @@ CommonErrors checkFuncWaterMage2(Board& _board, MarginType _margin)
 		return CommonErrors::_INVALID_LINE_TYPE;
 
 	if (_margin == MarginType::MARGIN_TOP || _margin == MarginType::MARGIN_BOT) {
-		finish = _board.getColCount();
+		finish = _board.GetColCount();
 	}
 	else {
-		finish = _board.getRowCount();
+		finish = _board.GetRowCount();
 	}
 
 	auto quickCheck = [&](int16_t& x, int16_t& y, int16_t i) {
@@ -435,7 +435,7 @@ CommonErrors checkFuncWaterMage2(Board& _board, MarginType _margin)
 			y = i;
 		}
 		else if (_margin == MarginType::MARGIN_BOT) {
-			x = _board.getRowCount() - 1;
+			x = _board.GetRowCount() - 1;
 			y = i;
 		}
 		else if (_margin == MarginType::MARGIN_LEFT) {
@@ -444,7 +444,7 @@ CommonErrors checkFuncWaterMage2(Board& _board, MarginType _margin)
 		}
 		else {
 			x = i;
-			y = _board.getColCount() - 1;
+			y = _board.GetColCount() - 1;
 		}
 	};
 

@@ -58,6 +58,19 @@ MinionCard::MinionCard(const MinionCard& other) :Card{m_cardType},
     // Optionally log or perform other necessary actions for copy
 }
 
+json MinionCard::SerialiseCard()
+{
+    json serialisedCard;
+
+    serialisedCard["value"] = m_value;
+    serialisedCard["color"] = m_color;
+    serialisedCard["is_eter"] = m_isEterCard;
+    serialisedCard["is_illusion"] = m_isIllusionCard;
+    serialisedCard["is_hole"] = m_isHole;
+
+    return serialisedCard;
+}
+
 uint16_t MinionCard::GetValue() const
 {
     return m_value;

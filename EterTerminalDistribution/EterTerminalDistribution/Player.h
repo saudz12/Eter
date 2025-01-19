@@ -51,8 +51,8 @@ private:
 	Colours m_playerColor;
 	Hand m_removedCards;
 
-	std::optional<ElementalCard> m_elementalCard;
-	std::optional<MageCard> m_mageCard;
+	/*std::optional<ElementalCard> m_elementalCard;
+	std::optional<MageCard> m_mageCard;*/
 
 	bool m_illusionUsage; 
 
@@ -66,6 +66,7 @@ private:
 	void generateHand(); */
 	void GenerateHand(bool training); //new
 
+	json SerialiseCardCounter(); //new again
 public:
 	//constructor
 	//Player(Colours playerColor);
@@ -83,6 +84,8 @@ public:
 	MinionCard* GetLastMinionCardPlayed() const;
 	MinionCard* GetIllusionCard() const;
 	CoveredSet& getCovered();
+
+	json SerialisePlayer();
 
 #pragma region new code
 

@@ -86,6 +86,11 @@ GameFinal::GameFinal()
 	m_activeRemovedHand = m_player1->GetRemovedCards();
 }
 
+GameFinal::GameFinal(std::string path)
+{
+
+}
+
 GameFinal::GameFinal(	int16_t _maxBoardSize,
 						GameOptions _enabledEter,		GameOptions _enabledIllusion,
 						GameOptions _enabledMage,		GameOptions _enabledElemental,
@@ -355,6 +360,7 @@ void GameFinal::PlayMage(std::vector<int16_t> inputData)
 
 }
 
+
 Colours GameFinal::CheckWinner()
 {
 	m_winnerStatus = m_board->checkWin();
@@ -371,4 +377,54 @@ void GameFinal::PrintActiveHand()
 {
 	auto& seekHand = m_activePlayer->GetRemaningCounter();
 	std::for_each(seekHand.begin(), seekHand.end(), [&seekHand](const auto& key) {std::cout << key.first << ": " << key.second << " copies left\n"; });
+}
+
+template <typename T1, typename T2>
+json GameFinal::serializePairAsObject(const std::pair<T1, T2>& pair) {
+	return { {"first", pair.first}, {"second", pair.second} };
+}
+
+void GameFinal::SaveCurrentToJson()
+{
+	json jsonObject;
+
+	//board
+	
+	jsonObject["matrix"] = m_board->SerialiseMatrix();
+
+	//players
+	
+	jsonObject["player1"] = m_player1->SerialisePlayer();
+	jsonObject["player2"] = m_player2->SerialisePlayer();
+
+	//game
+	jsonObject["score"] = serializePairAsObject(m_gameScore);
+	jsonObject["active_color"] = m_activeColor;
+	jsonObject["winner_status"] = m_winnerStatus;
+
+	jsonObject["enavbled_eter"] = m_enabledEter;
+	jsonObject["enavbled_illusion"] = m_enabledIllusion;
+	jsonObject["enavbled_mage"] = m_enabledMage;
+	jsonObject["enavbled_elemental"] = m_enabledElemental;
+	jsonObject["enavbled_timed"] = m_enabledTimed;
+	jsonObject["enavbled_tournament"] = m_enabledTournament;
+
+	jsonObject["was_placed"] = m_wasPlaced;
+	jsonObject["power_used"] = m_powerUsed;
+	jsonObject["tie_braker"] = m_tieBraker;
+
+	jsonObject["red_mage"] = serializePairAsObject(m_redMage);
+	jsonObject["blue_mage"] = serializePairAsObject(m_blueMage);
+	jsonObject["elemental_1"] = serializePairAsObject(m_elemental1);
+	jsonObject["elemental_2"] = serializePairAsObject(m_elemental2);
+
+	std::ofstream outFile("savefile.json");
+	if (outFile.is_open()) {
+		outFile << jsonObject.dump(4); // Pretty-print with 4 spaces
+		outFile.close();
+		std::cout << "JSON object written to 'savefile.json'." << std::endl;
+	}
+	else {
+		std::cerr << "Failed to open file for writing!" << std::endl;
+	}
 }

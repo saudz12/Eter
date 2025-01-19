@@ -25,6 +25,7 @@ private:
 	//char m_belongsTo;
 	Colours m_belongsTo;
 	bool m_isHole;
+
 public:
 	static MinionCard&& CreateHoleCard();
 	static MinionCard&& CreateEterCard(Colours _colour);
@@ -32,6 +33,8 @@ public:
 	MinionCard(uint16_t value, Colours colour, bool isEter, bool isHole = false);
 	MinionCard();
 	MinionCard(const MinionCard& other);
+
+	json SerialiseCard();
 
 	//overload functions
 	friend std::ostream& operator<<(std::ostream &out,const MinionCard &card);

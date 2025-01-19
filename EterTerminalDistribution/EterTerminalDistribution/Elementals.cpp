@@ -25,8 +25,8 @@ CommonErrors Elementals::Fire::checkFuncFire(Board& _board, int16_t _val)
 	if (_val < 1 || _val > 4)
 		return CommonErrors::_INVALID_CARD_VALUE;
 	int occurence = 0;
-	for (int i = 0; i < _board.getRowCount(); i++)
-		for (int j = 0; j < _board.getColCount(); j++)
+	for (int i = 0; i < _board.GetRowCount(); i++)
+		for (int j = 0; j < _board.GetColCount(); j++)
 		{
 			occurence += int(_board.ViewTop(i, j).GetValue() == _val);
 			if (occurence == 2)
@@ -37,8 +37,8 @@ CommonErrors Elementals::Fire::checkFuncFire(Board& _board, int16_t _val)
 
 void Elementals::Fire::ReturnToHand(Board& _board, int16_t _val, Player& _player1, Player& _player2)
 {
-	for (int i = 0; i < _board.getRowCount(); i++)
-		for (int j = 0; j < _board.getColCount(); j++)
+	for (int i = 0; i < _board.GetRowCount(); i++)
+		for (int j = 0; j < _board.GetColCount(); j++)
 		{
 			auto& top = _board.ViewTop(i, j);
 			if (top.GetValue() != _val)

@@ -15,6 +15,10 @@
 #include <ranges>
 #include <algorithm>
 #include <optional>
+#include "json.hpp"
+#include <fstream>
+
+using json = nlohmann::json;
 
 constexpr auto ID_ROW = "R";
 constexpr auto ID_COLUMN = "C";

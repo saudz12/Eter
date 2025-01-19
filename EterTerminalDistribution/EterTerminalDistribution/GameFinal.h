@@ -44,6 +44,7 @@ private:
 
 public:
 	GameFinal();
+	GameFinal(std::string path);
 	GameFinal(	int16_t _maxBoardSize,	
 				GameOptions _enabledEter,		GameOptions _enabledIllusion,
 				GameOptions _enabledMage,		GameOptions _enabledElemental,
@@ -71,5 +72,9 @@ public:
 #pragma region print_api
 	void PrintBoard(bool _debug = false);
 	void PrintActiveHand();
+	void SaveCurrentToJson();
 #pragma endregion
+
+	template<typename T1, typename T2>
+	json serializePairAsObject(const std::pair<T1, T2>& pair);
 };

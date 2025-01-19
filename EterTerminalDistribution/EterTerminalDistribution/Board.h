@@ -114,6 +114,8 @@ private:
 
 	//other interactions
 
+	std::string FormatPair(int integer1, int integer2);
+
 public:
 
 	Board(uint16_t size);
@@ -151,6 +153,8 @@ public:
 	const MinionCard& ViewTop(int16_t _x, int16_t _y); //wierd??
 	int GetStackSize(int16_t _x, int16_t _y);
 
+	json SerialiseMatrix();
+
 	//checks if the coordonates of 2 stacks ar adjacent
 	static AdjacentType CheckAdjacent(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
 	
@@ -168,8 +172,8 @@ public:
 	//use it after removing minions and/or using elemental/mage cards
 	Colours checkWin();
 
-	uint16_t getRowCount();
-	uint16_t getColCount();
+	uint16_t GetRowCount();
+	uint16_t GetColCount();
 	uint16_t getMaxSize();
 	bool isMatMaxSize();
 

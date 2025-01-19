@@ -150,4 +150,9 @@
       <Filter>Elementals</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="savefile.json">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

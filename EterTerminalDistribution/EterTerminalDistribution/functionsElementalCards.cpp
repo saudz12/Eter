@@ -12,7 +12,7 @@ uint16_t funcControlledExplosion(Board& board, Player& pl1, Player& pl2)
 	Player copyPl1 = pl1;
 	Player copyPl2 = pl2;
 
-	if (board.getRowCount() != board.getMaxSize() || board.getColCount() != board.getMaxSize())
+	if (board.GetRowCount() != board.getMaxSize() || board.GetColCount() != board.getMaxSize())
 	{
 		std::cout << "This card cannot be placed because the board is not to it's max size\n";
 		return 1;
@@ -105,9 +105,9 @@ uint16_t funcFire(Board& board, Player& player1, Player& player2, uint16_t value
 	//minion card on top, x and y coordonates
 	std::vector<std::tuple<MinionCard, int, int>> returningCards;
 	ResizeableMatrix& matrix = board.getMatrix();
-	for (int16_t i = 0; i < board.getRowCount(); i++)
+	for (int16_t i = 0; i < board.GetRowCount(); i++)
 	{
-		for (int16_t j = 0; j < board.getColCount(); j++)
+		for (int16_t j = 0; j < board.GetColCount(); j++)
 		{
 			if (!matrix[i][j].empty())
 			{
@@ -268,9 +268,9 @@ uint16_t funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
 uint16_t funcGale(Board& board, Player& p1, Player& p2)
 {
 	ResizeableMatrix& matrix = board.getMatrix();
-	for (int16_t i = 0; i < board.getRowCount(); ++i)
+	for (int16_t i = 0; i < board.GetRowCount(); ++i)
 	{
-		for (int16_t j = 0; j < board.getColCount(); ++j)
+		for (int16_t j = 0; j < board.GetColCount(); ++j)
 		{
 			while (matrix[i][j].size() >= 2)
 			{
@@ -300,10 +300,10 @@ void funcHurricane(Board& _board, Hand& _h1, Hand& _h2, uint16_t _lineCnt, LineT
 		start = 0;
 	}
 	else if(_direction == Directions::DIR_RIGHT){
-		start = _board.getColCount() - 1;
+		start = _board.GetColCount() - 1;
 	}
 	else {
-		start = _board.getRowCount() - 1;
+		start = _board.GetRowCount() - 1;
 	}
 
 	int firstX = orientation ? _lineCnt : start;
@@ -572,10 +572,10 @@ uint16_t funcWave(Board& board, Player& p, int16_t x1, int16_t y1, MinionCard ne
 				int16_t newX = x1 + i;
 				int16_t newY = y1 + j;
 
-				if (newX < 0 || newX >= board.getColCount())
+				if (newX < 0 || newX >= board.GetColCount())
 					continue;
 
-				if (newY < 0 || newY >= board.getRowCount())
+				if (newY < 0 || newY >= board.GetRowCount())
 					continue;
 
 				if (matrix[newX][newY].empty())
@@ -655,20 +655,20 @@ uint16_t funcBlizzard(Board& board, uint16_t index, char type)
 
 	if (type == 'R')
 	{
-		for (size_t col = 0; col < board.getColCount(); col++)
+		for (size_t col = 0; col < board.GetColCount(); col++)
 			matrix[index][col].push_back(blizzard);
 	}
 	else if (type == 'C')
 	{
-		for (size_t row = 0; row < board.getRowCount(); row++)
+		for (size_t row = 0; row < board.GetRowCount(); row++)
 			matrix[row][index].push_back(blizzard);
 	}
 
 	uint16_t emptySpaces = 0;
 
-	for (size_t row = 0; row < board.getRowCount(); row++)
+	for (size_t row = 0; row < board.GetRowCount(); row++)
 	{
-		for (size_t col = 0; col < board.getColCount(); col++)
+		for (size_t col = 0; col < board.GetColCount(); col++)
 		{
 			if (matrix[row][col].empty())
 				emptySpaces++;
@@ -702,7 +702,7 @@ uint16_t funcWaterfall(Board& board, uint16_t x, uint16_t y)
 
 	std::stack<MinionCard> cards;
 
-	for (size_t i = 0; i < board.getRowCount(); i++)
+	for (size_t i = 0; i < board.GetRowCount(); i++)
 	{
 		if (!matrix[i][y].empty())
 		{
@@ -726,12 +726,12 @@ uint16_t funcWaterfall(Board& board, uint16_t x, uint16_t y)
 	}
 	else
 	{
-		for (size_t i = 0; i < board.getRowCount(); i++)
+		for (size_t i = 0; i < board.GetRowCount(); i++)
 		{
 				board.removeStack(i, y);
 		}
 
-		uint16_t newX = board.getRowCount() - 1;
+		uint16_t newX = board.GetRowCount() - 1;
 
 		while (!cards.empty())
 		{
@@ -814,9 +814,9 @@ uint16_t funcEarthquake(Board& board, Player& p1, Player& p2)
 	int16_t p1Cards{ 0 };
 	int16_t p2Cards{ 0 };
 
-	for (size_t i = 0; i < board.getRowCount(); i++)
+	for (size_t i = 0; i < board.GetRowCount(); i++)
 	{
-		for (size_t j = 0; j < board.getColCount(); j++)
+		for (size_t j = 0; j < board.GetColCount(); j++)
 		{
 			if (!matrix[i][j].empty())
 			{
@@ -886,28 +886,28 @@ uint16_t funcBorder(Board& board, int16_t x, int16_t y)
 
 	if (x < 0)
 	{
-		x += board.getRowCount();
+		x += board.GetRowCount();
 		for (int16_t i = 0; i >= x; i--)
 			board.AddLineOnTop();
 	}
 
 	if (y < 0)
 	{
-		y += board.getColCount();
+		y += board.GetColCount();
 		for (int16_t i = 0; i >= y; i--)
 			board.AddLineToLeft();
 	}
 
 	if (x > 0)
 	{
-		x -= board.getRowCount();
+		x -= board.GetRowCount();
 		for (int16_t i = 0; i <= x; i++)
 			board.AddLineOnBottom();
 	}
 
 	if (y > 0)
 	{
-		y -= board.getColCount();
+		y -= board.GetColCount();
 		for (int16_t i = 0; i <= y; i++)
 			board.AddLineToRight();
 	}

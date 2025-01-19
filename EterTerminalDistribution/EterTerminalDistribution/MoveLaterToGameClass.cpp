@@ -2,7 +2,7 @@
 
 bool isolatedSpaces(Board& boardModel)
 {
-	uint16_t l = boardModel.getRowCount(), c = boardModel.getColCount();
+	uint16_t l = boardModel.GetRowCount(), c = boardModel.GetColCount();
 
 	ResizeableMatrix& matr = boardModel.getMatrix();
 
