@@ -269,7 +269,8 @@ void GameView::PrintPlayerOptions()
     std::cout << "Turn.\n\nChose an action: " << std::endl << std::endl;
     std::cout << "0. Exit" << std::endl;
     std::cout << "1. Place a card from hand" << std::endl;
-    std::cout << "2. Use a special power" << std::endl;
+    if(m_game->CanPlayMage())
+        std::cout << "2. Use a special power" << std::endl;
 }
 
 GameView::GameView() :

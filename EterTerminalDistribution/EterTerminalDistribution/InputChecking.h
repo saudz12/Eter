@@ -5,6 +5,7 @@
 /// Error handling by returning integers --OR ENUMS SO WE KNOW EXACTLY WHAT WE RETURN!!!
 /// </summary>
 #include "functionsElementalCards.h"
+#include "functionsMageCards.h"
 #include "ErrorPrints.h"
 
 CommonErrors CheckHurricaneInput(Board& _board, uint16_t _lineCnt, LineType _type, Directions _direction);

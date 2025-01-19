@@ -118,7 +118,7 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	m_elemental2 = std::move(PowerUsage{ false, GetElementalCard(elementalrange(rd))});
 
 	//REMOVE THIS LATER: !!
-	m_redMage.second = ActionCard::FireMage1;
+	m_redMage.second = ActionCard::FireMage2;
 	m_blueMage.second = ActionCard::FireMage2;
 }
 
@@ -203,6 +203,13 @@ CommonErrors GameFinal::CheckInput(ActionCard _action, std::vector<int16_t> _inp
 Colours GameFinal::GetActiveColour()
 {
 	return m_activeColor;
+}
+
+bool GameFinal::CanPlayMage()
+{
+	if(m_activeColor == Colours::RED)
+		return !m_redMage.first;
+	return !m_blueMage.first;
 }
 
 bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
@@ -321,6 +328,7 @@ void GameFinal::PlayMage(std::vector<int16_t> inputData)
 	case ActionCard::FireMage1:
 		break;
 	case ActionCard::FireMage2:
+		funcFireMage2(*m_board, *m_activePlayer, inputData[0], GetLineType(char(inputData[1])));
 		break;
 	case ActionCard::EarthMage1:
 		break;

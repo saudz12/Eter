@@ -52,6 +52,7 @@ public:
 	ActionCard GetCurrentPlayerMage();
 	CommonErrors CheckInput(ActionCard _action, std::vector<int16_t> _inputData);
 	Colours GetActiveColour();
+	bool CanPlayMage();
 
 #pragma region turn_logic
 	void AdvanceAction();

@@ -107,10 +107,10 @@ private:
 	bool posPlaceTest(int16_t x, int16_t y, const MinionCard& card);
 
 	//will be changed if you can remove from middle
-	void removeLeftMargin();
-	void removeRightMargin();
-	void removeTopMargin();
-	void removeBottomMargin();
+	void RemoveLeftMargin();
+	void RemoveRightMargin();
+	void RemoveTopMargin();
+	void RemoveBottomMargin();
 
 	//other interactions
 
@@ -192,8 +192,8 @@ public:
 	bool checkPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
 	void printBoard(bool _debug);
 
-	bool removeRow(uint16_t x);
-	bool removeColumn(uint16_t y);
+	bool RemoveRow(uint16_t x);
+	bool RemoveColumn(uint16_t y);
 
 #pragma endregion
 

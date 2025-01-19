@@ -459,9 +459,10 @@ void Board::RemoveLine(int16_t _line, LineType _type)
 	switch (_type)
 	{
 	case LineType::TYPE_COLUMN:
-		
+		RemoveColumn(_line);
 		break;
 	case LineType::TYPE_ROW:
+		RemoveRow(_line);
 		break;
 	case LineType::_INVALID_LINE_TYPE:
 		break;
@@ -473,9 +474,9 @@ void Board::RemoveLine(int16_t _line, LineType _type)
 void Board::RemoveRow(int16_t _line)
 {
 	if (_line == 0)
-		removeTopMargin();
+		RemoveTopMargin();
 	else if (_line == getRowCount() - 1)
-		removeBottomMargin();
+		RemoveBottomMargin();
 	else{
 		for (int i = 0; i < getColCount(); i++)
 			m_matrix[_line][i].clear();
@@ -487,9 +488,9 @@ void Board::RemoveRow(int16_t _line)
 void Board::RemoveColumn(int16_t _line)
 {
 	if (_line == 0)
-		removeLeftMargin();
+		RemoveLeftMargin();
 	else if (_line == getColCount() - 1)
-		removeRightMargin();
+		RemoveRightMargin();
 	else {
 		for (int i = 0; i < getRowCount(); i++)
 			m_matrix[i][_line].clear();
@@ -1152,19 +1153,19 @@ void Board::updateRowChecker(uint16_t x, uint16_t option)
 void Board::checkForUpdates()
 {
 	while (!m_colChecker.empty() && m_colChecker.front().first == 0 && m_colChecker.front().second == 0) {
-		removeLeftMargin();
+		RemoveLeftMargin();
 	}
 
 	while (!m_colChecker.empty() && m_colChecker.back().first == 0 && m_colChecker.back().second == 0) {
-		removeRightMargin();
+		RemoveRightMargin();
 	}
 
 	while (!m_rowChecker.empty() && m_rowChecker.front().first == 0 && m_rowChecker.front().second == 0) {
-		removeTopMargin();
+		RemoveTopMargin();
 	}
 
 	while (!m_rowChecker.empty() && m_rowChecker.back().first == 0 && m_rowChecker.back().second == 0) {
-		removeBottomMargin();
+		RemoveBottomMargin();
 	}
 
 	if (m_colChecker.size() + m_rowChecker.size() == 0) {
@@ -1310,33 +1311,65 @@ void Board::AddLineOnBottom()
 	m_rowChecker.emplace_back(0, 0);
 }
 
-void Board::removeLeftMargin()
+void Board::RemoveLeftMargin()
 {
 	for (int i = 0; i < getRowCount(); i++)
 		m_matrix[i].pop_front();
 	m_colChecker.pop_front();
+	if (m_colChecker.empty())
+	{
+		m_colChecker.push_back(Score{ 0, 0 });
+		m_matrix.push_back(Line());
+		m_matrix[0].push_back(CardStack{});
+		m_rowChecker.clear();
+		m_rowChecker.push_back(Score{ 0, 0 });
+	}
 }
 
-void Board::removeRightMargin()
+void Board::RemoveRightMargin()
 {
 	for (int i = 0; i < getRowCount(); i++)
 			m_matrix[i].pop_back();
 	m_colChecker.pop_back();
+	if (m_colChecker.empty())
+	{
+		m_colChecker.push_back(Score{ 0, 0 });
+		m_matrix.push_back(Line());
+		m_matrix[0].push_back(CardStack{});
+		m_rowChecker.clear();
+		m_rowChecker.push_back(Score{ 0, 0 });
+	}
 }
 
-void Board::removeTopMargin()
+void Board::RemoveTopMargin()
 {
 	m_matrix.pop_front();
 	m_rowChecker.pop_front();
+	if (m_rowChecker.empty())
+	{
+		m_rowChecker.push_back(Score{0, 0});
+		m_matrix.push_back(Line());
+		m_matrix[0].push_back(CardStack{});
+		m_colChecker.clear();
+		m_colChecker.push_back(Score{0, 0});
+	}
 }
 
-void Board::removeBottomMargin()
+void Board::RemoveBottomMargin()
 {
 	m_matrix.pop_back();
 	m_rowChecker.pop_back();
+	if (m_rowChecker.empty())
+	{
+		m_rowChecker.push_back(Score{ 0, 0 });
+		m_matrix.push_back(Line{});
+		m_matrix[0].push_back(CardStack{});
+		m_colChecker.clear();
+		m_colChecker.push_back(Score{ 0, 0 });
+	}
 }
 
-bool Board::removeRow(uint16_t x)
+bool Board::RemoveRow(uint16_t x)
 {
 	if (x < 0 || x > getRowCount() - 1 || isBoardEmpty())
 		return 1;
@@ -1353,7 +1386,7 @@ bool Board::removeRow(uint16_t x)
 	return 0;
 }
 
-bool Board::removeColumn(uint16_t y)
+bool Board::RemoveColumn(uint16_t y)
 {
 	if (y < 0 || y > getColCount() - 1 || isBoardEmpty())
 		return 1;
