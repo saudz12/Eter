@@ -209,6 +209,12 @@ CommonErrors GameFinal::CheckInput(ActionCard _action, std::vector<int16_t> _inp
 		int16_t y = _inputData[1];
 		return checkFuncMirage(*m_board, x, y);
 	}
+	case ActionCard::Waterfall:
+		return CommonErrors::_NO_ERRORS;
+	case ActionCard::Mist:
+		return CommonErrors::_NO_ERRORS;
+	case ActionCard::Support:
+		return checkFuncSupport(*m_board, _inputData[0], _inputData[1]);
 	default:
 	{
 		return CommonErrors::_INVALID_CARD_TYPE;
