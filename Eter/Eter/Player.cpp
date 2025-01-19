@@ -304,6 +304,66 @@ void Player::UpdateCard(int16_t _val, CardAction _action)
 	}
 }
 
+json Player::SerialiseCardCounter()
+{
+	json serialisedCardCounter;
+
+	serialisedCardCounter["val0"] = m_remainingCounter[0];
+	serialisedCardCounter["val1"] = m_remainingCounter[1];
+	serialisedCardCounter["val2"] = m_remainingCounter[2];
+	serialisedCardCounter["val3"] = m_remainingCounter[3];
+	serialisedCardCounter["val4"] = m_remainingCounter[4];
+
+	return serialisedCardCounter;
+}
+
+void Player::DeserializeCardCounter(const json& serialisedCardCounter) {
+	m_remainingCounter[0] = serialisedCardCounter.at("val0").get<int>();
+	m_remainingCounter[1] = serialisedCardCounter.at("val1").get<int>();
+	m_remainingCounter[2] = serialisedCardCounter.at("val2").get<int>();
+	m_remainingCounter[3] = serialisedCardCounter.at("val3").get<int>();
+	m_remainingCounter[4] = serialisedCardCounter.at("val4").get<int>();
+
+	m_remainingCards.resize(m_remainingCounter.size());
+	m_remainingCards[0].resize(m_remainingCounter[0]);
+	m_remainingCards[1].resize(m_remainingCounter[1]);
+	m_remainingCards[2].resize(m_remainingCounter[2]);
+	m_remainingCards[3].resize(m_remainingCounter[3]);
+	m_remainingCards[4].resize(m_remainingCounter[4]);
+
+
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < m_remainingCards[i].size(); j++)
+		{
+			m_remainingCards[i][j] = std::move(MinionCard((i == 0) ? 1 : i, m_playerColor, i == 0));
+			continue;
+		}
+	}
+}
+
+json Player::SerialisePlayer()
+{
+	json serialisedPlayer;
+
+	serialisedPlayer["counter"] = SerialiseCardCounter();
+	serialisedPlayer["color"] = m_playerColor;
+	serialisedPlayer["illusion_usage"] = m_illusionUsage;
+	serialisedPlayer["eter_usage"] = m_eterCardUsage;
+
+	return serialisedPlayer;
+}
+
+void Player::DeserializePlayer(const json& serialisedPlayer) {
+	// Deserialize the card counter
+	DeserializeCardCounter(serialisedPlayer.at("counter"));
+
+	// Deserialize other player attributes
+	m_playerColor = serialisedPlayer.at("color").get<Colours>(); // Replace std::string with the correct type
+	m_illusionUsage = serialisedPlayer.at("illusion_usage").get<bool>(); // Replace int with the correct type
+	m_eterCardUsage = serialisedPlayer.at("eter_usage").get<bool>(); // Replace int with the correct type
+}
+
+
 void Player::CoverCard(MinionCard& _card)
 {
 	m_coveredCards.push_back(&_card);
@@ -411,6 +471,15 @@ void Player::printHandCards()
 			qDebug() << "Eter Card: " << i.second << " Left\n";
 		else 
 			qDebug() << "Minion Card " << i.first.GetValue() << ": " << i.second << " Left\n";
+	}
+}
+
+void Player::printRemainingCards()
+{
+	qDebug() << "cards"<<m_remainingCounter.size();
+	for (auto& i : m_remainingCounter)
+	{
+		qDebug() <<"value"<<i.first << " remaining" << i.second << '\n';
 	}
 }
 

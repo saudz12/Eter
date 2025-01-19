@@ -1663,3 +1663,126 @@ MarginType GetMargin(char _type)
 		return MarginType::INVALID_MARGIN;
 	}
 }
+
+json Board::SerialiseMatrix()
+{
+	json serialisedMatrix;
+
+	serialisedMatrix["matrix_size"] = m_max_size;
+	serialisedMatrix["nr_rows"] = getRowCount();
+	serialisedMatrix["nr_cols"] = getColCount();
+	//serialisedMatrix["explosion_countdown"] = m_lineCnt; //?
+
+	for (int i = 0; i < getRowCount(); i++)
+		for (int j = 0; j < getColCount(); j++)
+		{
+			json serialisedStack = json::array();
+			for (int k = 0; k < m_matrix[i][j].size(); k++)
+			{
+				serialisedStack.push_back(m_matrix[i][j][k].SerialiseCard());
+			}
+			serialisedMatrix[FormatPair(i, j)] = serialisedStack;
+		}
+
+	return serialisedMatrix;
+}
+
+std::string Board::FormatPair(int integer1, int integer2)
+{
+	return std::to_string(integer1) + "-" + std::to_string(integer2);
+}
+
+void Board::DeserializeMatrix(const json& jsonMatrix) {
+	// Deserialize matrix size and dimensions
+	m_max_size = jsonMatrix.at("matrix_size").get<int>();
+	int rows = jsonMatrix.at("nr_rows").get<int>();
+	int cols = jsonMatrix.at("nr_cols").get<int>();
+	qDebug() << rows << " " << cols;
+	m_matrix.resize(rows);
+	for (auto& rowDeque : m_matrix) {
+		rowDeque.resize(cols);
+	}
+
+	for (const auto& [key, value] : jsonMatrix.items()) {
+		// Skip metadata keys
+		if (key != "matrix_size" && key != "nr_rows" && key != "nr_cols") {
+			// Parse the key to get the row and column indices
+			auto indices = ParsePair(key); // ParsePair converts "row-col" back to (row, col)
+			int row = indices.first, col = indices.second;
+
+			// Clear the stack at (row, col)
+			m_matrix[row][col].clear(); ///---- here
+
+			// Deserialize each card in the stack
+			for (const auto& cardJson : value) {
+				MinionCard card;
+				card.DeserializeCard(cardJson); // Use the DeserializeCard method for each card
+				m_matrix[row][col].push_back(card); // Add the deserialized card to the stack
+			}
+		}
+	}
+}
+
+std::pair<int, int> Board::ParsePair(const std::string& str) {
+	size_t dashPos = str.find('-');
+	int row = std::stoi(str.substr(0, dashPos));
+	int col = std::stoi(str.substr(dashPos + 1));
+	return { row, col };
+}
+
+void Board::updateRowCheckerDeserialize()
+{
+	m_rowChecker.resize(m_matrix.size(),{0,0});
+	for (int i = 0; i < m_matrix.size(); ++i)
+	{
+		for(int j=0;j<m_matrix[i].size(); ++j)
+			if (!m_matrix[i][j].empty())
+			{
+				if (m_matrix[i][j].back().GetColor() == Colours::RED)
+					m_rowChecker[i].first += 1;
+				else if (m_matrix[i][j].back().GetColor() == Colours::BLUE)
+					m_rowChecker[i].second += 1;
+			}
+	}
+}
+
+void Board::updateColCheckerDeserialize()
+{
+	m_colChecker.resize(m_matrix[0].size(), { 0,0 });
+	for (int i = 0; i < m_matrix.size(); ++i)
+	{
+		for (int j = 0; j < m_matrix[i].size(); ++j)
+			if (!m_matrix[j][i].empty())
+			{
+				if (m_matrix[j][i].back().GetColor() == Colours::RED)
+					m_colChecker[j].first += 1;
+				else if (m_matrix[j][i].back().GetColor() == Colours::BLUE)
+					m_colChecker[j].second += 1;
+			}
+	}
+}
+
+void Board::updateDiagsDeserialize()
+{
+	if (!(getColCount() == m_max_size && getRowCount() == m_max_size))
+		return;
+	for (int i = 0; i < m_max_size; i++)
+	{
+		if (!m_matrix[i][i].empty())
+		{
+			if (m_matrix[i][i].back().GetColor() == Colours::RED)
+				m_firstDiag.first += 1;
+			else
+				m_firstDiag.second += 1;
+		}
+		if (!m_matrix[i][m_max_size - i - 1].empty())
+		{
+			if (m_matrix[i][m_max_size - i - 1].back().GetColor() == Colours::RED)
+				m_seconDiag.first += 1;
+			else
+				m_seconDiag.second += 1;
+		}
+	}
+}
+
+

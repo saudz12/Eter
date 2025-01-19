@@ -63,11 +63,17 @@ void Eter::initializePushButtons()
     pushButtonStartTimed->setGeometry(pushButtonStartTournament->x(), pushButtonStartTournament->y() + 50, 130, 30);
     pushButtonStartTimed->setVisible(true);
 
+    if (!pushButtonLoadGame)
+        pushButtonLoadGame = new QPushButton("Load game", this);
+    pushButtonLoadGame->setGeometry(pushButtonStartTournament->x(), pushButtonStartTournament->y() + 150, 100, 30);
+    pushButtonLoadGame->setVisible(true);
+
     connect(pushButtonStartTraining, &QPushButton::clicked, this, &Eter::onPushButtonStartTrainingClicked);
     connect(pushButtonStartElemental, &QPushButton::clicked, this, &Eter::onPushButtonStartElementalClicked);
     connect(pushButtonStartMage, &QPushButton::clicked, this, &Eter::onPushButtonStartMageClicked);
     connect(pushButtonStartTournament, &QPushButton::clicked, this, &Eter::onPushButtonStartTournamentClicked);
     connect(pushButtonStartTimed, &QPushButton::clicked, this, &Eter::onPushButtonStartTimedClicked);
+    connect(pushButtonLoadGame, &QPushButton::clicked, this, &Eter::onPushButtonLoadGame);
 }
 
 void Eter::initializeRadioButtons()
@@ -259,8 +265,13 @@ void Eter::handleIllusionCard(const QMimeData* mimeData, int row, int column)
     }
     else if (placeIllusionResult==IllusionErrors::_ILLUSION_ALREADY_USED)
     {
-        emit signalRemoveIllusionCard(row, column, IllusionErrors::_ILLUSION_ALREADY_USED);
+        emit signalRemoveIllusionCard(row, column);
         QMessageBox::warning(nullptr, "Warning", "Player "+QString(GetColour(GetOppositeColour(m_activeColor)))+" already used the illusion");
+    }
+    else if (placeIllusionResult == IllusionErrors::_ILLUSION_ON_SAME_COLOR)
+    {
+        emit signalRemoveIllusionCard(row, column);
+        QMessageBox::warning(nullptr, "Warning", "Player " + QString(GetColour(GetOppositeColour(m_activeColor))) + "cannot play illusion on same card color");
     }
     else
     {
@@ -428,6 +439,19 @@ void Eter::onPushButtonStartTrainingClicked()
         GameOptions::DisabledEter);
     plRed = std::make_unique<qtCompletePlayer>(m_gameview->GetRedPlayer(), CARD_WIDTH, CARD_HEIGHT, true);//red starts first
     plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
+
+    if (!pushButtonSaveGame)
+        pushButtonSaveGame = new QPushButton("Save game", this);
+    pushButtonSaveGame->setGeometry(pushButtonStartTimed->x(), pushButtonStartTimed->y() + 100, 100, 30);
+    pushButtonSaveGame->setVisible(true);
+    connect(pushButtonSaveGame, &QPushButton::clicked, this, &Eter::onPushButtonSaveGame);
+
+    if (!pushButtonLoadGame)
+        pushButtonLoadGame = new QPushButton("Load game", this);
+    pushButtonLoadGame->setGeometry(pushButtonSaveGame->x(), pushButtonSaveGame->y() + 50, 100, 30);
+    pushButtonLoadGame->setVisible(true);
+    connect(pushButtonLoadGame, &QPushButton::clicked, this, &Eter::onPushButtonLoadGame);
+
     initializeGameMessage();
     resizeGameLogo();
     placeHorizontalLayout();
@@ -447,6 +471,19 @@ void Eter::onPushButtonStartElementalClicked()
         GameOptions::EnabledEter);
     plRed = std::make_unique<qtCompletePlayer>(m_gameview->GetRedPlayer(), CARD_WIDTH, CARD_HEIGHT, true);//red starts first
     plBlue = std::make_unique<qtCompletePlayer>(m_gameview->GetBluePlayer(), CARD_WIDTH, CARD_HEIGHT, false);
+
+    if (!pushButtonSaveGame)
+        pushButtonSaveGame = new QPushButton("Save game", this);
+    pushButtonSaveGame->setGeometry(pushButtonStartTimed->x(), pushButtonStartTimed->y() + 100, 100, 30);
+    pushButtonSaveGame->setVisible(true);
+    connect(pushButtonSaveGame, &QPushButton::clicked, this, &Eter::onPushButtonSaveGame);
+
+    if (!pushButtonLoadGame)
+        pushButtonLoadGame = new QPushButton("Load game", this);
+    pushButtonLoadGame->setGeometry(pushButtonSaveGame->x(), pushButtonSaveGame->y() + 50, 100, 30);
+    pushButtonLoadGame->setVisible(true);
+    connect(pushButtonLoadGame, &QPushButton::clicked, this, &Eter::onPushButtonLoadGame);
+
     resizeGameLogo();
     initializeGameMessage();
     loadElementalCardsFromJSON();
@@ -460,6 +497,19 @@ void Eter::onPushButtonStartMageClicked()
 {
     m_wasExplosionPlayed = false;
     m_activeGamemode = GameView::LaunchOptions::MAGE_DUEL;
+
+    if (!pushButtonSaveGame)
+        pushButtonSaveGame = new QPushButton("Save game", this);
+    pushButtonSaveGame->setGeometry(pushButtonStartTimed->x(), pushButtonStartTimed->y() + 100, 100, 30);
+    pushButtonSaveGame->setVisible(true);
+    connect(pushButtonSaveGame, &QPushButton::clicked, this, &Eter::onPushButtonSaveGame);
+
+    if (!pushButtonLoadGame)
+        pushButtonLoadGame = new QPushButton("Load game", this);
+    pushButtonLoadGame->setGeometry(pushButtonSaveGame->x(), pushButtonSaveGame->y() + 50, 100, 30);
+    pushButtonLoadGame->setVisible(true);
+    connect(pushButtonLoadGame, &QPushButton::clicked, this, &Eter::onPushButtonLoadGame);
+
     initializeGameMessage();
     initializeRadioButtons();
 }
@@ -468,6 +518,19 @@ void Eter::onPushButtonStartTournamentClicked()
 {
     m_wasExplosionPlayed = false;
     m_activeGamemode = GameView::LaunchOptions::TOURNAMENT;
+
+    if (!pushButtonSaveGame)
+        pushButtonSaveGame = new QPushButton("Save game", this);
+    pushButtonSaveGame->setGeometry(pushButtonStartTimed->x(), pushButtonStartTimed->y() + 100, 100, 30);
+    pushButtonSaveGame->setVisible(true);
+    connect(pushButtonSaveGame, &QPushButton::clicked, this, &Eter::onPushButtonSaveGame);
+
+    if (!pushButtonLoadGame)
+        pushButtonLoadGame = new QPushButton("Load game", this);
+    pushButtonLoadGame->setGeometry(pushButtonSaveGame->x(), pushButtonSaveGame->y() + 50, 100, 30);
+    pushButtonLoadGame->setVisible(true);
+    connect(pushButtonLoadGame, &QPushButton::clicked, this, &Eter::onPushButtonLoadGame);
+
     initializeGameMessage();
     initializeRadioButtons();
 }
@@ -476,8 +539,32 @@ void Eter::onPushButtonStartTimedClicked()
 {
     m_wasExplosionPlayed = false;
     m_activeGamemode = GameView::LaunchOptions::TIMED;
+
+    if (!pushButtonSaveGame)
+        pushButtonSaveGame = new QPushButton("Save game", this);
+    pushButtonSaveGame->setGeometry(pushButtonStartTimed->x(), pushButtonStartTimed->y() + 50, 100, 30);
+    pushButtonSaveGame->setVisible(true);
+    connect(pushButtonSaveGame, &QPushButton::clicked, this, &Eter::onPushButtonSaveGame);
+
+    if (!pushButtonLoadGame)
+        pushButtonLoadGame = new QPushButton("Load game", this);
+    pushButtonLoadGame->setGeometry(pushButtonSaveGame->x(), pushButtonSaveGame->y() + 50, 100, 30);
+    pushButtonLoadGame->setVisible(true);
+    connect(pushButtonLoadGame, &QPushButton::clicked, this, &Eter::onPushButtonLoadGame);
+
     initializeGameMessage();
     initializeRadioButtons();
+}
+
+void Eter::onPushButtonSaveGame()
+{
+    m_gameview->saveGame();
+}
+
+void Eter::onPushButtonLoadGame()
+{
+    m_gameview = std::make_unique<GameView>();
+    m_gameview->loadGame();
 }
 
 void Eter::onBoardResized()

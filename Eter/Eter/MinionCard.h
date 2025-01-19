@@ -1,7 +1,8 @@
 #pragma once
 #include "Card.h"
-
+#include "json.hpp"
 #include "qdebug.h"
+using json = nlohmann::json;
 
 using position = std::tuple< uint16_t, uint16_t, uint16_t>;
 
@@ -64,6 +65,10 @@ public:
 
 	void SetBelongsTo(Colours belongsTo);
 	void SetIsHole(bool isHole);
+
+
+	json SerialiseCard();
+	void DeserializeCard(const json& serialisedCard);
 };
 
 namespace std

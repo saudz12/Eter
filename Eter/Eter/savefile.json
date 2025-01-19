@@ -1,0 +1,139 @@
+{
+    "active_color": 1,
+    "blue_mage": {
+        "element0": false,
+        "element1": 0,
+        "element2": 0
+    },
+    "elemental_1": {
+        "element0": false,
+        "element1": 5,
+        "element2": 6
+    },
+    "elemental_2": {
+        "element0": false,
+        "element1": 2,
+        "element2": 3
+    },
+    "enabled_elemental": 6,
+    "enabled_eter": 0,
+    "enabled_illusion": 2,
+    "enabled_mage": 5,
+    "enabled_timed": 9,
+    "enabled_tournament": 11,
+    "matrix": {
+        "0-0": [
+            {
+                "color": 0,
+                "is_eter": false,
+                "is_hole": false,
+                "is_illusion": false,
+                "value": 2
+            }
+        ],
+        "0-1": [
+            {
+                "color": 0,
+                "is_eter": false,
+                "is_hole": false,
+                "is_illusion": false,
+                "value": 1
+            }
+        ],
+        "0-2": [
+            {
+                "color": 0,
+                "is_eter": false,
+                "is_hole": false,
+                "is_illusion": false,
+                "value": 2
+            }
+        ],
+        "1-0": [
+            {
+                "color": 1,
+                "is_eter": false,
+                "is_hole": false,
+                "is_illusion": false,
+                "value": 2
+            }
+        ],
+        "1-1": [
+            {
+                "color": 1,
+                "is_eter": false,
+                "is_hole": false,
+                "is_illusion": false,
+                "value": 2
+            }
+        ],
+        "1-2": [
+            {
+                "color": 0,
+                "is_eter": false,
+                "is_hole": false,
+                "is_illusion": true,
+                "value": 3
+            }
+        ],
+        "2-0": [
+            {
+                "color": 1,
+                "is_eter": false,
+                "is_hole": false,
+                "is_illusion": false,
+                "value": 2
+            }
+        ],
+        "2-1": [
+            {
+                "color": 0,
+                "is_eter": false,
+                "is_hole": false,
+                "is_illusion": false,
+                "value": 4
+            }
+        ],
+        "2-2": [],
+        "matrix_size": 4,
+        "nr_cols": 3,
+        "nr_rows": 3
+    },
+    "player1": {
+        "color": 0,
+        "counter": {
+            "val0": 0,
+            "val1": 1,
+            "val2": 1,
+            "val3": 2,
+            "val4": 0
+        },
+        "eter_usage": false,
+        "illusion_usage": true
+    },
+    "player2": {
+        "color": 1,
+        "counter": {
+            "val0": 0,
+            "val1": 2,
+            "val2": 0,
+            "val3": 2,
+            "val4": 1
+        },
+        "eter_usage": false,
+        "illusion_usage": true
+    },
+    "power_used": false,
+    "red_mage": {
+        "element0": false,
+        "element1": 0,
+        "element2": 0
+    },
+    "score": {
+        "first": 0,
+        "second": 0
+    },
+    "tie_braker": true,
+    "was_placed": false,
+    "winner_status": 2
+}

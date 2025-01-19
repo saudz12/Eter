@@ -108,7 +108,7 @@ signals:
 	void cardDropAccepted(const QMimeData* mimeData,int row,int column);
 	void isRadioButtonToggledIllusions(bool* toggled);
 public slots:
-	void removeCardIllusion(int row,int col, IllusionErrors error);
+	void removeCardIllusion(int row,int col);
 	void removeCard(int row, int col);
 	void returnCard(int row, int col, int& value, Colours& color, bool& isEter, bool& isIllusion);
 	void removeMargins(std::vector<MarginType> marginsToRemove);

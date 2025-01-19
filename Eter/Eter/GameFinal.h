@@ -1,9 +1,14 @@
 #pragma once
 #include <cstdint>
+#include <fstream>
+
 #include "Board.h"
 #include "InputChecking.h"
+#include "json.hpp"
+
 
 using PowerUsage = std::tuple<bool, ActionCard, uint16_t>;
+using json = nlohmann::json;
 
 enum class PowerSelect : int16_t {
 	First,
@@ -84,4 +89,57 @@ public:
 	
 	bool tryToApplyExplosionOnBoard(ExplosionCard& card);
 	std::vector<MarginType> applyExplosionOnBoard(const ExplosionCard& card);
+
+	void SaveCurrentToJson();
+	template <typename T1, typename T2>
+	json serializePairAsObject(const std::pair<T1, T2>& pair);
+
+	template <typename Tuple, std::size_t... Indices>
+    void serializeTupleHelper(const Tuple& tuple, json& j, std::index_sequence<Indices...>);
+
+	template <typename... Args>
+	json serializeTupleAsObject(const std::tuple<Args...>& tuple);
+
+	void LoadFromJson();
+
+	template <typename T1, typename T2>
+	std::pair<T1, T2> deserializePair(const json& j);
+
+	template <typename... Args>
+	std::tuple<Args...> deserializeTuple(const json& j);
+
+	template <typename... Args, std::size_t... Indices>
+	std::tuple<Args...> deserializeTupleHelper(const json& j, std::index_sequence<Indices...>);
 };
+
+template <typename T1, typename T2>
+inline json GameFinal::serializePairAsObject(const std::pair<T1, T2>& pair) {
+	return { {"first", pair.first}, {"second", pair.second} };
+}
+
+template <typename Tuple, std::size_t... Indices>
+inline void GameFinal::serializeTupleHelper(const Tuple& tuple, json& j, std::index_sequence<Indices...>) {
+	((j["element" + std::to_string(Indices)] = std::get<Indices>(tuple)), ...);
+}
+
+template <typename... Args>
+inline json GameFinal::serializeTupleAsObject(const std::tuple<Args...>& tuple) {
+	json j;
+	serializeTupleHelper(tuple, j, std::index_sequence_for<Args...>{});
+	return j;
+}
+
+template <typename T1, typename T2>
+inline std::pair<T1, T2> GameFinal::deserializePair(const json& j) {
+	return { j.at("first").get<T1>(), j.at("second").get<T2>() };
+}
+
+template <typename... Args>
+inline std::tuple<Args...> GameFinal::deserializeTuple(const json& j) {
+	return deserializeTupleHelper<Args...>(j, std::index_sequence_for<Args...>{});
+}
+
+template <typename... Args, std::size_t... Indices>
+inline std::tuple<Args...> GameFinal::deserializeTupleHelper(const json& j, std::index_sequence<Indices...>) {
+	return std::make_tuple(j.at("element" + std::to_string(Indices)).get<Args>()...);
+}

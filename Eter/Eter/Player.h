@@ -2,6 +2,9 @@
 #include "MinionCard.h"
 #include "ElementalCard.h"
 #include "MageCard.h"
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 using Hand = std::unordered_map<MinionCard, uint16_t>;
 
@@ -137,6 +140,14 @@ public:
 	bool printCoveredCards(ResizeableMatrix& matrix);
 
 	void printHandCards();
+
+	json SerialisePlayer();
+
+	json SerialiseCardCounter();
+	void DeserializePlayer(const json& jsonPlayer);
+	void DeserializeCardCounter(const json& serialisedCardCounter);
+
+	void printRemainingCards();
 };
 
 std::ostream& operator<<(std::ostream& os, const position& posTuple);

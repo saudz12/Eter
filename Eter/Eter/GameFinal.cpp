@@ -190,26 +190,30 @@ GameFinal::GameFinal(int16_t _maxBoardSize,
 	m_activeRemovedHand = m_player1->GetRemovedCards();
 	std::random_device rd;
 	std::uniform_int_distribution<int16_t> magerange(1, 8);
+	if (_enabledMage==GameOptions::EnabledMage)
+	{
+		int16_t firstMageCard{ magerange(rd) };
+		int16_t secondMageCard{ magerange(rd) };
 
-	int16_t firstMageCard{ magerange(rd) };
-	int16_t secondMageCard{ magerange(rd) };
+		while (firstMageCard == secondMageCard)
+			secondMageCard = magerange(rd);
 
-	while (firstMageCard == secondMageCard)
-		secondMageCard = magerange(rd);
+		m_redMage = std::move(PowerUsage{ false, GetMageCard(magerange(rd)), firstMageCard });
+		m_blueMage = std::move(PowerUsage{ false, GetMageCard(magerange(rd)), secondMageCard });
+	}
+	if (_enabledElemental==GameOptions::EnabledElemental)
+	{
+		std::uniform_int_distribution<int16_t> elementalrange(1, 24);
 
-	m_redMage = std::move(PowerUsage{ false, GetMageCard(magerange(rd)), firstMageCard });
-	m_blueMage = std::move(PowerUsage{ false, GetMageCard(magerange(rd)), secondMageCard });
+		int16_t firstCardNumber{ elementalrange(rd) };
+		int16_t secondCardNumber{ elementalrange(rd) };
 
-	std::uniform_int_distribution<int16_t> elementalrange(1, 24);
+		while (firstCardNumber == secondCardNumber)
+			secondCardNumber = elementalrange(rd);
 
-	int16_t firstCardNumber{ elementalrange(rd) };
-	int16_t secondCardNumber{ elementalrange(rd) };
-
-	while (firstCardNumber == secondCardNumber)
-		secondCardNumber = elementalrange(rd);
-
-	m_elemental1 = std::move(PowerUsage{ false, GetElementalCard(firstCardNumber), firstCardNumber });
-	m_elemental2 = std::move(PowerUsage{ false, GetElementalCard(secondCardNumber), secondCardNumber });
+		m_elemental1 = std::move(PowerUsage{ false, GetElementalCard(firstCardNumber), firstCardNumber });
+		m_elemental2 = std::move(PowerUsage{ false, GetElementalCard(secondCardNumber), secondCardNumber });
+	}
 }
 
 bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
@@ -301,7 +305,8 @@ IllusionErrors GameFinal::PlaceIllusion(int16_t _x, int16_t _y, int16_t _val)
 	if (m_activePlayer->GetIllusionUsage() == true)
 		return IllusionErrors::_ILLUSION_ALREADY_USED;
 
-	if (m_board->isBoardEmpty()) {
+	if (m_board->isBoardEmpty()) 
+	{
 		m_board->PlaceIllusion(m_activePlayer->PlayCard(_val), 0, 0);
 		m_activePlayer->SetIllusionUsage(true);
 		m_activePlayer->PlayCard(0);
@@ -310,10 +315,15 @@ IllusionErrors GameFinal::PlaceIllusion(int16_t _x, int16_t _y, int16_t _val)
 		return IllusionErrors::_NO_ERRORS;
 	}
 
-	if (!m_board->isEmptySpace(_x, _y)) {
+	if (!m_board->isEmptySpace(_x, _y))
+	{
 		return IllusionErrors::_INVALID_SPACE;//invalid space
 	}
-
+	if (_x >= 0 && _y >= 0 && _x < m_board->getRowCount() && _y < m_board->getColCount() && !m_board->isEmptySpace(_x, _y) &&
+		m_activeColor == m_board->getCardOnPos(_x, _y).GetColor())
+	{
+		return IllusionErrors::_ILLUSION_ON_SAME_COLOR;
+	}
 	m_board->PlaceIllusion(m_activePlayer->PlayCard(_val), _x, _y);
 	m_activePlayer->SetIllusionUsage(true);
 	m_activePlayer->PlayCard(0);
@@ -369,4 +379,99 @@ std::vector<MarginType> GameFinal::applyExplosionOnBoard(const ExplosionCard& ca
 {
 	return m_board->applyExplosionOnBoard(card,*m_player1,*m_player2,true);
 }
+
+void GameFinal::SaveCurrentToJson()
+{
+	json jsonObject;
+
+	//board
+
+	jsonObject["matrix"] = m_board->SerialiseMatrix();
+
+	//players
+
+	jsonObject["player1"] = m_player1->SerialisePlayer();
+	jsonObject["player2"] = m_player2->SerialisePlayer();
+
+	//game
+	jsonObject["score"] = serializePairAsObject(m_gameScore);
+	jsonObject["active_color"] = m_activeColor;
+	jsonObject["winner_status"] = m_winnerStatus;
+
+	jsonObject["enabled_eter"] = m_enabledEter;
+	jsonObject["enabled_illusion"] = m_enabledIllusion;
+	jsonObject["enabled_mage"] = m_enabledMage;
+	jsonObject["enabled_elemental"] = m_enabledElemental;
+	jsonObject["enabled_timed"] = m_enabledTimed;
+	jsonObject["enabled_tournament"] = m_enabledTournament;
+
+	jsonObject["was_placed"] = m_wasPlaced;
+	jsonObject["power_used"] = m_powerUsed;
+	jsonObject["tie_braker"] = m_tieBraker;
+
+	jsonObject["red_mage"] = serializeTupleAsObject(m_redMage);
+	jsonObject["blue_mage"] = serializeTupleAsObject(m_blueMage);
+	
+	jsonObject["element_1"] = serializeTupleAsObject(m_elemental1);
+	jsonObject["element_2"] = serializeTupleAsObject(m_elemental2);
+	
+	std::ofstream outFile("savefile.json");
+	if (outFile.is_open()) {
+		outFile << jsonObject.dump(4); // Pretty-print with 4 spaces
+		outFile.close();
+		std::cout << "JSON object written to 'savefile.json'." << std::endl;
+	}
+	else {
+		std::cerr << "Failed to open file for writing!" << std::endl;
+	}
+}
+
+void GameFinal::LoadFromJson() {
+	std::ifstream inFile("savefile.json");
+	if (!inFile.is_open()) {
+		std::cerr << "Failed to open file for reading!" << std::endl;
+		return;
+	}
+
+	json jsonObject;
+	inFile >> jsonObject;
+	inFile.close();
+
+	// Deserialize board
+	m_board->DeserializeMatrix(jsonObject["matrix"]);
+
+	// Deserialize players
+	m_player1->DeserializePlayer(jsonObject["player1"]);
+	m_player2->DeserializePlayer(jsonObject["player2"]);
+
+	// Deserialize game data
+	m_gameScore = deserializePair<int, int>(jsonObject["score"]);
+	m_activeColor = jsonObject["active_color"];
+	m_winnerStatus = jsonObject["winner_status"];
+
+	m_enabledEter = jsonObject["enabled_eter"];
+	m_enabledIllusion = jsonObject["enabled_illusion"];
+	m_enabledMage = jsonObject["enabled_mage"];
+	m_enabledElemental = jsonObject["enabled_elemental"];
+	m_enabledTimed = jsonObject["enabled_timed"];
+	m_enabledTournament = jsonObject["enabled_tournament"];
+
+	m_wasPlaced = jsonObject["was_placed"];
+	m_powerUsed = jsonObject["power_used"];
+	m_tieBraker = jsonObject["tie_braker"];
+
+	m_redMage = deserializeTuple<int, ActionCard, uint16_t>(jsonObject["red_mage"]);
+	m_blueMage = deserializeTuple<int, ActionCard, uint16_t>(jsonObject["blue_mage"]);
+
+	m_elemental1 = deserializeTuple<int, ActionCard, uint16_t>(jsonObject["elemental_1"]);
+	m_elemental2 = deserializeTuple<int, ActionCard, uint16_t>(jsonObject["elemental_2"]);
+	
+	m_board->updateRowCheckerDeserialize();
+	m_board->updateColCheckerDeserialize();
+	m_board->updateDiagsDeserialize();
+	m_board->printBoard(true);
+	m_player1->printRemainingCards();
+	m_player2->printRemainingCards();
+}
+
 

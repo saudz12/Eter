@@ -82,6 +82,8 @@ private:
     QPointer<QPushButton> pushButtonStartMage;
     QPointer<QPushButton> pushButtonStartTournament;
     QPointer<QPushButton> pushButtonStartTimed;
+    QPointer<QPushButton> pushButtonSaveGame;
+    QPointer<QPushButton> pushButtonLoadGame;
 
     QPointer<QRadioButton> radioButtonPlayIllusion;
 
@@ -167,13 +169,15 @@ private slots:
     void onPushButtonStartMageClicked();
     void onPushButtonStartTournamentClicked();
     void onPushButtonStartTimedClicked();
+    void onPushButtonSaveGame();
+    void onPushButtonLoadGame();
     void onBoardResized();
     void cardDropHandler(const QMimeData* mimeData,int row,int column);
     void IllusionHandler(bool* toogled);
     void handlerExplCardAccept(ExplosionCard card);
     void handlerExplCardReject(ExplosionCard card);
 signals:
-    void signalRemoveIllusionCard(int row, int col, IllusionErrors error);
+    void signalRemoveIllusionCard(int row, int col);
     void signalRemoveCard(int row, int col);
     void signalReturnCard(int row, int col, int& value, Colours& color, bool& isEter, bool& isIllusion);
     void signalRemoveMargins(std::vector<MarginType> marginsToRemove);

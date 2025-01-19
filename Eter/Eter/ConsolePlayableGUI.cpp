@@ -258,3 +258,14 @@ std::vector<MarginType> GameView::applyExplosionOnBoard(const ExplosionCard& car
 {
     return m_game->applyExplosionOnBoard(card);
 }
+
+void GameView::saveGame()
+{
+    m_game->SaveCurrentToJson();
+}
+
+void GameView::loadGame()
+{
+    m_game = std::make_unique<GameFinal>();
+    m_game->LoadFromJson();
+}

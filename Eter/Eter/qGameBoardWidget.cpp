@@ -945,18 +945,17 @@ void qGameBoardWidget::addEmptySpacesToRedrawnBoard()
     }
 }
 
-void qGameBoardWidget::removeCardIllusion(int row,int col, IllusionErrors error)
+void qGameBoardWidget::removeCardIllusion(int row,int col)
 {
     scaleCoordinates(row, col);
-    if (error == IllusionErrors::_ILLUSION_ALREADY_USED)
-    {
-        qDebug() << "row:" << row << "col:" << col << '\n';
-        removeWidgetFromGrid( row, col);
-        createBoard();
-        QLabel* emptySpace = createWhiteSpace();
-        gridLayout->addWidget(emptySpace, row, col);
-        m_emptyPositions.emplace(std::make_pair(row, col));
-    }
+
+    qDebug() << "row:" << row << "col:" << col << '\n';
+    removeWidgetFromGrid( row, col);
+    createBoard();
+    QLabel* emptySpace = createWhiteSpace();
+    gridLayout->addWidget(emptySpace, row, col);
+    m_emptyPositions.emplace(std::make_pair(row, col));
+    
 }
 
 void qGameBoardWidget::removeCard(int row, int col)

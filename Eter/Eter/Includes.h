@@ -117,7 +117,8 @@ enum class IllusionErrors : int16_t {
 	_NO_ERRORS,
 	_INVALID_SPACE,
 	_ILLUSION_ALREADY_USED,
-	_ILLUSION_COVERING_ILLUSION
+	_ILLUSION_COVERING_ILLUSION,
+	_ILLUSION_ON_SAME_COLOR
 };
 
 Directions GetDirection(char d);

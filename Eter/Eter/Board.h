@@ -17,6 +17,9 @@
 #include "Player.h"
 #include "ExplosionCard.h"
 #include "Includes.h"
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 enum class BoardErrors : int16_t {
 	_OUTSIDE_BOUND,
@@ -222,5 +225,14 @@ public:
 	std::vector<MarginType> applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& p2,bool isForTest);
 	bool tryApplyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1,Player& pl2);
 	bool canPlayExplosion();
+
+	json SerialiseMatrix();
+	std::string FormatPair(int integer1, int integer2);
+	void DeserializeMatrix(const json& jsonMatrix);
+	std::pair<int, int> ParsePair(const std::string& str);
+
+	void updateRowCheckerDeserialize();
+	void updateColCheckerDeserialize();
+	void updateDiagsDeserialize();
 };
 
