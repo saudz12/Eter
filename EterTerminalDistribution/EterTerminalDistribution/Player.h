@@ -1,7 +1,5 @@
 #pragma once
-#include "MinionCard.h"
-#include "ElementalCard.h"
-#include "MageCard.h"
+#include "Includes.h"
 
 using Hand = std::unordered_map<MinionCard, uint16_t>;
 

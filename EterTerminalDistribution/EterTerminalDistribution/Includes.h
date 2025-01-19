@@ -17,6 +17,9 @@
 #include <optional>
 #include "json.hpp"
 #include <fstream>
+#include "../Cards/MinionCard.h"
+#include "../Cards//ActionType.h"
+
 
 using json = nlohmann::json;
 
@@ -41,12 +44,6 @@ enum class GameOptions : int16_t
 	DisabledTimed,
 	EnabledTournament,
 	DisabledTournament
-};
-
-enum class Colours : int16_t {
-	RED,
-	BLUE,
-	INVALID_COL
 };
 
 Colours GetColour(char c);
@@ -116,3 +113,4 @@ static enum class CommonErrors : int16_t {
 Directions GetDirection(char d);
 
 std::ostream& operator<<(std::ostream& os, const Colours& col);
+std::ostream& operator<<(std::ostream& out, const MinionCard& card);

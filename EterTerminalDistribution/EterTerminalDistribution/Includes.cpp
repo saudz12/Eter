@@ -58,3 +58,17 @@ std::ostream& operator<<(std::ostream& os, const Colours& col) {
 	os << GetColour(col);
 	return os;
 }
+
+std::ostream& operator<<(std::ostream& out, const MinionCard& card)
+{
+	//std::string cardColour = card.GetColor() == Colours::RED ? "R" : "B";
+	if (card.GetCardType() == CardType::HoleCard)
+		out << " H ";
+	else if (card.GetIsEterCard())
+		out << "E:" << card.GetColor();
+	else if (card.GetIsIllusionCard())
+		out << "I:" << card.GetColor();
+	else
+		out << card.GetValue() << ":" << card.GetColor();
+	return out;
+}

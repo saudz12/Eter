@@ -1,7 +1,5 @@
 #pragma once
-#include "MinionCard.h"
-#include "ElementalCard.h"
-#include "MageCard.h"
+#include "Includes.h"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -54,8 +52,8 @@ private:
 	Colours m_playerColor;
 	Hand m_removedCards;
 
-	std::optional<ElementalCard> m_elementalCard;
-	std::optional<MageCard> m_mageCard;
+	/*std::optional<ElementalCard> m_elementalCard;
+	std::optional<MageCard> m_mageCard;*/
 
 	bool m_illusionUsage; 
 
@@ -71,10 +69,8 @@ private:
 
 public:
 	//constructor
-	Player(Colours playerColor);
 	Player(Colours _playerColor, bool _training); //new
 	Player();
-	Player(Colours playerColor, GameOptions elementalDuelOption, GameOptions mageDuelOption);
 
 	//getters
 	Colours GetPlayerColor() const;

@@ -1,8 +1,9 @@
 #pragma once
 #include <cstdint>
+#include "Card.h"
 
-enum class ActionCard : uint16_t {
-	ControlledExplosion = 0,
+enum class CARD_API ActionCard : uint16_t {
+	ControlledExplosion=0,
 	Destruction,
 	Flame,
 	Fire,
@@ -39,5 +40,5 @@ enum class ActionCard : uint16_t {
 	WaterMage2
 };
 
-ActionCard GetElementalCard(int16_t _val);
-ActionCard GetMageCard(int16_t _val);
+ActionCard CARD_API GetElementalCard(int16_t _val);
+ActionCard CARD_API GetMageCard(int16_t _val);

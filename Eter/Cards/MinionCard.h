@@ -1,12 +1,9 @@
 #pragma once
 #include "Card.h"
-#include "json.hpp"
-#include "qdebug.h"
-using json = nlohmann::json;
 
 using position = std::tuple< uint16_t, uint16_t, uint16_t>;
 
-struct hashPosition {
+struct CARD_API hashPosition {
 	size_t operator()(const position& toHash) const {
 		int x = std::get<0>(toHash);
 		int y = std::get<1>(toHash);
@@ -16,7 +13,7 @@ struct hashPosition {
 	}
 };
 
-class MinionCard : public Card
+class CARD_API MinionCard : public Card
 {
 private:
 	uint16_t m_value;
@@ -28,6 +25,7 @@ private:
 	//char m_belongsTo;
 	Colours m_belongsTo;
 	bool m_isHole;
+
 public:
 	static MinionCard&& CreateHoleCard();
 	static MinionCard&& CreateEterCard(Colours _colour);
@@ -36,9 +34,11 @@ public:
 	MinionCard();
 	MinionCard(const MinionCard& other);
 
+	json SerialiseCard();
+	void DeserializeCard(const json& serialisedCard);
+
 	//overload functions
-	friend std::ostream& operator<<(std::ostream &out,const MinionCard &card);
-	friend QDebug operator<<(QDebug debug, const MinionCard& card);
+	//friend std::ostream& operator<<(std::ostream &out,const MinionCard &card);
 	bool operator>(const MinionCard& card);
 	bool operator==(const MinionCard& card) const;
 	MinionCard& operator=(const MinionCard& card);
@@ -65,16 +65,12 @@ public:
 
 	void SetBelongsTo(Colours belongsTo);
 	void SetIsHole(bool isHole);
-
-
-	json SerialiseCard();
-	void DeserializeCard(const json& serialisedCard);
 };
 
 namespace std
 {
 	template<>
-	struct hash <MinionCard>
+	struct CARD_API hash <MinionCard>
 	{
 		size_t operator()(const MinionCard& card) const
 		{

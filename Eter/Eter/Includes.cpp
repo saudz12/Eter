@@ -74,9 +74,38 @@ std::ostream& operator<<(std::ostream& os, const Colours& col) {
 	return os;
 }
 
+std::ostream& operator<<(std::ostream& out, const MinionCard& card)
+{
+	//std::string cardColour = card.GetColor() == Colours::RED ? "R" : "B";
+	if (card.GetCardType() == CardType::HoleCard)
+		out << " H ";
+	else if (card.GetIsEterCard())
+		out << "E:" << card.GetColor();
+	else if (card.GetIsIllusionCard())
+		out << "I:" << card.GetColor();
+	else
+		out << card.GetValue() << ":" << card.GetColor();
+	return out;
+}
+
+
 QDebug operator<<(QDebug debug, const Colours& col)
 {
 	QDebugStateSaver saver(debug); // Saves the current state of QDebug (e.g., formatting)
 	debug.nospace() << GetColour(col);
+	return debug;
+}
+
+QDebug operator<<(QDebug debug, const MinionCard& card)
+{
+	QDebugStateSaver saver(debug);
+	if (card.GetCardType() == CardType::HoleCard)
+		debug.nospace() << " H:";
+	else if (card.GetIsEterCard())
+		debug.nospace() << "E:" << card.GetColor();
+	else if (card.GetIsIllusionCard())
+		debug.nospace() << "I:" << card.GetColor();
+	else
+		debug.nospace() << card.GetValue() << ":" << card.GetColor();
 	return debug;
 }

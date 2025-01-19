@@ -1,6 +1,5 @@
 #pragma once
 #include "Board.h"
-#include "HoleCard.h"
 
 //remove opponent's card that covers one of player's cards
 void funcFireMage1(Board& _board, Player& _user, int16_t _x, int16_t _y, int16_t _pos);

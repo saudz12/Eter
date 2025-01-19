@@ -1,5 +1,4 @@
 #include "ExplosionCard.h"
-#include "Card.h"
 
 std::pair<uint16_t, uint16_t> ExplosionCard::GeneratePositionInMatrix(uint16_t size)
 {

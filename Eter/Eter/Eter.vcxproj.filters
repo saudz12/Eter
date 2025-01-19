@@ -43,22 +43,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Card.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MinionCard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ExplosionCard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MageCard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HoleCard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ElementalCard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
@@ -109,24 +94,12 @@
     <ClCompile Include="Includes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ActionType.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="qDialogExplosionCard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Card.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MinionCard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ExplosionCard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MageCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CardType.h">
@@ -138,19 +111,10 @@
     <ClInclude Include="MageType.h">
       <Filter>Source Files\Enums</Filter>
     </ClInclude>
-    <ClInclude Include="HoleCard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ElementalCard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Board.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ActionType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ConsolePrints.h">

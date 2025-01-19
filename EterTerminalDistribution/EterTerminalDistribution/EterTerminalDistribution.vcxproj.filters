@@ -24,22 +24,7 @@
     <ClCompile Include="Board.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Card.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ElementalCard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ExplosionCard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HoleCard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MageCard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MinionCard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
@@ -75,18 +60,9 @@
     <ClCompile Include="Elementals.cpp">
       <Filter>Elementals</Filter>
     </ClCompile>
-    <ClCompile Include="ActionType.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Card.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ElementalCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ExplosionCard.h">
@@ -95,13 +71,7 @@
     <ClInclude Include="HoleCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MageCard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MageType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MinionCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
@@ -114,9 +84,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Includes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ActionType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="funcAssociationsToCard.h">

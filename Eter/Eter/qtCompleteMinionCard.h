@@ -2,7 +2,6 @@
 #include "qpixmap.h"
 
 #include "Includes.h"
-#include "MinionCard.h"
 
 class qtCompleteMinionCard
 {

@@ -42,10 +42,6 @@ void GameFinal::ResetRound()
 	m_powerUsed = false;
 	m_tieBraker = false;
 
-	/*m_board.reset();
-	m_player1.reset();
-	m_player2.reset();*/
-
 	m_board = std::make_unique<Board>(m_board->getMaxSize());
 	m_player1 = std::make_unique<Player>(Colours::RED, false);
 	m_player2 = std::make_unique<Player>(Colours::BLUE, false);
@@ -60,6 +56,9 @@ void GameFinal::ResetRound()
 
 	std::random_device rd;
 	std::uniform_int_distribution<int16_t> elementalrange(1, 24);
+
+
+
 	m_elemental1 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd)) });
 	m_elemental2 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd)) });
 }

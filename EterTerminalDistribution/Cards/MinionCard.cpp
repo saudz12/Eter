@@ -2,12 +2,12 @@
 
 MinionCard&& MinionCard::CreateHoleCard()
 {
-    return { 0, Colours::INVALID_COL, false, true };
+    return MinionCard{ 0, Colours::INVALID_COL, false, true };
 }
 
 MinionCard&& MinionCard::CreateEterCard(Colours _colour)
 {
-    return { 1, _colour, true, false };
+    return MinionCard{ 1, _colour, true, false };
 }
 
 MinionCard::MinionCard(MinionCard&& other) noexcept : Card{ CardType::MinionCard },
@@ -56,6 +56,19 @@ MinionCard::MinionCard(const MinionCard& other) :Card{m_cardType},
     m_isHole(other.m_isHole)
 {
     // Optionally log or perform other necessary actions for copy
+}
+
+json MinionCard::SerialiseCard()
+{
+    json serialisedCard;
+
+    serialisedCard["value"] = m_value;
+    serialisedCard["color"] = m_color;
+    serialisedCard["is_eter"] = m_isEterCard;
+    serialisedCard["is_illusion"] = m_isIllusionCard;
+    serialisedCard["is_hole"] = m_isHole;
+
+    return serialisedCard;
 }
 
 uint16_t MinionCard::GetValue() const
@@ -139,28 +152,6 @@ void MinionCard::SetIsHole(bool isHole)
     m_isHole = isHole;
 }
 
-json MinionCard::SerialiseCard()
-{
-    json serialisedCard;
-
-    serialisedCard["value"] = m_value;
-    serialisedCard["color"] = m_color;
-    serialisedCard["is_eter"] = m_isEterCard;
-    serialisedCard["is_illusion"] = m_isIllusionCard;
-    serialisedCard["is_hole"] = m_isHole;
-
-    return serialisedCard;
-}
-
-void MinionCard::DeserializeCard(const json& serialisedCard) {
-    // Extract and assign values from JSON
-    m_value = serialisedCard.at("value").get<int>();
-    m_color = serialisedCard.at("color").get<Colours>();
-    m_isEterCard = serialisedCard.at("is_eter").get<bool>();
-    m_isIllusionCard = serialisedCard.at("is_illusion").get<bool>();
-    m_isHole = serialisedCard.at("is_hole").get<bool>();
-}
-
 bool MinionCard::operator>(const MinionCard& card)
 {
     return (m_value>card.m_value)?true : false;
@@ -189,31 +180,15 @@ MinionCard& MinionCard::operator=(const MinionCard& card)
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& out, const MinionCard& card)
-{
-    if (card.GetCardType() == CardType::HoleCard)
-        out << " H ";
-    else if (card.GetIsEterCard())
-        out << "E:" << card.GetColor();
-    else if (card.GetIsIllusionCard())
-        out << "I:" << card.GetColor();
-    else
-        out << card.GetValue() << ":" << card.GetColor();
-    return out;
-}
-
-QDebug operator<<(QDebug debug, const MinionCard& card)
-{
-    QDebugStateSaver saver(debug);
-    if (card.GetCardType() == CardType::HoleCard)
-        debug.nospace() << " H:";
-    else if (card.GetIsEterCard())
-        debug.nospace() << "E:" << card.GetColor();
-    else if (card.GetIsIllusionCard())
-        debug.nospace() << "I:" << card.GetColor();
-    else
-        debug.nospace() << card.GetValue() << ":" << card.GetColor();
-    return debug;
-}
-
-
+//std::ostream& operator<<(std::ostream& out, const MinionCard& card)
+//{
+//    if (card.GetCardType() == CardType::HoleCard)
+//        out << " H ";
+//    else if (card.GetIsEterCard())
+//        out << "E:" << card.GetColor();
+//    else if (card.GetIsIllusionCard())
+//        out << "I:" << card.GetColor();
+//    else
+//        out << card.GetValue() << ":" << card.GetColor();
+//    return out;
+//}

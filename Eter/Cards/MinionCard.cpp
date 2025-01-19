@@ -71,6 +71,15 @@ json MinionCard::SerialiseCard()
     return serialisedCard;
 }
 
+void MinionCard::DeserializeCard(const json& serialisedCard) {
+    // Extract and assign values from JSON
+    m_value = serialisedCard.at("value").get<int>();
+    m_color = serialisedCard.at("color").get<Colours>();
+    m_isEterCard = serialisedCard.at("is_eter").get<bool>();
+    m_isIllusionCard = serialisedCard.at("is_illusion").get<bool>();
+    m_isHole = serialisedCard.at("is_hole").get<bool>();
+}
+
 uint16_t MinionCard::GetValue() const
 {
     return m_value;
@@ -192,16 +201,3 @@ MinionCard& MinionCard::operator=(const MinionCard& card)
 //        out << card.GetValue() << ":" << card.GetColor();
 //    return out;
 //}
-
-std::ostream& operator<<(std::ostream& out, const MinionCard& card)
-{
-    if (card.GetCardType() == CardType::HoleCard)
-        out << " H ";
-    else if (card.GetIsEterCard())
-        out << "E:" << card.GetColor();
-    else if (card.GetIsIllusionCard())
-        out << "I:" << card.GetColor();
-    else
-        out << card.GetValue() << ":" << card.GetColor();
-    return out;
-}

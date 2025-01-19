@@ -15,7 +15,8 @@
 #include <ranges>
 #include <algorithm>
 #include <optional>
-
+#include "../Cards/ActionType.h"
+#include "../Cards/MinionCard.h"
 #include "qdebug.h"
 
 constexpr auto ID_ROW = "R";
@@ -39,12 +40,6 @@ enum class GameOptions : int16_t
 	DisabledTimed,
 	EnabledTournament,
 	DisabledTournament
-};
-
-enum class Colours : int16_t {
-	RED,
-	BLUE,
-	INVALID_COL
 };
 
 Colours GetColour(char c);
@@ -124,4 +119,7 @@ enum class IllusionErrors : int16_t {
 Directions GetDirection(char d);
 
 std::ostream& operator<<(std::ostream& os, const Colours& col);
+std::ostream& operator<<(std::ostream& out, const MinionCard& card);
+
 QDebug operator<<(QDebug debug, const Colours& col);
+QDebug operator<<(QDebug debug, const MinionCard& card);

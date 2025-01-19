@@ -102,11 +102,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ActionType.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="ConsolePlayableGUI.cpp" />
     <ClCompile Include="ConsolePrints.cpp" />
-    <ClCompile Include="ElementalCard.cpp" />
     <ClCompile Include="ErrorPrints.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -116,11 +114,8 @@
     <ClCompile Include="functionsElementalCards.cpp" />
     <ClCompile Include="functionsMageCards.cpp" />
     <ClCompile Include="GameFinal.cpp" />
-    <ClCompile Include="HoleCard.cpp" />
     <ClCompile Include="Includes.cpp" />
     <ClCompile Include="InputChceking.cpp" />
-    <ClCompile Include="MinionCard.cpp" />
-    <ClCompile Include="MageCard.cpp" />
     <ClCompile Include="MoveLaterToGameClass.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="qDialogExplosionCard.cpp" />
@@ -131,18 +126,14 @@
     <QtRcc Include="Eter.qrc" />
     <QtUic Include="Eter.ui" />
     <QtMoc Include="Eter.h" />
-    <ClCompile Include="Card.cpp" />
     <ClCompile Include="Eter.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ActionType.h" />
     <ClInclude Include="Board.h" />
-    <ClInclude Include="Card.h" />
     <ClInclude Include="CardType.h" />
     <ClInclude Include="ConsolePlayableGUI.h" />
     <ClInclude Include="ConsolePrints.h" />
-    <ClInclude Include="ElementalCard.h" />
     <ClInclude Include="ErrorPrints.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -152,12 +143,9 @@
     <ClInclude Include="functionsElementalCards.h" />
     <ClInclude Include="functionsMageCards.h" />
     <ClInclude Include="GameFinal.h" />
-    <ClInclude Include="HoleCard.h" />
     <ClInclude Include="Includes.h" />
     <ClInclude Include="InputChecking.h" />
     <ClInclude Include="json.hpp" />
-    <ClInclude Include="MinionCard.h" />
-    <ClInclude Include="MageCard.h" />
     <ClInclude Include="MageType.h" />
     <ClInclude Include="MoveLaterToGameClass.h" />
     <ClInclude Include="Player.h" />
@@ -167,6 +155,11 @@
     <ClInclude Include="qtCompleteMinionCard.h" />
     <ClInclude Include="qtCompletePlayer.h" />
     <ClInclude Include="ReturnOrRemoveType.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cards\Cards.vcxproj">
+      <Project>{edc3a99e-ab2d-411b-865c-7266eebb8ae8}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

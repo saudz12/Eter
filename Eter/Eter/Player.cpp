@@ -1,49 +1,27 @@
 #include "Player.h"
 
-Player::Player(Colours playerColor)
-	:	m_playerColor{ playerColor }, m_illusionUsage{ false }, m_eterCardUsage{ false }/*, m_remainingCounter{}, m_remainingCards{5}*/
-		
-{
-	/*if (training)
-		generateTrainingModeHand();
-	else*/
-		generateHand();
-
-	//new
-}
-
 Player::Player(Colours _playerColor, bool _training)
-	:	m_playerColor{ _playerColor },
-		m_illusionUsage{ false },
-		m_eterCardUsage{ false },
-		m_illusionCard{ nullptr },
-		m_lastMinionCardPlayed{ nullptr },
-		m_remainingCards{5}
+	: m_playerColor{ _playerColor },
+	m_illusionUsage{ false },
+	m_eterCardUsage{ false },
+	m_illusionCard{ nullptr },
+	m_lastMinionCardPlayed{ nullptr },
+	m_remainingCards{ 5 }
 {
 	GenerateHand(_training);
 }
 
 Player::Player()
-	: m_playerColor{ Colours::RED }, m_illusionUsage{ false }, m_eterCardUsage{ false }
+	: m_playerColor{ Colours::RED },
+	m_illusionUsage{ false },
+	m_eterCardUsage{ false },
+	m_illusionCard{ nullptr },
+	m_lastMinionCardPlayed{ nullptr },
+	m_remainingCards{ 5 }
 {
-	generateTrainingModeHand();
+	GenerateHand(true);
 }
 
-Player::Player(Colours playerColor, GameOptions elementalDuelOption, GameOptions mageDuelOption):
-	m_playerColor{ playerColor }, m_illusionUsage{ false }, m_eterCardUsage{ false }/*, m_remainingCounter{}, m_remainingCards{5}*/
-{
-	generateHand();
-
-	if (elementalDuelOption == GameOptions::EnabledElemental) 
-		m_elementalCard = ElementalCard();
-	else 
-		m_elementalCard = std::nullopt;   
-
-	if (mageDuelOption == GameOptions::EnabledMage)
-		m_mageCard = MageCard();
-	else
-		m_mageCard = std::nullopt;
-}
 Colours Player::GetPlayerColor() const
 {
 	return m_playerColor;

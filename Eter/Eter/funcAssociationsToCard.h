@@ -1,5 +1,4 @@
 #pragma once
-#include "ActionType.h"
 #include "functionsMageCards.h"
 #include "functionsElementalCards.h"
 
