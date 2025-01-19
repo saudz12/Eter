@@ -335,14 +335,18 @@ void GameFinal::PlayElemental(PowerSelect select, std::vector<int16_t> positions
 	case ActionCard::Ash:
 		break;
 	case ActionCard::Spark:
+		funcSpark(*m_board, *m_activePlayer);
 		break;
 	case ActionCard::Squall:
+		funcSquall(*m_board, *m_activePlayer, positions[0], positions[1]);
 		break;
 	case ActionCard::Gale:
+		funcGale(*m_board, *m_player1,*m_player2);
 		break;
 	case ActionCard::Hurricane:
 		break;
 	case ActionCard::Gust:
+		funcGust(*m_board, *m_player1, positions[0], positions[1], positions[2], positions[3]);
 		break;
 	case ActionCard::Mirage:
 		break;
@@ -353,18 +357,22 @@ void GameFinal::PlayElemental(PowerSelect select, std::vector<int16_t> positions
 	case ActionCard::Mist:
 		break;
 	case ActionCard::Wave:
+		funcGust(*m_board, *m_player1, positions[0], positions[1], positions[2], positions[3]);
 		break;
 	case ActionCard::Whirlpool:
 		break;
 	case ActionCard::Blizzard:
 		break;
 	case ActionCard::Waterfall:
+		funcWaterfall(*m_board,positions[0], positions[1]);
 		break;
 	case ActionCard::Support:
+		funcSupport(*m_board, positions[0], positions[1]);
 		break;
 	case ActionCard::Earthquake:
 		break;
 	case ActionCard::Crumble:
+
 		break;
 	case ActionCard::Border:
 		break;

@@ -860,14 +860,11 @@ uint16_t funcEarthquake(Board& board, Player& p1, Player& p2)
 }
 
 // value of a card decreased by 1, marker placed on card
-uint16_t funcCrumble(Board& _board,uint16_t _x, uint16_t _y)
+uint16_t funcCrumble(Board& _board, uint16_t _x, uint16_t _y)
 {
-	ResizeableMatrix& matrix = _board.getMatrix();
-	int CardValue = matrix[_x][_y].back().GetValue();
-
-	matrix[_x][_y].back().SetValue(CardValue - 1);
-	matrix[_x][_y].back().SetMarker(true);
-
+	MinionCard& card = _board.getCardOnPos(_x, _y);
+	card.SetValue(card.GetValue() - 1);
+	card.SetMarker(true);
 	return 0;
 }
 
