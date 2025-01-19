@@ -145,7 +145,7 @@ public:
 	void PlayCard(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD); //from top of stack (xs ys) to top of pos stacl (xd yd)
 	void MoveStack(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD); //replaces the stack on destination
 	void SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD);
-	void MirrorEdge(BoardChanges _margin);
+	void MirrorEdge(MarginType _margin);
 	bool CheckTopIsEter(int16_t _x, int16_t _y);
 	void RemoveIllusionProperty(int16_t _x, int16_t _y);
 	const MinionCard& ViewTop(int16_t _x, int16_t _y); //wierd??

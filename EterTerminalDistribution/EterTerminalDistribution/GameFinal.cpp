@@ -118,8 +118,8 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	m_elemental2 = std::move(PowerUsage{ false, GetElementalCard(elementalrange(rd))});
 
 	//REMOVE THIS LATER: !!
-	m_redMage.second = ActionCard::FireMage2;
-	m_blueMage.second = ActionCard::FireMage2;
+	m_redMage.second = ActionCard::AirMage1;
+	m_blueMage.second = ActionCard::AirMage1;
 }
 
 ActionCard GameFinal::GetCurrentPlayerMage()
@@ -326,21 +326,28 @@ void GameFinal::PlayMage(std::vector<int16_t> inputData)
 	switch (toSearch)
 	{
 	case ActionCard::FireMage1:
+		funcFireMage1(*m_board, *m_activePlayer, inputData[0], inputData[1], inputData[2]);
 		break;
 	case ActionCard::FireMage2:
 		funcFireMage2(*m_board, *m_activePlayer, inputData[0], GetLineType(char(inputData[1])));
 		break;
 	case ActionCard::EarthMage1:
+		funcEarthMage1(*m_board, *m_activePlayer, m_activeColor == Colours::RED ? *m_player2 : *m_player1, inputData[0], inputData[1], inputData[2]);
 		break;
 	case ActionCard::EarthMage2:
+		funcEarthMage2(*m_board, inputData[0], inputData[1]);
 		break;
 	case ActionCard::AirMage1:
+		funcAirMage1(*m_board, inputData[0], inputData[1], inputData[2], inputData[3]);
 		break;
 	case ActionCard::AirMage2:
+		funcAirMage2(*m_board, m_activeColor, inputData[0], inputData[1]);
 		break;
 	case ActionCard::WaterMage1:
+		funcAirMage1(*m_board, inputData[0], inputData[1], inputData[2], inputData[3]);
 		break;
 	case ActionCard::WaterMage2:
+		funcWaterMage2(*m_board, GetMargin(char(inputData[0])));
 		break;
 	default:
 		break;
@@ -363,5 +370,5 @@ void GameFinal::PrintBoard(bool _debug)
 void GameFinal::PrintActiveHand()
 {
 	auto& seekHand = m_activePlayer->GetRemaningCounter();
-	std::for_each(seekHand.begin(), seekHand.end(), [&seekHand](const auto& key) {std::cout << key.first << ": " << key.second << "copies left\n"; });
+	std::for_each(seekHand.begin(), seekHand.end(), [&seekHand](const auto& key) {std::cout << key.first << ": " << key.second << " copies left\n"; });
 }

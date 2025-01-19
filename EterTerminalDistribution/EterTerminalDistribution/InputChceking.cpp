@@ -346,7 +346,7 @@ CommonErrors checkFuncFireMage2(Board& _board, Player& _player, int16_t _line, L
 
 CommonErrors checkFuncEarthMage1(Board& _board, Player& _caster, int16_t _x, int16_t _y, int16_t _val)
 {
-	if (_val < 0 || _val > 3)
+	if (_val < 1 || _val > 3)
 		return CommonErrors::_INVALID_CARD_VALUE;
 
 	if (_board.CheckPos(_x, _y) == BoardErrors::_OUTSIDE_BOUND)
@@ -389,7 +389,7 @@ CommonErrors checkFuncAirMage1(Board& _board, Colours _color, int16_t _xS, int16
 		return CommonErrors::_EMPTY_STACK;
 	if (_board.CheckStackCondition(_xD, _yD) != StackConditions::EMPTY)
 		return CommonErrors::_POPULATED_STACK;
-	if (_board.ViewTop(_xS, _yS).GetColor() == _color)
+	if (_board.ViewTop(_xS, _yS).GetColor() != _color)
 		return CommonErrors::_INVALID_CARD_TYPE;
 	return CommonErrors::_NO_ERRORS;
 }
@@ -409,7 +409,7 @@ CommonErrors checkFuncWaterMage1(Board& _board, Colours _color, int16_t _xS, int
 		return CommonErrors::_EMPTY_STACK;
 	if (_board.CheckStackCondition(_xD, _yD) != StackConditions::EMPTY)
 		return CommonErrors::_POPULATED_STACK;
-	if (_board.ViewTop(_xS, _yS).GetColor() != _color)
+	if (_board.ViewTop(_xS, _yS).GetColor() == _color)
 		return CommonErrors::_INVALID_CARD_TYPE;
 	return CommonErrors::_NO_ERRORS;
 }

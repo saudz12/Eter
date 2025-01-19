@@ -265,7 +265,6 @@ MinionCard&& Player::ReplayCard(int16_t _val)
 
 void Player::ReturnCard(MinionCard&& _toMove)
 {
-	//weak_ptr shinanigans pt last placed sau altceva - tinem pointeri normali dar trebuie sa schimbam 
 	UpdateCard(_toMove.GetValue(), CardAction::RETURN);
 
 	m_remainingCards[_toMove.GetValue()].push_back(_toMove);

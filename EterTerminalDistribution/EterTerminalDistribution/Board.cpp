@@ -672,13 +672,13 @@ void Board::MoveStack(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
 			m_rowChecker[_xS].first--;
 			m_rowChecker[_xD].first++;
 			m_colChecker[_yS].first--;
-			m_colChecker[_yS].first++;
+			m_colChecker[_yD].first++;
 		}
 		else {
 			m_rowChecker[_xS].second--;
 			m_rowChecker[_xD].second++;
 			m_colChecker[_yS].second--;
-			m_colChecker[_yS].second++;
+			m_colChecker[_yD].second++;
 		}
 	}
 	if (!m_matrix[_xD][_yD].empty()) {
@@ -686,13 +686,13 @@ void Board::MoveStack(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
 			m_rowChecker[_xS].first++;
 			m_rowChecker[_xD].first--;
 			m_colChecker[_yS].first++;
-			m_colChecker[_yS].first--;
+			m_colChecker[_yD].first--;
 		}
 		else {
 			m_rowChecker[_xS].second++;
 			m_rowChecker[_xD].second--;
 			m_colChecker[_yS].second++;
-			m_colChecker[_yS].second--;
+			m_colChecker[_yD].second--;
 		}
 	}
 
@@ -711,13 +711,13 @@ void Board::SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
 			m_rowChecker[_xS].first--;
 			m_rowChecker[_xD].first++;
 			m_colChecker[_yS].first--;
-			m_colChecker[_yS].first++;
+			m_colChecker[_yD].first++;
 		}
 		else {
 			m_rowChecker[_xS].second--;
 			m_rowChecker[_xD].second++;
 			m_colChecker[_yS].second--;
-			m_colChecker[_yS].second++;
+			m_colChecker[_yD].second++;
 		}
 	}
 	if (!destination.empty()) {
@@ -725,13 +725,13 @@ void Board::SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
 			m_rowChecker[_xS].first++;
 			m_rowChecker[_xD].first--;
 			m_colChecker[_yS].first++;
-			m_colChecker[_yS].first--;
+			m_colChecker[_yD].first--;
 		}
 		else {
 			m_rowChecker[_xS].second++;
 			m_rowChecker[_xD].second--;
 			m_colChecker[_yS].second++;
-			m_colChecker[_yS].second--;
+			m_colChecker[_yD].second--;
 		}
 	}
 
@@ -740,36 +740,42 @@ void Board::SwitchStacks(int16_t _xS, int16_t _yS, int16_t _xD, int16_t _yD)
 	source = std::move(aux);
 }
 
-void Board::MirrorEdge(BoardChanges _margin)
+void Board::MirrorEdge(MarginType _margin)
 {
 	switch (_margin)
 	{
-	case BoardChanges::_TOP_BOUND:
+	case MarginType::MARGIN_TOP:
 		m_matrix.push_back(std::move(m_matrix[0]));
 		m_matrix.pop_front();
+
+		m_rowChecker.emplace_back(m_rowChecker[0].first, m_rowChecker[0].second);
+		m_rowChecker.pop_front();
+
 		break;
-	case BoardChanges::_BOT_BOUND:
+	case MarginType::MARGIN_BOT:
 		m_matrix.push_front(std::move(m_matrix[getRowCount() - 1]));
 		m_matrix.pop_back();
 		
+		m_rowChecker.emplace_front(m_rowChecker.back().first, m_rowChecker.back().second);
+		m_rowChecker.pop_back();
+
 		break;
-	case BoardChanges::_LEFT_BOUND:
+	case MarginType::MARGIN_LEFT:
 		for (int i = 0; i < getRowCount(); i++) {
 			m_matrix[i].push_back(std::move(m_matrix[i][0]));
 			m_matrix[i].pop_front();
-			
 		}
 		
-		m_colChecker.emplace_back(m_colChecker.back().first, m_colChecker.back().second);
+		m_colChecker.emplace_back(m_rowChecker[0].first, m_rowChecker[0].second);
 		m_colChecker.pop_front();
 		break;
-	case BoardChanges::_RIGHT_BOUND:
+	case MarginType::MARGIN_RIGHT:
 		for (int i = 0; i < getRowCount(); i++) {
 			m_matrix[i].push_front(std::move(m_matrix[i][getColCount() - 1]));
 			m_matrix[i].pop_back();
 		}
 
-		m_colChecker.emplace_front(0, 0);
+		m_colChecker.emplace_front(m_colChecker.back().first, m_colChecker.back().second);
 		m_colChecker.pop_back();
 		break;
 	default:
@@ -1171,8 +1177,8 @@ void Board::checkForUpdates()
 	if (m_colChecker.size() + m_rowChecker.size() == 0) {
 		m_colChecker.emplace_back(0, 0);
 		m_rowChecker.emplace_back(0, 0);
-		m_matrix.push_back(Line());
-		m_matrix[0].push_back(CardStack());
+		m_matrix.push_back(Line{});
+		m_matrix[0].push_back(CardStack{});
 	}
 }
 
@@ -1219,7 +1225,7 @@ void Board::printBoard(bool _debug)
 		{
 			if (!m_matrix[i][j].empty())
 			{
-				if (m_matrix[i][j].back().GetCardType() == CardType::HoleCard)
+				if (m_matrix[i][j].back().CheckIsHole())
 					std::cout << "Hol ";
 				else if (m_matrix[i][j].back().GetCardType() == CardType::BlizzardCard)
 					std::cout << "Bli ";
