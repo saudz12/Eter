@@ -223,7 +223,11 @@ CommonErrors GameFinal::CheckInput(ActionCard _action, std::vector<int16_t> _inp
 	case ActionCard::Earthquake:
 		return checkFuncEarthquake(*m_board);
 	case ActionCard::Border:
-		return checkFuncBorder(*m_board, _inputData[0], _inputData[1]);
+	{
+		int16_t x = _inputData[0];
+		int16_t y = _inputData[1];
+		return checkFuncBorder(*m_board, x, y);
+	}
 	case ActionCard::Avalanche:
 	{
 		int16_t x1 = _inputData[0];
@@ -231,6 +235,21 @@ CommonErrors GameFinal::CheckInput(ActionCard _action, std::vector<int16_t> _inp
 		int16_t x2 = _inputData[2];
 		int16_t y2 = _inputData[3];
 		return checkFuncAvalanche(*m_board, x1, y1, x2, y2, Directions::DIR_RIGHT);
+	}
+	case ActionCard::Crumble:
+	{
+		int16_t x = _inputData[0];
+		int16_t y = _inputData[1];
+		return checkFuncCrumble(*m_board, x, y);
+	}
+	case ActionCard::Hurricane:
+		return CommonErrors::_NO_ERRORS;
+	case ActionCard::Whirlpool: {
+		int16_t x1 = _inputData[0];
+		int16_t y1 = _inputData[1];
+		int16_t x2 = _inputData[2];
+		int16_t y2 = _inputData[3];
+		return CheckWhirlpool(*m_board, x1, y1, x2, y2, Preference::FIRST); //must modify input here as well
 	}
 	case ActionCard::Blizzard:
 		return checkFuncBlizzard();
