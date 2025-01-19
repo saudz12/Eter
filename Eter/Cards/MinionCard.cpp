@@ -71,8 +71,8 @@ json MinionCard::SerialiseCard()
     return serialisedCard;
 }
 
-void MinionCard::DeserializeCard(const json& serialisedCard) {
-    // Extract and assign values from JSON
+void MinionCard::DeserializeCard(const json& serialisedCard) 
+{
     m_value = serialisedCard.at("value").get<int>();
     m_color = serialisedCard.at("color").get<Colours>();
     m_isEterCard = serialisedCard.at("is_eter").get<bool>();

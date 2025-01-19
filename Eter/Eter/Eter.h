@@ -142,7 +142,6 @@ private:
     void initializeGameMessage();
 
     ///explosions
-    void showExplosionCard(ExplosionCard explCard);
     void initializeExplosionDialog(std::shared_ptr<ExplosionCard>& card);
     bool m_wasExplosionPlayed;
 public:

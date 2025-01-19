@@ -341,11 +341,6 @@ void Eter::initializeGameMessage()
     labelGameMessage->show();
 }
 
-void Eter::showExplosionCard(ExplosionCard card)
-{
-
-}
-
 void Eter::initializeExplosionDialog(std::shared_ptr<ExplosionCard>& card)
 {
     dialogExplosion = new qDialogExplosionCard(this,card,m_gameview->GetBoardSize());

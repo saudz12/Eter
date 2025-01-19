@@ -122,7 +122,7 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	m_elemental2 = std::move(PowerUsage{ false, GetElementalCard(elementalrange(rd))});
 
 	//REMOVE THIS LATER: !!
-	m_redMage.second = ActionCard::WaterMage2;
+	m_redMage.second = ActionCard::AirMage1;
 	m_blueMage.second = ActionCard::WaterMage2;
 }
 

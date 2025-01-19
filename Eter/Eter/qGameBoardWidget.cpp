@@ -515,23 +515,20 @@ std::vector<std::function<void(int&, int&)>> qGameBoardWidget::createFunctionCal
 {
     std::vector<std::function<void(int&, int&) >> functionCalls;
     QLayoutItem* item;
-    bool enteredHere = false;
     item = gridLayout->itemAtPosition(row, column - 1);
     if (item == nullptr || item != nullptr && verifyLeftCardsExist(row, column) == 0) {
-        functionCalls.push_back([&enteredHere,this](int& row, int& column) {
+        functionCalls.push_back([this](int& row, int& column) {
             addColumnLeft(row, column);
             });
     }
     
-    if (!enteredHere)
-    {
-        item = gridLayout->itemAtPosition(row - 1, column);
-        if (item == nullptr || item != nullptr && verifyTopCardsExist(row, column) == 0) {
-            functionCalls.push_back([this](int& row, int& column) {
-                addRowTop(row, column);
-                });
-        };
-    }
+    item = gridLayout->itemAtPosition(row - 1, column);
+    if (item == nullptr || item != nullptr && verifyTopCardsExist(row, column) == 0) {
+        functionCalls.push_back([this](int& row, int& column) {
+            addRowTop(row, column);
+            });
+    };
+    
     item =gridLayout->itemAtPosition(row, column + 1);
     if(item == nullptr || item!=nullptr && verifyRightCardsExist(row,column)==0)
         functionCalls.push_back([this]( int& row, int& column) {
