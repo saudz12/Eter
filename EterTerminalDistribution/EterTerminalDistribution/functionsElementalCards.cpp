@@ -237,29 +237,14 @@ uint16_t funcSpark(Board& board, Player& p)  //this function needs to be reworke
 }
 
 //return to your opponent's hand one of his visible cards
-uint16_t funcSquall(Board& board, Player& player, uint16_t x, uint16_t y)
+uint16_t funcSquall(Board& _board, Player& player, uint16_t x, uint16_t y)
 {
-	/*if (checkFuncSquall(board, x, y) != 0)
-		return 1;*/
 
-	Board oldModel(3);
-	Board::cloneMatrix(board, oldModel);
+	MinionCard& toReturn = _board.getCardOnPos(x, y);
+	player.ReturnCard(std::move(toReturn));
+	_board.RemoveCard(x, y, 0);
 
-	ResizeableMatrix& matrix = board.getMatrix();
-
-	MinionCard toReturn = matrix[x][y].back();
-
-
-	board.removePos(x, y);
-	
-	if (isolatedSpaces(board)) {
-		Board::cloneMatrix(oldModel, board);
-		std::cout << "Can't have isolated stacks/cards..\n";
-		return 1;
-	}
-
-	player.returnMinionCardToHand(toReturn);
-	board.checkForUpdates();
+	_board.checkForUpdates();
 
 	return 0;
 }

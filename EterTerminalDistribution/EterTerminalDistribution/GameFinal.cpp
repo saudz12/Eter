@@ -255,6 +255,10 @@ CommonErrors GameFinal::CheckInput(ActionCard _action, std::vector<int16_t> _inp
 		return checkFuncBlizzard();
 	case ActionCard::Rock:
 		return CommonErrors::_NO_ERRORS;
+	case ActionCard::Ash:
+		return CommonErrors::_NO_ERRORS;
+	case ActionCard::ControlledExplosion:
+		return CommonErrors::_NO_ERRORS;
 	default:
 	{
 		return CommonErrors::_INVALID_CARD_TYPE;
