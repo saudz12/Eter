@@ -251,10 +251,9 @@ bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 	}
 	m_board->PlaceCard(m_activePlayer->PlayCard(_val), _x, _y);
 	m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
-	if (m_board->getRowCount() == m_board->getMaxSize() && m_board->getColCount() == m_board->getMaxSize() && !m_canPlayExplosion)
+	if (m_board->canPlayExplosion() && m_canPlayExplosion==false)
 	{
 		m_canPlayExplosion = true;
-		m_wasExplosionPlayed = true;
 	}
 	PrintBoard();
 	return true;
@@ -320,10 +319,9 @@ IllusionErrors GameFinal::PlaceIllusion(int16_t _x, int16_t _y, int16_t _val)
 	m_activePlayer->PlayCard(0);
 	m_activePlayer->UpdateCard(_val, CardAction::REMOVE);
 	m_activePlayer->UpdateCard(0, CardAction::REMOVE);
-	if (m_board->getRowCount() == m_board->getMaxSize() && m_board->getColCount() && !m_canPlayExplosion)
+	if (m_board->canPlayExplosion() && m_canPlayExplosion == false)
 	{
 		m_canPlayExplosion = true;
-		m_wasExplosionPlayed = true;
 	}
 	return IllusionErrors::_NO_ERRORS;
 }
@@ -369,6 +367,6 @@ bool GameFinal::tryToApplyExplosionOnBoard(ExplosionCard& card)
 
 std::vector<MarginType> GameFinal::applyExplosionOnBoard(const ExplosionCard& card)
 {
-	return m_board->applyExplosionOnBoard(card,*m_player1,*m_player2,false);
+	return m_board->applyExplosionOnBoard(card,*m_player1,*m_player2,true);
 }
 

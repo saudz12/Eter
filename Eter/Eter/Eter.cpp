@@ -225,16 +225,19 @@ void Eter::handleMinionCard(const QMimeData* mimeData, int row, int column)
     else
     {
         m_gameview->EndTurn();
-        if (m_gameview->GetCanPlayExplosion() && m_gameview->GetWasExplosionPlayed())
+        if (!checkWin())
         {
-            std::shared_ptr<ExplosionCard> card = std::make_shared<ExplosionCard>(m_gameview->GenerateNewExplosionCard());
-            initializeExplosionDialog(card);
+            if (m_gameview->GetCanPlayExplosion() && !m_wasExplosionPlayed)
+            {
+                m_wasExplosionPlayed = true;
+                std::shared_ptr<ExplosionCard> card = std::make_shared<ExplosionCard>(m_gameview->GenerateNewExplosionCard());
+                initializeExplosionDialog(card);
+            }
+            char color = mimeData->property("color").toString().toLatin1().at(0);
+            m_activeColor = GetColour(color);
+            changeLabelMessageBox(mimeData);
         }
-        char color = mimeData->property("color").toString().toLatin1().at(0);
-        m_activeColor = GetColour(color);
-        changeLabelMessageBox(mimeData);
     }
-    checkWin();
 }
 
 void Eter::handleIllusionCard(const QMimeData* mimeData, int row, int column)
@@ -261,16 +264,18 @@ void Eter::handleIllusionCard(const QMimeData* mimeData, int row, int column)
     }
     else
     {
-        qDebug() << "value" << value;
         m_gameview->EndTurn();
-        char color = mimeData->property("color").toString().toLatin1().at(0);
-        m_activeColor = GetColour(color);
-        changeLabelMessageBox(mimeData);
+        if (!checkWin())
+        {
+            char color = mimeData->property("color").toString().toLatin1().at(0);
+            m_activeColor = GetColour(color);
+            changeLabelMessageBox(mimeData);
+        }
     }
-    checkWin();
+
 }
 
-void Eter::checkWin()
+bool Eter::checkWin()
 {
     if (m_gameview->CheckWin())
     {
@@ -280,7 +285,9 @@ void Eter::checkWin()
         {
             resetElements();
         }
+        return true;
     }
+    return false;
 }
 
 void Eter::resetElements()
@@ -411,6 +418,7 @@ void Eter::scaleCoordinates(int& row, int& column)
 
 void Eter::onPushButtonStartTrainingClicked()
 {
+    m_wasExplosionPlayed = false;
     m_activeGamemode = GameView::LaunchOptions::TRAINING;
     m_gameview = std::make_unique<GameView>(GameOptions::EnabledIllusion,
         GameOptions::DisabledMage,
@@ -429,6 +437,7 @@ void Eter::onPushButtonStartTrainingClicked()
 
 void Eter::onPushButtonStartElementalClicked()
 {
+    m_wasExplosionPlayed = false;
     m_activeGamemode = GameView::LaunchOptions::ELEMENTAL;
     m_gameview = std::make_unique<GameView>(GameOptions::EnabledIllusion,
         GameOptions::DisabledMage,
@@ -449,6 +458,7 @@ void Eter::onPushButtonStartElementalClicked()
 
 void Eter::onPushButtonStartMageClicked()
 {
+    m_wasExplosionPlayed = false;
     m_activeGamemode = GameView::LaunchOptions::MAGE_DUEL;
     initializeGameMessage();
     initializeRadioButtons();
@@ -456,6 +466,7 @@ void Eter::onPushButtonStartMageClicked()
 
 void Eter::onPushButtonStartTournamentClicked()
 {
+    m_wasExplosionPlayed = false;
     m_activeGamemode = GameView::LaunchOptions::TOURNAMENT;
     initializeGameMessage();
     initializeRadioButtons();
@@ -463,6 +474,7 @@ void Eter::onPushButtonStartTournamentClicked()
 
 void Eter::onPushButtonStartTimedClicked()
 {
+    m_wasExplosionPlayed = false;
     m_activeGamemode = GameView::LaunchOptions::TIMED;
     initializeGameMessage();
     initializeRadioButtons();
@@ -494,6 +506,7 @@ void Eter::handlerExplCardAccept(ExplosionCard card)
     connect(this, &Eter::signalReturnCard, widgetBoard, &qGameBoardWidget::returnCard);
     connect(this, &Eter::signalRemoveCard, widgetBoard, &qGameBoardWidget::removeCard);
     connect(this, &Eter::signalRemoveMargins, widgetBoard, &qGameBoardWidget::removeMargins);
+    connect(this, &Eter::signalPlaceHoleCard, widgetBoard, &qGameBoardWidget::placeHoleCard);
     if (m_gameview->tryToApplyExplosionOnBoard(card))
     {
         std::vector<MarginType> marginsToRemove=m_gameview->applyExplosionOnBoard(card);
@@ -507,12 +520,12 @@ void Eter::handlerExplCardAccept(ExplosionCard card)
             case ReturnRemoveOrHoleCard::RemoveCard :
                 emit signalRemoveCard(row, col);
                 break;
-            case ReturnRemoveOrHoleCard::ReturnCard : 
+            case ReturnRemoveOrHoleCard::ReturnCard: {
                 int value = -1;
-                Colours color = Colours::INVALID_COL; 
+                Colours color = Colours::INVALID_COL;
                 bool isEter = false;
                 bool isIllusion = false;
-                emit signalReturnCard(row, col,value,color,isEter,isIllusion);
+                emit signalReturnCard(row, col, value, color, isEter, isIllusion);
                 QString path;
                 if (value != -1)
                 {
@@ -526,7 +539,7 @@ void Eter::handlerExplCardAccept(ExplosionCard card)
                     }
                 }
                 QPixmap image(path);
-                image=image.scaled(CARD_WIDTH,CARD_HEIGHT, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                image = image.scaled(CARD_WIDTH, CARD_HEIGHT, Qt::KeepAspectRatio, Qt::SmoothTransformation);
                 QPointer<qDraggableLabel> labelToadd = new qDraggableLabel(image, CARD_WIDTH, CARD_HEIGHT, true);
                 if (value != -1)
                 {
@@ -540,10 +553,14 @@ void Eter::handlerExplCardAccept(ExplosionCard card)
                     }
                 }
                 break;
-            //case ReturnRemoveOrHoleCard::HoleCard:
-            //    break;
-            //case ReturnRemoveOrHoleCard::Default:
-            //    break;
+            }
+            case ReturnRemoveOrHoleCard::HoleCard: {
+                QPixmap pixmapHole(QDir::currentPath() + QString("/textures/hole_sprite.png"));
+                emit signalPlaceHoleCard(row, col,pixmapHole);
+                break;
+            }
+            case ReturnRemoveOrHoleCard::Default:
+                break;
             }
         }
         widgetBoard->updateMinMaxRowCol();

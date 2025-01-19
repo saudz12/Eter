@@ -1512,12 +1512,32 @@ void Board::cloneMatrix(const Board& from, Board& to)
 
 std::vector<MarginType> Board::applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& pl2,bool isForTest)
 {
+	qDebug() << "sizes"<<m_rowChecker.size() << " " << m_colChecker.size() << '\n';
 	explMap currExlpMap = explCard.GetExplosionMap();
 	for (const auto& elem : currExlpMap)
 	{
-		auto[positionX,positionY] = elem.first;
+		auto [positionX, positionY] = elem.first;
 		ReturnRemoveOrHoleCard effect = elem.second;
-		
+
+		if (effect == ReturnRemoveOrHoleCard::HoleCard)
+			if (positionX>=0 && positionX<m_rowChecker.size() && positionY>=0 && positionY<m_colChecker.size() )
+				//(!m_matrix[positionX][positionY].back().GetIsEterCard())
+			{
+				if (!isForTest)
+				{
+					removeStack(positionX, positionY);
+				}
+				MinionCard holeCard(100, Colours::INVALID_COL, false);
+				holeCard.SetCardType(CardType::HoleCard);
+
+				m_matrix[positionX][positionY].push_back(holeCard);
+				m_matrix[positionX][positionY].back().SetCardType(CardType::HoleCard);
+			}
+	}
+	for (const auto& elem : currExlpMap)
+	{
+		auto [positionX, positionY] = elem.first;
+		ReturnRemoveOrHoleCard effect = elem.second;
 		switch (effect)
 		{
 		case ReturnRemoveOrHoleCard::RemoveCard:
@@ -1525,7 +1545,6 @@ std::vector<MarginType> Board::applyExplosionOnBoard(const ExplosionCard& explCa
 			{
 				MinionCard lastCard = m_matrix[positionX][positionY].back();
 				lastCard.SetIsIllusionCard(false);
-
 				if (!isForTest)
 				{
 					removePos(positionX, positionY);
@@ -1541,8 +1560,7 @@ std::vector<MarginType> Board::applyExplosionOnBoard(const ExplosionCard& explCa
 			{
 				MinionCard lastCard = m_matrix[positionX][positionY].back();
 				lastCard.SetIsIllusionCard(false);
-
-				if (!isForTest)
+				if(!isForTest)
 				{
 					removePos(positionX, positionY);
 					if (lastCard.GetColor() == pl1.GetPlayerColor())
@@ -1552,65 +1570,81 @@ std::vector<MarginType> Board::applyExplosionOnBoard(const ExplosionCard& explCa
 				}
 			}
 			break;
-		case ReturnRemoveOrHoleCard::HoleCard:
-			if (!m_matrix[positionX][positionY].empty() && !m_matrix[positionX][positionY].back().GetIsEterCard())
-			{
-				if (!isForTest)
-				{
-					removeStack(positionX, positionY);
-				}
-				MinionCard holeCard(0, Colours::INVALID_COL, false);
-				holeCard.SetCardType(CardType::HoleCard);
-
-				m_matrix[positionX][positionY].push_back(holeCard);
-			}
-			break;
 		case ReturnRemoveOrHoleCard::Default:
 			break;
 		default:
 			break;
-		}	
+		}
 	}
 	std::vector<MarginType> margins = checkForUpdates();
-	if (!isForTest)
-	{
-		printBoard(true);
-	}
+	printBoard(true);
 	return margins;
 }
 
 bool Board::tryApplyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1,Player& pl2)
 {
 	ResizeableMatrix boardToTest = m_matrix;
-	applyExplosionOnBoard(explCard, pl1, pl2, true);
-	std::vector<std::pair<int, int>> m_adjiaceny = {
+	applyExplosionOnBoard(explCard, pl1, pl2,true);
+	std::vector<std::pair<int, int>> adj = {
 		{-1,-1},{-1,0},{-1,1},{0,1},
 		{1,1},{1,0},{1,-1},{0,-1}
 	};
-	bool isDisconnecting = true;
-	for (int i = 0; i < m_max_size; ++i)
+	printBoard(true);
+	for (int i = 0; i < m_rowChecker.size(); ++i)
 	{
-		for (int j = 0; j < m_max_size; ++j)
+		for (int j = 0; j < m_colChecker.size(); ++j)
 		{
-			bool isAdj = false;
-			for (auto& position : m_adjiaceny)
+			if (!m_matrix[i][j].empty())
 			{
-				auto& [row, col] = position;
-				if (row + i >= 0 && row + i < m_max_size && col + j >= 0 && col + j < m_max_size && !m_matrix[row + i][col + j].empty())
+				bool isAdj = false;
+				for (auto position : adj)
 				{
-					isAdj = true;
-					break;
+					auto [row, col] = position;
+					if (row + i >= 0 && row + i < m_rowChecker.size()&& col + j >= 0 && col + j < m_colChecker.size() && 
+						!m_matrix[row + i][col + j].empty())
+					{
+						isAdj = true;
+						break;
+					}
 				}
-			}
-			if (isAdj == false)
-			{
-				isDisconnecting = false;
-				break;
+				if (isAdj == false)
+				{
+					m_matrix = boardToTest;
+					return false;
+				}
 			}
 		}
 	}
 	m_matrix = boardToTest;
-	return isDisconnecting;
+	return true;
+}
+
+bool Board::canPlayExplosion()
+{
+	int counter = 0;
+	for (int i = 0; i < m_rowChecker.size(); ++i)
+	{
+		if (m_rowChecker[i].first+m_rowChecker[i].second == m_max_size)
+			counter++;
+	}
+
+	for (int i = 0; i < m_colChecker.size(); ++i)
+	{
+		if (m_colChecker[i].first+m_colChecker[i].second == m_max_size)
+			counter++;
+	}
+
+	if (m_reachedMaxSize)
+	{
+		if (m_firstDiag.first + m_firstDiag.second == m_max_size)
+			counter++;
+		if (m_seconDiag.first + m_seconDiag.second == m_max_size)
+			counter++;
+	}
+	
+	if (counter >= 2)
+		return true;
+	return false;
 }
 
 MarginType GetMargin(char _type)

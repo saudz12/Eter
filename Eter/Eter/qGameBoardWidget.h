@@ -112,5 +112,6 @@ public slots:
 	void removeCard(int row, int col);
 	void returnCard(int row, int col, int& value, Colours& color, bool& isEter, bool& isIllusion);
 	void removeMargins(std::vector<MarginType> marginsToRemove);
+	void placeHoleCard(int row, int col, QPixmap pixmapHole);
 };
 

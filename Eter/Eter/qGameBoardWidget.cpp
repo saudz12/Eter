@@ -726,7 +726,7 @@ void qGameBoardWidget::addCardsToRedrawnBoard()
 
         if (m_pixmapPosition.find({ row, column }) != m_pixmapPosition.end())
         {
-            if (!m_pixmapPosition[{row, column}].empty())
+            if (!m_pixmapPosition[{row, column}].empty() && !cardLabel.empty())
             {
                 cardLabel.back()->setPixmap(m_pixmapPosition[{row, column}].back());
             }
@@ -1022,6 +1022,30 @@ void qGameBoardWidget::removeMargins(std::vector<MarginType> marginsToRemove)
         qDebug() << card.first.first << " " << card.first.second<<'\n';
     }
     createBoard();
+}
+
+void qGameBoardWidget::placeHoleCard(int row, int col, QPixmap pixmapHole)
+{
+    scaleCoordinates(row, col);
+    if (m_cardPosition.find({ row,col }) != m_cardPosition.end())
+    {
+        while (!m_cardPosition[{row, col}].empty())
+        {
+            m_cardPosition[{row, col}].pop_back();
+        }
+    }
+    pixmapHole = pixmapHole.scaled(CARD_WIDTH, CARD_HEIGTH, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QLabel* holeLabel = new QLabel(this);
+    holeLabel->setPixmap(pixmapHole);
+    holeLabel->setProperty("isHole", true);
+    holeLabel->setProperty("value", 100);
+    holeLabel->setProperty("color", "invalid");
+    holeLabel->setProperty("isEter", false);
+    holeLabel->setProperty("isIllusion", false);
+
+    m_cardPosition[{row, col}].emplace_back(holeLabel);
+    m_pixmapPosition[{row, col}].emplace_back(holeLabel->pixmap());
+    gridLayout->addWidget(holeLabel, row, col);
 }
 
 

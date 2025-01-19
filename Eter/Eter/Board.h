@@ -221,5 +221,6 @@ public:
 
 	std::vector<MarginType> applyExplosionOnBoard(const ExplosionCard& explCard, Player& pl1, Player& p2,bool isForTest);
 	bool tryApplyExplosionOnBoard(const ExplosionCard& explCard,Player& pl1,Player& pl2);
+	bool canPlayExplosion();
 };
 

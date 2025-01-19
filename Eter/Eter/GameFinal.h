@@ -81,7 +81,6 @@ public:
 	int16_t getSecondElementalCardId() const;
 	Board& GetBoard() { return *m_board; }
 	bool GetCanPlayExplosion() const { return m_canPlayExplosion; }
-	bool GetWasExplosionPlayed() const { return m_wasExplosionPlayed; }
 	
 	bool tryToApplyExplosionOnBoard(ExplosionCard& card);
 	std::vector<MarginType> applyExplosionOnBoard(const ExplosionCard& card);

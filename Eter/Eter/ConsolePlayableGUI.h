@@ -69,6 +69,5 @@ public:
 	Board& GetBoard() { return m_game->GetBoard(); }
 	int GetBoardSize() const { return boardSize; }
 	bool GetCanPlayExplosion() const { return m_game->GetCanPlayExplosion(); }
-	bool GetWasExplosionPlayed() const { return m_game->GetWasExplosionPlayed(); }
 };
 

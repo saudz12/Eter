@@ -184,7 +184,7 @@ QDebug operator<<(QDebug debug, const MinionCard& card)
 {
     QDebugStateSaver saver(debug);
     if (card.GetCardType() == CardType::HoleCard)
-        debug.nospace() << " H ";
+        debug.nospace() << " H:";
     else if (card.GetIsEterCard())
         debug.nospace() << "E:" << card.GetColor();
     else if (card.GetIsIllusionCard())

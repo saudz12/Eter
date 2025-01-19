@@ -133,7 +133,7 @@ private:
     void handleMinionCard(const QMimeData* mimeData, int row, int column);
     void handleIllusionCard(const QMimeData* mimeData, int row, int column);
 
-    void checkWin();
+    bool checkWin();
     void resetUItoNormal();
     void resetElements();
     void changeLabelMessageBox(const QMimeData* mimeData);
@@ -142,6 +142,7 @@ private:
     ///explosions
     void showExplosionCard(ExplosionCard explCard);
     void initializeExplosionDialog(std::shared_ptr<ExplosionCard>& card);
+    bool m_wasExplosionPlayed;
 public:
     static const int CARD_WIDTH=80;
     static const int CARD_HEIGHT=80;
@@ -176,4 +177,5 @@ signals:
     void signalRemoveCard(int row, int col);
     void signalReturnCard(int row, int col, int& value, Colours& color, bool& isEter, bool& isIllusion);
     void signalRemoveMargins(std::vector<MarginType> marginsToRemove);
+    void signalPlaceHoleCard(int row, int col,QPixmap pixmaphole);
 };
