@@ -319,57 +319,63 @@ void funcHurricane(Board& _board, Hand& _h1, Hand& _h2, uint16_t _lineCnt, LineT
 }
 
 // move a card onto a neighboring card of a lower value
-uint16_t funcGust(Board& board, Player& pl, int16_t x1, int16_t y1, int16_t x2, int16_t y2)
+uint16_t funcGust(Board& _board, Player& pl, int16_t x1, int16_t y1, int16_t x2, int16_t y2)
 {
 	/*if (checkFuncGust(board, x1, y1, x2, y2) != 0)
 		return 1;*/
+	MinionCard& toMove = _board.getCardOnPos(x1, y1);
+	_board.PlaceCard(std::move(toMove), x2, y2);
+	_board.RemoveCard(x1, y1, 0);
+	//Board oldModel(3);
+	//Board::cloneMatrix(board, oldModel);
+	//Player copyPl = pl;
 
-	Board oldModel(3);
-	Board::cloneMatrix(board, oldModel);
-	Player copyPl = pl;
+	//ResizeableMatrix& matrix = board.getMatrix();
 
-	ResizeableMatrix& matrix = board.getMatrix();
+	//MinionCard& movedCard = matrix[x1][y1].back();
+	//MinionCard& movedCard = matrix[x1][y1].back();
+	//if (_board.removePos(x1, y1) == 1)
+	//	return 1;
 
-	MinionCard& movedCard = matrix[x1][y1].back();
-	if (board.removePos(x1, y1) == 1)
-		return 1;
+	//if (_board.setPos(x2, y2, _movedCard, pl) == 1)
+	//	return 1;
 
-	if (board.setPos(x2, y2, movedCard, pl) == 1)
-		return 1;
+	//if (isolatedSpaces(board))
+	//{
+	//	pl = copyPl;
+	//	Board::cloneMatrix(oldModel, board);
+	//	std::cout << "Can't have isolated stacks/cards..\n";
+	//	return 1;
+	//}
 
-	if (isolatedSpaces(board))
-	{
-		pl = copyPl;
-		Board::cloneMatrix(oldModel, board);
-		std::cout << "Can't have isolated stacks/cards..\n";
-		return 1;
-	}
-
-	board.checkForUpdates();
+	_board.checkForUpdates();
 
 	return 0;
 }
-
 // exchange illusion card with other card
-uint16_t funcMirage(Board& board, Player& p, int16_t x1, int16_t y1, const MinionCard& chosenCard)
+uint16_t funcMirage(Board& _board, Player& _p, int16_t x1, int16_t y1, MinionCard& chosenCard)
 {
 	/*if (checkFuncMirage(board, x1, y1, chosenCard) != 0)
 		return 1;*/
+	_board.RemoveIllusionProperty(x1, y1);
+	MinionCard& returningCard = _board.getCardOnPos(x1, y1);
+	_p.ReturnCard(std::move(returningCard));
+	_board.RemoveCard(x1, y1, 0);
+	_board.PlaceCard(std::move(chosenCard), x1, y1);
+	//ResizeableMatrix& matrix = board.getMatrix();
+	//returningCard.SetIsIllusionCard(false);
 
-	ResizeableMatrix& matrix = board.getMatrix();
-	MinionCard returningCard = board.getCardOnPos(x1, y1);
-	returningCard.SetIsIllusionCard(false);
+	//if (board.removePos(x1, y1) == 1)
+	//	return 1;
 
-	if (board.removePos(x1, y1) == 1)
-		return 1;
+//	p.returnMinionCardToHand(returningCard);
 
-	p.returnMinionCardToHand(returningCard);
-
-	if (board.setPos(x1, y1, chosenCard, p) == 1)
-		return 1;
+	//if (board.setPos(x1, y1, chosenCard, p) == 1)
+		//return 1;
 
 	return 0;
 }
+
 
 //remove stack of at least 2 cards
 uint16_t funcStorm(Board& board, Player& p1, Player& p2, uint16_t x, uint16_t y)
