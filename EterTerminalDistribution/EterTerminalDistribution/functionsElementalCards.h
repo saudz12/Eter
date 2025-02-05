@@ -28,7 +28,7 @@ uint16_t funcFire(Board&, Player&, Player&, uint16_t);
 //maybe also keep all the removed cards in unordered set
 uint16_t funcAsh(Board&, Player&, const MinionCard&, int16_t, int16_t);
 
-uint16_t funcSpark(Board&, Player& p);
+uint16_t funcSpark(Board&, Player& p,const int16_t& x1,const int16_t& y1,int16_t& x2,int16_t& y2);
 
 uint16_t funcSquall(Board&, Player&, uint16_t, uint16_t);
 

@@ -29,8 +29,8 @@ class GameView {
 
 	void LaunchMenu();
 	void GetPlayingFormat();
-	std::vector<int16_t> GetInput(ActionCard _action); //;-; broo
-
+	std::vector<int16_t> GetInputMage(ActionCard _action);
+	std::vector<int16_t> GetInputElemental(ActionCard _action);
 	/*static const int UP{ 72 };
 	static const int DOWN{ 80 };
 	static const int LEFT{ 75 };

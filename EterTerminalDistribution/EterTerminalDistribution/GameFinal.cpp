@@ -120,10 +120,6 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	std::uniform_int_distribution<int16_t> elementalrange(1, 24);
 	m_elemental1 = std::move(PowerUsage{ false, GetElementalCard(elementalrange(rd))});
 	m_elemental2 = std::move(PowerUsage{ false, GetElementalCard(elementalrange(rd))});
-
-	//REMOVE THIS LATER: !!
-	m_redMage.second = ActionCard::AirMage1;
-	m_blueMage.second = ActionCard::WaterMage2;
 }
 
 ActionCard GameFinal::GetCurrentPlayerMage()
@@ -134,6 +130,19 @@ ActionCard GameFinal::GetCurrentPlayerMage()
 		return m_redMage.second;
 	case Colours::BLUE:
 		return m_blueMage.second;
+	default:
+		return ActionCard::Default;
+	}
+}
+
+ActionCard GameFinal::GetCurrentElementalMage()
+{
+	switch (m_activeColor)
+	{
+	case Colours::RED:
+		return m_elemental1.second;
+	case Colours::BLUE:
+		return m_elemental2.second;
 	default:
 		return ActionCard::Default;
 	}
@@ -219,6 +228,10 @@ CommonErrors GameFinal::CheckInput(ActionCard _action, std::vector<int16_t> _inp
 	{
 		int16_t inp = _inputData[0];
 		return checkFuncFire(*m_board, inp);
+	}
+	case ActionCard::Flame:
+	{
+
 	}
 	case ActionCard::Earthquake:
 		return checkFuncEarthquake(*m_board);
@@ -335,7 +348,7 @@ void GameFinal::PlayElemental(PowerSelect select, std::vector<int16_t> positions
 	case ActionCard::Ash:
 		break;
 	case ActionCard::Spark:
-		funcSpark(*m_board, *m_activePlayer);
+		funcSpark(*m_board, *m_activePlayer, positions[0], positions[1], positions[2], positions[3]);
 		break;
 	case ActionCard::Squall:
 		funcSquall(*m_board, *m_activePlayer, positions[0], positions[1]);

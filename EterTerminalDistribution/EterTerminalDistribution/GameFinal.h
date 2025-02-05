@@ -51,6 +51,7 @@ public:
 				GameOptions _enabledTournament,	GameOptions _enabledTimed);
 
 	ActionCard GetCurrentPlayerMage();
+	ActionCard GetCurrentElementalMage();
 	CommonErrors CheckInput(ActionCard _action, std::vector<int16_t> _inputData);
 	Colours GetActiveColour();
 	bool CanPlayMage();

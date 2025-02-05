@@ -142,7 +142,7 @@ void GameView::GetPlayingFormat()
     m_game = std::make_unique<GameFinal>(size, Eter, Illusion, Mage, Elemental, Tournament, Timed);
 }
 
-std::vector<int16_t> GameView::GetInput(ActionCard _action)
+std::vector<int16_t> GameView::GetInputMage(ActionCard _action)
 {
     std::vector<int16_t> inputData{};
 
@@ -249,6 +249,98 @@ std::vector<int16_t> GameView::GetInput(ActionCard _action)
     return std::vector<int16_t>{};
 }
 
+std::vector<int16_t> GameView::GetInputElemental(ActionCard _action)
+{
+    std::vector<int16_t> inputData{};
+    switch (_action)
+    {
+    case ActionCard::ControlledExplosion:
+        //nothing
+        std::cout << "Explosion:(to rotate the explosions type 'R')\n";
+        break;
+    case ActionCard::Destruction:
+        //nothing
+        break;
+    case ActionCard::Flame:
+    {
+        std::cout << "Select the positions (x,y) of the illusion to be revealed\n";
+        int x, y;
+        std::cin >> x >> y;
+        inputData.push_back(x);
+        inputData.push_back(y);
+        break;
+    }
+    case ActionCard::Fire:
+    {
+        std::cout << "Choose a value to be removed from play:\n";
+        int value;
+        std::cin >> value;
+        inputData.push_back(value);
+        break;
+    }
+    case ActionCard::Ash:
+    {
+        std::cout << "Choose a removed card to play it again by typing where to be replayed and the value of it :\n";
+        int value, x, y;
+        std::cin >> x >> y >> value;
+        inputData.push_back(x);
+        inputData.push_back(y);
+        inputData.push_back(value);
+        break;
+    }
+    case ActionCard::Spark:
+    {
+        int x1, x2, y1, y2;
+        std::cout << "Choose a source position to move a card (x1,y1):\n";
+        std::cin >> x1 >> y1;
+        std::cout << "Choose a destination position to move a card(x2,y2):\n";
+        break;
+    }
+    case ActionCard::Squall:
+
+        break;
+    case ActionCard::Gale:
+        break;
+    case ActionCard::Hurricane:
+        break;
+    case ActionCard::Gust:
+        break;
+    case ActionCard::Mirage:
+        break;
+    case ActionCard::Storm:
+        break;
+    case ActionCard::Tide:
+        break;
+    case ActionCard::Mist:
+        break;
+    case ActionCard::Wave:
+        break;
+    case ActionCard::Whirlpool:
+        break;
+    case ActionCard::Blizzard:
+        break;
+    case ActionCard::Waterfall:
+        break;
+    case ActionCard::Support:
+        break;
+    case ActionCard::Earthquake:
+        break;
+    case ActionCard::Crumble:
+        break;
+    case ActionCard::Border:
+        break;
+    case ActionCard::Avalanche:
+        break;
+    case ActionCard::Rock:
+        break;
+    case ActionCard::Default:
+        break;
+    default:
+        break;
+    }
+    return inputData;
+}
+
 void GameView::PrintGameOptions()
 {
     std::cout << "Chose a game mode to play: " << std::endl << std::endl;
@@ -323,7 +415,7 @@ void GameView::Loop()
                 //check input --> break if broken
                 //play card
                 
-                inputData = GetInput(m_game->GetCurrentPlayerMage());
+                inputData = GetInputMage(m_game->GetCurrentPlayerMage());
                 if (!inputData.empty())
                 {
                     goNext = true;
@@ -337,6 +429,8 @@ void GameView::Loop()
                 //get input
                 //check input --> break if broken
                 //play card
+
+                inputData = GetInputElemental(m_game->GetCurrentElementalMage());
             }
             break;
         default:

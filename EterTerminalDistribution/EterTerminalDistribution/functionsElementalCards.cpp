@@ -181,17 +181,8 @@ uint16_t funcAsh(Board& board, Player& player, const MinionCard& card, int16_t x
 }
 
 //move a card which was covered by your opponent's card
-uint16_t funcSpark(Board& board, Player& p)  //this function needs to be reworked
+uint16_t funcSpark(Board& board, Player& p, const int16_t& x1, const int16_t& y1, int16_t& x2, int16_t& y2)  //this function needs to be reworked
 {
-
-	int16_t x1, y1, x2, y2;
-
-	std::cout << "choose where from to remove one of your cards:\n";
-	std::cin >> x1 >> y1;
-
-	std::cout << "choose a destination to place the card\n";
-	std::cin >> x2 >> y2;
-
 	/*if (checkFuncSpark(board, x1, y1, x2, y2) != 0)
 		return 1;*/
 	
@@ -221,11 +212,21 @@ uint16_t funcSpark(Board& board, Player& p)  //this function needs to be reworke
 		}
 
 		matrix[x1][y1].erase(matrix[x1][y1].begin() + chosenIndex - 1);
-		if (board.setPos(x2, y2, plCards[chosenIndex - 1].first, p) == 1)
+
+		while (board.CheckPos(x2, y2) != BoardErrors::_OUTSIDE_BOUND)
 		{
-			std::cout << "Failed to place minion card\n";
-			return 1;
+			std::cout << "invalid positions for (x2,y2), choose other positions:\n";
+			std::cin >> x2 >> y2;
 		}
+
+		BoardErrors tryPlace = board.CanPlace(x2, y2, plCards[chosenIndex - 1].first.GetValue());
+		while (!(tryPlace != BoardErrors::_NO_ERRORS && tryPlace != BoardErrors::ILLUSION_PROPERTY))
+		{
+			std::cout << "invalid positions for (x2,y2), choose other positions:\n";
+			std::cin >> x2 >> y2;
+		}
+
+		board.PlaceCard(std::move(p.PlayCard(plCards[chosenIndex - 1].first.GetValue())), x2, y2);
 	}
 	else
 	{
