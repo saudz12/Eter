@@ -1,0 +1,42 @@
+[
+    {
+      "id": 1,
+      "name": "FIRE MAGE FRONT",
+      "effect": "Remove from play an opponent’s card that covers one of your cards.",
+    },
+    {
+      "id": 2,
+      "name": "FIRE MAGE BACK",
+      "effect": "Remove from play a row or column of 3 or more cards. The removed row or column must contain at least one of your cards. The power impacts single cards and stacks.",
+    },
+    {
+      "id": 3,
+      "name": "EARTH MAGE FRONT",
+      "effect": "Cover an opponent’s card with your card of a lower value.",
+    },
+    {
+      "id": 4,
+      "name": "EARTH MAGE BACK",
+      "effect": "The chosen empty space on the playing field becomes a ’hole’. No Mage can play any cards there, no Mage Powers or Power. Explosions may affect that space. Mark it with this Mage Power card or the ’hole’ marker udes in Power Explosions.",
+    },
+    {
+      "id": 5,
+      "name": "AIR MAGE FRONT",
+      "effect": "On his turn, the player may move his card (or a stack of cards with his card on top) to a different, empty space",
+    },
+    {
+      "id": 6,
+      "name": "AIR MAGE BACK",
+      "effect": "Use your Mage Power card as an additional ETER card - place it on an empty space on the playing field with your marker.",
+    },
+    {
+      "id": 7,
+      "name": "WATER MAGE FRONT",
+      "effect": "On his turn, a Mage may move an opponent’s card (or a stack of cards with an opponent’s card) to a different, empty space.",
+    },
+    {
+      "id": 8,
+      "name": "WATER MAGE BACK",
+      "effect": "Take any row or column of 3 or more cards at the edge of the playing field and move it to a different edge. This redefines the shape of the playing field.",
+    }
+]
