@@ -221,6 +221,32 @@ ActionCard GameFinal::GetCurrentElementalMage()
 	}
 }
 
+int16_t GameFinal::GetCurrentElementalCardId()
+{
+	switch (m_activeColor)
+	{
+	case Colours::RED:
+		return m_elemental1Id;
+	case Colours::BLUE:
+		return m_elemental2Id;
+	default:
+		return -1;
+	};
+}
+
+bool GameFinal::HasElementalCardBeenPlayed()
+{
+	switch (m_activeColor)
+	{
+	case Colours::RED:
+		return m_elemental1.first;
+	case Colours::BLUE:
+		return m_elemental2.first;
+	default:
+		return true;
+	};
+}
+
 CommonErrors GameFinal::CheckInput(ActionCard _action, std::vector<int16_t> _inputData)
 {
 	switch (_action)

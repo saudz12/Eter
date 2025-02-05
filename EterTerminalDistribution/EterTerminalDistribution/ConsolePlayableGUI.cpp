@@ -361,8 +361,7 @@ void GameView::PrintPlayerOptions()
     std::cout << "Turn.\n\nChose an action: " << std::endl << std::endl;
     std::cout << "0. Save" << std::endl;
     std::cout << "1. Place a card from hand" << std::endl;
-    if (m_game->CanPlayMage())
-        std::cout << "2. Play mage card." << std::endl;
+    std::cout << "2. Play mage/elemental card." << std::endl;
 }
 
 GameView::GameView() :
@@ -447,6 +446,23 @@ void GameView::Loop()
                 //get input
                 //check input --> break if broken
                 //play card
+
+                std::cout << "1. Get info about your elemental card.\n2. Play your elemental card.\n0. Go back.\n";
+
+                int16_t elementalCardOption;
+                std::cin >> elementalCardOption;
+
+                switch (elementalCardOption)
+                {
+                case 1:
+                    m_game->printElementalCardInfo(m_game->GetCurrentElementalCardId());
+                    break;
+                case 2:
+
+                    break;
+                case 0:
+                    break;
+                }
 
                 inputData = GetInputElemental(m_game->GetCurrentElementalMage());
             }

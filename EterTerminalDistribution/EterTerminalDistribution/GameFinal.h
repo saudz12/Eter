@@ -67,6 +67,8 @@ public:
 
 	ActionCard GetCurrentPlayerMage();
 	ActionCard GetCurrentElementalMage();
+	int16_t GetCurrentElementalCardId();
+	bool HasElementalCardBeenPlayed();
 	CommonErrors CheckInput(ActionCard _action, std::vector<int16_t> _inputData);
 	Colours GetActiveColour();
 	bool CanPlayMage();
