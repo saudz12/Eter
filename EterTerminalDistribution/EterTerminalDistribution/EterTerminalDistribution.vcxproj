@@ -168,6 +168,8 @@
     <ClInclude Include="ReturnOrRemoveType.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CardsData\elementalCards.json" />
+    <None Include="CardsData\mageCards.json" />
     <None Include="savefile.json" />
   </ItemGroup>
   <ItemGroup>

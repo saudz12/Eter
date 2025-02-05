@@ -361,8 +361,8 @@ void GameView::PrintPlayerOptions()
     std::cout << "Turn.\n\nChose an action: " << std::endl << std::endl;
     std::cout << "0. Save" << std::endl;
     std::cout << "1. Place a card from hand" << std::endl;
-    if(m_game->CanPlayMage())
-        std::cout << "2. Use a special power" << std::endl;
+    if (m_game->CanPlayMage())
+        std::cout << "2. Play mage card." << std::endl;
 }
 
 GameView::GameView() :
@@ -414,15 +414,33 @@ void GameView::Loop()
                 //get input
                 //check input --> break if broken
                 //play card
-                
-                inputData = GetInputMage(m_game->GetCurrentPlayerMage());
-                if (!inputData.empty())
+
+                std::cout << "1. Get info about your mage card.\n2. Play your mage card.\n0. Go back.\n";
+
+                int16_t mageCardOption;
+                std::cin >> mageCardOption;
+
+                switch (mageCardOption)
                 {
-                    goNext = true;
-                    m_game->PlayMage(inputData);
+                case 1:
+                    if (m_game->GetActiveColour() == Colours::RED)
+                        m_game->printMageCardInfo(m_game->getRedMageId());
+                    else if (m_game->GetActiveColour() == Colours::BLUE)
+                        m_game->printMageCardInfo(m_game->getBlueMageId());
+                    break;
+                case 2:
+                    inputData = GetInputMage(m_game->GetCurrentPlayerMage());
+                    if (!inputData.empty())
+                    {
+                        goNext = true;
+                        m_game->PlayMage(inputData);
+                    }
+                    else
+                        std::cout << "Wrong input :/" << std::endl;
+                    break;
+                case 0:
+                    break;
                 }
-                else
-                    std::cout << "Wrong input :/" << std::endl;
             }
             else if (m_activeMode == LaunchOptions::ELEMENTAL) {
                 //choose card

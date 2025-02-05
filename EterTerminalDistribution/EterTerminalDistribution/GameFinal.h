@@ -3,6 +3,7 @@
 #include "InputChecking.h"
 
 using PowerUsage = std::pair<bool, ActionCard>;
+using CardInfo = std::pair<std::string, std::string>;
 
 enum class PowerSelect : int16_t {
 	First,
@@ -42,6 +43,20 @@ private:
 	PowerUsage m_elemental1;
 	PowerUsage m_elemental2;
 
+	int16_t m_redMageId;
+	int16_t m_blueMageId;
+	int16_t m_elemental1Id;
+	int16_t m_elemental2Id;
+
+	std::vector<CardInfo> m_elementalCardsInfo;
+	std::vector<CardInfo> m_mageCardsInfo;
+
+	void loadElementalCardsInfoFromJson();
+	void loadMageCardsInfoFromJson();
+
+	void generateMageCards();
+	void generateElementalCards();
+
 public:
 	GameFinal();
 	GameFinal(std::string path);
@@ -55,6 +70,12 @@ public:
 	CommonErrors CheckInput(ActionCard _action, std::vector<int16_t> _inputData);
 	Colours GetActiveColour();
 	bool CanPlayMage();
+	void printMageCardInfo(int16_t cardId);
+	void printElementalCardInfo(int16_t cardId);
+	const int16_t getRedMageId();
+	const int16_t getBlueMageId();
+	const int16_t getElemental1Id();
+	const int16_t getElemental2Id();
 
 #pragma region turn_logic
 	void AdvanceAction();

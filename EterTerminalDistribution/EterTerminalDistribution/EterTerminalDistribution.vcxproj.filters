@@ -121,5 +121,11 @@
     <None Include="savefile.json">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="CardsData\elementalCards.json">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CardsData\mageCards.json">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

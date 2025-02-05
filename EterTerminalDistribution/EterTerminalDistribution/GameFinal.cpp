@@ -54,13 +54,85 @@ void GameFinal::ResetRound()
 	m_activePlayingHand = m_player1->GetHandCards();
 	m_activeRemovedHand = m_player1->GetRemovedCards();
 
+	generateElementalCards();
+}
+
+void GameFinal::loadElementalCardsInfoFromJson()
+{
+	std::ifstream inputFile("CardsData/elementalCards.json");
+
+	if (!inputFile.is_open()) {
+		std::cout << "Could not open the file!";
+		return;
+	}
+
+	json jsonData;
+
+	inputFile >> jsonData;
+
+	inputFile.close();
+
+	for (const auto& item : jsonData)
+	{
+		int16_t id = item["id"];
+		std::string name = item["name"];
+		std::string effect = item["effect"];
+
+		m_elementalCardsInfo.push_back({ name, effect });
+	}
+}
+
+void GameFinal::loadMageCardsInfoFromJson()
+{
+	std::ifstream inputFile("CardsData/mageCards.json");
+
+	if (!inputFile.is_open()) {
+		std::cout << "Could not open the file!";
+		return;
+	}
+
+	json jsonData;
+
+	inputFile >> jsonData;
+
+	inputFile.close();
+
+	for (const auto& item : jsonData)
+	{
+		int16_t id = item["id"];
+		std::string name = item["name"];
+		std::string effect = item["effect"];
+
+		m_mageCardsInfo.push_back({ name, effect });
+	}
+}
+
+void GameFinal::generateMageCards()
+{
 	std::random_device rd;
-	std::uniform_int_distribution<int16_t> elementalrange(1, 24);
+	std::uniform_int_distribution<int16_t> magerange(0, 7);
 
+	int16_t cardIndex = magerange(rd);
+	m_redMage = std::move(PowerUsage{ false, GetMageCard(cardIndex) });
+	m_redMageId = cardIndex;
 
+	cardIndex = magerange(rd);
+	m_blueMage = std::move(PowerUsage{ false, GetMageCard(cardIndex) });
+	m_blueMageId = cardIndex;
+}
 
-	m_elemental1 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd)) });
-	m_elemental2 = std::move(PowerUsage{ false, GetMageCard(elementalrange(rd)) });
+void GameFinal::generateElementalCards()
+{
+	std::random_device rd;
+	std::uniform_int_distribution<int16_t> elementalrange(0, 23);
+
+	int16_t cardIndex = elementalrange(rd);
+	m_elemental1 = std::move(PowerUsage{ false, GetElementalCard(cardIndex) });
+	m_elemental1Id = cardIndex;
+
+	cardIndex = elementalrange(rd);
+	m_elemental2 = std::move(PowerUsage{ false, GetElementalCard(cardIndex) });
+	m_elemental2Id = cardIndex;
 }
 
 GameFinal::GameFinal()
@@ -83,6 +155,8 @@ GameFinal::GameFinal()
 	m_activeCoveredSet =  m_player1->getCovered();
 	m_activePlayingHand = m_player1->GetHandCards();
 	m_activeRemovedHand = m_player1->GetRemovedCards();
+	loadElementalCardsInfoFromJson();
+	loadMageCardsInfoFromJson();
 }
 
 GameFinal::GameFinal(std::string path)
@@ -113,13 +187,12 @@ GameFinal::GameFinal(	int16_t _maxBoardSize,
 	m_activeCoveredSet = m_player1->getCovered();
 	m_activePlayingHand = m_player1->GetHandCards();
 	m_activeRemovedHand = m_player1->GetRemovedCards();
-	std::random_device rd;
-	std::uniform_int_distribution<int16_t> magerange(1, 8);
-	m_redMage = std::move(PowerUsage{false, GetMageCard(magerange(rd))});
-	m_blueMage = std::move(PowerUsage{ false, GetMageCard(magerange(rd))});
-	std::uniform_int_distribution<int16_t> elementalrange(1, 24);
-	m_elemental1 = std::move(PowerUsage{ false, GetElementalCard(elementalrange(rd))});
-	m_elemental2 = std::move(PowerUsage{ false, GetElementalCard(elementalrange(rd))});
+	
+	generateMageCards();
+	generateElementalCards();
+
+	loadElementalCardsInfoFromJson();
+	loadMageCardsInfoFromJson();
 }
 
 ActionCard GameFinal::GetCurrentPlayerMage()
@@ -293,6 +366,40 @@ bool GameFinal::CanPlayMage()
 	return !m_blueMage.first;
 }
 
+void GameFinal::printMageCardInfo(int16_t cardId)
+{
+	auto& [name, effect] = m_mageCardsInfo[cardId];
+
+	std::cout << '\n' << name << '\n' << effect << "\n\n";
+}
+
+void GameFinal::printElementalCardInfo(int16_t cardId)
+{
+	auto& [name, effect] = m_elementalCardsInfo[cardId];
+
+	std::cout << '\n' << name << '\n' << effect << "\n\n";
+}
+
+const int16_t GameFinal::getRedMageId()
+{
+	return m_redMageId;
+}
+
+const int16_t GameFinal::getBlueMageId()
+{
+	return m_blueMageId;
+}
+
+const int16_t GameFinal::getElemental1Id()
+{
+	return m_elemental1Id;
+}
+
+const int16_t GameFinal::getElemental2Id()
+{
+	return m_elemental2Id;
+}
+
 bool GameFinal::PlaceCard(int16_t _x, int16_t _y, int16_t _val)
 {
 	if (m_board->isBoardEmpty()) {
@@ -441,9 +548,7 @@ void GameFinal::PlayMage(std::vector<int16_t> inputData)
 	default:
 		break;
 	}
-
 }
-
 
 Colours GameFinal::CheckWinner()
 {
